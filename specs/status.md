@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`not started`)
-> **Latest Release**: v0.1.0 — Bootstrap
+> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`complete`)
+> **Latest Release**: v0.2.0 — Tool-Agnostic Architecture
 > **Health**: On Track
 
 ## Summary
@@ -16,12 +16,13 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 | Phase | Name | Status | Released |
 |-------|------|--------|---------|
 | 0 | Bootstrap | Complete | v0.1.0 (2026-04-21) |
+| 1 | Tool-Agnostic Architecture | Complete | v0.2.0 (2026-04-21) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 1 | Tool-Agnostic Architecture | Not Started | 0% |
+| 2 | npx CLI Distribution | Not Started | 0% |
 
 ## Upcoming Phases
 
@@ -44,9 +45,8 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 1: tool-agnostic architecture (core/ + adapters/ DIP restructure)
-2. Define adapter scope: which AI tools to support in Phase 1
-3. Start Phase 1 once plan is approved
+1. Run `/complete-phase` to verify and tag v0.2.0
+2. Run `/brainstorm-phase` to plan Phase 2: `npx momentum init` CLI
 
 ## Key Decisions Made
 
