@@ -21,8 +21,9 @@ Phase 0 ships the installable template (all commands, scripts, settings), the in
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 1 | Plugin & Distribution | Not Started | `npx momentum init` CLI, npm publish, versioning |
-| 2 | Enhanced Commands | Not Started | migrate command, validate command, status dashboard |
+| 1 | Tool-Agnostic Architecture | Not Started | `core/` + `adapters/` DIP restructure, adapters for Claude Code, Cursor, Gemini CLI, OpenCode, VS Code Copilot |
+| 2 | npx CLI Distribution | Not Started | `npx momentum init`, auto-detects tool, npm publish |
+| 3 | Enhanced Commands | Not Started | migrate command, validate command, status dashboard |
 
 ## Blockers
 
@@ -40,7 +41,7 @@ Phase 0 ships the installable template (all commands, scripts, settings), the in
 
 1. Complete Phase 0: template files, install.sh, README
 2. Test install.sh against a blank test repo
-3. Plan Phase 1: npx CLI packaging
+3. Plan Phase 1: tool-agnostic architecture (core/ + adapters/ DIP restructure)
 
 ## Key Decisions Made
 

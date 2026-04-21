@@ -27,7 +27,12 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| FEAT-001 | `npx momentum init` CLI | P1 | open | phase-1 | — |
+| FEAT-001 | Tool-agnostic core/ + adapters/ restructure (DIP) | P1 | open | phase-1 | — |
+| FEAT-002 | Adapter: Cursor (`.cursor/rules/`, `.cursorrules`) | P1 | open | phase-1 | — |
+| FEAT-003 | Adapter: Gemini CLI (`GEMINI.md`) | P1 | open | phase-1 | — |
+| FEAT-004 | Adapter: OpenCode | P1 | open | phase-1 | — |
+| FEAT-005 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P1 | open | phase-1 | — |
+| FEAT-006 | `npx momentum init` CLI with tool auto-detection | P1 | open | phase-2 | — |
 
 ## Tech Debt
 

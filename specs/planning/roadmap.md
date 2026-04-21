@@ -7,21 +7,24 @@
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
 | 0 | Bootstrap | In Progress | template files, install.sh, README, project spec structure |
-| 1 | Plugin & Distribution | Not Started | `npx momentum` CLI, npm publish, versioning |
-| 2 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |
+| 1 | Tool-Agnostic Architecture | Not Started | `core/` + `adapters/` DIP restructure, adapters for Claude Code, Cursor, Gemini CLI, OpenCode, VS Code Copilot |
+| 2 | npx CLI Distribution | Not Started | `npx momentum init`, auto-detects tool, npm publish |
+| 3 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |
 
 ## Phase Dependencies
 
 ```
 Phase 0 (Bootstrap)
-  └── Phase 1 (Plugin & Distribution)
-       └── Phase 2 (Enhanced Commands)
+  └── Phase 1 (Tool-Agnostic Architecture)
+       └── Phase 2 (npx CLI Distribution)
+            └── Phase 3 (Enhanced Commands)
 ```
 
 ## Milestones
 
 | Milestone | Phase | Description |
 |-----------|-------|-------------|
-| v0.1.0 — Installable | 0 | Template + install.sh working end-to-end |
-| v0.2.0 — npx CLI | 1 | `npx momentum init` works end-to-end |
-| v0.3.0 — Full CLI | 2 | Enhanced commands shipped |
+| v0.1.0 — Installable | 0 | Template + install.sh working end-to-end (Claude Code only) |
+| v0.2.0 — Tool-Agnostic | 1 | core/ + adapters/ — works for any supported AI tool |
+| v0.3.0 — npx CLI | 2 | `npx momentum init` auto-detects tool, zero-friction install |
+| v0.4.0 — Full CLI | 3 | Enhanced commands shipped |
