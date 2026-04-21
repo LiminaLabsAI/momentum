@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`complete`)
+> **Current Phase**: Phase 2 — npx CLI Distribution (`in-progress`)
 > **Latest Release**: v0.2.0 — Tool-Agnostic Architecture
 > **Health**: On Track
 
@@ -22,7 +22,7 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 2 | npx CLI Distribution | Not Started | 0% |
+| 2 | npx CLI Distribution | In Progress | 0% |
 
 ## Upcoming Phases
 
@@ -45,8 +45,10 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/complete-phase` to verify and tag v0.2.0
-2. Run `/brainstorm-phase` to plan Phase 2: `npx momentum init` CLI
+1. Resolve npm package name (`npm view momentum`)
+2. Implement `bin/momentum.js` CLI (Group 0 → Group 1)
+3. Smoke test via `npm pack` (Group 2)
+4. Publish to npm and tag v0.3.0 (Group 3)
 
 ## Key Decisions Made
 
