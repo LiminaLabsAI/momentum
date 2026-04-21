@@ -46,6 +46,14 @@ Detail: `/migrate` is a one-time onboarding tool for projects that were manually
 
 ---
 
+### [DISCOVERY] 2026-04-21 — No command registration in settings.json needed
+Topics: cli, commands, settings
+Affects-phases: none
+Affects-specs: specs/phases/phase-4-enhanced-commands/tasks.md
+Detail: The plan included steps to register validate/migrate in `adapters/claude-code/settings.json`. On implementation, discovered settings.json only contains hooks — commands are auto-installed by `copyDir` from `core/commands/` during both `init` and `upgrade`. No separate registration step is needed; adding the file to `core/commands/` is sufficient.
+
+---
+
 ### [NOTE] 2026-04-21 — ENH-008 and ENH-009 explicitly deferred out of Phase 4
 Topics: flag-naming, distribution
 Affects-phases: phase-5 (future)
