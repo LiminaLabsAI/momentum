@@ -6,7 +6,7 @@
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 0 | Bootstrap | In Progress | template files, install.sh, README, project spec structure |
+| 0 | Bootstrap | **Complete (v0.1.0)** | template files, install.sh, README, project spec structure |
 | 1 | Tool-Agnostic Architecture | Not Started | `core/` + `adapters/` DIP restructure, adapters for Claude Code, Cursor, Gemini CLI, OpenCode, VS Code Copilot |
 | 2 | npx CLI Distribution | Not Started | `npx momentum init`, auto-detects tool, npm publish |
 | 3 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |

@@ -1,29 +1,34 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 0 — Bootstrap (`in-progress`)
-> **Latest Release**: None
+> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`not started`)
+> **Latest Release**: v0.1.0 — Bootstrap
 > **Health**: On Track
 
 ## Summary
 
 Momentum is a spec-driven development toolkit for Claude Code. It provides slash commands, agent rules, hooks, and templates that give any project a structured workflow: phase planning, backlog tracking, history logging, doc sync, and git discipline.
 
-Phase 0 ships the installable template (all commands, scripts, settings), the install.sh script, the README, and the momentum project's own spec structure.
+Phase 0 shipped the installable template (all commands, scripts, settings), the install.sh script, and the README. v0.1.0 is released.
+
+## Completed Phases
+
+| Phase | Name | Status | Released |
+|-------|------|--------|---------|
+| 0 | Bootstrap | Complete | v0.1.0 (2026-04-21) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 0 | Bootstrap | In Progress | 0% |
+| 1 | Tool-Agnostic Architecture | Not Started | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 1 | Tool-Agnostic Architecture | Not Started | `core/` + `adapters/` DIP restructure, adapters for Claude Code, Cursor, Gemini CLI, OpenCode, VS Code Copilot |
 | 2 | npx CLI Distribution | Not Started | `npx momentum init`, auto-detects tool, npm publish |
-| 3 | Enhanced Commands | Not Started | migrate command, validate command, status dashboard |
+| 3 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |
 
 ## Blockers
 
@@ -39,14 +44,15 @@ Phase 0 ships the installable template (all commands, scripts, settings), the in
 
 ## Next Actions
 
-1. Complete Phase 0: template files, install.sh, README
-2. Test install.sh against a blank test repo
-3. Plan Phase 1: tool-agnostic architecture (core/ + adapters/ DIP restructure)
+1. Run `/brainstorm-phase` to plan Phase 1: tool-agnostic architecture (core/ + adapters/ DIP restructure)
+2. Define adapter scope: which AI tools to support in Phase 1
+3. Start Phase 1 once plan is approved
 
 ## Key Decisions Made
 
-- Template-based install (file copy via install.sh) chosen for Phase 0 — simpler, no build tooling required; `npx momentum init` CLI deferred to Phase 1
+- Template-based install (file copy via install.sh) chosen for Phase 0 — simpler, no build tooling required; `npx momentum init` CLI deferred to Phase 2
+- DIP architecture: `core/` (tool-agnostic logic) + `adapters/` (tool-specific wiring) — Phase 1 delivers this before the npx CLI so the CLI gets tool auto-detection for free
 
 ## Recent Changes
 
-- **2026-04-21**: Project bootstrapped — spec structure initialized, Phase 0 started
+- **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.

@@ -1,6 +1,6 @@
 # Phase 0: Bootstrap
 
-> **Status**: In Progress
+> **Status**: Complete (2026-04-21)
 > **Version**: v0.1.0
 > **Depends On**: Nothing — this is the foundation
 
@@ -26,8 +26,8 @@ Ship the installable momentum toolkit: all slash commands, agent rules template,
 
 ## Acceptance Criteria
 
-- [ ] `./install.sh /tmp/test-project` completes without errors
-- [ ] All 8 commands are present in target and contain no project-specific content
-- [ ] `check-history-reminder.sh` is executable after install
-- [ ] Momentum's own `specs/status.md` reflects current state
-- [ ] README accurately describes install flow and commands
+- [x] `./install.sh /tmp/test-project` completes without errors
+- [x] All 8 commands are present in target and contain no project-specific content
+- [x] `check-history-reminder.sh` is executable after install
+- [x] Momentum's own `specs/status.md` reflects current state
+- [x] README accurately describes install flow and commands

@@ -21,7 +21,7 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| _(none yet)_ | | | | | |
+| BUG-001 | install.sh: `realpath` blank line when target dir doesn't exist | P3 | open | phase-1 | `realpath` is called before `mkdir -p`, so it fails silently and prints blank "Installing momentum into: " — cosmetic only, install still works |
 
 ## Features
 

@@ -2,9 +2,10 @@
 
 | Phase | Name | Status | Directory |
 |-------|------|--------|-----------|
-| 0 | Bootstrap | In Progress | [phase-0-bootstrap/](phase-0-bootstrap/) |
-| 1 | Plugin & Distribution | Not Started | — |
-| 2 | Enhanced Commands | Not Started | — |
+| 0 | Bootstrap | Complete (v0.1.0) | [phase-0-bootstrap/](phase-0-bootstrap/) |
+| 1 | Tool-Agnostic Architecture | Not Started | — |
+| 2 | npx CLI Distribution | Not Started | — |
+| 3 | Enhanced Commands | Not Started | — |
 
 ## Phase Structure
 
