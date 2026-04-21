@@ -17,8 +17,8 @@
       "topics": ["npm", "npx", "cli", "node", "distribution", "package", "init"]
     },
     "phase-3-gap-fixes": {
-      "status": "in-progress",
-      "topics": ["specs-templates", "scaffold", "copyDir", "coding-agent", "adapter", "npmignore", "track", "brainstorm-project", "start-phase", "commands"]
+      "status": "complete",
+      "topics": ["specs-templates", "scaffold", "copyDir", "coding-agent", "adapter", "npmignore", "track", "brainstorm-idea", "start-project", "commands"]
     }
   }
 }
