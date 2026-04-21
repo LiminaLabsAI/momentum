@@ -104,8 +104,11 @@ function init(targetDir, codingAgent) {
   console.log('');
   console.log('Next steps:');
   console.log('');
-  console.log('  New project from an idea:');
-  console.log('    Open Claude Code and run: /brainstorm-project');
+  console.log('  Explore an idea first:');
+  console.log('    Open Claude Code and run: /brainstorm-idea');
+  console.log('');
+  console.log('  Ready to scaffold a project:');
+  console.log('    Open Claude Code and run: /start-project');
   console.log('');
   console.log('  Existing project — plan your next phase:');
   console.log('    Open Claude Code and run: /brainstorm-phase');

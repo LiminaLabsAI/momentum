@@ -17,7 +17,8 @@
 ## Workflow
 
 ```
-/brainstorm-project  →  define vision + Phase 0 plan
+/brainstorm-idea     →  explore an idea (no files written)
+/start-project       →  scaffold vision + roadmap + Phase 0
 /start-phase         →  begin a phase
 /track               →  log a discovery mid-phase
 /complete-phase      →  verify, release, retrospective

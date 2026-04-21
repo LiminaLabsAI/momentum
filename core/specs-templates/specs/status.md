@@ -41,7 +41,7 @@
 
 ## Next Actions
 
-1. Run `/brainstorm-project` to define vision and plan Phase 0
+1. Run `/brainstorm-idea` to explore the concept, then `/start-project` to scaffold
 
 ## Key Decisions Made
 

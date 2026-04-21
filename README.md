@@ -52,7 +52,9 @@ your-project/
 ├── .claude/
 │   ├── settings.json               ← Wires the hook into Claude Code
 │   └── commands/                   ← 8 slash commands
-│       ├── brainstorm-project.md
+│       ├── brainstorm-idea.md
+│       ├── brainstorm-idea.md
+│       ├── start-project.md
 │       ├── brainstorm-phase.md
 │       ├── start-phase.md
 │       ├── complete-phase.md
@@ -91,15 +93,16 @@ your-project/
 ### Starting a new project
 
 ```
-/brainstorm-project
+/brainstorm-idea
 ```
 
-The agent asks you one question at a time to understand your idea, then scaffolds:
-- Vision files (`project-charter.md`, `principles.md`, `success-criteria.md`)
-- Roadmap with natural phases
-- Phase 0 plan using the Group Execution Pattern
-- Initial `CLAUDE.md`, `specs/status.md`, `specs/backlog/backlog.md`
-- Initial git commit
+Think through the concept first — no files written. The agent asks one question at a time and produces a structured summary: problem, options, constraints, recommendation, open questions. When the idea is clear, move on:
+
+```
+/start-project
+```
+
+The agent scaffolds everything: vision files, roadmap, Phase 0 plan using the Group Execution Pattern, `CLAUDE.md`, `specs/status.md`, `specs/backlog/backlog.md`, and an initial git commit.
 
 Then:
 ```
@@ -119,6 +122,7 @@ The agent creates a feature branch, updates tracking, and you're ready to implem
 | Step | Command | What happens |
 |------|---------|-------------|
 | 1 | `/brainstorm-phase` | Reviews history, defines scope with you, writes `overview.md` + `plan.md` + `tasks.md` + `history.md` |
+
 | 2 | `/start-phase` | Creates branch, updates `status.md` + `phases/index.json`, commits |
 | 3 | Implement | Agent works through groups, auto-commits, logs decisions to `history.md` |
 | 4 | `/sync-docs` | Reads phase history, identifies affected specs, propagates updates |
@@ -138,8 +142,11 @@ The agent creates a feature branch, updates tracking, and you're ready to implem
 
 ## Commands
 
-### `/brainstorm-project`
-Turn an idea into a fully spec-driven project. Run once on a new or empty repo before anything else. The agent asks questions one at a time, then creates your vision, roadmap, Phase 0 plan, and full spec structure in one pass.
+### `/brainstorm-idea`
+Explore any idea through structured dialogue — software project, architecture decision, product direction, technical tradeoff, anything. Nothing is written to disk. The output is a structured summary (problem, options, constraints, recommendation, open questions). When the idea is clear, move to `/start-project`.
+
+### `/start-project`
+Scaffold a new spec-driven project from a settled idea. Run once on a new or empty repo. Creates vision files, roadmap, Phase 0 plan using the Group Execution Pattern, `CLAUDE.md`, `specs/status.md`, `specs/backlog/backlog.md`, and the initial git commit.
 
 ### `/brainstorm-phase`
 Plan the next phase before starting it. Reviews what was learned in the last phase, checks the roadmap, defines scope with you, and writes all phase files (`overview.md`, `plan.md`, `tasks.md`, `history.md`) using the Group Execution Pattern.
