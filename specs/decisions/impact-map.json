@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "description": "Maps topic keywords to specs/sections. Used by /sync-docs.",
+  "topics": {
+    "install": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"},
+        {"path": "specs/status.md", "section": "Summary"}
+      ]
+    },
+    "distribution": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Phase 1"}
+      ]
+    },
+    "template": {
+      "files": [
+        {"path": "specs/status.md", "section": "Summary"},
+        {"path": "specs/phases/phase-0-bootstrap/tasks.md", "section": "Group 1"}
+      ]
+    }
+  }
+}

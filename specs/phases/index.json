@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "generated": "2026-04-21",
+  "description": "Maps each phase to topic keywords. Used by /sync-docs.",
+  "phases": {
+    "phase-0-bootstrap": {
+      "status": "in-progress",
+      "topics": ["install", "template", "distribution", "commands", "hook", "agent-rules", "spec-structure"]
+    }
+  }
+}
