@@ -6,16 +6,21 @@ Momentum gives any project a structured workflow: phase planning, backlog tracki
 
 ## Install
 
+**Phase 1 (coming soon):**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/cerebrio/momentum/main/install.sh | bash
+npx momentum init
 ```
 
-Or clone and install locally:
-
+**Now (Phase 0):** clone and run the install script:
 ```bash
 git clone https://github.com/cerebrio/momentum
 cd momentum
 ./install.sh /path/to/your/project
+```
+
+Or pipe directly:
+```bash
+curl -fsSL https://raw.githubusercontent.com/cerebrio/momentum/main/install.sh | bash
 ```
 
 ## What You Get

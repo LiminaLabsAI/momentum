@@ -21,7 +21,7 @@ Phase 0 ships the installable template (all commands, scripts, settings), the in
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 1 | Plugin & Distribution | Not Started | npm package, global install, versioning |
+| 1 | Plugin & Distribution | Not Started | `npx momentum init` CLI, npm publish, versioning |
 | 2 | Enhanced Commands | Not Started | migrate command, validate command, status dashboard |
 
 ## Blockers
@@ -40,11 +40,11 @@ Phase 0 ships the installable template (all commands, scripts, settings), the in
 
 1. Complete Phase 0: template files, install.sh, README
 2. Test install.sh against a blank test repo
-3. Plan Phase 1: npm packaging
+3. Plan Phase 1: npx CLI packaging
 
 ## Key Decisions Made
 
-- Template-based install (file copy) chosen for Phase 0 over npm package — simpler, no build tooling required; npm packaging deferred to Phase 1
+- Template-based install (file copy via install.sh) chosen for Phase 0 — simpler, no build tooling required; `npx momentum init` CLI deferred to Phase 1
 
 ## Recent Changes
 

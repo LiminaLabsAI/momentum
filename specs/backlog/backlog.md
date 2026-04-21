@@ -27,7 +27,7 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| FEAT-001 | npm global install | P1 | open | phase-1 | — |
+| FEAT-001 | `npx momentum init` CLI | P1 | open | phase-1 | — |
 
 ## Tech Debt
 

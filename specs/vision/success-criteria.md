@@ -7,6 +7,6 @@
 - [ ] momentum's own specs/ structure is up to date
 
 ## Project Complete When...
-- [ ] `npm install -g momentum` (or equivalent) installs the toolkit globally
+- [ ] `npx momentum init` installs the toolkit into any project without a global install step
 - [ ] Any Claude Code user can install and use momentum in under 5 minutes
 - [ ] The momentum repo demonstrates its own workflow across multiple phases
