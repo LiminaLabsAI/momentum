@@ -1,26 +1,25 @@
 # momentum
 
-> Spec-driven development for Claude Code. One install. Every project.
+> Spec-driven development for AI coding agents. One install. Every project.
 
 Momentum gives any project a structured workflow: phase planning, backlog tracking, history logging, doc sync, and git discipline — all driven by slash commands and agent rules that Claude Code reads automatically.
 
 ## Install
 
-**Phase 1 (coming soon):**
 ```bash
-npx momentum init
+npx @cerebrio/momentum init
 ```
 
-**Now (v0.2.0):** clone and run the install script:
+Or with a target directory:
 ```bash
-git clone https://github.com/cerebrio/momentum
+npx @cerebrio/momentum init /path/to/your/project
+```
+
+**Alternative (bash installer):**
+```bash
+git clone https://github.com/avinash-singh-io/momentum
 cd momentum
 ./install.sh /path/to/your/project
-```
-
-The default coding agent is `claude-code`. To specify explicitly:
-```bash
-./install.sh /path/to/your/project --coding-agent claude-code
 ```
 
 ## What You Get
