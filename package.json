@@ -1,6 +1,6 @@
 {
   "name": "@avinash-singh-io/momentum",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Spec-driven development toolkit for AI coding agents",
   "bin": {
     "momentum": "bin/momentum.js"
