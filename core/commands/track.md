@@ -14,9 +14,24 @@ Track a backlog item — bug, feature, tech debt, or enhancement.
    - Priority: infer from urgency (default P2)
    - Status: `open`
    - Phase: target phase or `unscheduled`
-   - Detail: `—` unless complex
+   - Detail: `—` for one-liners, `[→](details/{ID}.md)` if a detail file is created
 
-4. If complex, create `specs/backlog/details/{ID}.md` with full description
+4. Decide: one-liner or detail file?
+
+   **One-liner (no detail file needed):**
+   - Clear, self-contained issue (< 2 sentences to describe)
+   - No design choices to make
+   - Single file or single function affected
+   - Fix is obvious from the description
+
+   **Detail file required (`specs/backlog/details/{ID}.md`):**
+   - Requires design or multiple options to evaluate
+   - Touches multiple files, commands, or systems
+   - Has a non-obvious implementation path
+   - Cross-cutting impact (affects other phases or specs)
+   - Estimated > 30 min of work
+
+   If a detail file is needed, create it now with: context, options considered, open questions.
 
 5. If P0, also update Critical Items table in `specs/status.md`
 

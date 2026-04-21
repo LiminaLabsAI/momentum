@@ -20,7 +20,10 @@
       "Bash(npx:*)",
       "Bash(npm exec:*)",
       "Bash(npm install:*)",
-      "Bash(momentum init:*)"
+      "Bash(momentum init:*)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"grep exit: $?\")",
+      "Bash(echo \"exit:$?\")"
     ]
   }
 }

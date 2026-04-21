@@ -1,6 +1,6 @@
 {
   "name": "@avinash-singh-io/momentum",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Spec-driven development toolkit for AI coding agents",
   "bin": {
     "momentum": "bin/momentum.js"
@@ -8,7 +8,8 @@
   "files": [
     "bin/",
     "core/",
-    "adapters/"
+    "adapters/**/adapter.js",
+    "adapters/**/settings.json"
   ],
   "engines": {
     "node": ">=18"

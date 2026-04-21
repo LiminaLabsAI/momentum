@@ -10,6 +10,9 @@ docs/
 install.sh
 scripts/
 
+# Bash adapter scripts — only needed by install.sh, not the Node.js CLI
+adapters/**/adapter.sh
+
 # Project config
 CLAUDE.md
 .claude/

@@ -20,6 +20,9 @@ Begin a new implementation phase.
    ```
    Use `/brainstorm-phase` first if these files don't exist yet.
 
+   Note: if running `/start-phase` without `/brainstorm-phase` first, create
+   `history.md` now — an empty append-only log with the entry-types header table.
+
 4. Build phase topic index:
    - Read the phase's `overview.md` and `tasks.md`
    - Extract key topics: technology names, services, architectural concepts

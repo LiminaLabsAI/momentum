@@ -1,17 +1,17 @@
-Start a new project from an idea.
+Scaffold a new project from a clear idea.
 
-Run this on a NEW or EMPTY repository before anything else.
-Turns a concept into a fully spec-driven project: vision, roadmap, Phase 0 ready to go.
+Run this on a NEW or EMPTY repository when you know what you're building.
+If you're still exploring the idea, run `/brainstorm-idea` first.
+
+Turns a settled concept into a fully spec-driven project: vision, roadmap, Phase 0 ready to go.
 
 ## Steps
 
-1. Understand the idea (one question at a time):
-   - What problem does this project solve?
-   - Who is the primary user or consumer?
-   - What are the 3-5 core capabilities it must have?
+1. Confirm the idea is clear — ask if needed:
+   - What does this project build or do?
    - What type of repository? (monorepo with architecture specs / standard library or package)
    - What is the primary tech stack / language?
-   - Are there any hard constraints (performance, compliance, dependencies)?
+   - Any hard constraints (performance, compliance, dependencies)?
 
 2. Determine repo type from answers:
    - Monorepo → full architecture constitution in `specs/architecture/`
@@ -42,11 +42,11 @@ Turns a concept into a fully spec-driven project: vision, roadmap, Phase 0 ready
    - What are dependencies between phases?
    - Write `specs/planning/roadmap.md`
 
-7. Create Phase 0 files using the Group Execution Pattern:
+7. Create Phase 0 files using the Group Execution Pattern (see below):
    - `specs/phases/phase-0-shortname/overview.md`
    - `specs/phases/phase-0-shortname/plan.md` (with group-based task breakdown)
    - `specs/phases/phase-0-shortname/tasks.md`
-   - `specs/phases/phase-0-shortname/history.md` (log brainstorm decisions)
+   - `specs/phases/phase-0-shortname/history.md` (log decisions made here)
 
 8. Create `CLAUDE.md` using the rules template from `.agent/rules/project.md`
 
@@ -70,10 +70,31 @@ Turns a concept into a fully spec-driven project: vision, roadmap, Phase 0 ready
 11. Report to user:
     - Summary of what was created
     - Phase 0 goal and key deliverables
-    - Prompt: "Project bootstrapped. Run `/start-phase` to begin Phase 0."
+    - Prompt: "Project scaffolded. Run `/start-phase` to begin Phase 0."
 
 ## Key Principles
-- One question at a time — don't create anything until you understand the idea
+- Idea should already be clear before running this — use `/brainstorm-idea` to get there
 - Phase 0 scope should be achievable in a focused sprint
 - Architecture sketch is a starting point, not a commitment
-- Record all key decisions from the dialogue in Phase 0's history.md
+- Record all key decisions from the dialogue in Phase 0's `history.md`
+
+## Group Execution Pattern
+
+Declare the execution order at the top of every plan.md:
+
+```
+# Sequential:  Group 0 → Group 1 → Group 2
+# Parallel:    (Groups 0 + 1 + 2 in parallel) → Group 3
+# Mixed:       Group 0 → (Groups 1 + 2 in parallel) → Group 3
+```
+
+Every group header declares:
+- `**Sequential.**` or `**Parallel with Groups X and Y.**`
+- External dependencies (libraries, services, running processes)
+- Commit message for the group
+
+Standard layout:
+- **Group 0** — contracts, types, migrations (sequential, blocks everything)
+- **Middle groups** — independent feature areas (parallel candidates)
+- **Second-to-last** — wiring and integration (sequential)
+- **Last** — verification: tests, benchmarks, smoke tests (sequential)
