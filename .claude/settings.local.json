@@ -13,7 +13,14 @@
       "Bash(node:*)",
       "Bash(npm pack:*)",
       "Bash(npx ./cerebrio-momentum-0.3.0.tgz init /tmp/test-p2b)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "Bash(npm publish:*)",
+      "Bash(npm whoami:*)",
+      "Bash(npm pkg:*)",
+      "Bash(npx:*)",
+      "Bash(npm exec:*)",
+      "Bash(npm install:*)",
+      "Bash(momentum init:*)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 # Phase 2: npx CLI Distribution
 
-> **Status**: Planned
+> **Status**: Complete (2026-04-21)
 > **Version Target**: v0.3.0
 > **Depends On**: Phase 1 — Tool-Agnostic Architecture (complete, v0.2.0)
 
