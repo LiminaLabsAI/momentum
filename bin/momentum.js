@@ -194,6 +194,47 @@ function upgrade(targetDir, codingAgent) {
   console.log('');
 }
 
+// ── Update check ─────────────────────────────────────────────────────────────
+
+function checkForUpdates() {
+  return new Promise((resolve) => {
+    const https = require('https');
+    const os = require('os');
+    const cacheFile = path.join(os.tmpdir(), '.momentum-version-check');
+
+    // Use cache — skip network if checked within 24 hours
+    try {
+      const cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      if (Date.now() - cache.checkedAt < 24 * 60 * 60 * 1000) {
+        resolve(cache.latestVersion !== pkg.version ? cache.latestVersion : null);
+        return;
+      }
+    } catch { /* no cache or unreadable — proceed to network check */ }
+
+    const req = https.get(
+      'https://registry.npmjs.org/@avinash-singh-io/momentum/latest',
+      { timeout: 3000 },
+      (res) => {
+        let data = '';
+        res.on('data', (chunk) => { data += chunk; });
+        res.on('end', () => {
+          try {
+            const latestVersion = JSON.parse(data).version;
+            try {
+              fs.writeFileSync(cacheFile, JSON.stringify({ latestVersion, checkedAt: Date.now() }));
+            } catch { /* ignore cache write failures */ }
+            resolve(latestVersion !== pkg.version ? latestVersion : null);
+          } catch {
+            resolve(null);
+          }
+        });
+      }
+    );
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+  });
+}
+
 // ── Usage ─────────────────────────────────────────────────────────────────────
 
 function usage() {
@@ -223,48 +264,63 @@ Examples:
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
-const args = process.argv.slice(2);
+async function main() {
+  const args = process.argv.slice(2);
 
-// Extract --coding-agent flag before command dispatch
-let codingAgent = 'claude-code';
-const agentFlagIdx = args.indexOf('--coding-agent');
-if (agentFlagIdx !== -1) {
-  codingAgent = args[agentFlagIdx + 1];
-  args.splice(agentFlagIdx, 2);
-}
-
-if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
-  usage();
-  process.exit(args.length === 0 ? 1 : 0);
-}
-
-if (args[0] === '--version' || args[0] === '-v') {
-  console.log(pkg.version);
-  process.exit(0);
-}
-
-if (args[0] === 'init') {
-  const targetDir = args[1] || process.cwd();
-  try {
-    init(targetDir, codingAgent);
-  } catch (err) {
-    console.error(`\nError: ${err.message}`);
-    process.exit(1);
+  // Extract --coding-agent flag before command dispatch
+  let codingAgent = 'claude-code';
+  const agentFlagIdx = args.indexOf('--coding-agent');
+  if (agentFlagIdx !== -1) {
+    codingAgent = args[agentFlagIdx + 1];
+    args.splice(agentFlagIdx, 2);
   }
-  process.exit(0);
-}
 
-if (args[0] === 'upgrade') {
-  const targetDir = args[1] || process.cwd();
-  try {
-    upgrade(targetDir, codingAgent);
-  } catch (err) {
-    console.error(`\nError: ${err.message}`);
-    process.exit(1);
+  // Start update check concurrently — runs while command executes
+  const updateCheckPromise = checkForUpdates();
+
+  let exitCode = 0;
+
+  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+    usage();
+    exitCode = args.length === 0 ? 1 : 0;
+  } else if (args[0] === '--version' || args[0] === '-v') {
+    console.log(pkg.version);
+  } else if (args[0] === 'init') {
+    const targetDir = args[1] || process.cwd();
+    try {
+      init(targetDir, codingAgent);
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'upgrade') {
+    const targetDir = args[1] || process.cwd();
+    try {
+      upgrade(targetDir, codingAgent);
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else {
+    console.error(`Unknown command: ${args[0]}`);
+    console.error('Run "momentum --help" for usage.');
+    exitCode = 1;
   }
-  process.exit(0);
+
+  // Show update notice after command output (non-blocking — result from concurrent check)
+  try {
+    const latestVersion = await updateCheckPromise;
+    if (latestVersion) {
+      console.log('');
+      console.log(`  ┌──────────────────────────────────────────────────────┐`);
+      console.log(`  │  Update available: ${pkg.version} → ${latestVersion}`);
+      console.log(`  │  Run: npm install -g @avinash-singh-io/momentum@latest`);
+      console.log(`  └──────────────────────────────────────────────────────┘`);
+      console.log('');
+    }
+  } catch { /* ignore update check errors */ }
+
+  process.exit(exitCode);
 }
 
-console.error(`Unknown command: ${args[0]}`);
-console.error('Run "momentum --help" for usage.');
-process.exit(1);
+main();
