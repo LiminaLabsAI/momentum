@@ -7,7 +7,7 @@
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
 | 0 | Bootstrap | **Complete (v0.1.0)** | template files, install.sh, README, project spec structure |
-| 1 | Tool-Agnostic Architecture | Not Started | `core/` + `adapters/` DIP restructure, adapters for Claude Code, Cursor, Gemini CLI, OpenCode, VS Code Copilot |
+| 1 | Tool-Agnostic Architecture | **Complete (v0.2.0)** | `core/` + `adapters/claude-code/` DIP restructure; `--coding-agent` flag on install.sh; other agents deferred to Phase 2 |
 | 2 | npx CLI Distribution | Not Started | `npx momentum init`, auto-detects tool, npm publish |
 | 3 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |
 

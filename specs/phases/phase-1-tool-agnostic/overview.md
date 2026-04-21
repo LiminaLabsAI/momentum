@@ -1,6 +1,6 @@
 # Phase 1: Tool-Agnostic Architecture
 
-> **Status**: Not Started
+> **Status**: Complete (2026-04-21)
 > **Version Target**: v0.2.0
 > **Depends On**: Phase 0 — Bootstrap (complete, v0.1.0)
 
@@ -65,12 +65,12 @@ momentum/
 
 ## Acceptance Criteria
 
-- [ ] `./install.sh /tmp/test-p1` completes without errors (default agent)
-- [ ] `./install.sh /tmp/test-p1b --coding-agent claude-code` completes without errors
-- [ ] All 8 commands present in `/tmp/test-p1/.claude/commands/`
-- [ ] Hook wiring correct — `.claude/settings.json` present with hook config
-- [ ] `./install.sh /tmp/x --coding-agent unknown` exits non-zero with clear error message
-- [ ] `template/` no longer exists in the repo
-- [ ] `core/` contains all tool-agnostic content
-- [ ] `adapters/claude-code/` contains only Claude Code-specific files
-- [ ] BUG-001 resolved — no blank line in install output
+- [x] `./install.sh /tmp/test-p1` completes without errors (default agent)
+- [x] `./install.sh /tmp/test-p1b --coding-agent claude-code` completes without errors
+- [x] All 8 commands present in `/tmp/test-p1/.claude/commands/`
+- [x] Hook wiring correct — `.claude/settings.json` present with hook config
+- [x] `./install.sh /tmp/x --coding-agent unknown` exits non-zero with clear error message
+- [x] `template/` no longer exists in the repo
+- [x] `core/` contains all tool-agnostic content
+- [x] `adapters/claude-code/` contains only Claude Code-specific files
+- [x] BUG-001 resolved — no blank line in install output
