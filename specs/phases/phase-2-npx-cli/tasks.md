@@ -32,7 +32,7 @@
 ## Group 3 — Docs + Publish
 
 - [x] Update README.md: npx install section (primary), bash install (alternative)
-- [ ] Confirm `package.json` version = `0.3.0`
-- [ ] `npm publish --access public`
-- [ ] Verify from registry: `npx @avinash-singh-io/momentum init /tmp/test-final`
-- [ ] `git tag v0.3.0` + push tag
+- [x] Confirm `package.json` version = `0.3.0`
+- [x] `npm publish --access public`
+- [x] Verified from registry: `npm install -g @avinash-singh-io/momentum && momentum init /tmp/test-final` → works
+- [x] `git tag v0.3.0` + push tag
