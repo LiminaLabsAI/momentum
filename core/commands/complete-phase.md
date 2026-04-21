@@ -52,13 +52,12 @@ Verify, finalize, and release a completed phase.
      1. Merge phase-N-shortname → staging
      2. Merge staging → main
      3. Tag vX.Y.Z and create GitHub Release
-     4. npm publish (if this is an npm package)
 
    Proceed?
    ```
    Wait for a single "yes" before running any of the following steps.
 
-10. On approval, execute all steps in sequence:
+10. On approval, execute all three steps in sequence:
 
     ```bash
     # step 1 — phase branch → staging
@@ -80,9 +79,6 @@ Verify, finalize, and release a completed phase.
     {bullet summary of what was delivered}
     ### Next: Phase N+1 — {next phase name}" \
       --target main
-
-    # step 4 — npm publish (if this project has a package.json with a "name" field)
-    npm publish --access public
     ```
 
 12. Report summary to user:

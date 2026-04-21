@@ -84,6 +84,7 @@ When completing the last task in a phase:
 | Merge to `staging` | No | **Yes** |
 | Merge to `main` | No | **Yes** |
 | Tag a release | No | **Yes** |
+| `npm publish` | No | **Yes** |
 
 ### Rule 7: Plan Before Implementing
 
@@ -108,7 +109,15 @@ Detail: One to three sentences describing what changed and why.
 ---
 ```
 
-### Rule 9: Doc Sync Protocol — Never Mid-Phase, Always at Completion
+### Rule 9: npm Publish on Every Release
+
+momentum is an npm package. After every `/complete-phase` release, run:
+```bash
+npm publish --access public
+```
+This is project-specific — it is NOT part of the global `/complete-phase` command.
+
+### Rule 10: Doc Sync Protocol — Never Mid-Phase, Always at Completion
 
 - **During a phase**: Record to history. Do NOT update other specs.
 - **At phase completion**: Run `/sync-docs` BEFORE `/complete-phase`.
