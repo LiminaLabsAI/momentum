@@ -46,22 +46,31 @@ Verify, finalize, and release a completed phase.
    git push origin phase-N-shortname
    ```
 
-9. Merge phase branch → staging (ask user for approval first):
-   ```bash
-   git checkout staging
-   git merge --no-ff phase-N-shortname -m "merge: phase-N-shortname → staging (vX.Y.Z)"
-   git push origin staging
+9. Ask the user ONCE for approval to release — present the full plan:
    ```
+   Ready to release vX.Y.Z. This will:
+     1. Merge phase-N-shortname → staging
+     2. Merge staging → main
+     3. Tag vX.Y.Z and create GitHub Release
 
-10. Merge staging → main (ask user for approval first):
+   Proceed?
+   ```
+   Wait for a single "yes" before running any of the following steps.
+
+10. On approval, execute all three steps in sequence:
+
     ```bash
-    git checkout main
+    # step 1 — phase branch → staging
+    git checkout staging && git pull origin staging
+    git merge --no-ff phase-N-shortname -m "merge: phase-N-shortname → staging (vX.Y.Z)"
+    git push origin staging
+
+    # step 2 — staging → main
+    git checkout main && git pull origin main
     git merge --no-ff staging -m "merge: staging → main (vX.Y.Z — Phase N: {phase name})"
     git push origin main
-    ```
 
-11. Tag on main + create GitHub Release (ask user for approval first):
-    ```bash
+    # step 3 — tag + GitHub Release
     git tag -a vX.Y.Z -m "Phase N: {phase name}"
     git push origin vX.Y.Z
     gh release create vX.Y.Z \
