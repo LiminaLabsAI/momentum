@@ -48,5 +48,6 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| ENH-001 | `/migrate` command for existing projects | P2 | open | phase-2 | — |
-| ENH-002 | `/validate` command to check spec structure health | P2 | open | phase-2 | — |
+| ENH-001 | `/migrate` command for existing projects | P2 | open | phase-3 | — |
+| ENH-002 | `/validate` command to check spec structure health | P2 | open | phase-3 | — |
+| ENH-003 | `momentum init` should scaffold full specs/ skeleton + CLAUDE.md template | P1 | open | phase-3 | Currently installs tooling only (.claude/, .agent/, scripts/). Missing: CLAUDE.md, specs/ tree (status, backlog, changelog, decisions, phases, planning, vision). Project is not usable without running /brainstorm-project first. |
