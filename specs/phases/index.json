@@ -9,8 +9,12 @@
       "topics": ["install", "template", "distribution", "commands", "hook", "agent-rules", "spec-structure"]
     },
     "phase-1-tool-agnostic": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["dip", "core", "adapters", "claude-code", "coding-agent", "install", "restructure"]
+    },
+    "phase-2-npx-cli": {
+      "status": "planned",
+      "topics": ["npm", "npx", "cli", "node", "distribution", "package", "init"]
     }
   }
 }
