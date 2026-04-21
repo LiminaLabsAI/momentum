@@ -21,18 +21,22 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| BUG-001 | install.sh: `realpath` blank line when target dir doesn't exist | P3 | open | phase-1 | `realpath` is called before `mkdir -p`, so it fails silently and prints blank "Installing momentum into: " — cosmetic only, install still works |
+| BUG-001 | install.sh: `realpath` blank line when target dir doesn't exist | P3 | resolved | phase-1 | Fixed in Phase 1: `mkdir -p "$TARGET"` now runs before `realpath` |
 
 ## Features
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| FEAT-001 | Tool-agnostic core/ + adapters/ restructure (DIP) | P1 | open | phase-1 | — |
-| FEAT-002 | Adapter: Cursor (`.cursor/rules/`, `.cursorrules`) | P1 | open | phase-1 | — |
-| FEAT-003 | Adapter: Gemini CLI (`GEMINI.md`) | P1 | open | phase-1 | — |
-| FEAT-004 | Adapter: OpenCode | P1 | open | phase-1 | — |
-| FEAT-005 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P1 | open | phase-1 | — |
+| FEAT-001 | Tool-agnostic core/ + adapters/ restructure (DIP) | P1 | resolved | phase-1 | Delivered in Phase 1 (v0.2.0) |
+| FEAT-002 | Adapter: Cursor (`.cursor/rules/`, `.cursorrules`) | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-007 (P2, phase-2) |
+| FEAT-003 | Adapter: Gemini CLI (`GEMINI.md`) | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-008 (P2, phase-2) |
+| FEAT-004 | Adapter: OpenCode | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-009 (P2, phase-2) |
+| FEAT-005 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-010 (P2, phase-2) |
 | FEAT-006 | `npx momentum init` CLI with tool auto-detection | P1 | open | phase-2 | — |
+| FEAT-007 | Adapter: Cursor (`.cursor/rules/`) | P2 | open | phase-2 | Rules-based, no slash commands — commands become prompt rules |
+| FEAT-008 | Adapter: Gemini CLI (`GEMINI.md`) | P2 | open | phase-2 | Single-file convention; workflow prompts embedded as sections |
+| FEAT-009 | Adapter: OpenCode | P2 | open | phase-2 | Convention TBD — research required before implementation |
+| FEAT-010 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P2 | open | phase-2 | Instructions-only model; commands become inline prompt snippets |
 
 ## Tech Debt
 

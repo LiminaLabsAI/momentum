@@ -11,16 +11,16 @@ Momentum gives any project a structured workflow: phase planning, backlog tracki
 npx momentum init
 ```
 
-**Now (Phase 0):** clone and run the install script:
+**Now (v0.2.0):** clone and run the install script:
 ```bash
 git clone https://github.com/cerebrio/momentum
 cd momentum
 ./install.sh /path/to/your/project
 ```
 
-Or pipe directly:
+The default coding agent is `claude-code`. To specify explicitly:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/cerebrio/momentum/main/install.sh | bash
+./install.sh /path/to/your/project --coding-agent claude-code
 ```
 
 ## What You Get
@@ -73,7 +73,7 @@ Groups run sequentially or in parallel. Tasks within a group run in parallel via
 
 ## CLAUDE.md Setup
 
-After install, add to your `CLAUDE.md` (see `template/.agent/rules/project.md` for the full rules):
+After install, add to your `CLAUDE.md` (see `core/agent-rules/project.md` for the full rules):
 
 ```markdown
 ## Autonomous Behaviors (Always-On Rules)
@@ -84,7 +84,7 @@ Before ANY work, read `specs/status.md`.
 ### Rule 2: Auto-Update Tracking After Changes
 After completing ANY meaningful work, update: tasks.md, status.md, changelog.
 
-[... copy remaining rules from template/.agent/rules/project.md ...]
+[... copy remaining rules from core/agent-rules/project.md ...]
 ```
 
 ## Contributing
