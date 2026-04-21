@@ -53,3 +53,11 @@ Affects-specs: none
 Detail: Root-level `.npmignore` patterns don't apply to subdirectories explicitly listed in the `files` field of `package.json`. Fixed TD-001 by switching `files` from `["adapters/"]` (broad glob) to `["adapters/**/adapter.js", "adapters/**/settings.json"]` (explicit allowlist), which is more reliable than trying to exclude from a broad include.
 
 ---
+
+### [FEATURE] 2026-04-21 — README rewritten to cover full feature set and lifecycle
+Topics: docs, readme, lifecycle, commands
+Affects-phases: none
+Affects-specs: none
+Detail: README rewritten to cover install (npx + --coding-agent flag), full post-init file tree, complete lifecycle (new project + per-phase table), all 8 commands with descriptions and the /track one-liner vs detail-file criteria, spec structure table, Group Execution Pattern, autonomous agent rules table, and history-first philosophy with an example entry.
+
+---
