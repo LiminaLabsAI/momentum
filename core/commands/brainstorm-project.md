@@ -42,7 +42,7 @@ Turns a concept into a fully spec-driven project: vision, roadmap, Phase 0 ready
    - What are dependencies between phases?
    - Write `specs/planning/roadmap.md`
 
-7. Create Phase 0 files using the Group Execution Pattern:
+7. Create Phase 0 files using the Group Execution Pattern (see below):
    - `specs/phases/phase-0-shortname/overview.md`
    - `specs/phases/phase-0-shortname/plan.md` (with group-based task breakdown)
    - `specs/phases/phase-0-shortname/tasks.md`
@@ -77,3 +77,24 @@ Turns a concept into a fully spec-driven project: vision, roadmap, Phase 0 ready
 - Phase 0 scope should be achievable in a focused sprint
 - Architecture sketch is a starting point, not a commitment
 - Record all key decisions from the dialogue in Phase 0's history.md
+
+## Group Execution Pattern
+
+Declare the execution order at the top of every plan.md:
+
+```
+# Sequential:  Group 0 → Group 1 → Group 2
+# Parallel:    (Groups 0 + 1 + 2 in parallel) → Group 3
+# Mixed:       Group 0 → (Groups 1 + 2 in parallel) → Group 3
+```
+
+Every group header declares:
+- `**Sequential.**` or `**Parallel with Groups X and Y.**`
+- External dependencies (libraries, services, running processes)
+- Commit message for the group
+
+Standard layout:
+- **Group 0** — contracts, types, migrations (sequential, blocks everything)
+- **Middle groups** — independent feature areas (parallel candidates)
+- **Second-to-last** — wiring and integration (sequential)
+- **Last** — verification: tests, benchmarks, smoke tests (sequential)
