@@ -1,0 +1,24 @@
+# Exclude everything by default, then allow only package files.
+# npm uses "files" in package.json as the primary allowlist,
+# but .npmignore overrides it — so we explicitly exclude dev files.
+
+# Spec and docs
+specs/
+docs/
+
+# Shell installer (not needed in npm package)
+install.sh
+scripts/
+
+# Project config
+CLAUDE.md
+.claude/
+.agent/
+
+# Git
+.git/
+.gitignore
+
+# Logs and local
+*.log
+.DS_Store

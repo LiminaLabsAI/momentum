@@ -1,0 +1,28 @@
+{
+  "name": "@cerebrio/momentum",
+  "version": "0.3.0",
+  "description": "Spec-driven development toolkit for AI coding agents",
+  "bin": {
+    "momentum": "./bin/momentum.js"
+  },
+  "files": [
+    "bin/",
+    "core/",
+    "adapters/"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "ai",
+    "spec-driven",
+    "momentum",
+    "workflow"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avinash-singh-io/momentum.git"
+  }
+}
