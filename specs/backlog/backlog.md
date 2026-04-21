@@ -33,10 +33,10 @@
 | FEAT-004 | Adapter: OpenCode | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-009 (P2, phase-2) |
 | FEAT-005 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-010 (P2, phase-2) |
 | FEAT-006 | `npx momentum init` CLI (Claude Code only) | P1 | resolved | phase-2 | Delivered in Phase 2 (v0.3.0) as `@avinash-singh-io/momentum`; auto-detection deferred (no other adapters yet) |
-| FEAT-007 | Adapter: Cursor (`.cursor/rules/`) | P2 | open | phase-2 | Rules-based, no slash commands — commands become prompt rules |
-| FEAT-008 | Adapter: Gemini CLI (`GEMINI.md`) | P2 | open | phase-2 | Single-file convention; workflow prompts embedded as sections |
-| FEAT-009 | Adapter: OpenCode | P2 | open | phase-2 | Convention TBD — research required before implementation |
-| FEAT-010 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P2 | open | phase-2 | Instructions-only model; commands become inline prompt snippets |
+| FEAT-007 | Adapter: Cursor (`.cursor/rules/`) | P2 | open | unscheduled | Rules-based, no slash commands — commands become prompt rules |
+| FEAT-008 | Adapter: Gemini CLI (`GEMINI.md`) | P2 | open | unscheduled | Single-file convention; workflow prompts embedded as sections |
+| FEAT-009 | Adapter: OpenCode | P2 | open | unscheduled | Convention TBD — research required before implementation |
+| FEAT-010 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P2 | open | unscheduled | Instructions-only model; commands become inline prompt snippets |
 
 ## Tech Debt
 
@@ -49,8 +49,8 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| ENH-001 | `/migrate` command for existing projects | P2 | open | phase-3 | — |
-| ENH-002 | `/validate` command to check spec structure health | P2 | open | phase-3 | — |
+| ENH-001 | `/migrate` command for existing projects | P2 | open | phase-4 | — |
+| ENH-002 | `/validate` command to check spec structure health | P2 | open | phase-4 | — |
 | ENH-003 | `momentum init` should scaffold full specs/ skeleton + CLAUDE.md template | P1 | open | phase-3 | [→](details/ENH-003.md) |
 | ENH-004 | Success message after `momentum init` suggests commands that immediately fail | P1 | open | phase-3 | /brainstorm-phase and /start-phase both read specs/status.md as first step — which doesn't exist post-init. Message is misleading until ENH-003 is fixed. |
 | ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | open | phase-3 | Bootstrap plan step 4 says to create specs/phases/phase-N/history.md; our start-phase.md omits this — relies on /brainstorm-phase having done it. |

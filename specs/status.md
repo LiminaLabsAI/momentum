@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 3 — Enhanced Commands (`not started`)
+> **Current Phase**: Phase 3 — Gap Fixes (`not started`)
 > **Latest Release**: v0.3.0 — npx CLI Distribution
 > **Health**: On Track
 
@@ -23,13 +23,13 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 3 | Enhanced Commands | Not Started | 0% |
+| 3 | Gap Fixes | Not Started | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 3 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |
+| 4 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command |
 
 ## Blockers
 
@@ -45,8 +45,8 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 3: Enhanced Commands
-2. Key candidates: `/migrate` command, `/validate` command, additional adapters (Cursor, Gemini CLI)
+1. Run `/brainstorm-phase` to plan Phase 3: Gap Fixes
+2. Key items: ENH-003 (full scaffold), ENH-004 (success message), ENH-005–006 (command content), ENH-007 (/track intelligence), TD-001–002 (npm + CLI flag)
 
 ## Key Decisions Made
 
