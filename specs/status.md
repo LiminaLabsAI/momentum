@@ -23,7 +23,7 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 3 | Gap Fixes | Not Started | 0% |
+| 3 | Gap Fixes | In Progress | 0% |
 
 ## Upcoming Phases
 
@@ -45,8 +45,9 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 3: Gap Fixes
-2. Key items: ENH-003 (full scaffold), ENH-004 (success message), ENH-005–006 (command content), ENH-007 (/track intelligence), TD-001–002 (npm + CLI flag)
+1. Group 0: Build `core/specs-templates/` tree (all template files)
+2. Groups 1 + 2 in parallel: CLI updates (`--coding-agent`, recursive `copyDir`, scaffold copy, fix success message) + Command content fixes (ENH-005, ENH-006, ENH-007)
+3. Group 3: Verification smoke tests, bump to v0.4.0
 
 ## Key Decisions Made
 
