@@ -44,6 +44,7 @@
 |----|-------|----------|--------|-------|--------|
 | TD-001 | `adapter.sh` bundled in npm package unnecessarily | P3 | resolved | phase-3 | Fixed via explicit `files` glob in package.json (root .npmignore doesn't filter files-listed dirs) |
 | TD-002 | `--coding-agent` flag missing from npx CLI | P2 | resolved | phase-3 | Delivered in Phase 3 (v0.4.0) — `adapter.js` DIP pattern, adapter validation, dynamic loading |
+| TD-003 | `complete-phase` skill missing `npm publish` step | P1 | resolved | phase-4 | `npm publish` was never run for v0.4.0 or v0.5.0 — users got stale v0.3.0 from npm. Fixed: `npm publish --access public` added as step 4 in `core/commands/complete-phase.md` |
 
 ## Enhancements
 
