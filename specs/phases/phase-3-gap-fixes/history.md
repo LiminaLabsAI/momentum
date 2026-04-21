@@ -30,10 +30,10 @@ Detail: Added `.npmignore` to exclude `adapters/**/adapter.sh` from the npm pack
 
 ---
 
-### [NOTE] 2026-04-21 — Naming and distribution deferred to roadmap
-Topics: product, naming, distribution
+### [NOTE] 2026-04-21 — Flag name and distribution deferred to roadmap
+Topics: cli, naming, distribution
 Affects-phases: phase-4-enhanced-commands
 Affects-specs: specs/planning/roadmap.md, specs/backlog/backlog.md
-Detail: During brainstorm, user raised open questions: (1) Is "momentum" the right name? Alternatives considered: "salvit", "poly", others TBD. (2) Should distribution be npm/npx, native coding-agent plugins (Claude Code extension, Cursor rule-pack), or both? Both questions deferred — added to backlog as ENH-008 and ENH-009 for roadmap planning before Phase 4+.
+Detail: During brainstorm, user raised open questions: (1) Is `--coding-agent` the right flag name? Alternatives: `--agent`, `--for`, `--tool`, others TBD. Must decide before TD-002 ships so the flag lands with the right name. (2) Should distribution be npm/npx, native agent-ecosystem plugins (Claude Code extension, Cursor rule-pack), or both? Both questions added to backlog as ENH-008 and ENH-009.
 
 ---
