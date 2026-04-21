@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-04-21
 > **Current Phase**: Phase 5 — TBD (`not started`)
-> **Latest Release**: v0.5.0 — Enhanced Commands
+> **Latest Release**: v0.5.1 — Version Update Check
 > **Health**: On Track
 
 ## Summary
