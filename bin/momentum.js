@@ -24,6 +24,23 @@ function copyDir(srcDir, destDir, opts = {}) {
     const dest = path.join(destDir, entry.name);
     if (entry.isDirectory()) {
       copyDir(src, dest, opts);
+    } else if (opts.upgradeMode) {
+      if (fileExists(dest)) {
+        const srcContent = fs.readFileSync(src, 'utf8');
+        const destContent = fs.readFileSync(dest, 'utf8');
+        if (srcContent !== destContent) {
+          fs.copyFileSync(dest, dest + '.bak');
+          fs.copyFileSync(src, dest);
+          const rel = path.relative(opts.root || process.cwd(), dest);
+          console.log(`  ↑ upgraded: ${rel} (original saved as .bak)`);
+        }
+        // identical — silent skip
+      } else {
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+        fs.copyFileSync(src, dest);
+        const rel = path.relative(opts.root || process.cwd(), dest);
+        console.log(`  + added:    ${rel}`);
+      }
     } else {
       if (opts.skipIfExists && fileExists(dest)) {
         console.log(`  ⚠️  ${dest} already exists — skipping.`);
@@ -116,6 +133,67 @@ function init(targetDir, codingAgent) {
   console.log('  See docs: https://github.com/avinash-singh-io/momentum');
 }
 
+// ── Upgrade command ───────────────────────────────────────────────────────────
+
+function upgrade(targetDir, codingAgent) {
+  const target = path.resolve(targetDir);
+  const src = path.join(__dirname, '..');
+
+  // Validate adapter
+  const adapterDir = path.join(src, 'adapters', codingAgent);
+  if (!fs.existsSync(adapterDir)) {
+    console.error(`Error: Unknown coding agent '${codingAgent}'.`);
+    console.error(`Available: claude-code`);
+    process.exit(1);
+  }
+
+  // Load adapter
+  const adapter = require(path.join(adapterDir, 'adapter.js'));
+
+  console.log(`Upgrading momentum in: ${target} [coding-agent: ${codingAgent}]`);
+  console.log('');
+
+  const upgradeOpts = { upgradeMode: true, root: target };
+
+  // Upgrade slash commands
+  console.log('→ Upgrading slash commands...');
+  copyDir(
+    path.join(src, 'core', 'commands'),
+    path.join(target, '.claude', 'commands'),
+    upgradeOpts
+  );
+
+  // Upgrade hook scripts
+  console.log('→ Upgrading hook scripts...');
+  copyDir(
+    path.join(src, 'core', 'scripts'),
+    path.join(target, 'scripts'),
+    upgradeOpts
+  );
+  // Re-apply executable bit to all .sh scripts
+  const scriptsDir = path.join(target, 'scripts');
+  if (fs.existsSync(scriptsDir)) {
+    for (const f of fs.readdirSync(scriptsDir)) {
+      if (f.endsWith('.sh')) fs.chmodSync(path.join(scriptsDir, f), 0o755);
+    }
+  }
+
+  // Upgrade agent rules
+  console.log('→ Upgrading agent rules...');
+  copyDir(
+    path.join(src, 'core', 'agent-rules'),
+    path.join(target, '.agent', 'rules'),
+    upgradeOpts
+  );
+
+  // Delegate adapter-specific upgrade
+  adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists });
+
+  console.log('');
+  console.log('✓ Upgrade complete.');
+  console.log('');
+}
+
 // ── Usage ─────────────────────────────────────────────────────────────────────
 
 function usage() {
@@ -124,6 +202,8 @@ momentum v${pkg.version} — Spec-driven development toolkit for AI coding agent
 
 Usage:
   momentum init [target-dir]          Scaffold momentum into a project directory
+                                      (defaults to current directory)
+  momentum upgrade [target-dir]       Upgrade momentum files in an existing project
                                       (defaults to current directory)
 
 Options:
@@ -136,6 +216,8 @@ Examples:
   npx @avinash-singh-io/momentum init
   npx @avinash-singh-io/momentum init ./my-project
   npx @avinash-singh-io/momentum init ./my-project --coding-agent claude-code
+  npx @avinash-singh-io/momentum upgrade
+  npx @avinash-singh-io/momentum upgrade ./my-project
 `.trim());
 }
 
@@ -165,6 +247,17 @@ if (args[0] === 'init') {
   const targetDir = args[1] || process.cwd();
   try {
     init(targetDir, codingAgent);
+  } catch (err) {
+    console.error(`\nError: ${err.message}`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
+if (args[0] === 'upgrade') {
+  const targetDir = args[1] || process.cwd();
+  try {
+    upgrade(targetDir, codingAgent);
   } catch (err) {
     console.error(`\nError: ${err.message}`);
     process.exit(1);

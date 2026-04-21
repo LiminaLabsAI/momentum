@@ -53,7 +53,6 @@ your-project/
 │   ├── settings.json               ← Wires the hook into Claude Code
 │   └── commands/                   ← 8 slash commands
 │       ├── brainstorm-idea.md
-│       ├── brainstorm-idea.md
 │       ├── start-project.md
 │       ├── brainstorm-phase.md
 │       ├── start-phase.md
@@ -122,7 +121,6 @@ The agent creates a feature branch, updates tracking, and you're ready to implem
 | Step | Command | What happens |
 |------|---------|-------------|
 | 1 | `/brainstorm-phase` | Reviews history, defines scope with you, writes `overview.md` + `plan.md` + `tasks.md` + `history.md` |
-
 | 2 | `/start-phase` | Creates branch, updates `status.md` + `phases/index.json`, commits |
 | 3 | Implement | Agent works through groups, auto-commits, logs decisions to `history.md` |
 | 4 | `/sync-docs` | Reads phase history, identifies affected specs, propagates updates |
@@ -277,13 +275,5 @@ Entry types: `[DECISION]` | `[SCOPE_CHANGE]` | `[DISCOVERY]` | `[FEATURE]` | `[A
 ## Contributing
 
 This repo is itself a momentum project. See `specs/status.md` for the current phase and `specs/backlog/backlog.md` for open items.
-
-```bash
-# Plan the next enhancement
-/brainstorm-phase
-
-# Start work
-/start-phase
-```
 
 Issues and PRs welcome: [github.com/avinash-singh-io/momentum](https://github.com/avinash-singh-io/momentum)

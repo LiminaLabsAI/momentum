@@ -23,7 +23,11 @@
       "Bash(momentum init:*)",
       "Bash(echo \"exit: $?\")",
       "Bash(echo \"grep exit: $?\")",
-      "Bash(echo \"exit:$?\")"
+      "Bash(echo \"exit:$?\")",
+      "Bash(git branch:*)",
+      "Bash(echo \"# modified content\")",
+      "Bash(rm /tmp/test-upgrade/.claude/commands/track.md)",
+      "Bash(echo \"# modified\")"
     ]
   }
 }

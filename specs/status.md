@@ -1,15 +1,15 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 4 — Enhanced Commands (`not started`)
-> **Latest Release**: v0.4.0 — Gap Fixes
+> **Current Phase**: Phase 5 — TBD (`not started`)
+> **Latest Release**: v0.5.0 — Enhanced Commands
 > **Health**: On Track
 
 ## Summary
 
 Momentum is a spec-driven development toolkit for AI coding agents. It provides slash commands, agent rules, hooks, and templates that give any project a structured workflow: phase planning, backlog tracking, history logging, doc sync, and git discipline.
 
-`momentum init` now scaffolds a fully navigable project in one command — specs skeleton, CLAUDE.md, agent rules, hooks, and all 9 commands.
+`momentum init` now scaffolds a fully navigable project in one command — specs skeleton, CLAUDE.md, agent rules, hooks, and all 11 commands. `momentum upgrade` keeps existing projects up to date with new releases.
 
 ## Completed Phases
 
@@ -19,18 +19,19 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 1 | Tool-Agnostic Architecture | Complete | v0.2.0 (2026-04-21) |
 | 2 | npx CLI Distribution | Complete | v0.3.0 (2026-04-21) |
 | 3 | Gap Fixes | Complete | v0.4.0 (2026-04-21) |
+| 4 | Enhanced Commands | Complete | v0.5.0 (2026-04-21) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 4 | Enhanced Commands | Not Started | 0% |
+| 5 | TBD | Not Started | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 4 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command |
+| 5 | TBD | Not Started | Resolve ENH-008, ENH-009; additional adapters |
 
 ## Blockers
 
@@ -46,9 +47,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Resolve ENH-008 (flag name) and ENH-009 (distribution strategy) before planning Phase 4
-2. Run `/brainstorm-idea` to explore Phase 4 scope
-3. Run `/brainstorm-phase` to plan Phase 4 — Enhanced Commands
+1. Resolve ENH-008 (flag naming) and ENH-009 (distribution strategy) before planning Phase 5
+2. Run `/brainstorm-phase` to plan Phase 5
 
 ## Key Decisions Made
 

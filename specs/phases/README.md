@@ -6,7 +6,7 @@
 | 1 | Tool-Agnostic Architecture | Complete (v0.2.0) | [phase-1-tool-agnostic/](phase-1-tool-agnostic/) |
 | 2 | npx CLI Distribution | Complete (v0.3.0) | [phase-2-npx-cli/](phase-2-npx-cli/) |
 | 3 | Gap Fixes | Complete (v0.4.0) | [phase-3-gap-fixes/](phase-3-gap-fixes/) |
-| 4 | Enhanced Commands | Not Started | — |
+| 4 | Enhanced Commands | Complete (v0.5.0) | [phase-4-enhanced-commands/](phase-4-enhanced-commands/) |
 
 ## Phase Structure
 
