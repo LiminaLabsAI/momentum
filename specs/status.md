@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`not started`)
+> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`in progress`)
 > **Latest Release**: v0.1.0 — Bootstrap
 > **Health**: On Track
 
@@ -21,7 +21,7 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 1 | Tool-Agnostic Architecture | Not Started | 0% |
+| 1 | Tool-Agnostic Architecture | In Progress | 0% |
 
 ## Upcoming Phases
 
@@ -44,9 +44,10 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 1: tool-agnostic architecture (core/ + adapters/ DIP restructure)
-2. Define adapter scope: which AI tools to support in Phase 1
-3. Start Phase 1 once plan is approved
+1. Implement Group 0 — move `template/` content into `core/` + `adapters/claude-code/`
+2. Create `adapters/claude-code/adapter.sh`
+3. Rewrite `install.sh` with `--coding-agent` flag
+4. Run smoke tests, update docs + backlog
 
 ## Key Decisions Made
 

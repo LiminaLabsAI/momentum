@@ -3,7 +3,7 @@
 | Phase | Name | Status | Directory |
 |-------|------|--------|-----------|
 | 0 | Bootstrap | Complete (v0.1.0) | [phase-0-bootstrap/](phase-0-bootstrap/) |
-| 1 | Tool-Agnostic Architecture | Not Started | — |
+| 1 | Tool-Agnostic Architecture | In Progress | [phase-1-tool-agnostic/](phase-1-tool-agnostic/) |
 | 2 | npx CLI Distribution | Not Started | — |
 | 3 | Enhanced Commands | Not Started | — |
 
