@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 1 — Tool-Agnostic Architecture (`complete`)
-> **Latest Release**: v0.2.0 — Tool-Agnostic Architecture
+> **Current Phase**: Phase 3 — Enhanced Commands (`not started`)
+> **Latest Release**: v0.3.0 — npx CLI Distribution
 > **Health**: On Track
 
 ## Summary
@@ -17,18 +17,18 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 |-------|------|--------|---------|
 | 0 | Bootstrap | Complete | v0.1.0 (2026-04-21) |
 | 1 | Tool-Agnostic Architecture | Complete | v0.2.0 (2026-04-21) |
+| 2 | npx CLI Distribution | Complete | v0.3.0 (2026-04-21) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 2 | npx CLI Distribution | Not Started | 0% |
+| 3 | Enhanced Commands | Not Started | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 2 | npx CLI Distribution | Not Started | `npx momentum init`, auto-detects tool, npm publish |
 | 3 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command, status dashboard |
 
 ## Blockers
@@ -45,14 +45,19 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/complete-phase` to verify and tag v0.2.0
-2. Run `/brainstorm-phase` to plan Phase 2: `npx momentum init` CLI
+1. Run `/brainstorm-phase` to plan Phase 3: Enhanced Commands
+2. Key candidates: `/migrate` command, `/validate` command, additional adapters (Cursor, Gemini CLI)
 
 ## Key Decisions Made
 
 - Template-based install (file copy via install.sh) chosen for Phase 0 — simpler, no build tooling required; `npx momentum init` CLI deferred to Phase 2
 - DIP architecture: `core/` (tool-agnostic logic) + `adapters/` (tool-specific wiring) — Phase 1 delivers this before the npx CLI so the CLI gets tool auto-detection for free
+- Zero-dependency Node.js CLI — no `commander`, no `chalk`; only built-ins (`fs`, `path`, `process`)
+- Package name `@avinash-singh-io/momentum` — `momentum` (unscoped) was taken on npm
+- Claude Code only in Phase 2 — auto-detection deferred until more adapters land
+- `install.sh` kept unchanged — npx CLI is additive, two install paths coexist
 
 ## Recent Changes
 
 - **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.
+- **2026-04-21**: Phase 2 complete — v0.3.0 released. `@avinash-singh-io/momentum` published to npm. Zero-dependency Node.js CLI ships `momentum init` command.

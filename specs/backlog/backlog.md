@@ -32,7 +32,7 @@
 | FEAT-003 | Adapter: Gemini CLI (`GEMINI.md`) | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-008 (P2, phase-2) |
 | FEAT-004 | Adapter: OpenCode | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-009 (P2, phase-2) |
 | FEAT-005 | Adapter: VS Code Copilot (`.github/copilot-instructions.md`) | P1 | deferred | phase-1 | Scope cut from Phase 1; superseded by FEAT-010 (P2, phase-2) |
-| FEAT-006 | `npx momentum init` CLI with tool auto-detection | P1 | open | phase-2 | — |
+| FEAT-006 | `npx momentum init` CLI (Claude Code only) | P1 | resolved | phase-2 | Delivered in Phase 2 (v0.3.0) as `@avinash-singh-io/momentum`; auto-detection deferred (no other adapters yet) |
 | FEAT-007 | Adapter: Cursor (`.cursor/rules/`) | P2 | open | phase-2 | Rules-based, no slash commands — commands become prompt rules |
 | FEAT-008 | Adapter: Gemini CLI (`GEMINI.md`) | P2 | open | phase-2 | Single-file convention; workflow prompts embedded as sections |
 | FEAT-009 | Adapter: OpenCode | P2 | open | phase-2 | Convention TBD — research required before implementation |

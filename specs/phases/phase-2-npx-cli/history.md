@@ -42,6 +42,6 @@ Detail: install.sh remains fully functional. npx CLI is additive — two install
 Topics: npm, package-name
 Affects-phases: none
 Affects-specs: specs/phases/phase-2-npx-cli/overview.md
-Detail: Must check `npm view momentum` before starting Group 0. If `momentum` is taken, use `@cerebrio/momentum` (scoped, always available). This affects the `npx` command users will type.
+Detail: Must check `npm view momentum` before starting Group 0. If `momentum` is taken, use `@avinash-singh-io/momentum` (scoped, always available). This affects the `npx` command users will type.
 
 ---
