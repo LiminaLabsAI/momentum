@@ -22,6 +22,17 @@ Phase 0 (Bootstrap)
                  └── Phase 4 (Enhanced Commands)
 ```
 
+## Open Questions (Pre-Phase 4)
+
+Resolve these before planning Phase 4+:
+
+| ID | Question | Detail |
+|----|----------|--------|
+| ENH-008 | What should the project be called? "momentum" is taken on npm (scoped). Alternatives: "salvit", "poly", others. | [→](../backlog/details/ENH-008.md) |
+| ENH-009 | Distribution: stay with npx, add native agent plugins, or both? Claude Code extension, Cursor Rule Pack, etc. | [→](../backlog/details/ENH-009.md) |
+
+---
+
 ## Milestones
 
 | Milestone | Phase | Description |

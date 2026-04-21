@@ -56,3 +56,5 @@
 | ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | open | phase-3 | Bootstrap plan step 4 says to create specs/phases/phase-N/history.md; our start-phase.md omits this — relies on /brainstorm-phase having done it. |
 | ENH-006 | `brainstorm-project.md` missing Group Execution Pattern documentation | P2 | open | phase-3 | [→](details/ENH-006.md) |
 | ENH-007 | `/track` command should auto-decide one-liner vs detail file | P2 | open | phase-3 | When tracking a new backlog item, agent should assess complexity — simple/well-understood issues stay as one-liners; anything requiring design, multiple steps, or cross-cutting impact gets a `details/{ID}.md` auto-created. |
+| ENH-008 | Evaluate and decide on project name (momentum vs alternatives) | P2 | open | unscheduled | "momentum" is taken on npm (hence scoped package). Alternatives: "salvit", "poly", "forge", "cadence", others TBD. Decision needed before any rebranding or wider marketing push. |
+| ENH-009 | Distribution strategy: npx vs native coding-agent plugins vs both | P2 | open | unscheduled | [→](details/ENH-009.md) |
