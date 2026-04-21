@@ -1,15 +1,15 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 3 — Gap Fixes (`not started`)
-> **Latest Release**: v0.3.0 — npx CLI Distribution
+> **Current Phase**: Phase 4 — Enhanced Commands (`not started`)
+> **Latest Release**: v0.4.0 — Gap Fixes
 > **Health**: On Track
 
 ## Summary
 
-Momentum is a spec-driven development toolkit for Claude Code. It provides slash commands, agent rules, hooks, and templates that give any project a structured workflow: phase planning, backlog tracking, history logging, doc sync, and git discipline.
+Momentum is a spec-driven development toolkit for AI coding agents. It provides slash commands, agent rules, hooks, and templates that give any project a structured workflow: phase planning, backlog tracking, history logging, doc sync, and git discipline.
 
-Phase 0 shipped the installable template (all commands, scripts, settings), the install.sh script, and the README. v0.1.0 is released.
+`momentum init` now scaffolds a fully navigable project in one command — specs skeleton, CLAUDE.md, agent rules, hooks, and all 9 commands.
 
 ## Completed Phases
 
@@ -18,12 +18,13 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 | 0 | Bootstrap | Complete | v0.1.0 (2026-04-21) |
 | 1 | Tool-Agnostic Architecture | Complete | v0.2.0 (2026-04-21) |
 | 2 | npx CLI Distribution | Complete | v0.3.0 (2026-04-21) |
+| 3 | Gap Fixes | Complete | v0.4.0 (2026-04-21) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 3 | Gap Fixes | Not Started | 0% |
+| 4 | Enhanced Commands | Not Started | 0% |
 
 ## Upcoming Phases
 
@@ -45,8 +46,9 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 3: Gap Fixes
-2. Key items: ENH-003 (full scaffold), ENH-004 (success message), ENH-005–006 (command content), ENH-007 (/track intelligence), TD-001–002 (npm + CLI flag)
+1. Resolve ENH-008 (flag name) and ENH-009 (distribution strategy) before planning Phase 4
+2. Run `/brainstorm-idea` to explore Phase 4 scope
+3. Run `/brainstorm-phase` to plan Phase 4 — Enhanced Commands
 
 ## Key Decisions Made
 
@@ -56,8 +58,11 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 - Package name `@avinash-singh-io/momentum` — `momentum` (unscoped) was taken on npm
 - Claude Code only in Phase 2 — auto-detection deferred until more adapters land
 - `install.sh` kept unchanged — npx CLI is additive, two install paths coexist
+- `adapter.js` per coding agent (Option A) — DIP boundary for future adapters; consistent with `adapter.sh` pattern from Phase 1
+- `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
 
 - **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.
 - **2026-04-21**: Phase 2 complete — v0.3.0 released. `@avinash-singh-io/momentum` published to npm. Zero-dependency Node.js CLI ships `momentum init` command.
+- **2026-04-21**: Phase 3 complete — v0.4.0 released. Full specs/ scaffold on init. `--coding-agent` flag. `adapter.js` DIP. Command fixes (ENH-003–007, TD-001–002). `brainstorm-idea` + `start-project` commands. README rewritten.

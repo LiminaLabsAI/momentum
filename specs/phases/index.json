@@ -15,6 +15,10 @@
     "phase-2-npx-cli": {
       "status": "complete",
       "topics": ["npm", "npx", "cli", "node", "distribution", "package", "init"]
+    },
+    "phase-3-gap-fixes": {
+      "status": "complete",
+      "topics": ["specs-templates", "scaffold", "copyDir", "coding-agent", "adapter", "npmignore", "track", "brainstorm-idea", "start-project", "commands"]
     }
   }
 }

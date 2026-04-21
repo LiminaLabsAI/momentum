@@ -3,7 +3,7 @@
 ## Phase 0 Complete When...
 - [ ] install.sh copies all template files into a target directory correctly
 - [ ] All 8 commands are present and have no project-specific content
-- [ ] A blank repo + install.sh + /brainstorm-project produces a working spec structure
+- [ ] A blank repo + install.sh + /start-project produces a working spec structure
 - [ ] momentum's own specs/ structure is up to date
 
 ## Phase 1 Complete When...

@@ -9,7 +9,7 @@
 | 0 | Bootstrap | **Complete (v0.1.0)** | template files, install.sh, README, project spec structure |
 | 1 | Tool-Agnostic Architecture | **Complete (v0.2.0)** | `core/` + `adapters/claude-code/` DIP restructure; `--coding-agent` flag on install.sh; other agents deferred to Phase 2 |
 | 2 | npx CLI Distribution | **Complete (v0.3.0)** | `@avinash-singh-io/momentum` on npm; `momentum init` CLI; Claude Code only |
-| 3 | Gap Fixes | Not Started | Full specs/ scaffold in `momentum init`, command content fixes, CLI flag (ENH-003–007, TD-001–002) |
+| 3 | Gap Fixes | **Complete (v0.4.0)** | Full specs/ scaffold, `--coding-agent` flag + adapter.js DIP, command fixes (ENH-003–007, TD-001–002), `brainstorm-idea` + `start-project` commands |
 | 4 | Enhanced Commands | Not Started | `/migrate` command, `/validate` command; adapters unscheduled |
 
 ## Phase Dependencies

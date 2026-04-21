@@ -42,8 +42,8 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| TD-001 | `adapter.sh` bundled in npm package unnecessarily | P3 | open | phase-3 | bash file only used by install.sh; Node.js CLI reimplements its logic; dead weight in npm package |
-| TD-002 | `--coding-agent` flag missing from npx CLI | P2 | open | phase-3 | [→](details/TD-002.md) |
+| TD-001 | `adapter.sh` bundled in npm package unnecessarily | P3 | resolved | phase-3 | Fixed via explicit `files` glob in package.json (root .npmignore doesn't filter files-listed dirs) |
+| TD-002 | `--coding-agent` flag missing from npx CLI | P2 | resolved | phase-3 | Delivered in Phase 3 (v0.4.0) — `adapter.js` DIP pattern, adapter validation, dynamic loading |
 
 ## Enhancements
 
@@ -51,10 +51,10 @@
 |----|-------|----------|--------|-------|--------|
 | ENH-001 | `/migrate` command for existing projects | P2 | open | phase-4 | — |
 | ENH-002 | `/validate` command to check spec structure health | P2 | open | phase-4 | — |
-| ENH-003 | `momentum init` should scaffold full specs/ skeleton + CLAUDE.md template | P1 | open | phase-3 | [→](details/ENH-003.md) |
-| ENH-004 | Success message after `momentum init` suggests commands that immediately fail | P1 | open | phase-3 | /brainstorm-phase and /start-phase both read specs/status.md as first step — which doesn't exist post-init. Message is misleading until ENH-003 is fixed. |
-| ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | open | phase-3 | Bootstrap plan step 4 says to create specs/phases/phase-N/history.md; our start-phase.md omits this — relies on /brainstorm-phase having done it. |
-| ENH-006 | `brainstorm-project.md` missing Group Execution Pattern documentation | P2 | open | phase-3 | [→](details/ENH-006.md) |
-| ENH-007 | `/track` command should auto-decide one-liner vs detail file | P2 | open | phase-3 | When tracking a new backlog item, agent should assess complexity — simple/well-understood issues stay as one-liners; anything requiring design, multiple steps, or cross-cutting impact gets a `details/{ID}.md` auto-created. |
-| ENH-008 | Reconsider `--coding-agent` flag name — term may not be the right abstraction | P2 | open | phase-3 | [→](details/ENH-008.md) |
+| ENH-003 | `momentum init` should scaffold full specs/ skeleton + CLAUDE.md template | P1 | resolved | phase-3 | Delivered in Phase 3 (v0.4.0) — `core/specs-templates/` tree, recursive `copyDir()` with skip-if-exists |
+| ENH-004 | Success message after `momentum init` suggests commands that immediately fail | P1 | resolved | phase-3 | Fixed in Phase 3 — success message now shows `/brainstorm-idea`, `/start-project`, `/brainstorm-phase` |
+| ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | resolved | phase-3 | Fixed in Phase 3 — note added to step 3 |
+| ENH-006 | `brainstorm-project.md` missing Group Execution Pattern documentation | P2 | resolved | phase-3 | Fixed in Phase 3 — command renamed to `start-project.md`; Group Execution Pattern section added |
+| ENH-007 | `/track` command should auto-decide one-liner vs detail file | P2 | resolved | phase-3 | Fixed in Phase 3 — explicit decision criteria table added to `track.md` |
+| ENH-008 | Reconsider `--coding-agent` flag name — term may not be the right abstraction | P2 | deferred | unscheduled | [→](details/ENH-008.md) — shipped as `--coding-agent` in Phase 3; naming question still open |
 | ENH-009 | Distribution strategy: npx vs native agent-ecosystem plugins vs both | P2 | open | unscheduled | [→](details/ENH-009.md) |

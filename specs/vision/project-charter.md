@@ -13,7 +13,7 @@ Setting up spec-driven development with Claude Code requires creating many files
 
 ## Non-Goals
 
-- Not a project generator (that's `/brainstorm-project`)
+- Not a project generator (that's `/start-project`)
 - Not a CI/CD tool
 - Not tied to any specific framework or language
 - Not a replacement for superpowers (complementary, not competing)
