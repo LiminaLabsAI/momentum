@@ -26,7 +26,7 @@ function copyDir(srcDir, destDir, opts = {}) {
       copyDir(src, dest, opts);
     } else {
       if (opts.skipIfExists && fileExists(dest)) {
-        console.log(`  ⚠️  ${path.relative(process.cwd(), dest)} already exists — skipping.`);
+        console.log(`  ⚠️  ${dest} already exists — skipping.`);
       } else {
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.copyFileSync(src, dest);
