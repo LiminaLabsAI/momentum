@@ -54,13 +54,13 @@
 
 ## Group 3 — Verification
 
-- [ ] Smoke test: `node bin/momentum.js init /tmp/test-momentum-init` — all spec files present
-- [ ] Smoke test: run init twice — skip-if-exists works, no user-data files overwritten
-- [ ] Smoke test: `--coding-agent claude-code` succeeds
-- [ ] Smoke test: `--coding-agent cursor` fails with clear error message
-- [ ] Verify: `npm pack --dry-run | grep adapter.sh` → no output
-- [ ] Read-check: `start-phase.md` has history.md creation note
-- [ ] Read-check: `brainstorm-project.md` has Group Execution Pattern section
-- [ ] Read-check: `track.md` has decision criteria table
-- [ ] Bump version to `0.4.0` in `package.json`
-- [ ] Commit: `chore: verify Phase 3 gap fixes — all smoke tests passing`
+- [x] Smoke test: `node bin/momentum.js init /tmp/test-momentum-init` — all spec files present
+- [x] Smoke test: run init twice — skip-if-exists works, no user-data files overwritten
+- [x] Smoke test: `--coding-agent claude-code` succeeds
+- [x] Smoke test: `--coding-agent cursor` fails with clear error message
+- [x] Verify: `npm pack --dry-run | grep adapter.sh` → no output
+- [x] Read-check: `start-phase.md` has history.md creation note
+- [x] Read-check: `brainstorm-project.md` has Group Execution Pattern section
+- [x] Read-check: `track.md` has decision criteria table
+- [x] Bump version to `0.4.0` in `package.json`
+- [x] Commit: `chore: verify Phase 3 gap fixes — all smoke tests passing`

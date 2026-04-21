@@ -23,7 +23,7 @@ Phase 0 shipped the installable template (all commands, scripts, settings), the 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 3 | Gap Fixes | In Progress | 0% |
+| 3 | Gap Fixes | In Progress | 100% |
 
 ## Upcoming Phases
 

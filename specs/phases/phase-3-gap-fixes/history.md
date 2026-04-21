@@ -45,3 +45,11 @@ Affects-specs: specs/status.md, specs/phases/README.md, specs/phases/index.json
 Detail: Phase 3 officially started. Branch `phase-3-gap-fixes` created. No P0 bugs; two P1 items (ENH-003, ENH-004) are in scope. Execution order: Group 0 (specs-templates tree) → Groups 1+2 in parallel (CLI + command content) → Group 3 (verification + v0.4.0 bump).
 
 ---
+
+### [DISCOVERY] 2026-04-21 — .npmignore does not filter files within package.json files-listed dirs
+Topics: npm, packaging, td-001
+Affects-phases: none
+Affects-specs: none
+Detail: Root-level `.npmignore` patterns don't apply to subdirectories explicitly listed in the `files` field of `package.json`. Fixed TD-001 by switching `files` from `["adapters/"]` (broad glob) to `["adapters/**/adapter.js", "adapters/**/settings.json"]` (explicit allowlist), which is more reliable than trying to exclude from a broad include.
+
+---
