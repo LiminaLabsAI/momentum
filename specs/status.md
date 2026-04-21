@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 4 — Enhanced Commands (`not started`)
+> **Current Phase**: Phase 4 — Enhanced Commands (`in progress`)
 > **Latest Release**: v0.4.0 — Gap Fixes
 > **Health**: On Track
 
@@ -24,7 +24,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 4 | Enhanced Commands | Not Started | 0% |
+| 4 | Enhanced Commands | In Progress | 0% |
 
 ## Upcoming Phases
 
@@ -46,9 +46,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Resolve ENH-008 (flag name) and ENH-009 (distribution strategy) before planning Phase 4
-2. Run `/brainstorm-idea` to explore Phase 4 scope
-3. Run `/brainstorm-phase` to plan Phase 4 — Enhanced Commands
+1. Implement Group 0 — upgrade infrastructure (`upgradeMode` in `copyDir`, `upgrade()` function, CLI wiring)
+2. Implement Group 1 — `runUpgrade()` in `adapters/claude-code/adapter.js`
+3. Implement Groups 2+3 in parallel — `/validate` and `/migrate` command files
+4. Run verification + bump to v0.5.0
 
 ## Key Decisions Made
 

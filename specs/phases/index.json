@@ -21,7 +21,7 @@
       "topics": ["specs-templates", "scaffold", "copyDir", "coding-agent", "adapter", "npmignore", "track", "brainstorm-idea", "start-project", "commands"]
     },
     "phase-4-enhanced-commands": {
-      "status": "planned",
+      "status": "in-progress",
       "topics": ["upgrade", "cli", "validate", "migrate", "commands", "health-check", "conflict-resolution"]
     }
   }
