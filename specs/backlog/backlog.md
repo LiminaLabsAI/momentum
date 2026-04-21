@@ -49,8 +49,8 @@
 
 | ID | Title | Priority | Status | Phase | Detail |
 |----|-------|----------|--------|-------|--------|
-| ENH-001 | `/migrate` command for existing projects | P2 | open | phase-4 | — |
-| ENH-002 | `/validate` command to check spec structure health | P2 | open | phase-4 | — |
+| ENH-001 | `/migrate` command for existing projects | P2 | resolved | phase-4 | Delivered in Phase 4 (v0.5.0) — gap detection, skip-if-exists fill, index reconciliation |
+| ENH-002 | `/validate` command to check spec structure health | P2 | resolved | phase-4 | Delivered in Phase 4 (v0.5.0) — index-first default + `--deep` full scan flag |
 | ENH-003 | `momentum init` should scaffold full specs/ skeleton + CLAUDE.md template | P1 | resolved | phase-3 | Delivered in Phase 3 (v0.4.0) — `core/specs-templates/` tree, recursive `copyDir()` with skip-if-exists |
 | ENH-004 | Success message after `momentum init` suggests commands that immediately fail | P1 | resolved | phase-3 | Fixed in Phase 3 — success message now shows `/brainstorm-idea`, `/start-project`, `/brainstorm-phase` |
 | ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | resolved | phase-3 | Fixed in Phase 3 — note added to step 3 |

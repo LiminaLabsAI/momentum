@@ -52,4 +52,4 @@
 - [x] ~~Verify: `settings.json` contains validate/migrate~~ — N/A: no registration in settings.json
 - [x] Bump version to `0.5.0` in `package.json`
 - [x] `npm pack --dry-run` — `validate.md` and `migrate.md` confirmed included
-- [ ] Commit: `chore: verify Phase 4 enhanced commands; bump to v0.5.0`
+- [x] Commit: `chore: verify Phase 4 enhanced commands; bump to v0.5.0`
