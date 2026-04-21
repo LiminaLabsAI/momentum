@@ -55,3 +55,4 @@
 | ENH-004 | Success message after `momentum init` suggests commands that immediately fail | P1 | open | phase-3 | /brainstorm-phase and /start-phase both read specs/status.md as first step — which doesn't exist post-init. Message is misleading until ENH-003 is fixed. |
 | ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | open | phase-3 | Bootstrap plan step 4 says to create specs/phases/phase-N/history.md; our start-phase.md omits this — relies on /brainstorm-phase having done it. |
 | ENH-006 | `brainstorm-project.md` missing Group Execution Pattern documentation | P2 | open | phase-3 | [→](details/ENH-006.md) |
+| ENH-007 | `/track` command should auto-decide one-liner vs detail file | P2 | open | phase-3 | When tracking a new backlog item, agent should assess complexity — simple/well-understood issues stay as one-liners; anything requiring design, multiple steps, or cross-cutting impact gets a `details/{ID}.md` auto-created. |
