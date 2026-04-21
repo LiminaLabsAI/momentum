@@ -4,8 +4,12 @@
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["install", "template", "distribution", "commands", "hook", "agent-rules", "spec-structure"]
+    },
+    "phase-1-tool-agnostic": {
+      "status": "planned",
+      "topics": ["dip", "core", "adapters", "claude-code", "coding-agent", "install", "restructure"]
     }
   }
 }
