@@ -1,46 +1,49 @@
 #!/usr/bin/env bash
 # momentum installer
-# Usage: ./install.sh [target-directory]
+# Usage: ./install.sh [target-directory] [--coding-agent <name>]
 # Default target: current directory
+# Default coding agent: claude-code
 
 set -euo pipefail
 
-TARGET="${1:-.}"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEMPLATE="$SCRIPT_DIR/template"
+TARGET="."
+CODING_AGENT="claude-code"
 
-echo "Installing momentum into: $(realpath "$TARGET")"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --coding-agent)
+      CODING_AGENT="$2"
+      shift 2
+      ;;
+    -*)
+      echo "Unknown flag: $1" >&2
+      exit 1
+      ;;
+    *)
+      TARGET="$1"
+      shift
+      ;;
+  esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ADAPTER="$SCRIPT_DIR/adapters/$CODING_AGENT"
+
+if [ ! -f "$ADAPTER/adapter.sh" ]; then
+  echo "Error: Unknown coding agent '$CODING_AGENT'." >&2
+  echo "No adapter found at: $ADAPTER/adapter.sh" >&2
+  exit 1
+fi
+
+# Fix BUG-001: create target before realpath
+mkdir -p "$TARGET"
+echo "Installing momentum into: $(realpath "$TARGET") [coding-agent: $CODING_AGENT]"
 echo ""
 
-# .claude/commands/
-echo "→ Installing slash commands..."
-mkdir -p "$TARGET/.claude/commands"
-cp "$TEMPLATE/.claude/commands/"* "$TARGET/.claude/commands/"
-
-# scripts/
-echo "→ Installing hook scripts..."
-mkdir -p "$TARGET/scripts"
-cp "$TEMPLATE/scripts/check-history-reminder.sh" "$TARGET/scripts/"
-chmod +x "$TARGET/scripts/check-history-reminder.sh"
-
-# .claude/settings.json
-echo "→ Configuring Claude Code hooks..."
-if [ ! -f "$TARGET/.claude/settings.json" ]; then
-  mkdir -p "$TARGET/.claude"
-  cp "$TEMPLATE/.claude/settings.json" "$TARGET/.claude/settings.json"
-else
-  echo "  ⚠️  .claude/settings.json already exists."
-  echo "     Merge hooks manually from: $TEMPLATE/.claude/settings.json"
-fi
-
-# .agent/rules/
-echo "→ Installing agent rules..."
-mkdir -p "$TARGET/.agent/rules"
-if [ ! -f "$TARGET/.agent/rules/project.md" ]; then
-  cp "$TEMPLATE/.agent/rules/project.md" "$TARGET/.agent/rules/"
-else
-  echo "  ⚠️  .agent/rules/project.md already exists — skipping (not overwriting)."
-fi
+# Source adapter and run
+# shellcheck source=/dev/null
+source "$ADAPTER/adapter.sh"
+run_install "$TARGET" "$SCRIPT_DIR"
 
 echo ""
 echo "✓ momentum installed successfully."
