@@ -17,13 +17,20 @@ function copyFile(src, dest) {
   fs.copyFileSync(src, dest);
 }
 
-function copyDir(srcDir, destDir) {
+function copyDir(srcDir, destDir, opts = {}) {
   fs.mkdirSync(destDir, { recursive: true });
-  for (const file of fs.readdirSync(srcDir)) {
-    const src = path.join(srcDir, file);
-    const dest = path.join(destDir, file);
-    if (fs.statSync(src).isFile()) {
-      fs.copyFileSync(src, dest);
+  for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+    const src = path.join(srcDir, entry.name);
+    const dest = path.join(destDir, entry.name);
+    if (entry.isDirectory()) {
+      copyDir(src, dest, opts);
+    } else {
+      if (opts.skipIfExists && fileExists(dest)) {
+        console.log(`  ⚠️  ${path.relative(process.cwd(), dest)} already exists — skipping.`);
+      } else {
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+        fs.copyFileSync(src, dest);
+      }
     }
   }
 }
@@ -39,11 +46,23 @@ function fileExists(filePath) {
 
 // ── Init command ──────────────────────────────────────────────────────────────
 
-function init(targetDir) {
+function init(targetDir, codingAgent) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
-  console.log(`Installing momentum into: ${target} [coding-agent: claude-code]`);
+  // Validate adapter
+  const adapterDir = path.join(src, 'adapters', codingAgent);
+  if (!fs.existsSync(adapterDir)) {
+    console.error(`Error: Unknown coding agent '${codingAgent}'.`);
+    console.error(`Available: claude-code`);
+    process.exit(1);
+  }
+
+  // Load adapter
+  const adapterJs = path.join(adapterDir, 'adapter.js');
+  const adapter = require(adapterJs);
+
+  console.log(`Installing momentum into: ${target} [coding-agent: ${codingAgent}]`);
   console.log('');
 
   // .claude/commands/
@@ -60,19 +79,6 @@ function init(targetDir) {
   copyFile(hookSrc, hookDest);
   fs.chmodSync(hookDest, 0o755);
 
-  // .claude/settings.json
-  console.log('→ Configuring Claude Code hooks...');
-  const settingsDest = path.join(target, '.claude', 'settings.json');
-  if (!fileExists(settingsDest)) {
-    copyFile(
-      path.join(src, 'adapters', 'claude-code', 'settings.json'),
-      settingsDest
-    );
-  } else {
-    console.log('  ⚠️  .claude/settings.json already exists.');
-    console.log(`     Merge hooks manually from: ${path.join(src, 'adapters', 'claude-code', 'settings.json')}`);
-  }
-
   // .agent/rules/project.md
   console.log('→ Installing agent rules...');
   const rulesDest = path.join(target, '.agent', 'rules', 'project.md');
@@ -85,19 +91,24 @@ function init(targetDir) {
     console.log('  ⚠️  .agent/rules/project.md already exists — skipping (not overwriting).');
   }
 
+  // specs/ skeleton + CLAUDE.md
+  console.log('→ Scaffolding project specs...');
+  const specsSrc = path.join(src, 'core', 'specs-templates');
+  copyDir(specsSrc, target, { skipIfExists: true });
+
+  // Coding-agent-specific steps
+  adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists });
+
   console.log('');
   console.log('✓ momentum installed successfully.');
   console.log('');
   console.log('Next steps:');
   console.log('');
   console.log('  New project from an idea:');
-  console.log('    /brainstorm-project');
+  console.log('    Open Claude Code and run: /brainstorm-project');
   console.log('');
   console.log('  Existing project — plan your next phase:');
-  console.log('    /brainstorm-phase');
-  console.log('');
-  console.log('  Or start a phase directly:');
-  console.log('    /start-phase');
+  console.log('    Open Claude Code and run: /brainstorm-phase');
   console.log('');
   console.log('  See docs: https://github.com/avinash-singh-io/momentum');
 }
@@ -109,22 +120,33 @@ function usage() {
 momentum v${pkg.version} — Spec-driven development toolkit for AI coding agents
 
 Usage:
-  momentum init [target-dir]   Scaffold momentum into a project directory
-                               (defaults to current directory)
+  momentum init [target-dir]          Scaffold momentum into a project directory
+                                      (defaults to current directory)
 
 Options:
-  -h, --help                   Show this help message
-  -v, --version                Show version number
+  --coding-agent <name>               Coding agent to install for (default: claude-code)
+                                      Available: claude-code
+  -h, --help                          Show this help message
+  -v, --version                       Show version number
 
 Examples:
   npx @avinash-singh-io/momentum init
   npx @avinash-singh-io/momentum init ./my-project
+  npx @avinash-singh-io/momentum init ./my-project --coding-agent claude-code
 `.trim());
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 const args = process.argv.slice(2);
+
+// Extract --coding-agent flag before command dispatch
+let codingAgent = 'claude-code';
+const agentFlagIdx = args.indexOf('--coding-agent');
+if (agentFlagIdx !== -1) {
+  codingAgent = args[agentFlagIdx + 1];
+  args.splice(agentFlagIdx, 2);
+}
 
 if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
   usage();
@@ -139,7 +161,7 @@ if (args[0] === '--version' || args[0] === '-v') {
 if (args[0] === 'init') {
   const targetDir = args[1] || process.cwd();
   try {
-    init(targetDir);
+    init(targetDir, codingAgent);
   } catch (err) {
     console.error(`\nError: ${err.message}`);
     process.exit(1);
