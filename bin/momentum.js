@@ -31,13 +31,15 @@ function copyDir(srcDir, destDir, opts = {}) {
         if (srcContent !== destContent) {
           fs.copyFileSync(dest, dest + '.bak');
           fs.copyFileSync(src, dest);
-          console.log(`  ↑ upgraded: ${path.relative(process.cwd(), dest)} (original saved as .bak)`);
+          const rel = path.relative(opts.root || process.cwd(), dest);
+          console.log(`  ↑ upgraded: ${rel} (original saved as .bak)`);
         }
         // identical — silent skip
       } else {
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.copyFileSync(src, dest);
-        console.log(`  + added:    ${path.relative(process.cwd(), dest)}`);
+        const rel = path.relative(opts.root || process.cwd(), dest);
+        console.log(`  + added:    ${rel}`);
       }
     } else {
       if (opts.skipIfExists && fileExists(dest)) {
@@ -151,12 +153,14 @@ function upgrade(targetDir, codingAgent) {
   console.log(`Upgrading momentum in: ${target} [coding-agent: ${codingAgent}]`);
   console.log('');
 
+  const upgradeOpts = { upgradeMode: true, root: target };
+
   // Upgrade slash commands
   console.log('→ Upgrading slash commands...');
   copyDir(
     path.join(src, 'core', 'commands'),
     path.join(target, '.claude', 'commands'),
-    { upgradeMode: true }
+    upgradeOpts
   );
 
   // Upgrade hook scripts
@@ -164,7 +168,7 @@ function upgrade(targetDir, codingAgent) {
   copyDir(
     path.join(src, 'core', 'scripts'),
     path.join(target, 'scripts'),
-    { upgradeMode: true }
+    upgradeOpts
   );
   // Re-apply executable bit to all .sh scripts
   const scriptsDir = path.join(target, 'scripts');
@@ -179,7 +183,7 @@ function upgrade(targetDir, codingAgent) {
   copyDir(
     path.join(src, 'core', 'agent-rules'),
     path.join(target, '.agent', 'rules'),
-    { upgradeMode: true }
+    upgradeOpts
   );
 
   // Delegate adapter-specific upgrade
