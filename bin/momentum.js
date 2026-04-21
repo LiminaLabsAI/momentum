@@ -117,8 +117,8 @@ Options:
   -v, --version                Show version number
 
 Examples:
-  npx @cerebrio/momentum init
-  npx @cerebrio/momentum init ./my-project
+  npx @avinash-singh-io/momentum init
+  npx @avinash-singh-io/momentum init ./my-project
 `.trim());
 }
 

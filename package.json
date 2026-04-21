@@ -1,5 +1,5 @@
 {
-  "name": "@cerebrio/momentum",
+  "name": "@avinash-singh-io/momentum",
   "version": "0.3.0",
   "description": "Spec-driven development toolkit for AI coding agents",
   "bin": {

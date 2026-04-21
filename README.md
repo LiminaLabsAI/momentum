@@ -7,12 +7,12 @@ Momentum gives any project a structured workflow: phase planning, backlog tracki
 ## Install
 
 ```bash
-npx @cerebrio/momentum init
+npx @avinash-singh-io/momentum init
 ```
 
 Or with a target directory:
 ```bash
-npx @cerebrio/momentum init /path/to/your/project
+npx @avinash-singh-io/momentum init /path/to/your/project
 ```
 
 **Alternative (bash installer):**

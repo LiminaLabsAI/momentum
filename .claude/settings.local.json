@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./install.sh:*)",
+      "Read(//private/tmp/test-momentum-phase0/.claude/commands/**)",
+      "Read(//private/tmp/test-momentum-phase0/scripts/**)",
+      "Read(//private/tmp/test-momentum-phase0/.agent/rules/**)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(git tag:*)",
+      "Bash(git mv:*)",
+      "Bash(git restore:*)",
+      "Bash(chmod +x:*)",
+      "Bash(node:*)",
+      "Bash(npm pack:*)",
+      "Bash(npx ./cerebrio-momentum-0.3.0.tgz init /tmp/test-p2b)",
+      "Bash(npm view:*)"
+    ]
+  }
+}

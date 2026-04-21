@@ -4,7 +4,7 @@
 
 ## Group 0 — Package Config
 
-- [x] Resolve npm package name (`npm view momentum`) → `@cerebrio/momentum`
+- [x] Resolve npm package name (`npm view momentum`) → `@avinash-singh-io/momentum`
 - [x] Create `package.json` with name, version, bin, files, engines, license
 - [x] Create `.npmignore` (exclude specs/, docs/, scripts/, *.sh, keep bin/, core/, adapters/, README.md, LICENSE)
 
@@ -34,5 +34,5 @@
 - [x] Update README.md: npx install section (primary), bash install (alternative)
 - [ ] Confirm `package.json` version = `0.3.0`
 - [ ] `npm publish --access public`
-- [ ] Verify from registry: `npx @cerebrio/momentum init /tmp/test-final`
+- [ ] Verify from registry: `npx @avinash-singh-io/momentum init /tmp/test-final`
 - [ ] `git tag v0.3.0` + push tag

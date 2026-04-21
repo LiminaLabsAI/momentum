@@ -15,7 +15,7 @@ Commit: `chore: scaffold npm package (package.json, .npmignore)`
 ### Tasks
 - [ ] Resolve npm package name: run `npm view momentum` to check availability
   - If available: use `momentum`
-  - If taken: use `@cerebrio/momentum`
+  - If taken: use `@avinash-singh-io/momentum`
 - [ ] Create `package.json`:
   - `name`: resolved above
   - `version`: `0.3.0`
@@ -86,7 +86,7 @@ Commit: `docs: update README for npx install` then `chore: release v0.3.0`
 ### Tasks
 - [ ] Update `README.md`:
   - Add `npx` install section above the bash install section
-  - Example: `npx momentum init` (or `npx @cerebrio/momentum init`)
+  - Example: `npx momentum init` (or `npx @avinash-singh-io/momentum init`)
   - Keep existing bash install section
 - [ ] Verify `package.json` version is `0.3.0`
 - [ ] Run `npm publish` (or `npm publish --access public` for scoped package)

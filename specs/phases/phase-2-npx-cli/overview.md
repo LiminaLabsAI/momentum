@@ -16,10 +16,10 @@ Ship `npx momentum init` so users can scaffold momentum into any project with a 
 | Dependencies | Zero (Node.js built-ins only) | No `commander`, no `chalk` — keeps package lean and install fast |
 | Adapter scope | Claude Code only | Consistent with Phase 1 decision; other adapters remain in backlog |
 | Tool auto-detection | Deferred | Phase 2 installs Claude Code only; detection added when more adapters land |
-| npm package name | TBD — `@cerebrio/momentum` (scoped, safe) or `momentum` (check availability) | Scoped name is always available; unscoped is friendlier for `npx` |
+| npm package name | TBD — `@avinash-singh-io/momentum` (scoped, safe) or `momentum` (check availability) | Scoped name is always available; unscoped is friendlier for `npx` |
 | install.sh | Kept, unchanged | No regression; npx is additive |
 
-> **Decision needed before Group 0:** Confirm the npm package name. Run `npm view momentum` to check availability. If taken, use `@cerebrio/momentum`.
+> **Decision needed before Group 0:** Confirm the npm package name. Run `npm view momentum` to check availability. If taken, use `@avinash-singh-io/momentum`.
 
 ## Directory Structure (After Phase 2)
 
