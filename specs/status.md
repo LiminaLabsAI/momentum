@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-05-08
-> **Current Phase**: Phase 5 — Rules & Upgrade Safety (`planned`)
+> **Current Phase**: Phase 5 — Rules & Upgrade Safety (`in-progress`)
 > **Latest Release**: v0.5.1 — Version Update Check
 > **Health**: On Track
 
@@ -25,7 +25,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 5 | Rules & Upgrade Safety | Planned | 0% |
+| 5 | Rules & Upgrade Safety | In Progress | 0% (Group 0 next) |
 
 ## Upcoming Phases
 
@@ -48,8 +48,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Run `/start-phase` to begin Phase 5 — Rules & Upgrade Safety
-2. Group 0 (template foundation) blocks Groups 1-3; tackle it first
+1. Execute Group 0 (template foundation) — blocks Groups 1-3
+2. Once Group 0 lands, kick off Groups 1, 2, 3 in parallel (rules content / upgrade CLI / `--agent` rename)
 3. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter
 
 ## Key Decisions Made

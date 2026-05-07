@@ -25,7 +25,7 @@
       "topics": ["upgrade", "cli", "validate", "migrate", "commands", "health-check", "conflict-resolution"]
     },
     "phase-5-rules-and-upgrade": {
-      "status": "planned",
+      "status": "in-progress",
       "topics": ["rules", "persuasion-hardening", "claude-md", "project-extensions", "marker", "upgrade", "agent-flag", "breaking-change", "rule-10", "rule-11", "evaluator", "history-log", "naming-conventions"]
     }
   }
