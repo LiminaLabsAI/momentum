@@ -4,11 +4,11 @@
 
 ## Group 0 — Adapter Contract v2
 
-- [ ] 0a — `bin/momentum.js install` walks adapter overlay dirs (`agent-rules/`, `commands/`, `scripts/`)
-- [ ] 0b — Conflict detection: duplicate filenames in `core/<dir>/` and `adapters/<agent>/<dir>/` exit non-zero before any writes
-- [ ] 0c — `bin/momentum.js upgrade` applies the overlay walk; per-file marker logic unchanged
-- [ ] 0d — Adapter convention documented in `adapters/claude-code/adapter.js` + `adapter.sh` headers
-- [ ] 0e — Root `README.md` adapter-author section updated
+- [x] 0a — `bin/momentum.js install` walks adapter overlay dirs (`agent-rules/`, `commands/`, `scripts/`)
+- [x] 0b — Conflict detection: duplicate filenames in `core/<dir>/` and `adapters/<agent>/<dir>/` exit non-zero before any writes
+- [x] 0c — `bin/momentum.js upgrade` applies the overlay walk; per-file marker logic unchanged
+- [x] 0d — Adapter convention documented in `adapters/claude-code/adapter.js` + `adapter.sh` headers
+- [x] 0e — Root `README.md` adapter-author section updated
 
 ## Group 1 — Verification Rigor in core/
 

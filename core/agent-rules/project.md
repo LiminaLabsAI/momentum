@@ -92,6 +92,8 @@ Detail: One to three sentences.
 - During a phase: record to history only. Do NOT update other specs.
 - At phase completion: run `/sync-docs` BEFORE `/complete-phase`.
 
+**Multi-repo projects only:** NEVER modify docs in another repo. If a history `Affects-specs:` path starts with `../`, leave that file alone and flag the cross-repo impact to the user with the exact path. Cross-repo doc ownership is structural — never quietly change docs you don't own.
+
 ### Rule 10: Architecture Specs Stability (monorepo only)
 Files under `specs/architecture/` are constitutional documents.
 
@@ -120,6 +122,22 @@ Before building any learning/optimization loop:
 - "The eval doesn't measure what we care about" — version-bump to v2; don't mutate v1
 
 If the eval set or scorer needs changes mid-loop, version-bump the evaluator. Never mutate the locked version.
+
+### Rule 12: Verify Before Claim
+Before marking any task `[x]`, run the verification command (test, lint, typecheck, smoke, build) and read its output. Fresh evidence in this session — not confidence, not similar-earlier-tests, not "looks right" — is the only signal of completion.
+
+**Red Flags (STOP and run the verification):**
+- "I'm confident this works" — confidence is not evidence
+- "The change is too small to test" — "small" is the most common regression predicate
+- "I'll batch verifications at the end" — you won't know which change broke what
+- "Unit tests pass" — unit tests miss wiring bugs; run the integration path too
+
+**Anti-rationalization:**
+- "The diff is obviously correct" — diffs lie when context is incomplete
+- "Type checking passed" — types catch shape errors, not behavior
+- "CI will catch it" — CI catches it AFTER you claimed done
+
+If verification was not run in this session, the task is unverified — leave it `[/]` (in progress). If a command can't run in the current environment, say so explicitly — never silently downgrade to "looks correct".
 
 ---
 

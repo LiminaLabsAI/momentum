@@ -47,7 +47,7 @@ After `momentum init`, your project has everything it needs to run a structured 
 
 ```
 your-project/
-├── CLAUDE.md                        ← Agent rules (9 autonomous behaviors)
+├── CLAUDE.md                        ← Agent rules (12 autonomous behaviors)
 ├── README.md                        ← Project readme template
 ├── scripts/
 │   └── check-history-reminder.sh   ← Hook: reminds agent to log history
@@ -219,7 +219,7 @@ The agent implements each group in order, committing after each one.
 
 ## Autonomous Agent Rules
 
-Momentum installs `CLAUDE.md` with nine always-on rules. The agent follows these without being asked:
+Momentum installs `CLAUDE.md` with twelve always-on rules. The agent follows these without being asked:
 
 | Rule | Behavior |
 |------|----------|
@@ -231,7 +231,10 @@ Momentum installs `CLAUDE.md` with nine always-on rules. The agent follows these
 | **Git lifecycle** | Auto-creates branches, commits atomically, asks before merging to main |
 | **Plan before implementing** | Uses `/brainstorm-phase` for non-trivial work |
 | **Record phase history** | Appends `[DECISION]` / `[DISCOVERY]` / etc. entries to `history.md` |
-| **Doc sync at completion only** | Never modifies specs mid-phase; runs `/sync-docs` at phase end |
+| **Doc sync at completion only** | Never modifies specs mid-phase; runs `/sync-docs` at phase end. Multi-repo: never touches docs in other repos. |
+| **Architecture stability** *(monorepo)* | Specs in `specs/architecture/` are read-only mid-phase; additive vs decisional changes route differently |
+| **Evaluator discipline** | Lock evaluators before building learning loops; never mutate a locked eval |
+| **Verify before claim** | No `[x]` without fresh evidence — running the test, not "looks correct" |
 
 ---
 
