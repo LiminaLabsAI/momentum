@@ -4,24 +4,24 @@
 
 ## Group 0 — Template Foundation (Sequential)
 
-- [ ] 0a. Add `## Project Extensions` marker section to `core/specs-templates/CLAUDE.md`
-- [ ] 0b. Add `## Project Extensions` marker section to `core/agent-rules/project.md`
-- [ ] 0c. Add Rule 10 + Rule 11 stub headings to template
-- [ ] 0d. Update rule count references throughout template (9 → 11)
-- [ ] 0e. Add `[EVALUATOR]` to entry types table in Rule 8
+- [x] 0a. Add `## Project Extensions` marker section to `core/specs-templates/CLAUDE.md`
+- [x] 0b. Add `## Project Extensions` marker section to `core/agent-rules/project.md`
+- [x] 0c. Add Rule 10 + Rule 11 stub headings to template
+- [x] 0d. Update rule count references throughout template (9 → 11)
+- [x] 0e. Add `[EVALUATOR]` to entry types table in Rule 8
 
 ## Group 1 — Rules Content & Hardening (Parallel with 2, 3)
 
-- [ ] 1a. Write Rule 10 body — additive vs decisional spec changes (monorepo only)
-- [ ] 1b. Write Rule 11 body — evaluator discipline / lock before loops
-- [ ] 1c. Expand Rule 8 — triggers list, `[EVALUATOR]`, impact-map.json reminder, hook script reference
-- [ ] 1d. Persuasion-harden Rule 2 (auto-update tracking) — Red Flags + ≥3 counters
-- [ ] 1e. Persuasion-harden Rule 6 (git lifecycle) — Red Flags + ≥3 counters
-- [ ] 1f. Persuasion-harden Rule 8 (history logging) — Red Flags + ≥3 counters
-- [ ] 1g. Persuasion-harden Rule 10 (architecture stability) — Red Flags + ≥3 counters
-- [ ] 1h. Persuasion-harden Rule 11 (evaluator discipline) — Red Flags + ≥3 counters
-- [ ] 1i. Add ENH-013 naming conventions: `infra:` commit type, SLA column, delete-branch row
-- [ ] 1j. Mirror all rule changes to `core/agent-rules/project.md`
+- [x] 1a. Write Rule 10 body — additive vs decisional spec changes (monorepo only)
+- [x] 1b. Write Rule 11 body — evaluator discipline / lock before loops
+- [x] 1c. Expand Rule 8 — triggers list, `[EVALUATOR]`, impact-map.json reminder, hook script reference
+- [x] 1d. Persuasion-harden Rule 2 (auto-update tracking) — Red Flags + ≥3 counters
+- [x] 1e. Persuasion-harden Rule 6 (git lifecycle) — Red Flags + ≥3 counters
+- [x] 1f. Persuasion-harden Rule 8 (history logging) — Red Flags + ≥3 counters
+- [x] 1g. Persuasion-harden Rule 10 (architecture stability) — Red Flags + ≥3 counters
+- [x] 1h. Persuasion-harden Rule 11 (evaluator discipline) — Red Flags + ≥3 counters
+- [x] 1i. Add ENH-013 naming conventions: `infra:` commit type, SLA column, delete-branch row
+- [x] 1j. Mirror all rule changes to `core/agent-rules/project.md`
 
 ## Group 2 — Upgrade-Safe CLI (Parallel with 1, 3)
 

@@ -37,6 +37,25 @@ After completing ANY meaningful work, automatically update:
 
 Use the built-in **TodoWrite** tool to track in-session task progress. Do NOT wait for the user to ask you to update tracking.
 
+#### Why
+Tracking debt compounds invisibly. A task list one day stale is recoverable; one week stale is fiction. Status drift is how phases silently lose direction.
+
+#### Red Flags — STOP and update tracking now
+
+| If you find yourself thinking… | …STOP and update before doing anything else |
+|---|---|
+| "I'll batch the tracking updates at the end" | The end never comes — context fades and details get lost |
+| "This change is too small to log" | Small changes accumulate into invisible drift |
+| "The diff makes it obvious what changed" | The diff shows *what*; the changelog explains *why* |
+| "The user can read git log" | Git log doesn't index by phase or backlog ID |
+| "I'll log this as part of the next bigger update" | Bigger updates conflate decisions and lose per-step reasoning |
+
+#### Anti-Rationalization Counters
+
+- "It's faster to do the work first and track at the end" — wrong: reconstruction takes 2-3× longer than real-time logging.
+- "TodoWrite is enough" — TodoWrite is in-session only; `tasks.md` is the durable record.
+- "Mid-task tracking interrupts flow" — a one-line update costs <30s; reconstructing a day later costs 30 minutes.
+
 ### Rule 3: Auto-Track Discoveries
 
 When you discover a bug, tech debt, or enhancement during work:
@@ -68,7 +87,7 @@ When completing the last task in a phase:
 
 #### During Work
 - **Auto-commit** after each logical unit with conventional commits:
-  - `feat(scope):` | `fix(scope):` | `docs:` | `refactor(scope):` | `chore:`
+  - `feat(scope):` | `fix(scope):` | `docs:` | `refactor(scope):` | `chore:` | `infra:`
 - Keep commits atomic — one logical change per commit
 - Push to remote after significant milestones
 
@@ -81,9 +100,28 @@ When completing the last task in a phase:
 | Create feature branch | Yes | No |
 | Commit to feature branch | Yes | No |
 | Push feature branch | Yes | No |
+| Delete merged feature branch | Yes (after confirmed merge) | No |
 | Merge to `staging` | No | **Yes** |
 | Merge to `main` | No | **Yes** |
 | Tag a release | No | **Yes** |
+
+#### Why
+Direct commits to `main` bypass review, history, and rollback. A single rushed commit on `main` is harder to revert than ten commits on a branch. The branch convention is the cheapest possible insurance against catastrophic mistakes.
+
+#### Red Flags — STOP and check the branch
+
+| If you find yourself thinking… | …STOP and switch to a branch |
+|---|---|
+| "Just one tiny commit to main" | One becomes ten — branch first, decide later |
+| "I'll create the branch after these edits" | The edits are the work; the branch is non-optional |
+| "The hook is in the way, --no-verify just this once" | Hooks exist because the underlying check failed before. Fix the cause. |
+| "Force push is fine, nobody else is on this branch" | Future you is on this branch. `--force-with-lease` at minimum. |
+
+#### Anti-Rationalization Counters
+
+- "It's a one-line typo fix on main" — branches are free; revert is cheap; main is sacred.
+- "The branch protection isn't set up yet" — that's a reason to be more careful, not less.
+- "I'll squash-merge later, so the intermediate commits don't matter" — they matter for `git bisect` and for narrating *why*.
 
 ### Rule 7: Plan Before Implementing
 
@@ -95,9 +133,26 @@ For any non-trivial implementation (new feature, architectural change):
 
 During any active phase, append meaningful changes to `specs/phases/<active-phase>/history.md`.
 
-**Entry types:** `[DECISION]` | `[SCOPE_CHANGE]` | `[DISCOVERY]` | `[FEATURE]` | `[ARCH_CHANGE]` | `[NOTE]`
+#### What counts as "meaningful"
 
-**Format (APPEND ONLY):**
+Append a history entry when ANY of these occur:
+
+| Trigger | Entry type |
+|---|---|
+| ADR was created or its status/decision changed | `[DECISION]` |
+| Phase scope was added to or reduced | `[SCOPE_CHANGE]` |
+| Bug, tech debt, or enhancement was added to backlog | `[DISCOVERY]` |
+| New feature was added to the phase plan | `[FEATURE]` |
+| Architectural pattern or integration approach changed | `[ARCH_CHANGE]` |
+| Locked evaluator was defined or its evaluation set changed | `[EVALUATOR]` |
+| Anything else worth a future reader's time | `[NOTE]` |
+
+After writing a history entry, check `specs/decisions/impact-map.json` and add any new topics so `/sync-docs` can find affected files.
+
+The hook script `scripts/check-history-reminder.sh` runs after edits as a safety net — heed its prompts.
+
+#### Format (APPEND ONLY)
+
 ```
 ### [TYPE] YYYY-MM-DD — Short title
 Topics: topic-1, topic-2
@@ -108,10 +163,87 @@ Detail: One to three sentences describing what changed and why.
 ---
 ```
 
+#### Why
+The history log is the only place that preserves *why* a decision was made at the moment it was made. Specs document the current state; commits document mechanical changes; only history captures motivation. Without it, six months later nobody can reconstruct whether a constraint is load-bearing or accidental.
+
+#### Red Flags — STOP and log
+
+| If you find yourself thinking… | …STOP and append the entry now |
+|---|---|
+| "I'll write the history at the end of the phase" | You won't remember the *why*. Log when the decision is fresh. |
+| "This decision isn't important enough to log" | If it's not worth logging, it's not worth deciding — log it or revert it. |
+| "I already mentioned it in the commit message" | Commit messages get buried; history.md is the canonical source. |
+| "The change is obvious from the diff" | Diffs show *what*; history shows *why*. |
+
+#### Anti-Rationalization Counters
+
+- "We didn't decide anything — just discovered an issue" — that's `[DISCOVERY]`, log it.
+- "It's a minor scope tweak, not a real `[SCOPE_CHANGE]`" — every scope change is real, log it.
+- "I'll consolidate entries later" — consolidation loses per-decision context.
+
 ### Rule 9: Doc Sync Protocol — Never Mid-Phase, Always at Completion
 
 - **During a phase**: Record to history. Do NOT update other specs.
 - **At phase completion**: Run `/sync-docs` BEFORE `/complete-phase`.
+
+### Rule 10: Architecture Specs Stability (monorepo only)
+
+Files under `specs/architecture/` are constitutional documents. Treat them as a stable reference *during* phase work. The key distinction is **additive bookkeeping** vs **architectural decisions**.
+
+**During phase implementation (both types — no spec changes):**
+- READ specs as stable reference
+- NEVER modify them based on implementation discoveries
+- Log all gaps and changes as `[ARCH_CHANGE]` in phase history with `Affects-specs:`
+
+**At phase completion (via `/sync-docs`):**
+- **Additive changes** (new fields, new ports, new modes — extending an existing design): update specs directly. No ADR required.
+- **Decisional changes** (approach changes, trade-off choices, design direction shifts): require an ADR amendment **before** any spec update.
+
+#### Why
+The original "all spec changes via ADR" rule worked when the architecture was stabilizing and every change was a decision. By mid-to-late phases, the architecture is proven — most changes are additive extensions, not decisions. Requiring ADRs for bookkeeping creates spec staleness while adding no value. ADRs capture *why* a path was chosen; they're not required when you're just recording *what was added*.
+
+#### Red Flags — STOP and route correctly
+
+| If you find yourself thinking… | …STOP |
+|---|---|
+| "I just need to update one field, not a real change" | Additive — fine at completion; not now. Log `[ARCH_CHANGE]`. |
+| "It's faster to fix the spec than to log the gap" | Faster locally, catastrophic globally — specs out of sync with rationale. |
+| "The implementation diverged because the spec was wrong" | That's a decision — ADR first, spec update second. Don't silently rewrite. |
+| "I'll log it as `[NOTE]` instead of `[ARCH_CHANGE]`" | If it touches `specs/architecture/`, it's `[ARCH_CHANGE]`. |
+
+#### Anti-Rationalization Counters
+
+- "Specs are wrong, code is right, so update specs" — only after an ADR documents *why* the design shifted.
+- "Mid-phase spec edits are fine if I'm careful" — the rule isn't about care; it's about preventing reference instability while you're depending on the reference.
+- "This is just renaming, not redesigning" — renames are decisions when others read the spec.
+
+### Rule 11: Evaluator Discipline — Lock Evaluators Before Loops
+
+Before building any learning, optimization, or self-improvement loop:
+
+1. Define the **evaluation set** — a fixed corpus with known-good outputs
+2. Define the **scalar** — a single number that improves or doesn't
+3. Commit the evaluator to `tests/benchmarks/` with a version tag
+4. Build the loop **AFTER** the evaluator is committed
+5. **NEVER** change the evaluator while the loop is being optimized
+
+#### Why
+Optimization loops with mutable evaluators don't measure progress — they measure motion. Every "small fix" to the eval set silently rewrites the score history and makes A-vs-B comparisons meaningless. Locking the evaluator first costs an hour; not locking it costs the entire experiment.
+
+#### Red Flags — STOP and freeze
+
+| If you find yourself thinking… | …STOP |
+|---|---|
+| "Just one tweak to the eval so this run looks better" | That's exactly the failure mode. Freeze first; tweak in a v2 evaluator. |
+| "We'll lock the evaluator after we know what works" | You can't know what works without a locked evaluator. |
+| "The current eval doesn't measure what we actually care about" | Correct — but freeze it before optimizing, then version-bump to a new locked eval. |
+| "It's just an internal experiment, locking is overkill" | Internal experiments produce internal beliefs that drive external decisions. Lock. |
+
+#### Anti-Rationalization Counters
+
+- "The eval set is too small, I'll just add a few more cases" — version-bump the evaluator (`v1` → `v2`); don't mutate `v1`.
+- "I noticed a bug in the scorer mid-run" — fix it in `v2`; rerun the prior runs against `v2`; don't backfill `v1` scores.
+- "Production data drifted, I should refresh the eval" — that's a `v2` decision, not a `v1` patch.
 
 ---
 
@@ -126,12 +258,12 @@ Detail: One to three sentences describing what changed and why.
 | Enhancement | `ENH-` | `ENH-001` |
 
 ### Priorities
-| Level | Meaning |
-|-------|---------|
-| `P0` | Critical — blocks current phase |
-| `P1` | High — current/next phase |
-| `P2` | Medium — within 2 phases |
-| `P3` | Low — nice to have |
+| Level | Meaning | SLA |
+|-------|---------|-----|
+| `P0` | Critical — blocks current phase | < 1 day |
+| `P1` | High — current/next phase | < 1 week |
+| `P2` | Medium — within 2 phases | < 1 phase |
+| `P3` | Low — nice to have | best-effort |
 
 ### Git Branches
 | Type | Pattern |
@@ -140,9 +272,13 @@ Detail: One to three sentences describing what changed and why.
 | Feature | `feat/description` |
 | Bug fix | `fix/description` |
 | Refactor | `refactor/description` |
+| Infrastructure | `infra/description` |
+| Delete after merge | `git push origin --delete <branch>` once merged |
 
 ### Git Commits (Conventional)
-`feat:` | `fix:` | `docs:` | `refactor:` | `chore:`
+`feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:`
+
+Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that don't ship code.
 
 ---
 
@@ -151,3 +287,11 @@ Detail: One to three sentences describing what changed and why.
 1. **No secrets in code** — all credentials via env vars
 2. **Never commit to main** — always use feature/phase branches
 3. **Plan before implementing** — use `/brainstorm-phase` for non-trivial work
+
+---
+
+## Project Extensions
+
+> Everything below this heading is preserved across `momentum upgrade`.
+> Add project-specific navigation, rules, cross-repo references, etc. here.
+> Anything above this heading is managed by momentum and may be replaced on upgrade.
