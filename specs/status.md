@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-05-08
-> **Current Phase**: Phase 6 — Adapter Overlay & Verification (`in progress`)
-> **Latest Release**: v0.6.0 — Rules & Upgrade Safety
+> **Current Phase**: Phase 7 — Execution Excellence (`not started`)
+> **Latest Release**: v0.7.0 — Adapter Overlay & Verification
 > **Health**: On Track
 
 ## Summary
@@ -21,12 +21,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 3 | Gap Fixes | Complete | v0.4.0 (2026-04-21) |
 | 4 | Enhanced Commands | Complete | v0.5.0 (2026-04-21) |
 | 5 | Rules & Upgrade Safety | Complete | v0.6.0 (2026-05-08) |
+| 6 | Adapter Overlay & Verification | Complete | v0.7.0 (2026-05-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 6 | Adapter Overlay & Verification | In Progress | Implementation complete (Groups 0–4) — release pending `/sync-docs` + `/complete-phase` + `npm publish` |
+| 7 | Execution Excellence | Not Started | 0% |
 
 ## Upcoming Phases
 
@@ -51,11 +52,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Run `/sync-docs` to propagate Phase 6 history entries to affected specs (then `/complete-phase`)
-2. Run `/complete-phase` — verifies acceptance criteria, runs validations (Rule 12 evidence), creates retrospective, merges → staging → main, tags v0.7.0, creates GitHub Release
-3. Run `npm publish --access public` after the release tag (per project Rule in CLAUDE.md `## Project Extensions` — requires explicit user OK)
-4. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter (lands in Phase 8)
-5. ENH-017 (project-name preserved across upgrade) — Phase 7 candidate
+1. Run `/brainstorm-phase` to plan Phase 7 — Execution Excellence
+2. ENH-017 (project-name preserved across upgrade) — Phase 7 candidate; surfaced in Phase 6 dogfood
+3. ENH-009 (distribution strategy) — still blocked on having ≥1 more adapter; lands in Phase 8
 
 ## Key Decisions Made
 
@@ -73,3 +72,5 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.
 - **2026-04-21**: Phase 2 complete — v0.3.0 released. `@avinash-singh-io/momentum` published to npm. Zero-dependency Node.js CLI ships `momentum init` command.
 - **2026-04-21**: Phase 3 complete — v0.4.0 released. Full specs/ scaffold on init. `--coding-agent` flag. `adapter.js` DIP. Command fixes (ENH-003–007, TD-001–002). `brainstorm-idea` + `start-project` commands. README rewritten.
+- **2026-05-08**: Phase 5 complete — v0.6.0 released. Rules 10/11, persuasion-hardening (Rules 2/6/8/10/11), `## Project Extensions` marker, marker-aware `momentum upgrade`, `--coding-agent` → `--agent` rename (breaking).
+- **2026-05-08**: Phase 6 complete — v0.7.0 released. Adapter Contract v2 (per-agent commands/rules/scripts overlays, conflict = error); Rule 12 verify-before-claim; `/complete-phase` evidence rigor; `/review-code` (Claude Code, subagent-driven); ENH-014 cross-repo Rule 9 safeguards; `tests/` for momentum CLI (24 tests via node:test).

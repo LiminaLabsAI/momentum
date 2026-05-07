@@ -8,7 +8,7 @@
 | 3 | Gap Fixes | Complete (v0.4.0) | [phase-3-gap-fixes/](phase-3-gap-fixes/) |
 | 4 | Enhanced Commands | Complete (v0.5.0) | [phase-4-enhanced-commands/](phase-4-enhanced-commands/) |
 | 5 | Rules & Upgrade Safety | Complete (v0.6.0) | [phase-5-rules-and-upgrade/](phase-5-rules-and-upgrade/) |
-| 6 | Adapter Overlay & Verification | In Progress (target v0.7.0) | [phase-6-overlay-and-verify/](phase-6-overlay-and-verify/) |
+| 6 | Adapter Overlay & Verification | Complete (v0.7.0) | [phase-6-overlay-and-verify/](phase-6-overlay-and-verify/) |
 
 ## Phase Structure
 

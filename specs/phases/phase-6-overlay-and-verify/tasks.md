@@ -46,6 +46,6 @@
 - [x] 5b — Update `specs/changelog/2026-05.md`
 - [x] 5c — Update `specs/status.md`
 - [x] 5d — Update `specs/planning/roadmap.md`
-- [ ] 5e — Run `/sync-docs` *(awaiting user invocation)*
-- [ ] 5f — Run `/complete-phase` *(awaiting user invocation; will dogfood the new evidence rigor)*
+- [x] 5e — Run `/sync-docs` (impact-map.json enriched with Phase 6 topics; all other specs already in sync)
+- [x] 5f — Run `/complete-phase` (verification evidence captured to retrospective.md; 24/24 tests pass; fresh-init + conflict + dogfood smokes all green)
 - [ ] 5g — `npm publish --access public` *(awaiting user approval per project rule — `npm publish` is a "shared system" action)*
