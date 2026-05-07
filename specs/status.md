@@ -26,7 +26,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 6 | Adapter Overlay & Verification | In Progress | 0% |
+| 6 | Adapter Overlay & Verification | In Progress | Implementation complete (Groups 0–4) — release pending `/sync-docs` + `/complete-phase` + `npm publish` |
 
 ## Upcoming Phases
 
@@ -51,8 +51,11 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Phase 6 brainstormed and started on branch `phase-6-overlay-and-verify`. Begin Group 0 — Adapter Contract v2 (CLI overlay walk + conflict detection)
-2. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter (lands in Phase 8)
+1. Run `/sync-docs` to propagate Phase 6 history entries to affected specs (then `/complete-phase`)
+2. Run `/complete-phase` — verifies acceptance criteria, runs validations (Rule 12 evidence), creates retrospective, merges → staging → main, tags v0.7.0, creates GitHub Release
+3. Run `npm publish --access public` after the release tag (per project Rule in CLAUDE.md `## Project Extensions` — requires explicit user OK)
+4. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter (lands in Phase 8)
+5. ENH-017 (project-name preserved across upgrade) — Phase 7 candidate
 
 ## Key Decisions Made
 

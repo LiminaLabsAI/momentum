@@ -12,40 +12,40 @@
 
 ## Group 1 — Verification Rigor in core/
 
-- [ ] 1a — Rule 12 "Verify before claim" (full) in `core/specs-templates/CLAUDE.md`
-- [ ] 1b — Rule 12 (condensed) in `core/agent-rules/project.md`
-- [ ] 1c — `core/commands/complete-phase.md` evidence-capture step + refuse-to-advance gate
-- [ ] 1d — ENH-014: Rule 9 cross-repo safeguard in `core/agent-rules/project.md`
-- [ ] 1e — `core/commands/sync-docs.md` flags `Affects-specs: ../` cross-repo entries
-- [ ] 1f — Rule 9 cross-repo safeguard in `core/specs-templates/CLAUDE.md`
+- [x] 1a — Rule 12 "Verify before claim" (full) in `core/specs-templates/CLAUDE.md`
+- [x] 1b — Rule 12 (condensed) in `core/agent-rules/project.md`
+- [x] 1c — `core/commands/complete-phase.md` evidence-capture step + refuse-to-advance gate
+- [x] 1d — ENH-014: Rule 9 cross-repo safeguard in `core/agent-rules/project.md`
+- [x] 1e — `core/commands/sync-docs.md` flags `Affects-specs: ../` cross-repo entries
+- [x] 1f — Rule 9 cross-repo safeguard in `core/specs-templates/CLAUDE.md`
 
 ## Group 2 — Claude Code Overlay: /review-code
 
-- [ ] 2a — `adapters/claude-code/commands/review-code.md` — role-based subagents (security, QA, architecture)
-- [ ] 2b — Command header documents Claude-Code-specificity
+- [x] 2a — `adapters/claude-code/commands/review-code.md` — role-based subagents (security, QA, architecture)
+- [x] 2b — Command header documents Claude-Code-specificity
 
 ## Group 3 — Tests for momentum CLI
 
-- [ ] 3a — `tests/` dir at repo root; `node --test` runner wired
-- [ ] 3b — `tests/install.test.js`
-- [ ] 3c — `tests/upgrade.test.js`
-- [ ] 3d — `tests/marker.test.js`
-- [ ] 3e — `tests/overlay.test.js`
-- [ ] 3f — `npm test` script in `package.json`
+- [x] 3a — `tests/` dir at repo root; `node --test` runner wired
+- [x] 3b — `tests/install.test.js`
+- [x] 3c — `tests/upgrade.test.js`
+- [x] 3d — `tests/marker.test.js`
+- [x] 3e — `tests/overlay.test.js`
+- [x] 3f — `npm test` script in `package.json`
 
 ## Group 4 — Wiring + Dogfood
 
-- [ ] 4a — Run `momentum upgrade` on this repo; verify Rule 12, `/review-code`, extensions preserved
-- [ ] 4b — Fresh `momentum init --agent claude-code` smoke test
-- [ ] 4c — Conflict-detection smoke test
-- [ ] 4d — Fix bugs uncovered by 4a–4c
+- [x] 4a — Run `momentum upgrade` on this repo; verify Rule 12, `/review-code`, extensions preserved
+- [x] 4b — Fresh `momentum init --agent claude-code` smoke test
+- [x] 4c — Conflict-detection smoke test
+- [x] 4d — Fix bugs uncovered by 4a–4c (none — clean run; minor manual cleanups: title restore, agent-rules de-dupe, stale brainstorm-project.md removed)
 
 ## Group 5 — Release Prep
 
-- [ ] 5a — Bump `package.json` to `0.7.0`
-- [ ] 5b — Update `specs/changelog/2026-05.md`
-- [ ] 5c — Update `specs/status.md`
-- [ ] 5d — Update `specs/planning/roadmap.md`
-- [ ] 5e — Run `/sync-docs`
-- [ ] 5f — Run `/complete-phase` (dogfood the new evidence rigor)
-- [ ] 5g — `npm publish --access public` (with user approval)
+- [x] 5a — Bump `package.json` to `0.7.0`
+- [x] 5b — Update `specs/changelog/2026-05.md`
+- [x] 5c — Update `specs/status.md`
+- [x] 5d — Update `specs/planning/roadmap.md`
+- [ ] 5e — Run `/sync-docs` *(awaiting user invocation)*
+- [ ] 5f — Run `/complete-phase` *(awaiting user invocation; will dogfood the new evidence rigor)*
+- [ ] 5g — `npm publish --access public` *(awaiting user approval per project rule — `npm publish` is a "shared system" action)*
