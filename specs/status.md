@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-05-08
-> **Current Phase**: Phase 5 — Rules & Upgrade Safety (`in-progress`)
-> **Latest Release**: v0.5.1 — Version Update Check
+> **Current Phase**: Phase 6 — Execution Engine (`not started`)
+> **Latest Release**: v0.6.0 — Rules & Upgrade Safety
 > **Health**: On Track
 
 ## Summary
@@ -20,19 +20,19 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 2 | npx CLI Distribution | Complete | v0.3.0 (2026-04-21) |
 | 3 | Gap Fixes | Complete | v0.4.0 (2026-04-21) |
 | 4 | Enhanced Commands | Complete | v0.5.0 (2026-04-21) |
+| 5 | Rules & Upgrade Safety | Complete | v0.6.0 (2026-05-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 5 | Rules & Upgrade Safety | In Progress | 0% (Group 0 next) |
+| 6 | Execution Engine | Not Started | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 5 | Rules & Upgrade Safety | Planned | ENH-010, ENH-011, ENH-012, ENH-013, ENH-008, FEAT-011, persuasion-hardening of Rules 2/6/8/10/11 |
-| 6 | Execution Engine (placeholder) | Future | Subagent execution, TDD enforcement, `/complete-phase` verification rigor, systematic-debugging skill, `/review-code` |
+| 6 | Execution Engine | Not Started | Subagent execution, TDD enforcement rule (12), `/complete-phase` verification rigor, systematic-debugging skill, `/review-code`. Carry-forward: ENH-014 (cross-repo Rule 9), tests/ directory, persuasion-hardening for Rules 1/3/4/5/7/9 if evidence emerges |
 
 ## Blockers
 
@@ -48,8 +48,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Execute Group 0 (template foundation) — blocks Groups 1-3
-2. Once Group 0 lands, kick off Groups 1, 2, 3 in parallel (rules content / upgrade CLI / `--agent` rename)
+1. Run `/brainstorm-phase` to plan Phase 6 — Execution Engine
+2. Re-tag ENH-014 from `phase-5` to `phase-6` in backlog (carry-forward from Phase 5)
 3. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter
 
 ## Key Decisions Made

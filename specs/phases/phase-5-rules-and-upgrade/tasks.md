@@ -56,5 +56,5 @@
 - [x] 5c. `specs/planning/roadmap.md` Phase 5 + Phase 6 placeholder set at brainstorm; defer post-release update to `/complete-phase`
 - [x] 5d. `README.md` updated to use `--agent` (Group 3); migration hint added
 - [x] 5e. Bump `package.json` 0.5.1 → 0.6.0 (technical prep, not a spec doc)
-- [ ] 5f. Run `/sync-docs` — **deferred to user** (slash command)
-- [ ] 5g. Run `/complete-phase` — **deferred to user** (involves merge to staging+main, tag, GitHub Release, and `npm publish --access public` per project Rule 9)
+- [x] 5f. `/sync-docs` executed inline within `/complete-phase` — 0 files needed updates (specs were current from phase-boundary updates per Rule 9)
+- [/] 5g. `/complete-phase` in progress — verify+finalize done; release gate awaiting user approval

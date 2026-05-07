@@ -7,7 +7,7 @@
 | 2 | npx CLI Distribution | Complete (v0.3.0) | [phase-2-npx-cli/](phase-2-npx-cli/) |
 | 3 | Gap Fixes | Complete (v0.4.0) | [phase-3-gap-fixes/](phase-3-gap-fixes/) |
 | 4 | Enhanced Commands | Complete (v0.5.0) | [phase-4-enhanced-commands/](phase-4-enhanced-commands/) |
-| 5 | Rules & Upgrade Safety | In Progress | [phase-5-rules-and-upgrade/](phase-5-rules-and-upgrade/) |
+| 5 | Rules & Upgrade Safety | Complete (v0.6.0) | [phase-5-rules-and-upgrade/](phase-5-rules-and-upgrade/) |
 
 ## Phase Structure
 

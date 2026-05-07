@@ -11,8 +11,8 @@
 | 2 | npx CLI Distribution | **Complete (v0.3.0)** | `@avinash-singh-io/momentum` on npm; `momentum init` CLI; Claude Code only |
 | 3 | Gap Fixes | **Complete (v0.4.0)** | Full specs/ scaffold, `--coding-agent` flag + adapter.js DIP, command fixes (ENH-003–007, TD-001–002), `brainstorm-idea` + `start-project` commands |
 | 4 | Enhanced Commands | **Complete (v0.5.0)** | `momentum upgrade` CLI, `/validate` command, `/migrate` command |
-| 5 | Rules & Upgrade Safety | **Planned (v0.6.0)** | Rules 10/11, persuasion-hardening (Rules 2/6/8/10/11), `## Project Extensions` marker, marker-aware `momentum upgrade`, `--coding-agent` → `--agent` rename (breaking) |
-| 6 | Execution Engine | **Future (v0.7.0)** | Subagent execution engine, TDD enforcement rule, `/complete-phase` verification rigor, systematic-debugging skill, `/review-code` command |
+| 5 | Rules & Upgrade Safety | **Complete (v0.6.0)** | Rules 10/11, persuasion-hardening (Rules 2/6/8/10/11), `## Project Extensions` marker, marker-aware `momentum upgrade`, `--coding-agent` → `--agent` rename (breaking) |
+| 6 | Execution Engine | **Not Started (target v0.7.0)** | Subagent execution engine, TDD enforcement rule, `/complete-phase` verification rigor, systematic-debugging skill, `/review-code` command. Carry-forward: ENH-014 (cross-repo Rule 9 safeguards) |
 
 ## Phase Dependencies
 
@@ -22,7 +22,7 @@ Phase 0 (Bootstrap)
        └── Phase 2 (npx CLI Distribution)
             └── Phase 3 (Gap Fixes)
                  └── Phase 4 (Enhanced Commands)
-                      └── Phase 5 (Rules & Upgrade Safety)
+                      └── Phase 5 (Rules & Upgrade Safety) ✓
                            └── Phase 6 (Execution Engine — assumes hardened rules)
 ```
 
