@@ -18,6 +18,177 @@
         {"path": "specs/status.md", "section": "Summary"},
         {"path": "specs/phases/phase-0-bootstrap/tasks.md", "section": "Group 1"}
       ]
+    },
+    "adapter": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"},
+        {"path": "README.md", "section": "Adapter Authors"}
+      ]
+    },
+    "contract": {
+      "files": [
+        {"path": "README.md", "section": "Adapter Authors"}
+      ]
+    },
+    "overlay": {
+      "files": [
+        {"path": "README.md", "section": "Adapter Authors"},
+        {"path": "specs/phases/phase-6-overlay-and-verify/plan.md", "section": "Group 0"}
+      ]
+    },
+    "verification": {
+      "files": [
+        {"path": "specs/phases/phase-6-overlay-and-verify/plan.md", "section": "Group 1"},
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "rules": {
+      "files": [
+        {"path": "README.md", "section": "Autonomous Agent Rules"},
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "claude-md": {
+      "files": [
+        {"path": "README.md", "section": "What You Get"}
+      ]
+    },
+    "upgrade": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "marker": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Phase 5"}
+      ]
+    },
+    "project-name": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Enhancements"}
+      ]
+    },
+    "FEAT-012": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Features"}
+      ]
+    },
+    "FEAT-013": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Features"}
+      ]
+    },
+    "FEAT-014": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Features"}
+      ]
+    },
+    "ENH-014": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Enhancements"}
+      ]
+    },
+    "ENH-015": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Enhancements"}
+      ]
+    },
+    "ENH-016": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Enhancements"}
+      ]
+    },
+    "ENH-017": {
+      "files": [
+        {"path": "specs/backlog/backlog.md", "section": "Enhancements"}
+      ]
+    },
+    "/review-code": {
+      "files": [
+        {"path": "specs/phases/phase-6-overlay-and-verify/plan.md", "section": "Group 2"}
+      ]
+    },
+    "adapter-overlay": {
+      "files": [
+        {"path": "README.md", "section": "Adapter Authors"}
+      ]
+    },
+    "phase-6": {
+      "files": [
+        {"path": "specs/status.md", "section": "Active Phase"},
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "phase-7": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "phase-8": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "phase-9": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "phase-10": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "roadmap": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "scope": {
+      "files": [
+        {"path": "specs/status.md", "section": "Active Phase"}
+      ]
+    },
+    "deferrals": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "naming": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
+    },
+    "TDD": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Phase 7"}
+      ]
+    },
+    "agent-rules": {
+      "files": [
+        {"path": "README.md", "section": "What You Get"}
+      ]
+    },
+    "migration": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Phase 5"}
+      ]
+    },
+    "dogfood": {
+      "files": []
+    },
+    "commands": {
+      "files": [
+        {"path": "README.md", "section": "Commands"}
+      ]
+    },
+    "cleanup": {
+      "files": []
+    },
+    "execution": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Phase 7"}
+      ]
     }
   }
 }
