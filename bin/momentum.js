@@ -196,6 +196,16 @@ function upgrade(targetDir, codingAgent) {
 
 // ── Update check ─────────────────────────────────────────────────────────────
 
+/** Returns true if version `a` is strictly greater than version `b` (semver). */
+function isNewerVersion(a, b) {
+  const parse = (v) => v.replace(/^v/, '').split('.').map(Number);
+  const [aMaj, aMin, aPatch] = parse(a);
+  const [bMaj, bMin, bPatch] = parse(b);
+  if (aMaj !== bMaj) return aMaj > bMaj;
+  if (aMin !== bMin) return aMin > bMin;
+  return aPatch > bPatch;
+}
+
 function checkForUpdates() {
   return new Promise((resolve) => {
     const https = require('https');
@@ -206,7 +216,7 @@ function checkForUpdates() {
     try {
       const cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
       if (Date.now() - cache.checkedAt < 24 * 60 * 60 * 1000) {
-        resolve(cache.latestVersion !== pkg.version ? cache.latestVersion : null);
+        resolve(isNewerVersion(cache.latestVersion, pkg.version) ? cache.latestVersion : null);
         return;
       }
     } catch { /* no cache or unreadable — proceed to network check */ }
@@ -223,7 +233,7 @@ function checkForUpdates() {
             try {
               fs.writeFileSync(cacheFile, JSON.stringify({ latestVersion, checkedAt: Date.now() }));
             } catch { /* ignore cache write failures */ }
-            resolve(latestVersion !== pkg.version ? latestVersion : null);
+            resolve(isNewerVersion(latestVersion, pkg.version) ? latestVersion : null);
           } catch {
             resolve(null);
           }
