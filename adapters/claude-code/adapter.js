@@ -1,9 +1,33 @@
 'use strict';
 
+// Claude Code adapter for momentum.
+//
+// Two responsibilities:
+//
+//   1. Declare destinations — where overlay subdirs (commands, agent-rules,
+//      scripts) land in the target project. The CLI uses these for both core
+//      copies AND any adapter overlay files placed at:
+//        adapters/claude-code/commands/      → .claude/commands/
+//        adapters/claude-code/agent-rules/   → .agent/rules/
+//        adapters/claude-code/scripts/       → scripts/
+//
+//   2. runInstall / runUpgrade — anything that isn't a plain file copy
+//      (currently: wiring `.claude/settings.json` for hooks).
+//
+// Overlay contract (Phase 6 / FEAT-012): a given filename lives in EITHER
+// `core/<sub>/` OR `adapters/claude-code/<sub>/`, never both. The CLI errors
+// before any writes if a duplicate is detected.
+
 const fs = require('fs');
 const path = require('path');
 
 module.exports = {
+  destinations: {
+    commands: ['.claude', 'commands'],
+    'agent-rules': ['.agent', 'rules'],
+    scripts: ['scripts'],
+  },
+
   runInstall(targetDir, adapterDir, helpers) {
     const { copyFile, fileExists } = helpers;
 

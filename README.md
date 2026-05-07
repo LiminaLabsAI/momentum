@@ -274,6 +274,39 @@ Entry types: `[DECISION]` | `[SCOPE_CHANGE]` | `[DISCOVERY]` | `[FEATURE]` | `[A
 
 ---
 
+## Adapter Authors — Where Files Live
+
+momentum's content lives in two places:
+
+| Location | What goes here |
+|----------|----------------|
+| `core/<sub>/`                 | **Generic** — works for every supported agent. Default home for all commands, rules, scripts. |
+| `adapters/<agent>/<sub>/`     | **Agent-specific** — exploits a capability only that agent has (e.g., Claude Code subagents via the Task tool). |
+
+The CLI walks `core/<sub>/` first, then **overlays** any `adapters/<chosen>/<sub>/` content on top — for these subdirs:
+
+| Subdir         | Default destination in target |
+|----------------|--------------------------------|
+| `commands/`    | `.claude/commands/` (claude-code) |
+| `agent-rules/` | `.agent/rules/`               |
+| `scripts/`     | `scripts/`                    |
+
+Adapters declare these destinations in their `adapter.js`:
+
+```js
+module.exports = {
+  destinations: {
+    commands: ['.claude', 'commands'],
+    'agent-rules': ['.agent', 'rules'],
+    scripts: ['scripts'],
+  },
+  runInstall(targetDir, adapterDir, helpers) { /* settings.json wiring, etc. */ },
+  runUpgrade(targetDir, adapterDir, helpers) { /* same */ },
+};
+```
+
+**The overlay is additive-only.** A given filename may live in EITHER `core/<sub>/` OR exactly one `adapters/<name>/<sub>/`, never both. Duplicates are caught by the CLI **before any writes** and exit with a clear error. To add an agent-specific variant of a generic command, give it a different name (or move the generic one out of `core/`).
+
 ## Contributing
 
 This repo is itself a momentum project. See `specs/status.md` for the current phase and `specs/backlog/backlog.md` for open items.
