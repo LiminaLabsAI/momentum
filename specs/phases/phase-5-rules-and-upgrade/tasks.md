@@ -42,11 +42,12 @@
 
 ## Group 4 — Wiring & Dogfooding (Sequential)
 
-- [ ] 4a. Migrate momentum's own `CLAUDE.md` to marker format
-- [ ] 4b. Smoke test: `momentum init` against scratch dir — all 11 rules + marker present
-- [ ] 4c. Smoke test: `momentum upgrade` preserves extensions byte-for-byte
-- [ ] 4d. Smoke test: pre-marker migration creates `.bak` + appends old content
-- [ ] 4e. Smoke test: `--coding-agent` flag exits 1 with rename message
+- [x] 4a. Migrate momentum's own `CLAUDE.md` to marker format
+- [x] 4b. Smoke test: `momentum init` against scratch dir — 11 rules + marker present
+- [x] 4c. Smoke test: `momentum upgrade` preserves extensions byte-for-byte
+- [x] 4d. Smoke test: pre-marker migration creates `.bak` + appends old content
+- [x] 4e. Smoke test: `--coding-agent` flag exits 1 with rename message
+- [x] 4f. Found + fixed mid-execution: `partitionByMarker` was lossy (stripped trailing whitespace) — rewrote as lossless slice; added missing marker section to `core/agent-rules/project.md`; removed double-marker concatenation in `upgradeMarkedFile`
 
 ## Group 5 — Release Verification (Sequential)
 

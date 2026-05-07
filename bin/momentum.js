@@ -67,14 +67,15 @@ const MARKER = '## Project Extensions';
 
 /**
  * Split a file's content at the `## Project Extensions` heading.
+ * Lossless: `managed + extensions === content` when marker is present.
  * Returns `{managed, extensions}` where `extensions` is null if no marker.
  */
 function partitionByMarker(content) {
   const idx = content.indexOf('\n' + MARKER);
   if (idx === -1) return { managed: content, extensions: null };
   return {
-    managed: content.slice(0, idx).replace(/\s+$/, '') + '\n',
-    extensions: content.slice(idx + 1),
+    managed: content.slice(0, idx),
+    extensions: content.slice(idx), // starts with '\n## Project Extensions'
   };
 }
 
@@ -101,15 +102,14 @@ function upgradeMarkedFile(srcPath, destPath, label, root) {
   const destParts = partitionByMarker(destContent);
 
   if (destParts.extensions === null) {
-    // Pre-marker file — back up, write fresh, append old content under marker.
+    // Pre-marker file — back up, write fresh template, append old content
+    // under the marker so nothing is lost. The user can manually de-dupe.
     fs.copyFileSync(destPath, destPath + '.bak');
+    const today = new Date().toISOString().slice(0, 10);
     const migrated =
       srcContent.replace(/\s+$/, '') +
-      '\n\n<!-- migrated from pre-marker version on ' +
-      new Date().toISOString().slice(0, 10) +
-      ' — original at ' +
-      path.basename(destPath) +
-      '.bak -->\n' +
+      `\n\n<!-- migrated from pre-marker version on ${today}` +
+      ` — original at ${path.basename(destPath)}.bak -->\n` +
       destContent.replace(/\s+$/, '') +
       '\n';
     fs.writeFileSync(destPath, migrated);
@@ -118,7 +118,7 @@ function upgradeMarkedFile(srcPath, destPath, label, root) {
   }
 
   const srcParts = partitionByMarker(srcContent);
-  const newContent = srcParts.managed + MARKER + destParts.extensions;
+  const newContent = srcParts.managed + destParts.extensions;
 
   if (newContent === destContent) {
     return 'unchanged';

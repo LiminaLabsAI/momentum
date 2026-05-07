@@ -136,3 +136,10 @@ Priorities (with SLA):
 Branches: `phase-N-name` | `feat/desc` | `fix/desc` | `refactor/desc` | `infra/desc`
 
 Commits: `feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:` (CI/build/deploy/tooling)
+
+---
+
+## Project Extensions
+
+> Everything below this heading is preserved across `momentum upgrade`.
+> Add project-specific agent rules here. Anything above is managed by momentum.
