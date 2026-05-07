@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-05-08
-> **Current Phase**: Phase 6 — Execution Engine (`not started`)
+> **Current Phase**: Phase 6 — Adapter Overlay & Verification (`in progress`)
 > **Latest Release**: v0.6.0 — Rules & Upgrade Safety
 > **Health**: On Track
 
@@ -26,13 +26,16 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 6 | Execution Engine | Not Started | 0% |
+| 6 | Adapter Overlay & Verification | In Progress | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 6 | Execution Engine | Not Started | Subagent execution, TDD enforcement rule (12), `/complete-phase` verification rigor, systematic-debugging skill, `/review-code`. Carry-forward: ENH-014 (cross-repo Rule 9), tests/ directory, persuasion-hardening for Rules 1/3/4/5/7/9 if evidence emerges |
+| 7 | Execution Excellence | Not Started (target v0.8.0) | Subagent execution engine (Claude Code overlay); systematic-debugging skill (3-strikes); TDD rule (Rule 13, opt-in); SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9 |
+| 8 | Reach | Not Started (target v0.9.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 9 | Intelligence | Not Started (target v0.10.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 10 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
 
 ## Blockers
 
@@ -48,9 +51,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 6 — Execution Engine
-2. Re-tag ENH-014 from `phase-5` to `phase-6` in backlog (carry-forward from Phase 5)
-3. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter
+1. Phase 6 brainstormed and started on branch `phase-6-overlay-and-verify`. Begin Group 0 — Adapter Contract v2 (CLI overlay walk + conflict detection)
+2. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter (lands in Phase 8)
 
 ## Key Decisions Made
 

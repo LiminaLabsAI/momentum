@@ -29,7 +29,7 @@
       "topics": ["rules", "persuasion-hardening", "claude-md", "project-extensions", "marker", "upgrade", "agent-flag", "breaking-change", "rule-10", "rule-11", "evaluator", "history-log", "naming-conventions"]
     },
     "phase-6-overlay-and-verify": {
-      "status": "not-started",
+      "status": "in-progress",
       "topics": ["adapter", "overlay", "contract", "conflict-detection", "verification", "rule-12", "verify-before-claim", "complete-phase", "evidence", "review-code", "subagent", "claude-code", "cross-repo", "rule-9", "tests"]
     }
   }
