@@ -19,10 +19,12 @@ With a target directory:
 npx @avinash-singh-io/momentum init ./my-project
 ```
 
-With a specific coding agent:
+With a specific agent:
 ```bash
-npx @avinash-singh-io/momentum init ./my-project --coding-agent claude-code
+npx @avinash-singh-io/momentum init ./my-project --agent claude-code
 ```
+
+> Migrating from v0.5.x or earlier? The `--coding-agent` flag was renamed to `--agent` in v0.6.0. The old flag now exits with a rename hint.
 
 **Alternative (bash installer):**
 ```bash

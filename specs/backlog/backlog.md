@@ -57,11 +57,11 @@
 | ENH-005 | `start-phase.md` missing explicit history.md creation step | P2 | resolved | phase-3 | Fixed in Phase 3 — note added to step 3 |
 | ENH-006 | `brainstorm-project.md` missing Group Execution Pattern documentation | P2 | resolved | phase-3 | Fixed in Phase 3 — command renamed to `start-project.md`; Group Execution Pattern section added |
 | ENH-007 | `/track` command should auto-decide one-liner vs detail file | P2 | resolved | phase-3 | Fixed in Phase 3 — explicit decision criteria table added to `track.md` |
-| ENH-008 | Reconsider `--coding-agent` flag name — term may not be the right abstraction | P2 | deferred | unscheduled | [→](details/ENH-008.md) — shipped as `--coding-agent` in Phase 3; naming question still open |
-| ENH-009 | Distribution strategy: npx vs native agent-ecosystem plugins vs both | P2 | open | unscheduled | [→](details/ENH-009.md) |
-| ENH-010 | CLAUDE.md upgrade-safe architecture — `## Project Extensions` marker section | P1 | open | phase-5 | [→](details/ENH-010.md) |
-| ENH-011 | Upstream Rule 10 (additive vs decisional spec changes) + Rule 11 (evaluator discipline) | P1 | open | phase-5 | [→](details/ENH-011.md) |
-| ENH-012 | Enhanced Rule 8 — meaningful change list, `[EVALUATOR]` + `[NOTE]` types, impact-map reminder | P2 | open | phase-5 | [→](details/ENH-012.md) |
-| ENH-013 | Extended naming conventions — `infra:` commit type, SLA column, delete-branch row | P2 | open | phase-5 | — |
-| ENH-014 | Multi-repo support in Rule 9 — cross-repo doc sync safeguards | P2 | open | phase-5 | [→](details/ENH-014.md) |
-| FEAT-011 | `momentum upgrade` subcommand — update commands + managed CLAUDE.md with `.bak` backups | P1 | open | phase-5 | [→](details/FEAT-011.md) |
+| ENH-008 | Reconsider `--coding-agent` flag name — term may not be the right abstraction | P2 | resolved | phase-5 | Renamed to `--agent` in Phase 5 (v0.6.0). Hard rename, no alias — old flag exits 1 with rename hint. |
+| ENH-009 | Distribution strategy: npx vs native agent-ecosystem plugins vs both | P2 | open | unscheduled | [→](details/ENH-009.md) — still blocked on having ≥1 more adapter |
+| ENH-010 | CLAUDE.md upgrade-safe architecture — `## Project Extensions` marker section | P1 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — heading-based marker (chose over HTML comments); marker-aware `momentum upgrade` preserves project extensions |
+| ENH-011 | Upstream Rule 10 (additive vs decisional spec changes) + Rule 11 (evaluator discipline) | P1 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — Rule 10 marked `(monorepo only)`; Rule 11 mandates evaluator commit before loop |
+| ENH-012 | Enhanced Rule 8 — meaningful change list, `[EVALUATOR]` + `[NOTE]` types, impact-map reminder | P2 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — triggers list, `[EVALUATOR]` type, impact-map.json check, hook script reference |
+| ENH-013 | Extended naming conventions — `infra:` commit type, SLA column, delete-branch row | P2 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — `infra:` for CI/build/deploy, SLA per priority level, delete-after-merge convention |
+| ENH-014 | Multi-repo support in Rule 9 — cross-repo doc sync safeguards | P2 | open | phase-6 | [→](details/ENH-014.md) — tagged phase-5 but missed during brainstorm; carried forward |
+| FEAT-011 | `momentum upgrade` subcommand — update commands + managed CLAUDE.md with `.bak` backups | P1 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — marker-aware `upgradeMarkedFile`; four states (added/updated/unchanged/migrated); pre-marker projects auto-migrate with `.bak` |

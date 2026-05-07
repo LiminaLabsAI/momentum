@@ -61,16 +61,87 @@ function fileExists(filePath) {
   }
 }
 
+// ── Marker-based upgrade (ENH-010 / FEAT-011) ────────────────────────────────
+
+const MARKER = '## Project Extensions';
+
+/**
+ * Split a file's content at the `## Project Extensions` heading.
+ * Lossless: `managed + extensions === content` when marker is present.
+ * Returns `{managed, extensions}` where `extensions` is null if no marker.
+ */
+function partitionByMarker(content) {
+  const idx = content.indexOf('\n' + MARKER);
+  if (idx === -1) return { managed: content, extensions: null };
+  return {
+    managed: content.slice(0, idx),
+    extensions: content.slice(idx), // starts with '\n## Project Extensions'
+  };
+}
+
+/**
+ * Upgrade a marker-aware file. Three paths:
+ *   - target missing → write source as-is
+ *   - target has marker → replace managed section, preserve extensions
+ *   - target lacks marker → backup as .bak, write source, append old content under marker
+ *
+ * Returns one of: 'added', 'updated', 'unchanged', 'migrated'.
+ */
+function upgradeMarkedFile(srcPath, destPath, label, root) {
+  const rel = path.relative(root || process.cwd(), destPath);
+
+  if (!fileExists(destPath)) {
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.copyFileSync(srcPath, destPath);
+    console.log(`  + added:    ${rel}`);
+    return 'added';
+  }
+
+  const srcContent = fs.readFileSync(srcPath, 'utf8');
+  const destContent = fs.readFileSync(destPath, 'utf8');
+  const destParts = partitionByMarker(destContent);
+
+  if (destParts.extensions === null) {
+    // Pre-marker file — back up, write fresh template, append old content
+    // under the marker so nothing is lost. The user can manually de-dupe.
+    fs.copyFileSync(destPath, destPath + '.bak');
+    const today = new Date().toISOString().slice(0, 10);
+    const migrated =
+      srcContent.replace(/\s+$/, '') +
+      `\n\n<!-- migrated from pre-marker version on ${today}` +
+      ` — original at ${path.basename(destPath)}.bak -->\n` +
+      destContent.replace(/\s+$/, '') +
+      '\n';
+    fs.writeFileSync(destPath, migrated);
+    console.log(`  ↻ migrated: ${rel} (no marker — original saved as .bak)`);
+    return 'migrated';
+  }
+
+  const srcParts = partitionByMarker(srcContent);
+  const newContent = srcParts.managed + destParts.extensions;
+
+  if (newContent === destContent) {
+    return 'unchanged';
+  }
+
+  fs.copyFileSync(destPath, destPath + '.bak');
+  fs.writeFileSync(destPath, newContent);
+  console.log(
+    `  ↑ upgraded: ${rel} (managed section replaced; extensions preserved; original saved as .bak)`
+  );
+  return 'updated';
+}
+
 // ── Init command ──────────────────────────────────────────────────────────────
 
-function init(targetDir, codingAgent) {
+function init(targetDir, agent) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
   // Validate adapter
-  const adapterDir = path.join(src, 'adapters', codingAgent);
+  const adapterDir = path.join(src, 'adapters', agent);
   if (!fs.existsSync(adapterDir)) {
-    console.error(`Error: Unknown coding agent '${codingAgent}'.`);
+    console.error(`Error: Unknown agent '${agent}'.`);
     console.error(`Available: claude-code`);
     process.exit(1);
   }
@@ -79,7 +150,7 @@ function init(targetDir, codingAgent) {
   const adapterJs = path.join(adapterDir, 'adapter.js');
   const adapter = require(adapterJs);
 
-  console.log(`Installing momentum into: ${target} [coding-agent: ${codingAgent}]`);
+  console.log(`Installing momentum into: ${target} [agent: ${agent}]`);
   console.log('');
 
   // .claude/commands/
@@ -135,14 +206,14 @@ function init(targetDir, codingAgent) {
 
 // ── Upgrade command ───────────────────────────────────────────────────────────
 
-function upgrade(targetDir, codingAgent) {
+function upgrade(targetDir, agent) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
   // Validate adapter
-  const adapterDir = path.join(src, 'adapters', codingAgent);
+  const adapterDir = path.join(src, 'adapters', agent);
   if (!fs.existsSync(adapterDir)) {
-    console.error(`Error: Unknown coding agent '${codingAgent}'.`);
+    console.error(`Error: Unknown agent '${agent}'.`);
     console.error(`Available: claude-code`);
     process.exit(1);
   }
@@ -150,7 +221,7 @@ function upgrade(targetDir, codingAgent) {
   // Load adapter
   const adapter = require(path.join(adapterDir, 'adapter.js'));
 
-  console.log(`Upgrading momentum in: ${target} [coding-agent: ${codingAgent}]`);
+  console.log(`Upgrading momentum in: ${target} [agent: ${agent}]`);
   console.log('');
 
   const upgradeOpts = { upgradeMode: true, root: target };
@@ -178,12 +249,22 @@ function upgrade(targetDir, codingAgent) {
     }
   }
 
-  // Upgrade agent rules
+  // Upgrade agent rules — marker-aware (preserves Project Extensions block)
   console.log('→ Upgrading agent rules...');
-  copyDir(
-    path.join(src, 'core', 'agent-rules'),
-    path.join(target, '.agent', 'rules'),
-    upgradeOpts
+  const agentRulesResult = upgradeMarkedFile(
+    path.join(src, 'core', 'agent-rules', 'project.md'),
+    path.join(target, '.agent', 'rules', 'project.md'),
+    'agent-rules',
+    target
+  );
+
+  // Upgrade CLAUDE.md — marker-aware (preserves Project Extensions block)
+  console.log('→ Upgrading CLAUDE.md...');
+  const claudeMdResult = upgradeMarkedFile(
+    path.join(src, 'core', 'specs-templates', 'CLAUDE.md'),
+    path.join(target, 'CLAUDE.md'),
+    'CLAUDE.md',
+    target
   );
 
   // Delegate adapter-specific upgrade
@@ -191,6 +272,8 @@ function upgrade(targetDir, codingAgent) {
 
   console.log('');
   console.log('✓ Upgrade complete.');
+  console.log(`  CLAUDE.md:           ${claudeMdResult}`);
+  console.log(`  agent-rules:         ${agentRulesResult}`);
   console.log('');
 }
 
@@ -258,7 +341,7 @@ Usage:
                                       (defaults to current directory)
 
 Options:
-  --coding-agent <name>               Coding agent to install for (default: claude-code)
+  --agent <name>                      Agent to install for (default: claude-code)
                                       Available: claude-code
   -h, --help                          Show this help message
   -v, --version                       Show version number
@@ -266,7 +349,7 @@ Options:
 Examples:
   npx @avinash-singh-io/momentum init
   npx @avinash-singh-io/momentum init ./my-project
-  npx @avinash-singh-io/momentum init ./my-project --coding-agent claude-code
+  npx @avinash-singh-io/momentum init ./my-project --agent claude-code
   npx @avinash-singh-io/momentum upgrade
   npx @avinash-singh-io/momentum upgrade ./my-project
 `.trim());
@@ -277,11 +360,18 @@ Examples:
 async function main() {
   const args = process.argv.slice(2);
 
-  // Extract --coding-agent flag before command dispatch
-  let codingAgent = 'claude-code';
-  const agentFlagIdx = args.indexOf('--coding-agent');
+  // Reject the deprecated --coding-agent flag with a clear rename message.
+  if (args.includes('--coding-agent')) {
+    console.error('Error: --coding-agent has been renamed to --agent in v0.6.0.');
+    console.error('       Re-run with: --agent <name> (e.g., --agent claude-code)');
+    process.exit(1);
+  }
+
+  // Extract --agent flag before command dispatch
+  let agent = 'claude-code';
+  const agentFlagIdx = args.indexOf('--agent');
   if (agentFlagIdx !== -1) {
-    codingAgent = args[agentFlagIdx + 1];
+    agent = args[agentFlagIdx + 1];
     args.splice(agentFlagIdx, 2);
   }
 
@@ -298,7 +388,7 @@ async function main() {
   } else if (args[0] === 'init') {
     const targetDir = args[1] || process.cwd();
     try {
-      init(targetDir, codingAgent);
+      init(targetDir, agent);
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
@@ -306,7 +396,7 @@ async function main() {
   } else if (args[0] === 'upgrade') {
     const targetDir = args[1] || process.cwd();
     try {
-      upgrade(targetDir, codingAgent);
+      upgrade(targetDir, agent);
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

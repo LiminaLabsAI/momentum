@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 # momentum installer
-# Usage: ./install.sh [target-directory] [--coding-agent <name>]
+# Usage: ./install.sh [target-directory] [--agent <name>]
 # Default target: current directory
-# Default coding agent: claude-code
+# Default agent: claude-code
 
 set -euo pipefail
 
 TARGET="."
-CODING_AGENT="claude-code"
+AGENT="claude-code"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --coding-agent)
-      CODING_AGENT="$2"
+    --agent)
+      AGENT="$2"
       shift 2
+      ;;
+    --coding-agent)
+      echo "Error: --coding-agent has been renamed to --agent in v0.6.0." >&2
+      echo "       Re-run with: --agent <name>" >&2
+      exit 1
       ;;
     -*)
       echo "Unknown flag: $1" >&2
@@ -27,17 +32,17 @@ while [[ $# -gt 0 ]]; do
 done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ADAPTER="$SCRIPT_DIR/adapters/$CODING_AGENT"
+ADAPTER="$SCRIPT_DIR/adapters/$AGENT"
 
 if [ ! -f "$ADAPTER/adapter.sh" ]; then
-  echo "Error: Unknown coding agent '$CODING_AGENT'." >&2
+  echo "Error: Unknown agent '$AGENT'." >&2
   echo "No adapter found at: $ADAPTER/adapter.sh" >&2
   exit 1
 fi
 
 # Fix BUG-001: create target before realpath
 mkdir -p "$TARGET"
-echo "Installing momentum into: $(realpath "$TARGET") [coding-agent: $CODING_AGENT]"
+echo "Installing momentum into: $(realpath "$TARGET") [agent: $AGENT]"
 echo ""
 
 # Source adapter and run
