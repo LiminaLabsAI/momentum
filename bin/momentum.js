@@ -61,6 +61,77 @@ function fileExists(filePath) {
   }
 }
 
+// ── Marker-based upgrade (ENH-010 / FEAT-011) ────────────────────────────────
+
+const MARKER = '## Project Extensions';
+
+/**
+ * Split a file's content at the `## Project Extensions` heading.
+ * Returns `{managed, extensions}` where `extensions` is null if no marker.
+ */
+function partitionByMarker(content) {
+  const idx = content.indexOf('\n' + MARKER);
+  if (idx === -1) return { managed: content, extensions: null };
+  return {
+    managed: content.slice(0, idx).replace(/\s+$/, '') + '\n',
+    extensions: content.slice(idx + 1),
+  };
+}
+
+/**
+ * Upgrade a marker-aware file. Three paths:
+ *   - target missing → write source as-is
+ *   - target has marker → replace managed section, preserve extensions
+ *   - target lacks marker → backup as .bak, write source, append old content under marker
+ *
+ * Returns one of: 'added', 'updated', 'unchanged', 'migrated'.
+ */
+function upgradeMarkedFile(srcPath, destPath, label, root) {
+  const rel = path.relative(root || process.cwd(), destPath);
+
+  if (!fileExists(destPath)) {
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.copyFileSync(srcPath, destPath);
+    console.log(`  + added:    ${rel}`);
+    return 'added';
+  }
+
+  const srcContent = fs.readFileSync(srcPath, 'utf8');
+  const destContent = fs.readFileSync(destPath, 'utf8');
+  const destParts = partitionByMarker(destContent);
+
+  if (destParts.extensions === null) {
+    // Pre-marker file — back up, write fresh, append old content under marker.
+    fs.copyFileSync(destPath, destPath + '.bak');
+    const migrated =
+      srcContent.replace(/\s+$/, '') +
+      '\n\n<!-- migrated from pre-marker version on ' +
+      new Date().toISOString().slice(0, 10) +
+      ' — original at ' +
+      path.basename(destPath) +
+      '.bak -->\n' +
+      destContent.replace(/\s+$/, '') +
+      '\n';
+    fs.writeFileSync(destPath, migrated);
+    console.log(`  ↻ migrated: ${rel} (no marker — original saved as .bak)`);
+    return 'migrated';
+  }
+
+  const srcParts = partitionByMarker(srcContent);
+  const newContent = srcParts.managed + MARKER + destParts.extensions;
+
+  if (newContent === destContent) {
+    return 'unchanged';
+  }
+
+  fs.copyFileSync(destPath, destPath + '.bak');
+  fs.writeFileSync(destPath, newContent);
+  console.log(
+    `  ↑ upgraded: ${rel} (managed section replaced; extensions preserved; original saved as .bak)`
+  );
+  return 'updated';
+}
+
 // ── Init command ──────────────────────────────────────────────────────────────
 
 function init(targetDir, codingAgent) {
@@ -178,12 +249,22 @@ function upgrade(targetDir, codingAgent) {
     }
   }
 
-  // Upgrade agent rules
+  // Upgrade agent rules — marker-aware (preserves Project Extensions block)
   console.log('→ Upgrading agent rules...');
-  copyDir(
-    path.join(src, 'core', 'agent-rules'),
-    path.join(target, '.agent', 'rules'),
-    upgradeOpts
+  const agentRulesResult = upgradeMarkedFile(
+    path.join(src, 'core', 'agent-rules', 'project.md'),
+    path.join(target, '.agent', 'rules', 'project.md'),
+    'agent-rules',
+    target
+  );
+
+  // Upgrade CLAUDE.md — marker-aware (preserves Project Extensions block)
+  console.log('→ Upgrading CLAUDE.md...');
+  const claudeMdResult = upgradeMarkedFile(
+    path.join(src, 'core', 'specs-templates', 'CLAUDE.md'),
+    path.join(target, 'CLAUDE.md'),
+    'CLAUDE.md',
+    target
   );
 
   // Delegate adapter-specific upgrade
@@ -191,6 +272,8 @@ function upgrade(targetDir, codingAgent) {
 
   console.log('');
   console.log('✓ Upgrade complete.');
+  console.log(`  CLAUDE.md:           ${claudeMdResult}`);
+  console.log(`  agent-rules:         ${agentRulesResult}`);
   console.log('');
 }
 

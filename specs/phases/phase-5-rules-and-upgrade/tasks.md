@@ -25,11 +25,11 @@
 
 ## Group 2 — Upgrade-Safe CLI (Parallel with 1, 3)
 
-- [ ] 2a. Add `partitionByMarker(content)` helper
-- [ ] 2b. Marker-aware CLAUDE.md upgrade — replace managed, preserve extensions
-- [ ] 2c. Pre-marker fallback — backup + write fresh + append old content under marker
-- [ ] 2d. Apply same logic to `.agent/rules/project.md`
-- [ ] 2e. Update upgrade summary output with per-file states
+- [x] 2a. Add `partitionByMarker(content)` helper
+- [x] 2b. Marker-aware CLAUDE.md upgrade — replace managed, preserve extensions
+- [x] 2c. Pre-marker fallback — backup + write fresh + append old content under marker
+- [x] 2d. Apply same logic to `.agent/rules/project.md`
+- [x] 2e. Update upgrade summary output with per-file states
 
 ## Group 3 — `--agent` Flag Rename (Parallel with 1, 2)
 
