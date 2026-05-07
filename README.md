@@ -47,7 +47,7 @@ After `momentum init`, your project has everything it needs to run a structured 
 
 ```
 your-project/
-├── CLAUDE.md                        ← Agent rules (9 autonomous behaviors)
+├── CLAUDE.md                        ← Agent rules (12 autonomous behaviors)
 ├── README.md                        ← Project readme template
 ├── scripts/
 │   └── check-history-reminder.sh   ← Hook: reminds agent to log history
@@ -219,7 +219,7 @@ The agent implements each group in order, committing after each one.
 
 ## Autonomous Agent Rules
 
-Momentum installs `CLAUDE.md` with nine always-on rules. The agent follows these without being asked:
+Momentum installs `CLAUDE.md` with twelve always-on rules. The agent follows these without being asked:
 
 | Rule | Behavior |
 |------|----------|
@@ -231,7 +231,10 @@ Momentum installs `CLAUDE.md` with nine always-on rules. The agent follows these
 | **Git lifecycle** | Auto-creates branches, commits atomically, asks before merging to main |
 | **Plan before implementing** | Uses `/brainstorm-phase` for non-trivial work |
 | **Record phase history** | Appends `[DECISION]` / `[DISCOVERY]` / etc. entries to `history.md` |
-| **Doc sync at completion only** | Never modifies specs mid-phase; runs `/sync-docs` at phase end |
+| **Doc sync at completion only** | Never modifies specs mid-phase; runs `/sync-docs` at phase end. Multi-repo: never touches docs in other repos. |
+| **Architecture stability** *(monorepo)* | Specs in `specs/architecture/` are read-only mid-phase; additive vs decisional changes route differently |
+| **Evaluator discipline** | Lock evaluators before building learning loops; never mutate a locked eval |
+| **Verify before claim** | No `[x]` without fresh evidence — running the test, not "looks correct" |
 
 ---
 
@@ -273,6 +276,39 @@ Entry types: `[DECISION]` | `[SCOPE_CHANGE]` | `[DISCOVERY]` | `[FEATURE]` | `[A
 | `P3` | Low — nice to have |
 
 ---
+
+## Adapter Authors — Where Files Live
+
+momentum's content lives in two places:
+
+| Location | What goes here |
+|----------|----------------|
+| `core/<sub>/`                 | **Generic** — works for every supported agent. Default home for all commands, rules, scripts. |
+| `adapters/<agent>/<sub>/`     | **Agent-specific** — exploits a capability only that agent has (e.g., Claude Code subagents via the Task tool). |
+
+The CLI walks `core/<sub>/` first, then **overlays** any `adapters/<chosen>/<sub>/` content on top — for these subdirs:
+
+| Subdir         | Default destination in target |
+|----------------|--------------------------------|
+| `commands/`    | `.claude/commands/` (claude-code) |
+| `agent-rules/` | `.agent/rules/`               |
+| `scripts/`     | `scripts/`                    |
+
+Adapters declare these destinations in their `adapter.js`:
+
+```js
+module.exports = {
+  destinations: {
+    commands: ['.claude', 'commands'],
+    'agent-rules': ['.agent', 'rules'],
+    scripts: ['scripts'],
+  },
+  runInstall(targetDir, adapterDir, helpers) { /* settings.json wiring, etc. */ },
+  runUpgrade(targetDir, adapterDir, helpers) { /* same */ },
+};
+```
+
+**The overlay is additive-only.** A given filename may live in EITHER `core/<sub>/` OR exactly one `adapters/<name>/<sub>/`, never both. Duplicates are caught by the CLI **before any writes** and exit with a clear error. To add an agent-specific variant of a generic command, give it a different name (or move the generic one out of `core/`).
 
 ## Contributing
 
