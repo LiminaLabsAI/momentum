@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-04-21
-> **Current Phase**: Phase 5 — TBD (`not started`)
+> **Last Updated**: 2026-05-08
+> **Current Phase**: Phase 5 — Rules & Upgrade Safety (`planned`)
 > **Latest Release**: v0.5.1 — Version Update Check
 > **Health**: On Track
 
@@ -25,13 +25,14 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 5 | TBD | Not Started | 0% |
+| 5 | Rules & Upgrade Safety | Planned | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 5 | TBD | Not Started | Resolve ENH-008, ENH-009; additional adapters |
+| 5 | Rules & Upgrade Safety | Planned | ENH-010, ENH-011, ENH-012, ENH-013, ENH-008, FEAT-011, persuasion-hardening of Rules 2/6/8/10/11 |
+| 6 | Execution Engine (placeholder) | Future | Subagent execution, TDD enforcement, `/complete-phase` verification rigor, systematic-debugging skill, `/review-code` |
 
 ## Blockers
 
@@ -47,8 +48,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Resolve ENH-008 (flag naming) and ENH-009 (distribution strategy) before planning Phase 5
-2. Run `/brainstorm-phase` to plan Phase 5
+1. Run `/start-phase` to begin Phase 5 — Rules & Upgrade Safety
+2. Group 0 (template foundation) blocks Groups 1-3; tackle it first
+3. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter
 
 ## Key Decisions Made
 

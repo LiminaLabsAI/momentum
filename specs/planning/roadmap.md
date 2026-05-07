@@ -11,6 +11,8 @@
 | 2 | npx CLI Distribution | **Complete (v0.3.0)** | `@avinash-singh-io/momentum` on npm; `momentum init` CLI; Claude Code only |
 | 3 | Gap Fixes | **Complete (v0.4.0)** | Full specs/ scaffold, `--coding-agent` flag + adapter.js DIP, command fixes (ENH-003–007, TD-001–002), `brainstorm-idea` + `start-project` commands |
 | 4 | Enhanced Commands | **Complete (v0.5.0)** | `momentum upgrade` CLI, `/validate` command, `/migrate` command |
+| 5 | Rules & Upgrade Safety | **Planned (v0.6.0)** | Rules 10/11, persuasion-hardening (Rules 2/6/8/10/11), `## Project Extensions` marker, marker-aware `momentum upgrade`, `--coding-agent` → `--agent` rename (breaking) |
+| 6 | Execution Engine | **Future (v0.7.0)** | Subagent execution engine, TDD enforcement rule, `/complete-phase` verification rigor, systematic-debugging skill, `/review-code` command |
 
 ## Phase Dependencies
 
@@ -20,16 +22,16 @@ Phase 0 (Bootstrap)
        └── Phase 2 (npx CLI Distribution)
             └── Phase 3 (Gap Fixes)
                  └── Phase 4 (Enhanced Commands)
+                      └── Phase 5 (Rules & Upgrade Safety)
+                           └── Phase 6 (Execution Engine — assumes hardened rules)
 ```
 
-## Open Questions (Pre-Phase 5)
+## Open Questions
 
-Deferred from Phase 4 — resolve before or during Phase 5 planning:
-
-| ID | Question | Detail |
+| ID | Question | Status |
 |----|----------|--------|
-| ENH-008 | What should `--coding-agent` be called? Term may not be right. Candidates: `--agent`, `--for`, `--tool`. | [→](../backlog/details/ENH-008.md) |
-| ENH-009 | Distribution: stay with npx, add native agent plugins, or both? Claude Code extension, Cursor Rule Pack, etc. | [→](../backlog/details/ENH-009.md) |
+| ENH-008 | What should `--coding-agent` be called? | **Resolved (Phase 5)** — renaming to `--agent` (hard rename, breaking) |
+| ENH-009 | Distribution: stay with npx, add native agent plugins, or both? | Deferred — blocked on ≥1 additional adapter shipping first |
 
 ---
 
@@ -42,4 +44,4 @@ Deferred from Phase 4 — resolve before or during Phase 5 planning:
 | v0.3.0 — npx CLI | 2 | `@avinash-singh-io/momentum` on npm; `momentum init` CLI (Claude Code only) |
 | v0.4.0 — Gap Fixes | 3 | `momentum init` fully scaffolds a project; command content complete |
 | v0.5.0 — Enhanced Commands | 4 | `momentum upgrade` CLI; `/validate` + `/migrate` commands |
-| v0.5.0 — Enhanced Commands | 4 | `/migrate`, `/validate` shipped |
+| v0.6.0 — Rules & Upgrade Safety | 5 | Rules 10/11, persuasion-hardening, marker-based upgrade, `--agent` rename (breaking) |

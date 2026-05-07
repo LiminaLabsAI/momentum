@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-04-21",
+  "updated": "2026-05-08",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -23,6 +23,10 @@
     "phase-4-enhanced-commands": {
       "status": "complete",
       "topics": ["upgrade", "cli", "validate", "migrate", "commands", "health-check", "conflict-resolution"]
+    },
+    "phase-5-rules-and-upgrade": {
+      "status": "planned",
+      "topics": ["rules", "persuasion-hardening", "claude-md", "project-extensions", "marker", "upgrade", "agent-flag", "breaking-change", "rule-10", "rule-11", "evaluator", "history-log", "naming-conventions"]
     }
   }
 }
