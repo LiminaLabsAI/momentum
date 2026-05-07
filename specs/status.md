@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-05-08
-> **Current Phase**: Phase 6 — Execution Engine (`not started`)
-> **Latest Release**: v0.6.0 — Rules & Upgrade Safety
+> **Current Phase**: Phase 7 — Execution Excellence (`not started`)
+> **Latest Release**: v0.7.0 — Adapter Overlay & Verification
 > **Health**: On Track
 
 ## Summary
@@ -21,18 +21,22 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 3 | Gap Fixes | Complete | v0.4.0 (2026-04-21) |
 | 4 | Enhanced Commands | Complete | v0.5.0 (2026-04-21) |
 | 5 | Rules & Upgrade Safety | Complete | v0.6.0 (2026-05-08) |
+| 6 | Adapter Overlay & Verification | Complete | v0.7.0 (2026-05-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 6 | Execution Engine | Not Started | 0% |
+| 7 | Execution Excellence | Not Started | 0% |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 6 | Execution Engine | Not Started | Subagent execution, TDD enforcement rule (12), `/complete-phase` verification rigor, systematic-debugging skill, `/review-code`. Carry-forward: ENH-014 (cross-repo Rule 9), tests/ directory, persuasion-hardening for Rules 1/3/4/5/7/9 if evidence emerges |
+| 7 | Execution Excellence | Not Started (target v0.8.0) | Subagent execution engine (Claude Code overlay); systematic-debugging skill (3-strikes); TDD rule (Rule 13, opt-in); SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9 |
+| 8 | Reach | Not Started (target v0.9.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 9 | Intelligence | Not Started (target v0.10.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 10 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
 
 ## Blockers
 
@@ -48,9 +52,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 6 — Execution Engine
-2. Re-tag ENH-014 from `phase-5` to `phase-6` in backlog (carry-forward from Phase 5)
-3. ENH-009 (distribution strategy) remains deferred — still blocked on having ≥1 more adapter
+1. Run `/brainstorm-phase` to plan Phase 7 — Execution Excellence
+2. ENH-017 (project-name preserved across upgrade) — Phase 7 candidate; surfaced in Phase 6 dogfood
+3. ENH-009 (distribution strategy) — still blocked on having ≥1 more adapter; lands in Phase 8
 
 ## Key Decisions Made
 
@@ -68,3 +72,5 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.
 - **2026-04-21**: Phase 2 complete — v0.3.0 released. `@avinash-singh-io/momentum` published to npm. Zero-dependency Node.js CLI ships `momentum init` command.
 - **2026-04-21**: Phase 3 complete — v0.4.0 released. Full specs/ scaffold on init. `--coding-agent` flag. `adapter.js` DIP. Command fixes (ENH-003–007, TD-001–002). `brainstorm-idea` + `start-project` commands. README rewritten.
+- **2026-05-08**: Phase 5 complete — v0.6.0 released. Rules 10/11, persuasion-hardening (Rules 2/6/8/10/11), `## Project Extensions` marker, marker-aware `momentum upgrade`, `--coding-agent` → `--agent` rename (breaking).
+- **2026-05-08**: Phase 6 complete — v0.7.0 released. Adapter Contract v2 (per-agent commands/rules/scripts overlays, conflict = error); Rule 12 verify-before-claim; `/complete-phase` evidence rigor; `/review-code` (Claude Code, subagent-driven); ENH-014 cross-repo Rule 9 safeguards; `tests/` for momentum CLI (24 tests via node:test).

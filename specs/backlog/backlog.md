@@ -1,6 +1,6 @@
 # Backlog
 
-> **Last Updated**: 2026-04-22
+> **Last Updated**: 2026-05-08
 
 ---
 
@@ -63,5 +63,11 @@
 | ENH-011 | Upstream Rule 10 (additive vs decisional spec changes) + Rule 11 (evaluator discipline) | P1 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — Rule 10 marked `(monorepo only)`; Rule 11 mandates evaluator commit before loop |
 | ENH-012 | Enhanced Rule 8 — meaningful change list, `[EVALUATOR]` + `[NOTE]` types, impact-map reminder | P2 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — triggers list, `[EVALUATOR]` type, impact-map.json check, hook script reference |
 | ENH-013 | Extended naming conventions — `infra:` commit type, SLA column, delete-branch row | P2 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — `infra:` for CI/build/deploy, SLA per priority level, delete-after-merge convention |
-| ENH-014 | Multi-repo support in Rule 9 — cross-repo doc sync safeguards | P2 | open | phase-6 | [→](details/ENH-014.md) — tagged phase-5 but missed during brainstorm; carried forward |
+| ENH-014 | Multi-repo support in Rule 9 — cross-repo doc sync safeguards | P2 | resolved | phase-6 | Delivered in Phase 6 (v0.7.0) — Rule 9 multi-repo block; `/sync-docs` partitions cross-repo `Affects-specs:` paths and surfaces them informationally |
+| ENH-015 | Rule 12 — Verify Before Claim (universal, not TDD-specific) | P1 | resolved | phase-6 | Delivered in Phase 6 (v0.7.0) — full hardened version in CLAUDE.md template; condensed in agent-rules/project.md |
+| ENH-016 | `/complete-phase` evidence rigor — capture validation output to retrospective.md | P1 | resolved | phase-6 | Delivered in Phase 6 (v0.7.0) — Step 3 captures stdout/stderr; Step 6 appends "Verification Evidence" section; Release section gated on evidence existing |
+| ENH-017 | CLAUDE.md project-name customization survives `momentum upgrade` | P2 | open | unscheduled | Discovered in Phase 6 dogfood: title `# Project Rules: <Project Name>` lives in the managed section, so the user's customization (e.g., "momentum") is replaced on every upgrade. Need a mechanism — title-as-extension or a one-time-set placeholder substitution at install — that preserves the customization. Workaround today: re-edit title after each upgrade. |
 | FEAT-011 | `momentum upgrade` subcommand — update commands + managed CLAUDE.md with `.bak` backups | P1 | resolved | phase-5 | Delivered in Phase 5 (v0.6.0) — marker-aware `upgradeMarkedFile`; four states (added/updated/unchanged/migrated); pre-marker projects auto-migrate with `.bak` |
+| FEAT-012 | Adapter Contract v2 — overlay model for per-agent commands/rules/scripts | P1 | resolved | phase-6 | Delivered in Phase 6 (v0.7.0) — additive-only overlay; CLI walks `core/` then `adapters/<chosen>/`; conflict detection exits non-zero before any writes |
+| FEAT-013 | `/review-code` command (Claude Code) — role-based subagent reviews | P1 | resolved | phase-6 | Delivered in Phase 6 (v0.7.0) — Claude-Code-only overlay; dispatches three parallel Task subagents (security/QA/architecture) returning Critical/Important/Minor findings |
+| FEAT-014 | `tests/` directory for momentum CLI | P2 | resolved | phase-6 | Delivered in Phase 6 (v0.7.0) — 24 tests via Node `node:test`; covers install, upgrade, marker logic, overlay walk, conflict detection. `npm test` runs serially. |

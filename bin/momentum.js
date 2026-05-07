@@ -61,6 +61,89 @@ function fileExists(filePath) {
   }
 }
 
+// ── Adapter overlay (FEAT-012, Phase 6) ──────────────────────────────────────
+//
+// Adapters may ship per-agent commands/agent-rules/scripts under
+// `adapters/<name>/{commands,agent-rules,scripts}/`. These overlay onto the
+// same destinations as the corresponding `core/<sub>/` content.
+//
+// Contract: additive-only. A given filename lives in EITHER `core/` OR exactly
+// one adapter, never both. Duplicates are a hard error caught before any
+// files are written. Generic content goes in `core/`; agent-specific in
+// `adapters/<name>/`.
+
+const DEFAULT_OVERLAY_DESTS = {
+  commands: ['.claude', 'commands'],
+  'agent-rules': ['.agent', 'rules'],
+  scripts: ['scripts'],
+};
+
+function listFilesRecursive(dir) {
+  if (!fs.existsSync(dir)) return [];
+  const result = [];
+  const walk = (d, prefix) => {
+    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      const rel = prefix ? path.join(prefix, entry.name) : entry.name;
+      if (entry.isDirectory()) walk(path.join(d, entry.name), rel);
+      else result.push(rel);
+    }
+  };
+  walk(dir, '');
+  return result;
+}
+
+function detectOverlayConflicts(coreRoot, adapterRoot, subdirs) {
+  const conflicts = [];
+  for (const sub of subdirs) {
+    const adapterSubdir = path.join(adapterRoot, sub);
+    if (!fs.existsSync(adapterSubdir)) continue;
+    const coreFiles = new Set(listFilesRecursive(path.join(coreRoot, sub)));
+    for (const f of listFilesRecursive(adapterSubdir)) {
+      if (coreFiles.has(f)) conflicts.push({ subdir: sub, file: f });
+    }
+  }
+  return conflicts;
+}
+
+function failOnOverlayConflicts(coreRoot, adapterRoot, agent, dests) {
+  const conflicts = detectOverlayConflicts(
+    coreRoot,
+    adapterRoot,
+    Object.keys(dests)
+  );
+  if (conflicts.length === 0) return;
+  console.error(
+    `Error: duplicate overlay files in core/ and adapters/${agent}/.`
+  );
+  console.error('Each file may live in EITHER core/ OR exactly one adapter, never both.');
+  for (const c of conflicts) {
+    console.error(`  - ${c.subdir}/${c.file}`);
+  }
+  console.error('');
+  console.error(
+    'Resolution: keep the file in core/ if it is generic across agents, ' +
+    'or in adapters/<agent>/ if it exploits an agent-specific capability. ' +
+    'Delete the duplicate from the other location.'
+  );
+  process.exit(1);
+}
+
+function applyOverlay(adapterRoot, targetDir, dests, opts = {}) {
+  for (const [sub, destParts] of Object.entries(dests)) {
+    const overlaySrc = path.join(adapterRoot, sub);
+    if (!fs.existsSync(overlaySrc)) continue;
+    const dest = path.join(targetDir, ...destParts);
+    const label = opts.upgradeMode ? 'Overlaying (upgrade)' : 'Overlaying';
+    console.log(`→ ${label} ${sub} from adapter...`);
+    copyDir(overlaySrc, dest, opts);
+    if (sub === 'scripts' && fs.existsSync(dest)) {
+      for (const f of fs.readdirSync(dest)) {
+        if (f.endsWith('.sh')) fs.chmodSync(path.join(dest, f), 0o755);
+      }
+    }
+  }
+}
+
 // ── Marker-based upgrade (ENH-010 / FEAT-011) ────────────────────────────────
 
 const MARKER = '## Project Extensions';
@@ -149,6 +232,11 @@ function init(targetDir, agent) {
   // Load adapter
   const adapterJs = path.join(adapterDir, 'adapter.js');
   const adapter = require(adapterJs);
+  const dests = adapter.destinations || DEFAULT_OVERLAY_DESTS;
+  const coreRoot = path.join(src, 'core');
+
+  // Pre-flight: error before any writes if adapter overlay duplicates a core filename
+  failOnOverlayConflicts(coreRoot, adapterDir, agent, dests);
 
   console.log(`Installing momentum into: ${target} [agent: ${agent}]`);
   console.log('');
@@ -157,19 +245,19 @@ function init(targetDir, agent) {
   console.log('→ Installing slash commands...');
   copyDir(
     path.join(src, 'core', 'commands'),
-    path.join(target, '.claude', 'commands')
+    path.join(target, ...dests.commands)
   );
 
   // scripts/
   console.log('→ Installing hook scripts...');
   const hookSrc = path.join(src, 'core', 'scripts', 'check-history-reminder.sh');
-  const hookDest = path.join(target, 'scripts', 'check-history-reminder.sh');
+  const hookDest = path.join(target, ...dests.scripts, 'check-history-reminder.sh');
   copyFile(hookSrc, hookDest);
   fs.chmodSync(hookDest, 0o755);
 
   // .agent/rules/project.md
   console.log('→ Installing agent rules...');
-  const rulesDest = path.join(target, '.agent', 'rules', 'project.md');
+  const rulesDest = path.join(target, ...dests['agent-rules'], 'project.md');
   if (!fileExists(rulesDest)) {
     copyFile(
       path.join(src, 'core', 'agent-rules', 'project.md'),
@@ -183,6 +271,9 @@ function init(targetDir, agent) {
   console.log('→ Scaffolding project specs...');
   const specsSrc = path.join(src, 'core', 'specs-templates');
   copyDir(specsSrc, target, { skipIfExists: true });
+
+  // Adapter overlay — per-agent commands/agent-rules/scripts (additive)
+  applyOverlay(adapterDir, target, dests);
 
   // Coding-agent-specific steps
   adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists });
@@ -220,6 +311,11 @@ function upgrade(targetDir, agent) {
 
   // Load adapter
   const adapter = require(path.join(adapterDir, 'adapter.js'));
+  const dests = adapter.destinations || DEFAULT_OVERLAY_DESTS;
+  const coreRoot = path.join(src, 'core');
+
+  // Pre-flight: error before any writes if adapter overlay duplicates a core filename
+  failOnOverlayConflicts(coreRoot, adapterDir, agent, dests);
 
   console.log(`Upgrading momentum in: ${target} [agent: ${agent}]`);
   console.log('');
@@ -230,7 +326,7 @@ function upgrade(targetDir, agent) {
   console.log('→ Upgrading slash commands...');
   copyDir(
     path.join(src, 'core', 'commands'),
-    path.join(target, '.claude', 'commands'),
+    path.join(target, ...dests.commands),
     upgradeOpts
   );
 
@@ -238,11 +334,11 @@ function upgrade(targetDir, agent) {
   console.log('→ Upgrading hook scripts...');
   copyDir(
     path.join(src, 'core', 'scripts'),
-    path.join(target, 'scripts'),
+    path.join(target, ...dests.scripts),
     upgradeOpts
   );
   // Re-apply executable bit to all .sh scripts
-  const scriptsDir = path.join(target, 'scripts');
+  const scriptsDir = path.join(target, ...dests.scripts);
   if (fs.existsSync(scriptsDir)) {
     for (const f of fs.readdirSync(scriptsDir)) {
       if (f.endsWith('.sh')) fs.chmodSync(path.join(scriptsDir, f), 0o755);
@@ -253,7 +349,7 @@ function upgrade(targetDir, agent) {
   console.log('→ Upgrading agent rules...');
   const agentRulesResult = upgradeMarkedFile(
     path.join(src, 'core', 'agent-rules', 'project.md'),
-    path.join(target, '.agent', 'rules', 'project.md'),
+    path.join(target, ...dests['agent-rules'], 'project.md'),
     'agent-rules',
     target
   );
@@ -266,6 +362,9 @@ function upgrade(targetDir, agent) {
     'CLAUDE.md',
     target
   );
+
+  // Adapter overlay upgrade — per-agent commands/agent-rules/scripts (additive)
+  applyOverlay(adapterDir, target, dests, upgradeOpts);
 
   // Delegate adapter-specific upgrade
   adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists });
@@ -423,4 +522,24 @@ async function main() {
   process.exit(exitCode);
 }
 
-main();
+// Run only when invoked as a CLI, not when required by tests.
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  // Pure helpers (unit-testable)
+  partitionByMarker,
+  listFilesRecursive,
+  detectOverlayConflicts,
+  isNewerVersion,
+  MARKER,
+  DEFAULT_OVERLAY_DESTS,
+  // Side-effectful but testable with a tmp dir
+  upgradeMarkedFile,
+  copyDir,
+  copyFile,
+  fileExists,
+  init,
+  upgrade,
+};

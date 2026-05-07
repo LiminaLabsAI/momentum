@@ -11,7 +11,14 @@ Verify, finalize, and release a completed phase.
    - Read `specs/phases/phase-N-*/tasks.md`
    - If any `[ ]` unchecked items remain → report to user, do NOT proceed
 
-3. Run project-specific validation (tests, linting, type checks).
+3. **Run project-specific validation and capture fresh evidence** (per Rule 12 — Verify Before Claim):
+   - Run all defined validation commands: tests, linting, type checks, build, smoke tests
+   - Capture each command's stdout/stderr (e.g., redirect to a temp file with `tee`)
+   - Note exit codes
+   - If any command fails → STOP, report failure to user, do NOT proceed to Finalize
+   - If a command can't run in the current environment, say so explicitly — do not silently skip
+
+   **Refuse to advance to Finalize without fresh, captured evidence.** Memory of "tests passed earlier this phase" is not evidence — re-run them now.
 
 4. If this phase built a learning loop, verify:
    - Locked evaluator exists in `tests/benchmarks/`
@@ -30,6 +37,10 @@ Verify, finalize, and release a completed phase.
 6. Create retrospective:
    - `specs/phases/phase-N-*/retrospective.md`
    - What went well, what didn't, lessons learned
+   - **Append a `## Verification Evidence` section** with the captured output from Step 3:
+     - For each validation command: command line, exit code, last 50 lines of output (or full output if shorter)
+     - Format as fenced code blocks with the command as the heading
+     - This is the durable record that Rule 12 was honored — it must exist before the release section runs
 
 7. Update all tracking:
    - `specs/phases/README.md` → mark `Complete`
@@ -38,6 +49,8 @@ Verify, finalize, and release a completed phase.
    - `specs/changelog/YYYY-MM.md` → add release entry
 
 ### Release
+
+> **Gate (Rule 12):** Do NOT enter Release if `retrospective.md` lacks a `## Verification Evidence` section. If evidence is missing, return to Step 3 and capture it.
 
 8. Commit all remaining changes and push:
    ```bash

@@ -186,6 +186,14 @@ The history log is the only place that preserves *why* a decision was made at th
 - **During a phase**: Record to history. Do NOT update other specs.
 - **At phase completion**: Run `/sync-docs` BEFORE `/complete-phase`.
 
+#### Multi-repo projects only
+
+If this project depends on, or is depended on by, other repos in a parent workspace:
+- NEVER modify docs that live in another repo during `/sync-docs`. You only own this repo's docs.
+- If a history entry's `Affects-specs:` path starts with `../` (or otherwise points outside this repo), leave that file alone.
+- Flag the cross-repo impact to the user — give the exact path — so they can sync the other repo manually.
+- Cross-repo doc ownership is a structural choice. Never quietly change docs you don't own.
+
 ### Rule 10: Architecture Specs Stability (monorepo only)
 
 Files under `specs/architecture/` are constitutional documents. Treat them as a stable reference *during* phase work. The key distinction is **additive bookkeeping** vs **architectural decisions**.
@@ -244,6 +252,38 @@ Optimization loops with mutable evaluators don't measure progress — they measu
 - "The eval set is too small, I'll just add a few more cases" — version-bump the evaluator (`v1` → `v2`); don't mutate `v1`.
 - "I noticed a bug in the scorer mid-run" — fix it in `v2`; rerun the prior runs against `v2`; don't backfill `v1` scores.
 - "Production data drifted, I should refresh the eval" — that's a `v2` decision, not a `v1` patch.
+
+### Rule 12: Verify Before Claim — No Completion Without Evidence
+
+Before claiming any task, fix, or implementation is "done":
+
+1. Run the actual verification command (test, lint, typecheck, smoke test, build)
+2. Read the output — both exit code and content
+3. If the output isn't fresh from this attempt in this session, treat the task as unverified
+4. Only mark a task `[x]` after a verification command produced passing output in this session
+
+#### Why
+The most common agentic-workflow failure is "should work now" — claiming completion based on intent rather than evidence. Fresh, observable output is the only signal that the change actually achieves what was claimed. Box-checking without verification compounds across phases until shipped releases contain unrun code paths.
+
+#### Red Flags — STOP and run the verification
+
+| If you find yourself thinking… | …STOP and run the verification before marking done |
+|---|---|
+| "I'm confident this works — no need to test" | Confidence is not evidence. Run the test. |
+| "The change is small enough that I can skip verification" | "Small" is the most common predicate of a regression. Run it. |
+| "I already tested something similar earlier" | Earlier ≠ now. Re-run against the current code. |
+| "The unit tests pass — that's enough" | Unit tests don't catch wiring bugs. Run the integration / smoke path too. |
+| "I'll batch verifications at the end of the phase" | At the end you can't tell which change caused which failure. Verify per-task. |
+
+#### Anti-Rationalization Counters
+
+- "The diff is obviously correct" — diffs lie when context is incomplete. Run the test.
+- "The CI will catch any issue" — CI catches it after you claimed done; that's the failure mode this rule prevents.
+- "Type checking passed, so it works" — types catch shape errors, not behavior. Run the runtime check.
+- "I read the code carefully and it looks right" — careful reading misses race conditions, missing imports, off-by-one bugs. Verification commands don't.
+- "The previous task was similar and that worked" — previous ≠ current. Each task gets its own verification.
+
+If a verification command does not exist for the task, write one before marking done. If a command can't run in the current environment, say so explicitly — do not silently downgrade to "looks correct".
 
 ---
 
