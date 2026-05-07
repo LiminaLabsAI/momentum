@@ -27,7 +27,12 @@
       "Bash(git branch:*)",
       "Bash(echo \"# modified content\")",
       "Bash(rm /tmp/test-upgrade/.claude/commands/track.md)",
-      "Bash(echo \"# modified\")"
+      "Bash(echo \"# modified\")",
+      "Bash(momentum --version)",
+      "Bash(npm list:*)",
+      "WebSearch",
+      "Bash(gh api *)",
+      "WebFetch(domain:blog.fsck.com)"
     ]
   }
 }
