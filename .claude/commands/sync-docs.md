@@ -17,12 +17,22 @@ For each history entry:
   - Deduplicate the combined list
   - For monorepo: EXCLUDE files in `specs/architecture/`
     (constitution — never auto-synced, only amended via formal process)
+  - **Multi-repo: PARTITION OUT cross-repo entries.** If a history entry has an
+    `Affects-specs:` path starting with `../` (or otherwise outside this repo),
+    add it to a separate "cross-repo" list. NEVER edit those files — you only
+    own this repo's docs.
 
 ### Step 3: Show sync plan (ALWAYS show before touching anything)
 Present to user:
   "Based on phase history, I will check and potentially update:
   - [list of files]
   Proceed? (yes/no)"
+
+**If any cross-repo entries were partitioned out in Step 2:** also show them
+under a "Cross-repo impact (NOT touching — sync the other repo manually)"
+heading, listing each `Affects-specs: ../...` path. Tell the user which repo
+they need to edit and which entries pointed there. Do NOT prompt for approval
+on cross-repo paths — they're informational only.
 
 If user says no → stop.
 
@@ -54,5 +64,6 @@ Ready to run /complete-phase."
 ## Safeguards
 - NEVER update files not in the targeted list
 - NEVER update `specs/architecture/` (monorepo only — constitution is read-only)
+- NEVER update files in another repo (paths starting with `../`) — you only own this repo's docs. Flag cross-repo entries to the user instead.
 - ALWAYS show the plan (Step 3) before making any edits
 - History entries are NEVER modified — only read

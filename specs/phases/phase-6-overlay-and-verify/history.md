@@ -71,3 +71,35 @@ Affects-specs: specs/planning/roadmap.md
 Detail: Considered `execution-engine` (original placeholder), `extensibility-and-verification`, `adapter-v2`. Chose `overlay-and-verify` — captures both pillars accurately and is short. "Execution-engine" was misleading once the subagent runner moved to Phase 7. "Overlay" describes the structural change, "verify" describes the functional change.
 
 ---
+
+### [DISCOVERY] 2026-05-08 — Project name customization in CLAUDE.md is lost on upgrade
+Topics: claude-md, upgrade, marker, project-name, ENH-017
+Affects-phases: phase-6-overlay-and-verify, phase-7 (candidate fix)
+Affects-specs: none
+Detail: Phase 6 dogfood revealed that `# Project Rules: <Project Name>` (and the subtitle line) live in the managed section above the `## Project Extensions` marker. So the user's customization (e.g., "momentum") gets reset to the template placeholder on every `momentum upgrade`. Logged as ENH-017 (P2) for Phase 7 consideration — options include a one-time placeholder substitution at install, or moving the title below the marker. Workaround today is re-editing the title manually post-upgrade.
+
+---
+
+### [DISCOVERY] 2026-05-08 — momentum's own .agent/rules/project.md was pre-marker and stale
+Topics: dogfood, agent-rules, marker, migration
+Affects-phases: phase-6-overlay-and-verify
+Affects-specs: none
+Detail: The repo's `.agent/rules/project.md` predated the marker convention AND was a stale pre-Phase-5 version (Rules 1–10 with old wording, no Rule 11). The Phase 6 upgrade migrated it correctly via `upgradeMarkedFile` ("migrated" path with .bak), then the dogfood manually de-duped the appended legacy content under `## Project Extensions`. No code change required — the migration behaved as designed; the file was just historically stale.
+
+---
+
+### [DISCOVERY] 2026-05-08 — Stale `brainstorm-project.md` left over in `.claude/commands/`
+Topics: dogfood, commands, cleanup
+Affects-phases: phase-6-overlay-and-verify
+Affects-specs: none
+Detail: `.claude/commands/brainstorm-project.md` was still present in the repo's local install. It was renamed to `start-project.md` in Phase 3 (ENH-006), but `momentum upgrade` never deletes commands — it only adds/updates. Removed manually as part of Phase 6 dogfood. Logged for awareness; no rule change. A future enhancement could add an "orphan command sweep" but it risks deleting user-created commands and is not pursued now.
+
+---
+
+### [NOTE] 2026-05-08 — Phase 6 implementation: groups 0-4 landed
+Topics: phase-6, execution, overlay, verification
+Affects-phases: phase-6-overlay-and-verify
+Affects-specs: none
+Detail: All five execution commits landed on `phase-6-overlay-and-verify`: Group 0 (adapter overlay + conflict detection in CLI), Group 1 (Rule 12 + /complete-phase evidence + cross-repo Rule 9 + /sync-docs), Group 2 (/review-code Claude-Code overlay), Group 3 (24 tests via node:test), Group 4 (dogfood — momentum upgrade on self, with manual de-dupe of stale agent-rules content and title restore). All 24 tests pass. Ready for Group 5 (release prep).
+
+---
