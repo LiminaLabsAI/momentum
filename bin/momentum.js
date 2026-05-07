@@ -522,4 +522,24 @@ async function main() {
   process.exit(exitCode);
 }
 
-main();
+// Run only when invoked as a CLI, not when required by tests.
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  // Pure helpers (unit-testable)
+  partitionByMarker,
+  listFilesRecursive,
+  detectOverlayConflicts,
+  isNewerVersion,
+  MARKER,
+  DEFAULT_OVERLAY_DESTS,
+  // Side-effectful but testable with a tmp dir
+  upgradeMarkedFile,
+  copyDir,
+  copyFile,
+  fileExists,
+  init,
+  upgrade,
+};

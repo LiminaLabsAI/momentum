@@ -9,8 +9,14 @@
     "bin/",
     "core/",
     "adapters/**/adapter.js",
-    "adapters/**/settings.json"
+    "adapters/**/settings.json",
+    "adapters/**/commands/",
+    "adapters/**/agent-rules/",
+    "adapters/**/scripts/"
   ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/"
+  },
   "engines": {
     "node": ">=18"
   },
