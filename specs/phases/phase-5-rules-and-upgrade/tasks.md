@@ -33,12 +33,12 @@
 
 ## Group 3 — `--agent` Flag Rename (Parallel with 1, 2)
 
-- [ ] 3a. Rename flag parsing in `bin/momentum.js`
-- [ ] 3b. Update `--help` output
-- [ ] 3c. Update README install/upgrade examples
-- [ ] 3d. Grep + replace `--coding-agent` in `core/commands/*.md`
-- [ ] 3e. Update `adapters/claude-code/adapter.js` if it reads the flag
-- [ ] 3f. Update flag examples in `core/specs-templates/CLAUDE.md`
+- [x] 3a. Rename flag parsing in `bin/momentum.js` (+ install.sh)
+- [x] 3b. Update `--help` output
+- [x] 3c. Update README install/upgrade examples
+- [x] 3d. No `--coding-agent` refs in `core/commands/*.md` (verified by grep)
+- [x] 3e. `adapters/claude-code/adapter.js` doesn't read the flag (verified)
+- [x] 3f. No flag examples in `core/specs-templates/CLAUDE.md` to update
 
 ## Group 4 — Wiring & Dogfooding (Sequential)
 
