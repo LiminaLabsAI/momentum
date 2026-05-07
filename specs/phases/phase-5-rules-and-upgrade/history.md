@@ -70,3 +70,43 @@ Affects-specs: specs/planning/roadmap.md
 Detail: Vision B (subagent execution engine, TDD enforcement, `/complete-phase` verification rigor, systematic-debugging skill, `/review-code` command) is reserved for Phase 6. Phase 5's rule hardening is the prerequisite — execution-engine work assumes rules are robust enough to be enforced under context pressure.
 
 ---
+
+### [SCOPE_CHANGE] 2026-05-08 — Groups 0 + 1 collapsed into a single commit
+Topics: execution, commits
+Affects-phases: phase-5-rules-and-upgrade
+Affects-specs: specs/phases/phase-5-rules-and-upgrade/plan.md
+Detail: Plan called for Group 0 (template scaffolding) and Group 1 (rule content + hardening) as separate commits. In serial single-agent execution they touched the same two files (CLAUDE.md template + agent-rules/project.md), so splitting via stash gymnastics was theatrical. Combined into one commit `feat(rules): add Rules 10/11, harden Rules 2/6/8/10/11, naming extensions`. The conceptual separation remains valid for future parallel work.
+
+---
+
+### [DISCOVERY] 2026-05-08 — Pre-Phase-5 upgrade silently clobbered CLAUDE.md customizations
+Topics: upgrade, claude-md, regression-risk
+Affects-phases: phase-5-rules-and-upgrade
+Affects-specs: none
+Detail: Reading bin/momentum.js's pre-Phase-5 `upgrade()`, CLAUDE.md was NOT in the upgrade flow at all — only commands, scripts, and agent-rules were. Agent-rules used a byte-equality + `.bak` strategy that would have clobbered any user customization (including the pieces moved out of CLAUDE.md into project.md). Phase 5 closes this gap by routing both files through the marker-aware `upgradeMarkedFile` helper.
+
+---
+
+### [DISCOVERY] 2026-05-08 — Three marker-logic bugs caught only by smoke testing
+Topics: dogfood, partitionByMarker, upgradeMarkedFile
+Affects-phases: phase-5-rules-and-upgrade
+Affects-specs: none
+Detail: Dogfooding caught three bugs the design phase missed. (1) `core/agent-rules/project.md` was missing its `## Project Extensions` marker — fresh init produced a marker-less file that `momentum upgrade` then "migrated" with the old content moved under a marker. (2) `partitionByMarker` stripped trailing whitespace from the managed slice, so a no-op upgrade reported "updated" because the round-trip dropped a blank line; rewrote as a clean lossless slice. (3) `upgradeMarkedFile` did `srcParts.managed + MARKER + destParts.extensions`, but extensions already includes the marker heading — produced "## Project Extensions## Project Extensions" on the same line. All three fixed in one commit; Group 4 turned out to be the most informative group of the phase.
+
+---
+
+### [DECISION] 2026-05-08 — Pre-marker migration appends an HTML comment with the .bak filename
+Topics: migration, ux
+Affects-phases: phase-5-rules-and-upgrade
+Affects-specs: none
+Detail: When migrating a pre-marker file, the new content includes an HTML comment block: `<!-- migrated from pre-marker version on YYYY-MM-DD — original at <name>.bak -->`. This gives the user a breadcrumb in the rendered doc pointing to their backup, since markdown viewers may hide the `.bak` file from the project tree.
+
+---
+
+### [NOTE] 2026-05-08 — Phase 5 implementation ready for /complete-phase
+Topics: phase-5, release, v0.6.0
+Affects-phases: phase-5-rules-and-upgrade
+Affects-specs: specs/changelog/2026-05.md, package.json
+Detail: All five execution commits landed on `phase-5-rules-and-upgrade`: Groups 0+1 (template), 2 (marker-based upgrade CLI), 3 (--agent rename, breaking), 4 (dogfood + bug fixes), 5-prep (this commit). Smoke tests verified four scenarios: fresh init produces 11 rules + marker, no-op upgrade reports "unchanged", tamper+extensions test preserves user content while restoring managed, pre-marker migration backs up original. package.json bumped 0.5.1 → 0.6.0. Ready for `/sync-docs`, then `/complete-phase` (which handles merge to staging+main, tag, GitHub Release), then `npm publish --access public` per project Rule 9.
+
+---

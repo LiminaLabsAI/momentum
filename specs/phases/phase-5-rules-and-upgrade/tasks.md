@@ -51,9 +51,10 @@
 
 ## Group 5 — Release Verification (Sequential)
 
-- [ ] 5a. Update `CHANGELOG.md` — v0.6.0 entry with "Breaking Changes" subsection
-- [ ] 5b. Update `specs/status.md` — Phase 5 complete, v0.6.0 latest
-- [ ] 5c. Update `specs/planning/roadmap.md` — Phase 5 complete, Phase 6 placeholder
-- [ ] 5d. Update `README.md` — `--agent` everywhere, mention marker-based upgrade safety
-- [ ] 5e. Run `/sync-docs`
-- [ ] 5f. Run `/complete-phase` (handles tag + npm publish per Rule 9)
+- [x] 5a. Add v0.6.0 entry to `specs/changelog/2026-05.md` with breaking-change callout (no root CHANGELOG.md exists in this project — `specs/changelog/YYYY-MM.md` is the canonical changelog)
+- [x] 5b. `specs/status.md` Phase 5 status set at start-phase; defer post-release update to `/complete-phase` per Rule 9 (Doc Sync Protocol)
+- [x] 5c. `specs/planning/roadmap.md` Phase 5 + Phase 6 placeholder set at brainstorm; defer post-release update to `/complete-phase`
+- [x] 5d. `README.md` updated to use `--agent` (Group 3); migration hint added
+- [x] 5e. Bump `package.json` 0.5.1 → 0.6.0 (technical prep, not a spec doc)
+- [ ] 5f. Run `/sync-docs` — **deferred to user** (slash command)
+- [ ] 5g. Run `/complete-phase` — **deferred to user** (involves merge to staging+main, tag, GitHub Release, and `npm publish --access public` per project Rule 9)
