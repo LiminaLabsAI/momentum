@@ -15,7 +15,7 @@
     "adapters/**/scripts/**"
   ],
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/"
+    "test": "node --test --test-concurrency=1 tests/*.test.js"
   },
   "engines": {
     "node": ">=18"
