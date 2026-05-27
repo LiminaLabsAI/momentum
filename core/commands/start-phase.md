@@ -1,6 +1,8 @@
 Begin a new implementation phase.
 
-## Steps
+After setup, **executes the plan end-to-end autonomously** — no per-group approval prompts, no "should I commit?" interruptions. The engine stops once: at the merge + release gate after the final group's verification passes. See the [Autonomous Execution Contract](#autonomous-execution-contract) below.
+
+## Setup Steps (run once at phase start)
 
 1. Read current state:
    - Read `specs/status.md`
@@ -60,3 +62,73 @@ Begin a new implementation phase.
    ```
 
 10. Update `specs/changelog/YYYY-MM.md` with phase start entry.
+
+## After Setup: Execute the Plan Autonomously
+
+Once steps 1–10 complete, **proceed to implement the phase** per the [Autonomous Execution Contract](#autonomous-execution-contract). For each group in `plan.md` (in declared execution order):
+
+1. **Mark the group's first task `[/]`** in `tasks.md` (in-progress).
+2. **Implement the group's tasks.** Read, write code, add tests as the group requires.
+3. **Run the group's verification command** (per Rule 12 — Verify Before Claim). Read the actual output.
+4. **Mark tasks `[x]`** in `tasks.md` only if verification passed.
+5. **Append a history entry** to `history.md` per Rule 8 (one entry per group minimum, more if `[DECISION]`/`[DISCOVERY]` events happen).
+6. **Commit the group** with the per-group commit message declared in `plan.md`.
+7. **Push to the phase branch.**
+8. **Proceed to the next group.** Do NOT ask "ready for Group N+1?" — the answer is always yes.
+
+After the final group's verification passes: **STOP.** Ask the user the single hard-stop question in the contract below.
+
+---
+
+## Autonomous Execution Contract
+
+Once a phase plan is approved, this command executes the plan end-to-end without per-group approvals. The contract below defines what proceeds silently and where the engine MUST stop.
+
+### Hard stop — always
+
+**Merge to staging/main + release.** After the final group's verification passes, STOP. Ask the user:
+
+> "All groups complete and verified. Ready to merge `<phase-branch>` → staging (then main), tag `v<version>`, and run `npm publish --access public`. Approve to proceed?"
+
+This is the only place the engine asks. Do NOT skip it.
+
+### Discretionary stop — rare, judgment-based
+
+Interrupt only when continuing would cause real harm or a wrong result that's hard to undo. Examples:
+
+- Destructive git operation not in the plan (force-push to main, `git reset --hard origin/...`, branch deletion of unmerged work)
+- A discovery that invalidates the agreed plan (not just adds to it — `[DISCOVERY]` + backlog entry handles additions silently)
+- A required external action the engine can't perform (paid API spend, credential setup, account configuration)
+- Repeated unresolved failure on the same task (Phase 7b will codify a 3-strikes retry budget; before 7b, use judgment)
+
+A discretionary stop is rare. The default is to proceed.
+
+### Pre-authorized actions — proceed silently
+
+The engine does all of these without asking:
+
+- Create the phase feature branch
+- Commit per the conventional commit style and the per-group commit message in `plan.md`
+- Push the phase branch to origin
+- Run tests, lint, typecheck, build commands
+- Update `specs/status.md`, `specs/phases/index.json`, `specs/phases/README.md`, the active phase's `tasks.md` and `history.md`
+- Append to `specs/changelog/YYYY-MM.md`
+- Create ADRs from discoveries (per Rule 8 / Rule 10)
+- Add backlog entries from discoveries (per Rule 3)
+- Read any file in the repo
+
+### Anti-patterns — DO NOT
+
+| Anti-pattern | Correct behavior |
+|---|---|
+| Asking "should I commit Group N now?" after each group | Commit per the plan's per-group commit message. Do not ask. |
+| Asking "should I push?" after the first commit | Push immediately after the first commit; thereafter on milestones. Do not ask. |
+| Asking "ready for Group 1?" after Group 0 | Proceed to Group 1 immediately when Group 0 verification passes. |
+| Pausing to summarize progress between groups | Update `tasks.md` and move on. Summaries are for the user when they ask. |
+| Asking "ready for tests?" before Group N's verification step | Verification is part of Group N. Run it. |
+
+### Cross-references
+
+- **Rule 6 (Git Lifecycle)**: pre-authorizes branch creation, commits, pushes to feature branch. The autonomy contract is the execution-time application of Rule 6.
+- **Rule 8 (History)**: every group ends with a history append. Do this silently.
+- **Rule 12 (Verify Before Claim)**: every group's last task is verification. Run the command, read the output, mark `[x]` only if passing.

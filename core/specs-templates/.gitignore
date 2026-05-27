@@ -1,0 +1,10 @@
+# macOS AppleDouble metadata
+._*
+.DS_Store
+
+# momentum brainstorm-gate sentinel directory
+.momentum/
+
+# Node
+node_modules/
+*.log
