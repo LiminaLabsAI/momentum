@@ -1,8 +1,8 @@
 # Project Status
 
-> **Last Updated**: 2026-05-08
-> **Current Phase**: Phase 7 — Execution Excellence (`not started`)
-> **Latest Release**: v0.7.0 — Adapter Overlay & Verification
+> **Last Updated**: 2026-05-27
+> **Current Phase**: Phase 7a — Planning Contracts (`in progress`)
+> **Latest Release**: v0.7.1 — BUG-002 hotfix (overlay files in tarball)
 > **Health**: On Track
 
 ## Summary
@@ -27,16 +27,18 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 7 | Execution Excellence | Not Started | 0% |
+| 7a | Planning Contracts | In Progress | 0% (just started) |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 7 | Execution Excellence | Not Started (target v0.8.0) | Subagent execution engine (Claude Code overlay); systematic-debugging skill (3-strikes); TDD rule (Rule 13, opt-in); SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9 |
-| 8 | Reach | Not Started (target v0.9.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
-| 9 | Intelligence | Not Started (target v0.10.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 10 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
+| 7b | Autonomous Execution & TDD | Not Started (target v0.9.0) | Subagent execution engine (Claude Code overlay) implementing the autonomy contract authored in 7a; TDD opt-in (Rule 13); retry budget per-task (3-strikes systematic-debugging primitive) |
+| 7c | Parallel Worktree Orchestration | Not Started (target v0.10.0) | Multiple concurrent streams via git worktrees (feature + fix + enhancement, or N parallel modules); `momentum worktree-manager` command; branch-per-stream conventions; conflict avoidance; cross-stream status visibility |
+| 8 | Hardening & Activation | Not Started (target v0.11.0) | systematic-debugging skill (full); SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting) |
+| 9 | Reach | Not Started (target v0.12.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 10 | Intelligence | Not Started (target v0.13.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 11 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
 
 ## Blockers
 
@@ -52,9 +54,12 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Run `/brainstorm-phase` to plan Phase 7 — Execution Excellence
-2. ENH-017 (project-name preserved across upgrade) — Phase 7 candidate; surfaced in Phase 6 dogfood
-3. ENH-009 (distribution strategy) — still blocked on having ≥1 more adapter; lands in Phase 8
+1. Execute Phase 7a Groups 0-4: contracts, brainstorm-command hardening, hook + sentinel, /start-phase autonomy contract, tests + dogfood
+2. Group 5: stop for merge/release gate (v0.8.0)
+3. After 7a ships: brainstorm Phase 7b (autonomous execution engine + TDD) — the spiritual successor to the abandoned `phase-7-subagent-engine` branch
+4. ENH-017 (project-name preserved across upgrade) — defer to 7c or 8; surfaced in Phase 6 dogfood
+5. ENH-018 (tarball-shape test) — folded into Phase 7a Group 4 test work where natural; else Phase 7b
+6. ENH-009 (distribution strategy) — still blocked on having ≥1 more adapter; lands in Phase 9 (Reach)
 
 ## Key Decisions Made
 
