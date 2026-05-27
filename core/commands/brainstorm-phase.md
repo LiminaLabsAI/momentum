@@ -7,7 +7,15 @@ Run AFTER `/complete-phase` and BEFORE `/start-phase`.
 All output goes directly into the phase directory as standard phase files.
 The brainstorm output IS the phase files — there is no intermediate design doc.
 
+**But — and this is the whole point of this command — those phase files MUST NOT exist on disk until the user has explicitly approved the draft.** See the [Brainstorm Gate Contract](#brainstorm-gate-contract) below.
+
 ## Steps
+
+0. **Enter the brainstorm gate**:
+   ```bash
+   mkdir -p .momentum && touch .momentum/brainstorm-active
+   ```
+   From this point until Step 8, do NOT call `Write`, `Edit`, or `MultiEdit` on any path under `specs/`. The PreToolUse hook (`adapters/claude-code/scripts/brainstorm-gate.sh`) will block such calls; this step makes the intent explicit.
 
 1. Review current state:
    - Read `specs/status.md` — what phase just completed?
@@ -34,23 +42,63 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    - Verify interface counts, field names, error codes match exactly
    - Record findings and resolutions
 
-6. Draft phase files directly:
+6. **Draft phase files in conversation only** — do NOT call `Write`/`Edit`/`MultiEdit`:
    - `overview.md` — goal, key decisions table, scope (in/out), deliverables with verification commands, acceptance criteria
    - `plan.md` — full implementation plan using the Group Execution Pattern (see below)
    - `tasks.md` — granular checklist mirroring plan.md tasks
-   - `history.md` — log all decisions and discoveries from this brainstorm session
+   - `history.md` — initial entries logging all decisions from this brainstorm session
+
+   Show the user the full draft in the chat. Iterate on revisions in the chat. Nothing on disk yet.
 
 7. Present for user approval:
    - Show key sections of overview.md and plan.md
-   - Ask: "Does this look right? Any changes before we create the phase?"
+   - Ask: "Does this look right? Any changes before I write the phase files?"
 
-8. On approval, write all files to `specs/phases/phase-N-shortname/` and commit:
+8. **On approval — exit the gate and write**:
+   ```bash
+   rm .momentum/brainstorm-active
+   ```
+   Then write all four files to `specs/phases/phase-N-shortname/` and commit:
    ```bash
    git add specs/phases/phase-N-shortname/
    git commit -m "docs: brainstorm Phase N — {phase name}"
    ```
 
 9. Prompt: "Phase N is planned. Run `/start-phase` when ready to begin."
+
+---
+
+## Brainstorm Gate Contract
+
+This command runs in two phases: **brainstorm** (conversational, no disk writes) and **commit** (writes files to disk on explicit approval).
+
+### Sentinel-driven enforcement
+
+A file `.momentum/brainstorm-active` exists for the lifetime of the brainstorm phase. While it exists, the Claude Code `brainstorm-gate.sh` PreToolUse hook blocks any `Write`/`Edit`/`MultiEdit` call whose target lives under `specs/`. The hook is the safety net; the discipline below is the primary contract.
+
+### Sequence
+
+1. **Enter brainstorm** — `mkdir -p .momentum && touch .momentum/brainstorm-active`
+2. **Draft in conversation only** — all overview/plan/tasks/history content lives in the chat. NEVER call `Write`/`Edit`/`MultiEdit` on `specs/` paths during this phase. The hook will block such calls; the contract makes the intent visible.
+3. **Present for approval** — show the user the full draft. Ask: "Does this look right? Any changes before I write the phase files?"
+4. **Exit brainstorm on approval** — `rm .momentum/brainstorm-active`, then write all files in one batch and commit.
+
+### Red flags — STOP and stay in conversation
+
+| If you find yourself thinking… | …STOP and stay in conversation |
+|---|---|
+| "I'll just write a quick draft to disk so I can see it" | The conversation IS the draft. The hook will block this. |
+| "The user will approve, no point waiting" | Approval changes the conversation. Don't pre-commit to text the user might still revise. |
+| "I'll create the directory now to save a step later" | Don't. Wait for approval. |
+| "The brainstorm session was interrupted; I'll just remove the sentinel" | Only remove it when you have explicit approval AND are about to write. Premature removal recreates the failure mode. |
+
+### Anti-rationalization counters
+
+- "Drafting to disk is faster than drafting in chat" — false: revisions in chat are free; revisions on disk require re-edits.
+- "Only writing scratch files, not the real specs" — the hook can't tell scratch from real; keep both in conversation.
+- "It's fine, the user said proceed" — proceed only AFTER the explicit approval step, not before.
+
+---
 
 ## Group Execution Pattern for plan.md
 
@@ -78,3 +126,4 @@ Standard layout:
 - Each phase should be completable in a focused sprint
 - If scope is too large, suggest splitting into sub-phases
 - Record any discoveries in history.md
+- **Brainstorm Gate**: see the contract above. No writes until approval.
