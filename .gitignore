@@ -1,0 +1,11 @@
+# macOS AppleDouble metadata (appears when this repo lives on a non-POSIX
+# filesystem, e.g. the T7 Shield external drive)
+._*
+.DS_Store
+
+# momentum brainstorm-gate sentinel directory
+.momentum/
+
+# Node
+node_modules/
+*.log
