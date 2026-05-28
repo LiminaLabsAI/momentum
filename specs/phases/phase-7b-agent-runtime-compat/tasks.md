@@ -11,11 +11,11 @@
 
 ## Group 1 — CLI Adapter Plumbing
 
-- [ ] Dynamic available-agent discovery
-- [ ] Adapter metadata fields for primary instruction, config files, capabilities
-- [ ] Generic root instruction install/upgrade
-- [ ] Preserve Claude behavior
-- [ ] Group 1 verification
+- [x] Dynamic available-agent discovery
+- [x] Adapter metadata fields for primary instruction, config files, capabilities
+- [x] Generic root instruction install/upgrade
+- [x] Preserve Claude behavior
+- [x] Group 1 verification
 - [ ] Group 1 commit: `feat(cli): adapter contract v3 metadata and dynamic agents`
 
 ## Group 2 — Codex Adapter

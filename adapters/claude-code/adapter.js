@@ -22,10 +22,37 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = {
+  displayName: 'Claude Code',
+
   destinations: {
     commands: ['.claude', 'commands'],
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
+  },
+
+  primaryInstruction: {
+    source: ['core', 'specs-templates', 'CLAUDE.md'],
+    sourceBase: 'package',
+    destination: ['CLAUDE.md'],
+    label: 'CLAUDE.md',
+    markerAware: true,
+  },
+
+  configFiles: [
+    {
+      source: ['settings.json'],
+      destination: ['.claude', 'settings.json'],
+      label: '.claude/settings.json',
+    },
+  ],
+
+  capabilities: {
+    hooks: true,
+    slashCommands: true,
+    subagents: true,
+    skills: false,
+    browser: false,
+    computerUse: false,
   },
 
   runInstall(targetDir, adapterDir, helpers) {

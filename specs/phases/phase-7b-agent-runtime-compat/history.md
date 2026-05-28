@@ -39,3 +39,11 @@ Affects-specs: README.md#adapter-authors
 Detail: Adapter Contract v3 extends the overlay model with runtime metadata: display name, destinations, primary instruction file, config/hook files, and capability flags. This keeps core generic while allowing Claude Code and Codex to expose their native instruction, command, and hook surfaces independently.
 
 ---
+
+### [FEATURE] 2026-05-28 — CLI supports adapter-declared root instruction files
+Topics: cli, adapter-contract-v3, primary-instruction, claude-code
+Affects-phases: phase-7b-agent-runtime-compat
+Affects-specs: bin/momentum.js
+Detail: CLI agent discovery is now dynamic from `adapters/*/adapter.js`, and adapters can declare a marker-aware root instruction file. Claude Code now installs/upgrades `CLAUDE.md` through adapter metadata while preserving the existing file content and behavior. Verification: `node --test --test-concurrency=1 tests/install.test.js tests/upgrade.test.js tests/overlay.test.js` passed 16/16.
+
+---
