@@ -20,8 +20,11 @@ function copyFile(src, dest) {
 function copyDir(srcDir, destDir, opts = {}) {
   fs.mkdirSync(destDir, { recursive: true });
   for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+    if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
     const src = path.join(srcDir, entry.name);
     const dest = path.join(destDir, entry.name);
+    const rel = path.relative(srcDir, src);
+    if (opts.skipRelPaths && opts.skipRelPaths.has(rel)) continue;
     if (entry.isDirectory()) {
       copyDir(src, dest, opts);
     } else if (opts.upgradeMode) {
@@ -61,6 +64,82 @@ function fileExists(filePath) {
   }
 }
 
+function listAvailableAgents(src = path.join(__dirname, '..')) {
+  const adaptersDir = path.join(src, 'adapters');
+  if (!fs.existsSync(adaptersDir)) return [];
+  return fs.readdirSync(adaptersDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((name) => fs.existsSync(path.join(adaptersDir, name, 'adapter.js')))
+    .sort();
+}
+
+function formatAvailableAgents(src = path.join(__dirname, '..')) {
+  return listAvailableAgents(src).join(', ');
+}
+
+function loadAdapter(src, agent) {
+  const adapterDir = path.join(src, 'adapters', agent);
+  if (!fs.existsSync(adapterDir)) {
+    console.error(`Error: Unknown agent '${agent}'.`);
+    console.error(`Available: ${formatAvailableAgents(src)}`);
+    process.exit(1);
+  }
+  return {
+    adapterDir,
+    adapter: require(path.join(adapterDir, 'adapter.js')),
+  };
+}
+
+function resolveAdapterSource(srcRoot, adapterDir, fileSpec) {
+  const sourceBase = fileSpec.sourceBase || 'adapter';
+  const base = sourceBase === 'package' ? srcRoot : adapterDir;
+  return path.join(base, ...fileSpec.source);
+}
+
+function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstruction) {
+  if (!primaryInstruction) return null;
+  const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
+  const destPath = path.join(targetDir, ...primaryInstruction.destination);
+  const label = primaryInstruction.label || primaryInstruction.destination.join('/');
+
+  console.log(`→ Installing ${label}...`);
+  if (!fileExists(destPath)) {
+    copyFile(srcPath, destPath);
+    return 'added';
+  }
+
+  console.log(`  ⚠️  ${label} already exists — skipping.`);
+  return 'skipped';
+}
+
+function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstruction) {
+  if (!primaryInstruction) return null;
+  const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
+  const destPath = path.join(targetDir, ...primaryInstruction.destination);
+  const label = primaryInstruction.label || primaryInstruction.destination.join('/');
+
+  console.log(`→ Upgrading ${label}...`);
+  if (primaryInstruction.markerAware) {
+    return upgradeMarkedFile(srcPath, destPath, label, targetDir);
+  }
+
+  if (!fileExists(destPath)) {
+    copyFile(srcPath, destPath);
+    console.log(`  + added:    ${path.relative(targetDir, destPath)}`);
+    return 'added';
+  }
+
+  const srcContent = fs.readFileSync(srcPath, 'utf8');
+  const destContent = fs.readFileSync(destPath, 'utf8');
+  if (srcContent === destContent) return 'unchanged';
+
+  fs.copyFileSync(destPath, destPath + '.bak');
+  copyFile(srcPath, destPath);
+  console.log(`  ↑ upgraded: ${path.relative(targetDir, destPath)} (original saved as .bak)`);
+  return 'updated';
+}
+
 // ── Adapter overlay (FEAT-012, Phase 6) ──────────────────────────────────────
 //
 // Adapters may ship per-agent commands/agent-rules/scripts under
@@ -83,6 +162,7 @@ function listFilesRecursive(dir) {
   const result = [];
   const walk = (d, prefix) => {
     for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
       const rel = prefix ? path.join(prefix, entry.name) : entry.name;
       if (entry.isDirectory()) walk(path.join(d, entry.name), rel);
       else result.push(rel);
@@ -221,17 +301,8 @@ function init(targetDir, agent) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
-  // Validate adapter
-  const adapterDir = path.join(src, 'adapters', agent);
-  if (!fs.existsSync(adapterDir)) {
-    console.error(`Error: Unknown agent '${agent}'.`);
-    console.error(`Available: claude-code`);
-    process.exit(1);
-  }
-
   // Load adapter
-  const adapterJs = path.join(adapterDir, 'adapter.js');
-  const adapter = require(adapterJs);
+  const { adapterDir, adapter } = loadAdapter(src, agent);
   const dests = adapter.destinations || DEFAULT_OVERLAY_DESTS;
   const coreRoot = path.join(src, 'core');
 
@@ -267,10 +338,15 @@ function init(targetDir, agent) {
     console.log('  ⚠️  .agent/rules/project.md already exists — skipping (not overwriting).');
   }
 
-  // specs/ skeleton + CLAUDE.md
+  // specs/ skeleton (root instruction file is adapter-owned)
   console.log('→ Scaffolding project specs...');
   const specsSrc = path.join(src, 'core', 'specs-templates');
-  copyDir(specsSrc, target, { skipIfExists: true });
+  copyDir(specsSrc, target, {
+    skipIfExists: true,
+    skipRelPaths: new Set(['CLAUDE.md']),
+  });
+
+  installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
 
   // Adapter overlay — per-agent commands/agent-rules/scripts (additive)
   applyOverlay(adapterDir, target, dests);
@@ -283,14 +359,15 @@ function init(targetDir, agent) {
   console.log('');
   console.log('Next steps:');
   console.log('');
+  const displayName = adapter.displayName || agent;
   console.log('  Explore an idea first:');
-  console.log('    Open Claude Code and run: /brainstorm-idea');
+  console.log(`    Open ${displayName} and run: /brainstorm-idea`);
   console.log('');
   console.log('  Ready to scaffold a project:');
-  console.log('    Open Claude Code and run: /start-project');
+  console.log(`    Open ${displayName} and run: /start-project`);
   console.log('');
   console.log('  Existing project — plan your next phase:');
-  console.log('    Open Claude Code and run: /brainstorm-phase');
+  console.log(`    Open ${displayName} and run: /brainstorm-phase`);
   console.log('');
   console.log('  See docs: https://github.com/avinash-singh-io/momentum');
 }
@@ -301,16 +378,8 @@ function upgrade(targetDir, agent) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
-  // Validate adapter
-  const adapterDir = path.join(src, 'adapters', agent);
-  if (!fs.existsSync(adapterDir)) {
-    console.error(`Error: Unknown agent '${agent}'.`);
-    console.error(`Available: claude-code`);
-    process.exit(1);
-  }
-
   // Load adapter
-  const adapter = require(path.join(adapterDir, 'adapter.js'));
+  const { adapterDir, adapter } = loadAdapter(src, agent);
   const dests = adapter.destinations || DEFAULT_OVERLAY_DESTS;
   const coreRoot = path.join(src, 'core');
 
@@ -354,13 +423,12 @@ function upgrade(targetDir, agent) {
     target
   );
 
-  // Upgrade CLAUDE.md — marker-aware (preserves Project Extensions block)
-  console.log('→ Upgrading CLAUDE.md...');
-  const claudeMdResult = upgradeMarkedFile(
-    path.join(src, 'core', 'specs-templates', 'CLAUDE.md'),
-    path.join(target, 'CLAUDE.md'),
-    'CLAUDE.md',
-    target
+  // Upgrade adapter-owned root instruction file
+  const primaryInstructionResult = upgradePrimaryInstruction(
+    src,
+    target,
+    adapterDir,
+    adapter.primaryInstruction
   );
 
   // Adapter overlay upgrade — per-agent commands/agent-rules/scripts (additive)
@@ -371,7 +439,11 @@ function upgrade(targetDir, agent) {
 
   console.log('');
   console.log('✓ Upgrade complete.');
-  console.log(`  CLAUDE.md:           ${claudeMdResult}`);
+  if (adapter.primaryInstruction) {
+    const label = adapter.primaryInstruction.label ||
+      adapter.primaryInstruction.destination.join('/');
+    console.log(`  ${label}:           ${primaryInstructionResult}`);
+  }
   console.log(`  agent-rules:         ${agentRulesResult}`);
   console.log('');
 }
@@ -441,7 +513,7 @@ Usage:
 
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
-                                      Available: claude-code
+                                      Available: ${formatAvailableAgents()}
   -h, --help                          Show this help message
   -v, --version                       Show version number
 
@@ -535,6 +607,8 @@ module.exports = {
   isNewerVersion,
   MARKER,
   DEFAULT_OVERLAY_DESTS,
+  listAvailableAgents,
+  formatAvailableAgents,
   // Side-effectful but testable with a tmp dir
   upgradeMarkedFile,
   copyDir,

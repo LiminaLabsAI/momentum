@@ -90,3 +90,23 @@ test('upgrade — adapter overlay files are present after upgrade on a project t
     );
   } finally { rmrf(target); }
 });
+
+test('upgrade — codex AGENTS.md preserves Project Extensions byte-for-byte', () => {
+  const target = mktmp();
+  try {
+    runCli(['init', target, '--agent', 'codex']);
+    const agentsMdPath = path.join(target, 'AGENTS.md');
+    const original = read(agentsMdPath);
+    const userExtension = '\n### Local Codex Rule\n\nPrefer concise progress updates.\n';
+    write(agentsMdPath, original + userExtension);
+
+    const res = runCli(['upgrade', target, '--agent', 'codex']);
+    assert.equal(res.status, 0, `upgrade failed: ${res.stderr}`);
+    assert.match(res.stdout, /AGENTS\.md:\s+unchanged|AGENTS\.md:\s+updated/);
+    const upgraded = read(agentsMdPath);
+    assert.ok(upgraded.includes(userExtension),
+      'Codex user extension should be preserved verbatim');
+    assert.match(upgraded, /Momentum Commands in Codex/);
+    assert.equal(fs.existsSync(path.join(target, '.codex', 'hooks.json')), true);
+  } finally { rmrf(target); }
+});

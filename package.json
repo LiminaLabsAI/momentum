@@ -1,6 +1,6 @@
 {
   "name": "@avinash-singh-io/momentum",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Spec-driven development toolkit for AI coding agents",
   "bin": {
     "momentum": "bin/momentum.js"
@@ -10,18 +10,22 @@
     "core/",
     "adapters/**/adapter.js",
     "adapters/**/settings.json",
+    "adapters/**/hooks.json",
+    "adapters/**/instructions/**",
     "adapters/**/commands/**",
     "adapters/**/agent-rules/**",
     "adapters/**/scripts/**"
   ],
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.js"
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "prepublishOnly": "npm test"
   },
   "engines": {
     "node": ">=18"
   },
   "keywords": [
     "claude-code",
+    "codex",
     "ai",
     "spec-driven",
     "momentum",

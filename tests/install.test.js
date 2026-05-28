@@ -51,6 +51,51 @@ test('init — fresh install produces all expected files', () => {
   } finally { rmrf(target); }
 });
 
+test('init — claude-code output shape remains Claude-specific', () => {
+  const target = mktmp();
+  try {
+    const res = runCli(['init', target, '--agent', 'claude-code']);
+    assert.equal(res.status, 0, `init failed: ${res.stderr}`);
+    assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), true);
+    assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), false);
+    assert.equal(fs.existsSync(path.join(target, '.claude', 'settings.json')), true);
+    assert.equal(fs.existsSync(path.join(target, '.claude', 'commands', 'review-code.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.codex')), false);
+  } finally { rmrf(target); }
+});
+
+test('init — codex install produces AGENTS.md hooks and command recipes', () => {
+  const target = mktmp();
+  try {
+    const res = runCli(['init', target, '--agent', 'codex']);
+    assert.equal(res.status, 0, `init failed: ${res.stderr}`);
+
+    assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), true);
+    assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), false);
+    assert.equal(fs.existsSync(path.join(target, '.codex', 'hooks.json')), true);
+    assert.equal(fs.existsSync(path.join(target, '.codex', 'commands', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.codex', 'commands', 'start-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
+    assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
+    assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.claude')), false);
+
+    const agentsMd = read(path.join(target, 'AGENTS.md'));
+    assert.match(agentsMd, /Momentum Commands in Codex/);
+    assert.match(agentsMd, /## Project Extensions/);
+
+    const leaked = [];
+    const walk = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (entry.name.startsWith('._')) leaked.push(path.join(dir, entry.name));
+        if (entry.isDirectory()) walk(path.join(dir, entry.name));
+      }
+    };
+    walk(target);
+    assert.deepEqual(leaked, [], `AppleDouble files leaked: ${leaked.join(', ')}`);
+  } finally { rmrf(target); }
+});
+
 test('init — CLAUDE.md ships all 12 rules', () => {
   const target = mktmp();
   try {
@@ -88,6 +133,7 @@ test('init — unknown agent exits non-zero', () => {
     const res = runCli(['init', target, '--agent', 'nonexistent-agent']);
     assert.notEqual(res.status, 0);
     assert.match(res.stderr, /Unknown agent/);
+    assert.match(res.stderr, /claude-code, codex/);
   } finally { rmrf(target); }
 });
 
