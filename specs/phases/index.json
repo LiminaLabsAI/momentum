@@ -37,8 +37,12 @@
       "topics": ["phase-7a", "brainstorm-gate", "autonomous-execution", "contract", "sentinel", "pre-tool-use-hook", "claude-code", "start-phase", "brainstorm-phase", "brainstorm-idea", "start-project", "write-discipline", "gitignore", "appledouble", "test-glob", "filemode"]
     },
     "phase-7b-agent-runtime-compat": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["phase-7b", "adapter-contract-v3", "agent-runtime", "compatibility", "codex", "agents-md", "codex-hooks", "commands", "claude-code", "adapter-metadata", "tarball-shape", "npm-pack"]
+    },
+    "phase-7c-autonomous-tdd": {
+      "status": "in-progress",
+      "topics": ["phase-7c", "autonomous-execution", "tdd", "rule-13", "retry-budget", "antigravity", "systematic-debug", "subagent"]
     }
   }
 }
