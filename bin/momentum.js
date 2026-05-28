@@ -332,7 +332,7 @@ function init(targetDir, agent) {
   if (fs.existsSync(path.join(src, 'core', 'engines'))) {
     copyDir(
       path.join(src, 'core', 'engines'),
-      path.join(target, ...dests.engines)
+      path.join(target, ...(dests.engines || ['.agent', 'engines']))
     );
   }
 
@@ -429,7 +429,7 @@ function upgrade(targetDir, agent) {
   if (fs.existsSync(path.join(src, 'core', 'engines'))) {
     copyDir(
       path.join(src, 'core', 'engines'),
-      path.join(target, ...dests.engines),
+      path.join(target, ...(dests.engines || ['.agent', 'engines'])),
       upgradeOpts
     );
   }
