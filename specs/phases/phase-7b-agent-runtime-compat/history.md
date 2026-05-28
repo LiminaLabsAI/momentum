@@ -63,3 +63,11 @@ Affects-specs: specs/backlog/backlog.md
 Detail: Codex install smoke revealed `copyDir()` was copying macOS `._*` sidecar files into target projects. Added BUG-003 to backlog and fixed it by skipping `._*` and `.DS_Store` in both directory copy and file-walk helpers. Verification: Codex fresh install exits 0 and `find <target> -name '._*'` returns no files.
 
 ---
+
+### [EVALUATOR] 2026-05-28 — Cross-agent install and tarball-shape tests added
+Topics: tests, codex, claude-code, tarball-shape, enh-018
+Affects-phases: phase-7b-agent-runtime-compat
+Affects-specs: tests/install.test.js, tests/upgrade.test.js, tests/tarball.test.js
+Detail: Added regression tests proving Claude Code install output remains Claude-specific, Codex init/upgrade installs `AGENTS.md` + `.codex/hooks.json` + `.codex/commands/`, and `npm pack --dry-run --json` includes both adapter surfaces without leaking repo artifacts. Verification: `npm test` passed 62/62.
+
+---

@@ -28,7 +28,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 7b | Agent Runtime Compatibility | In Progress | 10% |
+| 7b | Agent Runtime Compatibility | In Progress | 80% |
 
 ## Upcoming Phases
 

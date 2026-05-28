@@ -29,11 +29,11 @@
 
 ## Group 3 — Tests + Packaging
 
-- [ ] Codex install/upgrade tests
-- [ ] Claude regression assertions
-- [ ] Tarball-shape test
-- [ ] `prepublishOnly` script
-- [ ] `npm test`
+- [x] Codex install/upgrade tests
+- [x] Claude regression assertions
+- [x] Tarball-shape test
+- [x] `prepublishOnly` script
+- [x] `npm test`
 - [ ] Group 3 commit: `test(adapter): codex install upgrade and tarball shape`
 
 ## Group 4 — Tracking + Release Prep
