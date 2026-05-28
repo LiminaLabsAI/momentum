@@ -284,24 +284,48 @@ momentum's content lives in two places:
 | Location | What goes here |
 |----------|----------------|
 | `core/<sub>/`                 | **Generic** — works for every supported agent. Default home for all commands, rules, scripts. |
-| `adapters/<agent>/<sub>/`     | **Agent-specific** — exploits a capability only that agent has (e.g., Claude Code subagents via the Task tool). |
+| `adapters/<agent>/<sub>/`     | **Agent-specific** — exploits a capability only that agent has (e.g., Claude Code subagents via the Task tool, Codex AGENTS.md / hook wiring). |
+
+### Adapter Contract v3
+
+Adapters declare their runtime surface in `adapters/<agent>/adapter.js`:
+
+- `displayName` — user-facing name shown by CLI help/errors
+- `destinations` — where generic `commands/`, `agent-rules/`, and `scripts/` install for that agent
+- `primaryInstruction` — root instruction file such as `CLAUDE.md` or `AGENTS.md`
+- `configFiles` — adapter-owned config files such as `.claude/settings.json` or `.codex/hooks.json`
+- `capabilities` — informational flags for features like hooks, slash commands, subagents, skills, browser/computer use
 
 The CLI walks `core/<sub>/` first, then **overlays** any `adapters/<chosen>/<sub>/` content on top — for these subdirs:
 
 | Subdir         | Default destination in target |
 |----------------|--------------------------------|
-| `commands/`    | `.claude/commands/` (claude-code) |
-| `agent-rules/` | `.agent/rules/`               |
-| `scripts/`     | `scripts/`                    |
+| `commands/`    | adapter-owned command surface, e.g. `.claude/commands/` or `.codex/commands/` |
+| `agent-rules/` | usually `.agent/rules/` |
+| `scripts/`     | usually `scripts/` |
 
 Adapters declare these destinations in their `adapter.js`:
 
 ```js
 module.exports = {
+  displayName: 'Claude Code',
   destinations: {
     commands: ['.claude', 'commands'],
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
+  },
+  primaryInstruction: {
+    source: ['instructions', 'CLAUDE.md'],
+    destination: ['CLAUDE.md'],
+    markerAware: true,
+  },
+  configFiles: [
+    { source: ['settings.json'], destination: ['.claude', 'settings.json'] },
+  ],
+  capabilities: {
+    hooks: true,
+    slashCommands: true,
+    subagents: true,
   },
   runInstall(targetDir, adapterDir, helpers) { /* settings.json wiring, etc. */ },
   runUpgrade(targetDir, adapterDir, helpers) { /* same */ },
@@ -309,6 +333,8 @@ module.exports = {
 ```
 
 **The overlay is additive-only.** A given filename may live in EITHER `core/<sub>/` OR exactly one `adapters/<name>/<sub>/`, never both. Duplicates are caught by the CLI **before any writes** and exit with a clear error. To add an agent-specific variant of a generic command, give it a different name (or move the generic one out of `core/`).
+
+Root instruction files and config files are adapter-owned. Do not put Claude Code-specific conventions in `core/`, and do not reduce Claude Code behavior to match another agent. Add the other agent's behavior in its adapter.
 
 ## Contributing
 
