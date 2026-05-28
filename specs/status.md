@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-05-28
-> **Current Phase**: Phase 7c — Autonomous Execution & TDD (`in-progress`)
-> **Latest Release**: v0.9.0 — Agent Runtime Compatibility
+> **Current Phase**: Phase 8 — Parallel Worktree Orchestration (`not started`)
+> **Latest Release**: v0.10.0 — Autonomous Execution & TDD
 > **Health**: On Track
 
 ## Summary
@@ -24,18 +24,18 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 6 | Adapter Overlay & Verification | Complete | v0.7.0 / v0.7.1 (2026-05-08) |
 | 7a | Planning Contracts | Complete | v0.8.0 (2026-05-27) |
 | 7b | Agent Runtime Compatibility | Complete | v0.9.0 (2026-05-28) |
+| 7c | Autonomous Execution & TDD | Complete | v0.10.0 (2026-05-28) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 7c | Autonomous Execution & TDD | In Progress | 0% (implementation active) |
+| 8 | Parallel Worktree Orchestration | Not Started | 0% (brainstorm pending) |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 8 | Parallel Worktree Orchestration | Not Started (target v0.11.0) | Multiple concurrent streams via git worktrees; `momentum worktree-manager` command; branch-per-stream conventions; conflict avoidance; cross-stream status visibility |
 | 9 | Hardening & Activation | Not Started (target v0.12.0) | systematic-debugging skill (full); SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting) |
 | 10 | Reach | Not Started (target v0.13.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
 | 11 | Intelligence | Not Started (target v0.14.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
@@ -55,11 +55,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Implement Group 2: Antigravity adapter support (`adapters/antigravity/` and dynamic tests)
-2. Implement Group 3: TDD Rule 13 support and templates
-3. Implement Group 4: Autonomous execution engine (`core/engines/subagent-dispatch.md`) and `/start-phase` integration
-4. Implement Group 5: Systematic debugging recipe (`core/commands/systematic-debug.md`)
-5. Validate via `npm test` and packaging checks.
+1. Brainstorm Phase 8 — Parallel Worktree Orchestration (target v0.11.0).
+2. Inputs: Multiple concurrent streams via git worktrees, `momentum worktree-manager` command, branch-per-stream conventions, conflict avoidance, and cross-stream status visibility.
 
 ## Key Decisions Made
 
