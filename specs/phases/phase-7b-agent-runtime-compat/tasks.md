@@ -38,9 +38,9 @@
 
 ## Group 4 — Tracking + Release Prep
 
-- [ ] Version → `0.9.0`
-- [ ] Update status, roadmap, backlog, changelog
-- [ ] Update phase tasks/history final state
-- [ ] Final `npm test`
-- [ ] Group 4 commit: `chore(release): prepare v0.9.0 agent runtime compatibility`
+- [x] Version → `0.9.0`
+- [x] Update status, roadmap, backlog, changelog
+- [x] Update phase tasks/history final state
+- [x] Final `npm test`
+- [x] Group 4 commit: `chore(release): prepare v0.9.0 agent runtime compatibility`
 - [ ] STOP — await user approval for merge/tag/publish

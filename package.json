@@ -1,6 +1,6 @@
 {
   "name": "@avinash-singh-io/momentum",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Spec-driven development toolkit for AI coding agents",
   "bin": {
     "momentum": "bin/momentum.js"
@@ -25,6 +25,7 @@
   },
   "keywords": [
     "claude-code",
+    "codex",
     "ai",
     "spec-driven",
     "momentum",

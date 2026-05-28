@@ -28,7 +28,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 7b | Agent Runtime Compatibility | In Progress | 80% |
+| 7b | Agent Runtime Compatibility | In Progress | 95% (release prep complete; awaiting merge/release approval) |
 
 ## Upcoming Phases
 
@@ -55,11 +55,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Phase 7b Group 0 — document Adapter Contract v3 and Claude/Codex capability matrix.
-2. Then Group 1/2 — add dynamic adapter metadata/plumbing and Codex adapter MVP.
-3. Group 3 — add Codex install/upgrade tests, Claude regression tests, and ENH-018 tarball-shape test.
-4. Group 4 — release prep for v0.9.0.
-5. ENH-017 (project-name preservation across upgrade) — Phase 9 candidate.
+1. Phase 7b Group 4 — final verification and commit release prep.
+2. Stop for user approval before merge to `staging`/`main`, tag `v0.9.0`, and `npm publish --access public`.
+3. Next phase after release: Phase 7c — Autonomous Execution & TDD, built on Adapter Contract v3.
+4. ENH-017 (project-name preservation across upgrade) — Phase 9 candidate.
 
 ## Key Decisions Made
 

@@ -22,6 +22,7 @@ npx @avinash-singh-io/momentum init ./my-project
 With a specific agent:
 ```bash
 npx @avinash-singh-io/momentum init ./my-project --agent claude-code
+npx @avinash-singh-io/momentum init ./my-project --agent codex
 ```
 
 > Migrating from v0.5.x or earlier? The `--coding-agent` flag was renamed to `--agent` in v0.6.0. The old flag now exits with a rename hint.
@@ -37,6 +38,7 @@ git clone https://github.com/avinash-singh-io/momentum
 | Agent | Flag | Status |
 |-------|------|--------|
 | Claude Code | `claude-code` (default) | Supported |
+| Codex | `codex` | Supported |
 | Cursor, Gemini CLI, others | — | Planned |
 
 ---
@@ -47,13 +49,16 @@ After `momentum init`, your project has everything it needs to run a structured 
 
 ```
 your-project/
-├── CLAUDE.md                        ← Agent rules (12 autonomous behaviors)
+├── CLAUDE.md / AGENTS.md            ← Agent-specific primary instructions
 ├── README.md                        ← Project readme template
 ├── scripts/
 │   └── check-history-reminder.sh   ← Hook: reminds agent to log history
 ├── .claude/
-│   ├── settings.json               ← Wires the hook into Claude Code
-│   └── commands/                   ← 8 slash commands
+│   ├── settings.json               ← Claude Code hook config
+│   └── commands/                   ← Claude Code slash commands
+├── .codex/                         ← Codex projects use this instead
+│   ├── hooks.json                  ← Codex hook config
+│   └── commands/                   ← Codex command recipes
 │       ├── brainstorm-idea.md
 │       ├── start-project.md
 │       ├── brainstorm-phase.md

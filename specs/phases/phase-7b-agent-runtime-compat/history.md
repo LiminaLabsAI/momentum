@@ -71,3 +71,11 @@ Affects-specs: tests/install.test.js, tests/upgrade.test.js, tests/tarball.test.
 Detail: Added regression tests proving Claude Code install output remains Claude-specific, Codex init/upgrade installs `AGENTS.md` + `.codex/hooks.json` + `.codex/commands/`, and `npm pack --dry-run --json` includes both adapter surfaces without leaking repo artifacts. Verification: `npm test` passed 62/62.
 
 ---
+
+### [NOTE] 2026-05-28 — v0.9.0 release prep complete
+Topics: release, v0.9.0, agent-runtime-compatibility
+Affects-phases: phase-7b-agent-runtime-compat, phase-7c (downstream)
+Affects-specs: specs/status.md, specs/planning/roadmap.md, specs/backlog/backlog.md, specs/changelog/2026-05.md
+Detail: Prepared v0.9.0 release tracking: package version bumped, roadmap/status/backlog/changelog updated, README supported-agent docs refreshed, and original autonomous execution/TDD scope carried forward to Phase 7c. Final verification passed: `npm test` 62/62. Awaiting the user-approved merge/tag/publish gate.
+
+---
