@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-05-28
-> **Current Phase**: Phase 7c — Autonomous Execution & TDD (`not started`)
+> **Current Phase**: Phase 7c — Autonomous Execution & TDD (`in-progress`)
 > **Latest Release**: v0.9.0 — Agent Runtime Compatibility
 > **Health**: On Track
 
@@ -29,7 +29,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 7c | Autonomous Execution & TDD | Not Started | 0% (brainstorm pending) |
+| 7c | Autonomous Execution & TDD | In Progress | 0% (implementation active) |
 
 ## Upcoming Phases
 
@@ -55,9 +55,11 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Brainstorm Phase 7c — Autonomous Execution & TDD, built on Adapter Contract v3.
-2. Inputs: the 7a autonomy contract, Codex/Claude adapter boundaries from 7b, prior `phase-7-subagent-engine` branch as reference only, TDD Rule 13, and retry-budget policy.
-3. ENH-017 (project-name preservation across upgrade) — Phase 9 candidate.
+1. Implement Group 2: Antigravity adapter support (`adapters/antigravity/` and dynamic tests)
+2. Implement Group 3: TDD Rule 13 support and templates
+3. Implement Group 4: Autonomous execution engine (`core/engines/subagent-dispatch.md`) and `/start-phase` integration
+4. Implement Group 5: Systematic debugging recipe (`core/commands/systematic-debug.md`)
+5. Validate via `npm test` and packaging checks.
 
 ## Key Decisions Made
 
