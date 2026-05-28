@@ -155,6 +155,7 @@ const DEFAULT_OVERLAY_DESTS = {
   commands: ['.claude', 'commands'],
   'agent-rules': ['.agent', 'rules'],
   scripts: ['scripts'],
+  engines: ['.agent', 'engines'],
 };
 
 function listFilesRecursive(dir) {
@@ -326,6 +327,15 @@ function init(targetDir, agent) {
   copyFile(hookSrc, hookDest);
   fs.chmodSync(hookDest, 0o755);
 
+  // core/engines/
+  console.log('→ Installing execution engines...');
+  if (fs.existsSync(path.join(src, 'core', 'engines'))) {
+    copyDir(
+      path.join(src, 'core', 'engines'),
+      path.join(target, ...dests.engines)
+    );
+  }
+
   // .agent/rules/project.md
   console.log('→ Installing agent rules...');
   const rulesDest = path.join(target, ...dests['agent-rules'], 'project.md');
@@ -412,6 +422,16 @@ function upgrade(targetDir, agent) {
     for (const f of fs.readdirSync(scriptsDir)) {
       if (f.endsWith('.sh')) fs.chmodSync(path.join(scriptsDir, f), 0o755);
     }
+  }
+
+  // Upgrade execution engines
+  console.log('→ Upgrading execution engines...');
+  if (fs.existsSync(path.join(src, 'core', 'engines'))) {
+    copyDir(
+      path.join(src, 'core', 'engines'),
+      path.join(target, ...dests.engines),
+      upgradeOpts
+    );
   }
 
   // Upgrade agent rules — marker-aware (preserves Project Extensions block)

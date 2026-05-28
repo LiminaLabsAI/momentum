@@ -28,6 +28,7 @@ module.exports = {
     commands: ['.claude', 'commands'],
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
+    engines: ['.agent', 'engines'],
   },
 
   primaryInstruction: {
