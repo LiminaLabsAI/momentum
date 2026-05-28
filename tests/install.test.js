@@ -96,6 +96,28 @@ test('init — codex install produces AGENTS.md hooks and command recipes', () =
   } finally { rmrf(target); }
 });
 
+test('init — antigravity install produces AGENTS.md and command recipes', () => {
+  const target = mktmp();
+  try {
+    const res = runCli(['init', target, '--agent', 'antigravity']);
+    assert.equal(res.status, 0, `init failed: ${res.stderr}`);
+
+    assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), true);
+    assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), false);
+    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'start-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
+    assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
+    assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.claude')), false);
+    assert.equal(fs.existsSync(path.join(target, '.codex')), false);
+
+    const agentsMd = read(path.join(target, 'AGENTS.md'));
+    assert.match(agentsMd, /Antigravity Native Artifacts Integration/);
+    assert.match(agentsMd, /## Project Extensions/);
+  } finally { rmrf(target); }
+});
+
 test('init — CLAUDE.md ships all 12 rules', () => {
   const target = mktmp();
   try {
@@ -133,7 +155,7 @@ test('init — unknown agent exits non-zero', () => {
     const res = runCli(['init', target, '--agent', 'nonexistent-agent']);
     assert.notEqual(res.status, 0);
     assert.match(res.stderr, /Unknown agent/);
-    assert.match(res.stderr, /claude-code, codex/);
+    assert.match(res.stderr, /antigravity, claude-code, codex/);
   } finally { rmrf(target); }
 });
 
