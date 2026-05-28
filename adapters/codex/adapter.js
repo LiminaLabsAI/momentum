@@ -16,6 +16,7 @@ module.exports = {
     commands: ['.codex', 'commands'],
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
+    engines: ['.agent', 'engines'],
   },
 
   primaryInstruction: {

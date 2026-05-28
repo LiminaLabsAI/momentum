@@ -110,3 +110,24 @@ test('upgrade — codex AGENTS.md preserves Project Extensions byte-for-byte', (
     assert.equal(fs.existsSync(path.join(target, '.codex', 'hooks.json')), true);
   } finally { rmrf(target); }
 });
+
+test('upgrade — antigravity AGENTS.md preserves Project Extensions byte-for-byte', () => {
+  const target = mktmp();
+  try {
+    runCli(['init', target, '--agent', 'antigravity']);
+    const agentsMdPath = path.join(target, 'AGENTS.md');
+    const original = read(agentsMdPath);
+    const userExtension = '\n### Local Antigravity Rule\n\nAlways use Artifacts.\n';
+    write(agentsMdPath, original + userExtension);
+
+    const res = runCli(['upgrade', target, '--agent', 'antigravity']);
+    assert.equal(res.status, 0, `upgrade failed: ${res.stderr}`);
+    assert.match(res.stdout, /AGENTS\.md:\s+unchanged|AGENTS\.md:\s+updated/);
+    const upgraded = read(agentsMdPath);
+    assert.ok(upgraded.includes(userExtension),
+      'Antigravity user extension should be preserved verbatim');
+    assert.match(upgraded, /Antigravity Native Artifacts Integration/);
+    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'engines', 'subagent-dispatch.md')), true);
+  } finally { rmrf(target); }
+});
