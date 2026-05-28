@@ -10,6 +10,7 @@
 | 5 | Rules & Upgrade Safety | Complete (v0.6.0) | [phase-5-rules-and-upgrade/](phase-5-rules-and-upgrade/) |
 | 6 | Adapter Overlay & Verification | Complete (v0.7.0) | [phase-6-overlay-and-verify/](phase-6-overlay-and-verify/) |
 | 7a | Planning Contracts | Complete (v0.8.0) | [phase-7a-planning-contracts/](phase-7a-planning-contracts/) |
+| 7b | Agent Runtime Compatibility | In Progress (target v0.9.0) | [phase-7b-agent-runtime-compat/](phase-7b-agent-runtime-compat/) |
 
 ## Phase Structure
 
