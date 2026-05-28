@@ -23,6 +23,7 @@
 |----|-------|----------|--------|-------|--------|
 | BUG-001 | install.sh: `realpath` blank line when target dir doesn't exist | P3 | resolved | phase-1 | Fixed in Phase 1: `mkdir -p "$TARGET"` now runs before `realpath` |
 | BUG-002 | v0.7.0 npm tarball missing adapter overlay files (`/review-code` not shipped) | P0 | resolved | post-phase-6 | Critical: the `files` glob `adapters/**/commands/` matched only the dir, not its contents. Users running `npx @avinash-singh-io/momentum init` from npm got no `/review-code`. Caught immediately post-publish by inspecting the published tarball. Fixed via glob change to `adapters/**/commands/**` (and `agent-rules/**`, `scripts/**`); patch-released as v0.7.1. |
+| BUG-003 | `momentum init` copied macOS AppleDouble `._*` metadata files into target projects | P1 | resolved | phase-7b | Discovered during Codex install smoke on the T7 Shield worktree. `copyDir()` copied external-drive AppleDouble sidecar files from `core/` and command directories into fresh installs. Fixed by skipping `._*` and `.DS_Store` in `copyDir()` and `listFilesRecursive()`. |
 
 ## Features
 

@@ -10,6 +10,8 @@
     "core/",
     "adapters/**/adapter.js",
     "adapters/**/settings.json",
+    "adapters/**/hooks.json",
+    "adapters/**/instructions/**",
     "adapters/**/commands/**",
     "adapters/**/agent-rules/**",
     "adapters/**/scripts/**"

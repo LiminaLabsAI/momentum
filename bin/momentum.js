@@ -20,6 +20,7 @@ function copyFile(src, dest) {
 function copyDir(srcDir, destDir, opts = {}) {
   fs.mkdirSync(destDir, { recursive: true });
   for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
+    if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
     const src = path.join(srcDir, entry.name);
     const dest = path.join(destDir, entry.name);
     const rel = path.relative(srcDir, src);
@@ -161,6 +162,7 @@ function listFilesRecursive(dir) {
   const result = [];
   const walk = (d, prefix) => {
     for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
       const rel = prefix ? path.join(prefix, entry.name) : entry.name;
       if (entry.isDirectory()) walk(path.join(d, entry.name), rel);
       else result.push(rel);

@@ -47,3 +47,19 @@ Affects-specs: bin/momentum.js
 Detail: CLI agent discovery is now dynamic from `adapters/*/adapter.js`, and adapters can declare a marker-aware root instruction file. Claude Code now installs/upgrades `CLAUDE.md` through adapter metadata while preserving the existing file content and behavior. Verification: `node --test --test-concurrency=1 tests/install.test.js tests/upgrade.test.js tests/overlay.test.js` passed 16/16.
 
 ---
+
+### [FEATURE] 2026-05-28 — Codex adapter MVP added
+Topics: codex, agents-md, hooks, command-recipes
+Affects-phases: phase-7b-agent-runtime-compat
+Affects-specs: adapters/codex/adapter.js, adapters/codex/instructions/AGENTS.md, adapters/codex/hooks.json
+Detail: Added `adapters/codex/` with `AGENTS.md` as the primary instruction surface, `.codex/hooks.json` for Codex hook wiring, and `.codex/commands/` as the destination for generic momentum command recipes. Claude Code remains untouched except for regression-tested adapter metadata.
+
+---
+
+### [DISCOVERY] 2026-05-28 — BUG-003: AppleDouble sidecars leaked into installs
+Topics: bug-003, appledouble, install, copydir
+Affects-phases: phase-7b-agent-runtime-compat
+Affects-specs: specs/backlog/backlog.md
+Detail: Codex install smoke revealed `copyDir()` was copying macOS `._*` sidecar files into target projects. Added BUG-003 to backlog and fixed it by skipping `._*` and `.DS_Store` in both directory copy and file-walk helpers. Verification: Codex fresh install exits 0 and `find <target> -name '._*'` returns no files.
+
+---

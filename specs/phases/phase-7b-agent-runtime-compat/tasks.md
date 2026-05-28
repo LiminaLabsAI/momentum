@@ -20,11 +20,11 @@
 
 ## Group 2 — Codex Adapter
 
-- [ ] Add `adapters/codex/adapter.js`
-- [ ] Add Codex `AGENTS.md`
-- [ ] Add `.codex/hooks.json`
-- [ ] Add Codex command recipes
-- [ ] Verify Codex init/upgrade manually or by tests
+- [x] Add `adapters/codex/adapter.js`
+- [x] Add Codex `AGENTS.md`
+- [x] Add `.codex/hooks.json`
+- [x] Add Codex command recipes
+- [x] Verify Codex init/upgrade manually or by tests
 - [ ] Group 2 commit: `feat(adapter/codex): install AGENTS.md hooks and command recipes`
 
 ## Group 3 — Tests + Packaging
