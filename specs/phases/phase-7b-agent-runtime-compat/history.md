@@ -79,3 +79,11 @@ Affects-specs: specs/status.md, specs/planning/roadmap.md, specs/backlog/backlog
 Detail: Prepared v0.9.0 release tracking: package version bumped, roadmap/status/backlog/changelog updated, README supported-agent docs refreshed, and original autonomous execution/TDD scope carried forward to Phase 7c. Final verification passed: `npm test` 62/62. Awaiting the user-approved merge/tag/publish gate.
 
 ---
+
+### [NOTE] 2026-05-28 — v0.9.0 released
+Topics: release, v0.9.0, npm, codex
+Affects-phases: phase-7b-agent-runtime-compat, phase-7c
+Affects-specs: specs/status.md, specs/planning/roadmap.md, specs/changelog/2026-05.md
+Detail: User approved release. Merged `phase-7b-agent-runtime-compat` to `staging`, verified `npm test` 62/62, merged `staging` to `main`, tagged `v0.9.0`, and published `@avinash-singh-io/momentum@0.9.0` to npm. Post-publish verification returned version `0.9.0`.
+
+---

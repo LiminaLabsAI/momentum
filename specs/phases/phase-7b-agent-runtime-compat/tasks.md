@@ -43,4 +43,4 @@
 - [x] Update phase tasks/history final state
 - [x] Final `npm test`
 - [x] Group 4 commit: `chore(release): prepare v0.9.0 agent runtime compatibility`
-- [ ] STOP — await user approval for merge/tag/publish
+- [x] STOP — user approved merge/tag/publish; v0.9.0 released
