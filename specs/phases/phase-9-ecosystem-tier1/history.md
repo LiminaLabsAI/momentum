@@ -71,3 +71,11 @@ Affects-specs: none
 Detail: The cerebrio constellation (cerebrio-sapience, cerebrio-frontend, cerebrio-infra, open-guard, open-shield-python, cerebrio-py, cerebrio-cli, cerebrio-bench) will dogfood this phase. The hand-maintained `cerebrio/CLAUDE.md` parent file becomes a thin shell pointing at the ecosystem manifest. The originating session (Memory module v1 shipping, 2026-06-05 to 2026-06-06) becomes initiative 0001 retroactively.
 
 ---
+
+### [FEATURE] 2026-06-07 — Group 0 landed: schemas, layout doc, lib helpers
+Topics: ecosystem, schema, lib, group-0
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: core/ecosystem/schema/ecosystem.schema.json, core/ecosystem/schema/initiative.schema.json, core/ecosystem/layout.md, core/ecosystem/lib/index.js
+Detail: Group 0 (contracts and on-disk layout) is complete. Wrote the two JSON Schemas (ecosystem manifest + initiative frontmatter), the on-disk layout reference doc, and a zero-dependency lib exposing findRoot/loadManifest/listMembers/findMember/validateManifest. validateManifest is a hand-rolled structural check that mirrors the JSON Schema; we keep momentum CLI dependency-free (no ajv/joi). Smoke-tested via inline node script: valid manifest accepted, malformed manifests yield typed-error lists; findRoot returns null outside an ecosystem. Existing 64-test suite green; no regressions.
+
+---

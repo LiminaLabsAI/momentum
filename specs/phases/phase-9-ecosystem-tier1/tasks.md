@@ -1,11 +1,11 @@
 # Phase 9 — Ecosystem (Tier 1): Tasks
 
-- `[ ]` **Group 0 — Schemas & Layout**
-  - `[ ]` Write `core/ecosystem/schema/ecosystem.schema.json`
-  - `[ ]` Write `core/ecosystem/schema/initiative.schema.json`
-  - `[ ]` Write `core/ecosystem/layout.md` (on-disk layout)
-  - `[ ]` Implement `core/ecosystem/lib/index.js` (`loadManifest`, `findRoot`, `listMembers`, `validateManifest`)
-  - `[ ]` Bounded-walk + caching for `findRoot` (max 5 parents)
+- `[x]` **Group 0 — Schemas & Layout**
+  - `[x]` Write `core/ecosystem/schema/ecosystem.schema.json`
+  - `[x]` Write `core/ecosystem/schema/initiative.schema.json`
+  - `[x]` Write `core/ecosystem/layout.md` (on-disk layout)
+  - `[x]` Implement `core/ecosystem/lib/index.js` (`loadManifest`, `findRoot`, `listMembers`, `findMember`, `validateManifest`)
+  - `[x]` Bounded-walk + caching for `findRoot` (max 5 parents)
 
 - `[ ]` **Group 1 — Manifest CLI**
   - `[ ]` `bin/commands/ecosystem.js` with `init / add / remove / status`

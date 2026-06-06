@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/avinash-singh-io/momentum/schemas/ecosystem-v1.json",
+  "title": "Momentum Ecosystem Manifest",
+  "description": "Declares a set of related momentum-installed repos that coordinate as one product. Lives at the root of an ecosystem repo (sibling to its member repos).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "version", "members"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Lowercase slug identifying the ecosystem. Used as the default folder name for `momentum ecosystem init`."
+    },
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Manifest schema version. Locked to 1 until a breaking change."
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO-8601 date the ecosystem manifest was created."
+    },
+    "members": {
+      "type": "array",
+      "description": "Repos belonging to this ecosystem. Each entry references a sibling directory on disk.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "role"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Stable slug for this member. Used in dependency edges and session log entries."
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Filesystem path to the member repo, relative to the ecosystem root."
+          },
+          "role": {
+            "type": "string",
+            "enum": ["platform", "client", "library", "infra", "bench", "other"],
+            "description": "Coarse role classification. Used by /track and consumers to render groupings."
+          },
+          "owns": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Optional list of named artifacts this member owns (e.g. `openapi.json`, `aws.account.XXX`). Free-form identifiers."
+          },
+          "consumes": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Optional list of named artifacts this member consumes from siblings."
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Directed edges between members. Used for cross-repo coordination (deploy order, contract drift).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "kind"],
+        "properties": {
+          "from": {"type": "string", "description": "Member id of the dependent."},
+          "to": {"type": "string", "description": "Member id of the dependency."},
+          "kind": {
+            "type": "string",
+            "enum": ["api-contract", "library", "deploy", "build-time", "other"],
+            "description": "Nature of the dependency."
+          },
+          "note": {"type": "string", "description": "Optional human-readable note."}
+        }
+      }
+    }
+  }
+}
