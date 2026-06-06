@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-05-27",
+  "updated": "2026-06-07",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -43,6 +43,10 @@
     "phase-7c-autonomous-tdd": {
       "status": "in-progress",
       "topics": ["phase-7c", "autonomous-execution", "tdd", "rule-13", "retry-budget", "antigravity", "systematic-debug", "subagent"]
+    },
+    "phase-9-ecosystem-tier1": {
+      "status": "not-started",
+      "topics": ["phase-9", "ecosystem", "multi-repo", "cross-repo", "manifest", "initiative", "session-log", "track", "post-tool-use-hook", "additive", "tier-1"]
     }
   }
 }
