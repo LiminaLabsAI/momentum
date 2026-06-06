@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-05-28
-> **Current Phase**: Phase 8 — Parallel Worktree Orchestration (`not started`)
+> **Last Updated**: 2026-06-07
+> **Current Phase**: Phase 9 — Ecosystem (Tier 1) (`planned, awaiting /start-phase`)
 > **Latest Release**: v0.10.0 — Autonomous Execution & TDD
 > **Health**: On Track
 
@@ -30,16 +30,21 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 8 | Parallel Worktree Orchestration | Not Started | 0% (brainstorm pending) |
+| 9 | Ecosystem (Tier 1) | Planned, awaiting `/start-phase` | brainstorm landed (PR #1, 2026-06-07) |
+
+> Phase 8 (Parallel Worktree Orchestration) was implemented on the
+> `phase-8-parallel-worktrees` branch but has not been merged or
+> released. Treat its status as "completed on branch, awaiting release
+> decision" until that's resolved as a separate workstream.
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 9 | Hardening & Activation | Not Started (target v0.12.0) | systematic-debugging skill (full); SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting) |
-| 10 | Reach | Not Started (target v0.13.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 11 | Intelligence | Not Started (target v0.14.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 12 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
+| 10 | Hardening & Activation | Not Started (target v0.13.0) | systematic-debugging skill (full); SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting) |
+| 11 | Reach | Not Started (target v0.14.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 12 | Intelligence | Not Started (target v0.15.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 13 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
 
 ## Blockers
 
@@ -55,8 +60,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Brainstorm Phase 8 — Parallel Worktree Orchestration (target v0.11.0).
-2. Inputs: Multiple concurrent streams via git worktrees, `momentum worktree-manager` command, branch-per-stream conventions, conflict avoidance, and cross-stream status visibility.
+1. Run `/start-phase` to begin Phase 9 — Ecosystem (Tier 1) implementation (target v0.12.0).
+2. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream.
 
 ## Key Decisions Made
 
