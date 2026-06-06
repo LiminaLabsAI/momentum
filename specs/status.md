@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 9 — Ecosystem (Tier 1) (`planned, awaiting /start-phase`)
+> **Current Phase**: Phase 9 — Ecosystem (Tier 1) (`in-progress`)
 > **Latest Release**: v0.10.0 — Autonomous Execution & TDD
 > **Health**: On Track
 
@@ -30,7 +30,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 9 | Ecosystem (Tier 1) | Planned, awaiting `/start-phase` | brainstorm landed (PR #1, 2026-06-07) |
+| 9 | Ecosystem (Tier 1) | In Progress | brainstorm landed (PR #1); /start-phase 2026-06-07; Group 0 (schemas + layout) up next |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
