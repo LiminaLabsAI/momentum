@@ -4,10 +4,10 @@
 
 ## Group 0 — Foundations & tooling (Sequential)
 
-- [ ] Renumber `specs/planning/roadmap.md` — Site Polish = 13, Reach = 14, Intelligence = 15, Platform = 16
-- [ ] Renumber `specs/status.md` Upcoming Phases + Active Phase → Phase 13 — Site Polish
-- [ ] Update `specs/phases/README.md` — append Phase 13 row, status In Progress
-- [ ] Update `specs/phases/index.json` — add `phase-13-site-polish` entry with topic keywords
+- [x] Renumber `specs/planning/roadmap.md` — Site Polish = 13, Reach = 14, Intelligence = 15, Platform = 16 (Timeline + Dependencies + Milestones)
+- [x] Renumber `specs/status.md` Upcoming Phases + Active Phase → Phase 13 — Site Polish
+- [x] Update `specs/phases/README.md` — append Phase 13 row, status In Progress
+- [x] Update `specs/phases/index.json` — add `phase-13-site-polish` entry with topic keywords
 - [ ] `npm install -D rehype-mermaid playwright` in `/site`
 - [ ] Wire Mermaid into `astro.config.mjs` via `markdown.rehypePlugins`
 - [ ] Smoke-test: add `flowchart` block to a stub page, build, verify SVG output in `dist`

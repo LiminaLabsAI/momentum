@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-08
-> **Current Phase**: (between phases — Phase 13 Reach planning pending)
+> **Current Phase**: 13 — Site Polish & Content Depth (target v0.16.0)
 > **Latest Release**: v0.15.0 — Public Site
 > **Health**: On Track
 
@@ -34,7 +34,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 12 released as v0.15.0 on 2026-06-08. Phase 13 (Reach) planning pending. | | |
+| 13 | Site Polish & Content Depth | In Progress | Group 0 (Mermaid tooling + roadmap renumber + diagram skeletons + word-count baseline) — kicking off the trymomentum.github.io revamp toward v0.16.0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -45,9 +45,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 13 | Reach | Not Started (target v0.16.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 14 | Intelligence | Not Started (target v0.17.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 15 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 14 | Reach | Not Started (target v0.17.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 15 | Intelligence | Not Started (target v0.18.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 16 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -71,7 +71,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 13 — Reach** (target v0.16.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
+1. **Phase 13 Group 0 — Foundations & tooling.** Install Mermaid plugin (`rehype-mermaid` + `playwright`) in `/site`; brand-themed Mermaid CSS; scaffold `site/src/components/diagrams/`; capture word-count baseline; smoke build green.
+2. **Phase 13 Groups 1 + 2 + 3 + 4 (parallel).** Landing wholesale rewrite · Concepts/Skills/Rules deepening · Multi-repo deep dive (Ecosystem rewrite + NEW /orchestration/) · Tutorial + IDE/FAQ/About refinements.
+3. **Phase 13 Group 5 — Verification + v0.16.0 release.** Lighthouse · linkinator · word-count assertion · CLI regression · retrospective · npm publish.
 4. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
