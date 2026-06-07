@@ -21,8 +21,21 @@
 const fs = require('fs');
 const path = require('path');
 
-const MAX_WALK_DEPTH = 5;
+// Default upper bound on parent-directory walk-up. Honored by both this
+// module's findRoot and core/ecosystem/scripts/session-append.sh. The
+// authoritative export lives in core/ecosystem/lib/state.js as of
+// Phase 10 (ENH-022); we keep MAX_WALK_DEPTH as a backward-compat alias.
+const MAX_PARENT_WALK_DEFAULT = 5;
+const MAX_WALK_DEPTH = MAX_PARENT_WALK_DEFAULT;
 const MANIFEST_FILENAME = 'ecosystem.json';
+
+function resolveMaxParentWalk() {
+  const raw = process.env.MOMENTUM_MAX_PARENT_WALK;
+  if (raw === undefined || raw === '') return MAX_PARENT_WALK_DEFAULT;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) return MAX_PARENT_WALK_DEFAULT;
+  return Math.floor(n);
+}
 
 // Per-process cache: absolute-startPath-prefix → resolved root (or null)
 const rootCache = new Map();
@@ -30,8 +43,9 @@ const rootCache = new Map();
 /**
  * Walk up from `startPath` looking for a directory containing
  * `ecosystem.json`. Returns the absolute root path or null.
- * Bounded to MAX_WALK_DEPTH parents so a misconfigured caller can't
- * scan the entire filesystem.
+ * Bounded to `resolveMaxParentWalk()` parents (default 5, override via
+ * the `MOMENTUM_MAX_PARENT_WALK` env var) so a misconfigured caller
+ * can't scan the entire filesystem.
  *
  * Memoized: repeated calls with paths under the same root return
  * instantly. Cache key is the absolute starting path.
@@ -44,8 +58,9 @@ function findRoot(startPath) {
   if (rootCache.has(abs)) {
     return rootCache.get(abs);
   }
+  const maxDepth = resolveMaxParentWalk();
   let current = abs;
-  for (let i = 0; i <= MAX_WALK_DEPTH; i++) {
+  for (let i = 0; i <= maxDepth; i++) {
     const candidate = path.join(current, MANIFEST_FILENAME);
     let stat;
     try {
@@ -218,7 +233,9 @@ function _clearRootCache() {
 
 module.exports = {
   MAX_WALK_DEPTH,
+  MAX_PARENT_WALK_DEFAULT,
   MANIFEST_FILENAME,
+  resolveMaxParentWalk,
   findRoot,
   loadManifest,
   listMembers,

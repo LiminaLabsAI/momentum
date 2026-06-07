@@ -111,3 +111,11 @@ Affects-specs: specs/status.md, specs/planning/roadmap.md, specs/phases/index.js
 Detail: This Phase 10 (Ecosystem Activation & Polish) takes the v0.13.0 slot previously held by Hardening & Activation. Roadmap updated: Phase 11 (NEW) = Dynamic Orchestration & Context Handover → v0.14.0; Phase 12 = Reach → v0.15.0; Phase 13 = Intelligence → v0.16.0; Phase 14 = Platform → v1.0 (target unchanged). Hardening & Activation moves to Unscheduled Future Work.
 
 ---
+
+### [FEATURE] 2026-06-07 — Group 0 landed: state machine + reusable pointer helpers
+Topics: phase-10, group-0, state-machine, pointer-helpers, max-parent-walk, env-override
+Affects-phases: phase-10-ecosystem-activation
+Affects-specs: core/ecosystem/lib/state.js, core/ecosystem/lib/pointer.js, core/ecosystem/lib/index.js, bin/ecosystem.js, core/ecosystem/scripts/session-append.sh, tests/helpers/ecosystem-fixtures.js, tests/state-machine.test.js
+Detail: Group 0 (sequential, blocks G1/G2/G3) landed. `core/ecosystem/lib/state.js` exposes `detectState(repoPath)` returning one of seven states (standalone, member, leader, leader-and-member, broken-manifest, broken-pointer, broken-orphan), `findRegistration(repoPath)` walking up + scanning siblings to find membership in any reachable ecosystem, and `availableTransitions(state, context)` returning user-facing next-step commands with teaching descriptions for the doctor recipe. `core/ecosystem/lib/pointer.js` extracted the POINTER_BEGIN/END sentinels and `findPrimaryInstructionFile`/`hasPointerBlock`/`ensurePointerInjected`/`stripPointer` helpers from `bin/ecosystem.js` so `join`/`leave` can reuse them without duplication. `bin/ecosystem.js` refactored to import from pointer.js — no behavior change. ENH-022 partial fix: `MOMENTUM_MAX_PARENT_WALK` env override honored in both JS paths (lib/index.js `findRoot` via new `resolveMaxParentWalk()`; state.js via `getMaxParentWalk()`) and shell path (`session-append.sh` honors env var with non-numeric guard). `tests/helpers/ecosystem-fixtures.js` provides `mkStandaloneRepo`/`mkEcosystemRoot`/`mkMemberRepo`/`mkLeaderAndMember`/`corruptManifest`. `tests/state-machine.test.js` covers all 7 state branches + availableTransitions per state + env-override (20 new tests). 121/121 tests pass — Phase 9's 101 tests still green, 20 new tests added.
+
+---

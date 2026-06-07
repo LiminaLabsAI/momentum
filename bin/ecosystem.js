@@ -19,10 +19,14 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const lib = require('../core/ecosystem/lib');
-
-const POINTER_BEGIN = '<!-- ecosystem:begin -->';
-const POINTER_END = '<!-- ecosystem:end -->';
-const PRIMARY_INSTRUCTION_CANDIDATES = ['CLAUDE.md', 'AGENTS.md'];
+const {
+  POINTER_BEGIN,
+  POINTER_END,
+  PRIMARY_INSTRUCTION_CANDIDATES,
+  findPrimaryInstructionFile,
+  ensurePointerInjected,
+  stripPointer,
+} = require('../core/ecosystem/lib/pointer');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public entrypoint
@@ -371,55 +375,10 @@ function cmdStatus(args) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
-
-function findPrimaryInstructionFile(repoPath) {
-  for (const name of PRIMARY_INSTRUCTION_CANDIDATES) {
-    if (fs.existsSync(path.join(repoPath, name))) {
-      return name;
-    }
-  }
-  return null;
-}
-
-function ensurePointerInjected(absRepo, primaryFile, root, ecosystemName) {
-  const filePath = path.join(absRepo, primaryFile);
-  const original = fs.readFileSync(filePath, 'utf8');
-  if (original.includes(POINTER_BEGIN)) {
-    // Already injected — leave it. (Re-runs preserve user edits inside
-    // the fence, which we intentionally don't rewrite.)
-    return;
-  }
-  const relFromMember = path.relative(absRepo, root) || '.';
-  const block =
-    `\n${POINTER_BEGIN}\n` +
-    `> Member of \`${ecosystemName}\` ecosystem at \`${relFromMember}\`.\n` +
-    `> See ecosystem.json for siblings and \`momentum ecosystem status\` for live state.\n` +
-    `${POINTER_END}\n`;
-  // Insert immediately after the first H1 line if one exists; otherwise prepend.
-  const lines = original.split('\n');
-  let insertAt = 0;
-  for (let i = 0; i < lines.length; i++) {
-    if (/^#\s+/.test(lines[i])) {
-      insertAt = i + 1;
-      break;
-    }
-  }
-  const next = lines.slice(0, insertAt).concat(block.split('\n').slice(0, -1), lines.slice(insertAt)).join('\n');
-  fs.writeFileSync(filePath, next, 'utf8');
-}
-
-function stripPointer(filePath) {
-  if (!fs.existsSync(filePath)) return;
-  const original = fs.readFileSync(filePath, 'utf8');
-  if (!original.includes(POINTER_BEGIN)) return;
-  // Greedy strip between the fences (and one optional surrounding blank line).
-  const re = new RegExp(`\\n?${escapeRegExp(POINTER_BEGIN)}[\\s\\S]*?${escapeRegExp(POINTER_END)}\\n?`, 'g');
-  fs.writeFileSync(filePath, original.replace(re, '\n'), 'utf8');
-}
-
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+//
+// findPrimaryInstructionFile / ensurePointerInjected / stripPointer moved
+// to core/ecosystem/lib/pointer.js in Phase 10 Group 0 for reuse by
+// `momentum join` and `momentum leave`. Imported above.
 
 function printGitState(repoPath) {
   // Suppress stderr from git so "fatal: not a git repository" doesn't

@@ -4,16 +4,16 @@
 
 ## Group 0 — State machine + reusable helpers (Sequential)
 
-- [ ] Create `core/ecosystem/lib/state.js` with `detectState(repoPath)` returning the 7 states (3 healthy, 1 leader+member, 3 broken).
-- [ ] Implement `availableTransitions(state)` returning teaching-friendly `{command, description}` entries.
-- [ ] Move `MAX_PARENT_WALK` constant from `core/ecosystem/lib/index.js` to `state.js`; honor `MOMENTUM_MAX_PARENT_WALK` env override.
-- [ ] Create `core/ecosystem/lib/pointer.js` extracting `injectPointer`, `stripPointer`, `findPrimaryInstructionFile` from `bin/ecosystem.js`.
-- [ ] Make `findPrimaryInstructionFile` adapter-aware (reads adapter metadata).
-- [ ] Refactor `bin/ecosystem.js` to use the extracted helpers; no behavior change.
-- [ ] Create `tests/helpers/ecosystem-fixtures.js` with `mkStandaloneRepo`, `mkEcosystemRoot`, `mkMemberRepo`, `mkLeaderAndMember`, `expectState`.
-- [ ] Write `tests/state-machine.test.js` covering every state + broken-state branch across all 3 adapters.
-- [ ] Regression: existing 101 Phase 9 tests all pass after refactor.
-- [ ] Commit: `feat(ecosystem): state machine + reusable pointer helpers`.
+- [x] Create `core/ecosystem/lib/state.js` with `detectState(repoPath)` returning the 7 states (3 healthy, 1 leader+member, 3 broken).
+- [x] Implement `availableTransitions(state)` returning teaching-friendly `{command, description}` entries.
+- [x] Move `MAX_PARENT_WALK` constant from `core/ecosystem/lib/index.js` to `state.js`; honor `MOMENTUM_MAX_PARENT_WALK` env override.
+- [x] Create `core/ecosystem/lib/pointer.js` extracting `injectPointer`, `stripPointer`, `findPrimaryInstructionFile` from `bin/ecosystem.js`.
+- [/] Make `findPrimaryInstructionFile` adapter-aware (reads adapter metadata). — partial: CLAUDE.md + AGENTS.md candidates honor Claude Code, Codex, Antigravity today. Full adapter-metadata lookup deferred to Phase 11 capability research.
+- [x] Refactor `bin/ecosystem.js` to use the extracted helpers; no behavior change.
+- [x] Create `tests/helpers/ecosystem-fixtures.js` with `mkStandaloneRepo`, `mkEcosystemRoot`, `mkMemberRepo`, `mkLeaderAndMember`, `expectState`.
+- [x] Write `tests/state-machine.test.js` covering every state + broken-state branch across all 3 adapters.
+- [x] Regression: existing 101 Phase 9 tests all pass after refactor (121/121 green).
+- [x] Commit: `feat(ecosystem): state machine + reusable pointer helpers`.
 
 ## Group 1 — Entry/exit commands (Parallel with G2, G3)
 
