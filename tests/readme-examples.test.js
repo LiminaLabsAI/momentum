@@ -43,6 +43,11 @@ test('README references only commands our CLI knows', () => {
     'leave',
     'doctor',
     'ecosystem',
+    // Phase 11 orchestration verbs
+    'scout',
+    'dispatch',
+    'handoff',
+    'continue',
   ]);
   const unknown = invocations.filter((c) => !known.has(c));
   assert.deepEqual(unknown, [], `README mentions unknown commands: ${JSON.stringify(unknown)}`);

@@ -558,6 +558,13 @@ Ecosystem use — entry/exit commands (run from any repo):
 Ecosystem use — operator toolkit (advanced):
   momentum ecosystem <sub> [...]      Subcommands: init | add | remove | status
 
+Orchestration — work across ecosystem members from one session:
+  momentum scout <repo> "<prompt>"    Read-only context fetch from one member
+  momentum dispatch <r1> <r2> ...     Parallel multi-repo fan-out + synthesis
+    --prompt "<text>"                 (require --prompt; --sequential for testing)
+  momentum handoff <repo>             Write a context block for <repo> to pick up
+  momentum continue [--handoff <id>]  Pick up a pending handoff in this repo
+
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
@@ -843,6 +850,38 @@ async function main() {
     try {
       const { cmdDoctor } = require('./state-commands');
       cmdDoctor(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'scout') {
+    try {
+      const { cmdScout } = require('./orchestration-commands');
+      await cmdScout(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'dispatch') {
+    try {
+      const { cmdDispatch } = require('./orchestration-commands');
+      await cmdDispatch(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'handoff') {
+    try {
+      const { cmdHandoff } = require('./orchestration-commands');
+      await cmdHandoff(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'continue') {
+    try {
+      const { cmdContinue } = require('./orchestration-commands');
+      await cmdContinue(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

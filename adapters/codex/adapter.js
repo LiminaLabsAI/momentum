@@ -37,10 +37,23 @@ module.exports = {
   capabilities: {
     hooks: true,
     slashCommands: true,
-    subagents: 'codex-specific; not used by momentum v0.9.0',
-    skills: 'future',
-    browser: 'future',
-    computerUse: 'future',
+    subagents: true,
+    parallelSubagents: false,
+    sessionStartHook: true,
+    skills: false,
+    browser: false,
+    computerUse: false,
+  },
+
+  roadmap: {
+    subagents:
+      'Codex declares a subagent surface; parallel-fanout not yet validated by momentum smoke tests. ' +
+      'capability-routing treats this as sequential until proven.',
+    parallelSubagents:
+      'Promote to true once dispatch parallel mode is exercised against Codex in CI.',
+    skills: 'Planned for a future Codex feature drop.',
+    browser: 'Planned for a future Codex feature drop.',
+    computerUse: 'Planned for a future Codex feature drop.',
   },
 
   runInstall(targetDir, adapterDir, helpers) {

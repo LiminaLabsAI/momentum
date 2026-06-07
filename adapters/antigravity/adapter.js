@@ -32,8 +32,20 @@ module.exports = {
     hooks: true,
     slashCommands: false, // Chat-driven UI rather than a local terminal slash executor
     subagents: true,      // Native subagents capability (invoke_subagent, define_subagent)
-    artifacts: true,      // Planning artifacts (task.md, implementation_plan.md, walkthrough.md)
+    parallelSubagents: true,
+    sessionStartHook: false, // No SessionStart hook surface — banner ships via primary instruction text
+    skills: false,
+    browser: false,
+    computerUse: false,
+    artifacts: true,      // Antigravity-specific planning artifacts
     planningMode: true,   // High-level planning workflow
+  },
+
+  roadmap: {
+    slashCommands:
+      'Chat-driven UI; orchestration primitives reach Antigravity users via natural-language inference + the momentum CLI floor.',
+    sessionStartHook:
+      'No SessionStart hook today — handoff pickup hint surfaces via primary instruction text instead.',
   },
 
   runInstall(targetDir, adapterDir, helpers) {
