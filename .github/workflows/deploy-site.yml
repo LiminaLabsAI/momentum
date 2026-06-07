@@ -1,23 +1,19 @@
-# Deploy the momentum GitHub Pages site (Astro Starlight)
-#
-# Status: DRAFT — active triggers are commented out and re-enabled at the
-# end of Phase 12 Group 4 (Deployment Wiring), once Pages source has been
-# switched to "GitHub Actions" in repo settings (User Action) and the
-# site source under /site is complete.
+# Deploy the momentum GitHub Pages site (Astro Starlight).
 #
 # Site lives at: https://avinash-singh-io.github.io/momentum
+#
+# User action required once before first deploy: in repo Settings → Pages,
+# set Source = "GitHub Actions". After that, every push to main touching
+# `site/**` triggers a deploy. workflow_dispatch lets you re-run manually.
 
 name: Deploy site to GitHub Pages
 
-# on:
-#   push:
-#     branches: [main]
-#     paths:
-#       - 'site/**'
-#       - '.github/workflows/deploy-site.yml'
-#   workflow_dispatch:
-
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy-site.yml'
   workflow_dispatch:
 
 permissions:

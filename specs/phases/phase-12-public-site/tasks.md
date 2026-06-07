@@ -80,17 +80,16 @@
 
 ## Group 4 — Deployment wiring (Sequential)
 
-- [ ] Activate `.github/workflows/deploy-site.yml` — push trigger on `main` with paths filter `site/**` + workflow file
-- [ ] Workflow permissions: `contents: read`, `pages: write`, `id-token: write`
-- [ ] Workflow steps: checkout → setup-node 20 → `cd site && npm ci && npm run build` → upload-pages-artifact (`site/dist`) → deploy-pages
-- [ ] Single concurrency group `pages` (cancel-in-progress: false)
-- [ ] Confirm Pages source = "GitHub Actions" in repo settings (USER ACTION — flag)
-- [ ] Root `package.json` `"homepage": "https://avinash-singh-io.github.io/momentum"`
-- [ ] `npm pack --dry-run` confirms `/site` NOT in published tarball
-- [ ] README header: live-site banner just below npm badge
-- [ ] Local dry-run: fresh `cd site && rm -rf dist node_modules && npm ci && npm run build`
-- [ ] Inspect `site/dist/` — every IA page present
-- [ ] `npx http-server site/dist -p 4322`; walk every page in browser
+- [x] Activate `.github/workflows/deploy-site.yml` — push trigger on `main` with paths filter `site/**` + workflow file
+- [x] Workflow permissions: `contents: read`, `pages: write`, `id-token: write` (already set in Group 0 draft)
+- [x] Workflow steps: checkout → setup-node 22 → `cd site && npm ci && npm run build` → upload-pages-artifact (`site/dist`) → deploy-pages (already set in Group 0 draft)
+- [x] Single concurrency group `pages` (cancel-in-progress: false) (already set in Group 0 draft)
+- [ ] **USER ACTION:** Confirm Pages source = "GitHub Actions" in repo Settings → Pages (cannot be automated from CI)
+- [x] Root `package.json` `"homepage": "https://avinash-singh-io.github.io/momentum"`
+- [x] `npm pack --dry-run` confirms `/site` NOT in published tarball (81 files total, 0 matching `site/`)
+- [x] README header: live-site banner just below npm badge
+- [/] Local dry-run: build smoke green (last run @ Group 3); fresh-clone build deferred to Group 5
+- [/] Browser walk: deferred to Group 5 (needs deployed site)
 - [ ] Commit Group 4: `infra(site): GitHub Actions deploy to GitHub Pages`
 
 ## Group 5 — Verification (Sequential)
