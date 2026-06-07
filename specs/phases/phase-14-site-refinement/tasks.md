@@ -102,18 +102,19 @@
 
 ## Group 6 — README rewrite (Sequential, after Groups 1–5)
 
-- [ ] Header `<div align="center">` with wordmark SVG + tagline + badges (npm version, license, "Visit the site →")
-- [ ] Quick install code block — `npx @avinash-singh-io/momentum init`
-- [ ] "Works with any AI IDE" 5-row table: Claude Code / Codex / Antigravity (Shipped) + Cursor / Gemini CLI (Planned, Phase 15)
-- [ ] "What you get" 6-feature grid: Phases / Backlog / History / Rules / Skills / Multi-project (ecosystem + orchestration)
-- [ ] "Single project ↔ Multi-project ecosystem" Mermaid `flowchart LR` block (GitHub renders natively)
-- [ ] "Orchestration primitives" — 4 one-liner descriptions + link to deep page
-- [ ] "Why momentum exists" — 1 paragraph (~3 sentences)
-- [ ] "Docs" — bullet list of links (site sections + npm + LICENSE)
-- [ ] README ≤ 250 lines total
-- [ ] Verify GitHub renders Mermaid block, SVG image, table — push to draft branch and preview if uncertain
-- [ ] Badges resolve: npm shields URL valid, license badge valid, site link 200
-- [ ] Commit Group 6: `docs: README wholesale rewrite — agentic AI positioning + visual features showcase`
+- [x] Header `<div align="center">` with wordmark SVG (relative path so GitHub renders it) + tagline + 3 badges (npm version, license, "site" custom)
+- [x] Quick install code block — `npx @avinash-singh-io/momentum init` + per-adapter variants + ecosystem
+- [x] "Works with any AI IDE" 5-row table: Claude Code / Codex / Antigravity (Shipped) + Cursor / Gemini CLI (Planned, Phase 15)
+- [x] "What you get" 6-feature 2-column markdown table (Phases / Backlog / History / Rules / Skills / Multi-project)
+- [x] "Single project ↔ Multi-project ecosystem" Mermaid `flowchart LR` block (GitHub renders natively) — two subgraphs + brand-colored styles
+- [x] "Orchestration primitives" — 4 one-liner descriptions + link to deep page
+- [x] "The 13 autonomous rules" callout with 3 standouts (Rule 6/8/12) + link
+- [x] "Why momentum exists" — 2 short paragraphs (thesis + discipline-as-differentiator)
+- [x] "Docs" — bullet list of links to site sections (Getting started / Concepts / Skills / Rules / Multi-project / FAQ)
+- [x] Contributing section + License
+- [x] README at 136 lines / 820 words (well under the ≤ 250 line target)
+- [/] Verify GitHub renders Mermaid + SVG image + tables — deferred to Group 7 post-merge (push to main triggers GitHub README rendering)
+- [x] Commit Group 6: `docs: README wholesale rewrite — agentic AI positioning + visual features showcase`
 
 ## Group 7 — Verification + v0.17.0 release (Sequential, final)
 
