@@ -18,10 +18,20 @@
 | 7c | Autonomous Execution & TDD | Not Started (target v0.10.0) | Subagent/autonomous execution engine implementing the autonomy contract from 7a on Adapter Contract v3; TDD opt-in (Rule 13); retry budget per-task |
 | 8 | Parallel Worktree Orchestration | Not Started (target v0.11.0) | Multiple concurrent streams via git worktrees; `momentum worktree-manager` command; branch-per-stream conventions; conflict avoidance; cross-stream status visibility |
 | 9 | Ecosystem (Tier 1) | **Complete (v0.12.0)** | Cross-repo ecosystem layer: `ecosystem.json` manifest; initiative concept; auto-logged daily session file; `momentum ecosystem init/add/remove/status` CLI; `/ecosystem` + `/initiative` + `/session` slash commands; PostToolUse hook extension. Single-repo momentum unchanged when no ecosystem root is present. 101/101 tests pass (+37 new). |
-| 10 | Hardening & Activation | Not Started (target v0.13.0) | Full systematic-debugging skill; SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting); ENH-017 project-name preservation across upgrade |
-| 11 | Reach | Not Started (target v0.14.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
-| 12 | Intelligence | Not Started (target v0.15.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
-| 13 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; dependency-aware task ordering; bidirectional spec sync (experimental); ecosystem Tier 2 (`/switch-repo`, federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`, inter-repo parallel agents). |
+| 10 | Ecosystem Activation & Polish | **Planning (target v0.13.0)** | Top-level entry/exit commands (`init --ecosystem`, `join`, `leave`, `doctor`) + init auto-detect; Phase 9 follow-up fixes (BUG-004 session-log race, ENH-021 location-agnostic `ecosystem add`, ENH-022 bounded-walk constant); README rewrite as product positioning; per-adapter smoke matrix + capability flag audit; `cerebrio-ecosystem/` dogfood with `0001-memory-module` initiative. Single-project usage unchanged. |
+| 11 | Dynamic Orchestration & Context Handover | Not Started (target v0.14.0) | Capability-driven orchestration primitives (`scout` read-only context fetch, `dispatch` parallel fan-out, `handoff` control transfer) the main agent composes per task; capability-driven routing via Adapter Contract v3; specs maintenance preserved across every primitive. Codex / Antigravity capability research up front. See [`specs/planning/phase-11-orchestration-handover.md`](phase-11-orchestration-handover.md). |
+| 12 | Reach | Not Started (target v0.15.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
+| 13 | Intelligence | Not Started (target v0.16.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
+| 14 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; dependency-aware task ordering; bidirectional spec sync (experimental); ecosystem Tier 2 (federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`). |
+
+## Unscheduled Future Work
+
+Work items captured against the roadmap with no committed version target. Pickable any time when they become the right next thing.
+
+| Name | Stub | Notes |
+|------|------|-------|
+| Hardening & Activation | [`specs/planning/unscheduled-hardening-activation.md`](unscheduled-hardening-activation.md) | Originally slotted as Phase 10 (v0.13.0); displaced 2026-06-07 when Ecosystem Activation took priority. Scope intact: full systematic-debugging skill; SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting); ENH-017 project-name preservation across upgrade. |
+| Context Economy (deferred) | [`specs/planning/future-context-economy.md`](future-context-economy.md) | Trigger-gated, not on the shelf. Section Map headers + ecosystem `STATE.md` router. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
 
 ## Phase Dependencies
 
@@ -37,11 +47,15 @@ Phase 0 (Bootstrap)
                                      └── Phase 7b (Agent Runtime Compatibility — proves multi-agent adapter boundary)
                                           └── Phase 7c (Autonomous Execution & TDD — assumes Adapter Contract v3)
                                                └── Phase 8 (Parallel Worktree Orchestration — assumes autonomous execution)
-                                                    └── Phase 9 (Ecosystem Tier 1 — assumes single-repo maturity)
-                                                         └── Phase 10 (Hardening & Activation — assumes execution maturity)
-                                                              └── Phase 11 (Reach — assumes hardened execution)
-                                                                   └── Phase 12 (Intelligence — assumes multi-agent base)
-                                                                        └── Phase 13 (Platform — assumes the rest)
+                                                    └── Phase 9 (Ecosystem Tier 1 — assumes single-repo maturity) ✓
+                                                         └── Phase 10 (Ecosystem Activation & Polish — production-ready ecosystem layer)
+                                                              └── Phase 11 (Dynamic Orchestration & Context Handover — assumes capability audit)
+                                                                   └── Phase 12 (Reach — assumes hardened execution)
+                                                                        └── Phase 13 (Intelligence — assumes multi-agent base)
+                                                                             └── Phase 14 (Platform — assumes the rest)
+                                                                                   ‖
+                                                                                   Unscheduled: Hardening & Activation can slot in anywhere
+                                                                                   before its absence becomes a blocker.
 ```
 
 ## Open Questions
@@ -70,7 +84,9 @@ Phase 0 (Bootstrap)
 | v0.10.0 — Autonomous Execution & TDD | 7c | Autonomous execution engine; TDD opt-in Rule 13; retry budget per-task |
 | v0.11.0 — Parallel Worktree Orchestration | 8 | Multi-stream concurrent development via git worktrees; worktree-manager command; branch-per-stream conventions |
 | v0.12.0 — Ecosystem (Tier 1) | 9 | **Released 2026-06-07** — cross-repo manifest + initiatives + auto session log + `momentum ecosystem` CLI + `/ecosystem` / `/initiative` / `/session` slash commands. Single-repo momentum unchanged. 101/101 tests pass. |
-| v0.13.0 — Hardening & Activation | 10 | systematic-debugging skill (full); SessionStart auto-activation; Rules 1/3/4/5/7/9 hardening; ENH-017 |
-| v0.14.0 — Reach | 11 | Cursor + Gemini adapters; ENH-009 distribution decision |
-| v0.15.0 — Intelligence | 12 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |
-| v1.0.0 — Platform | 13 | MCP server, /specify, /decide, skill authoring, dependency-aware tasks; ecosystem Tier 2 |
+| v0.13.0 — Ecosystem Activation & Polish | 10 | Top-level entry/exit commands; Phase 9 follow-up fixes; README rewrite; per-adapter smoke matrix + capability audit; cerebrio-ecosystem dogfood |
+| v0.14.0 — Dynamic Orchestration & Context Handover | 11 | Capability-driven `scout` / `dispatch` / `handoff` primitives; specs maintenance contract; Codex / Antigravity capability research |
+| v0.15.0 — Reach | 12 | Cursor + Gemini adapters; ENH-009 distribution decision |
+| v0.16.0 — Intelligence | 13 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |
+| v1.0.0 — Platform | 14 | MCP server, /specify, /decide, skill authoring, dependency-aware tasks; ecosystem Tier 2 |
+| Unscheduled | — | Hardening & Activation: systematic-debugging skill (full); SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017 |

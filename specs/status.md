@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 10 — Hardening & Activation (`planning pending`)
+> **Current Phase**: Phase 10 — Ecosystem Activation & Polish (`planning complete; implementation pending`)
 > **Latest Release**: v0.12.0 — Ecosystem (Tier 1)
 > **Health**: On Track
 
@@ -31,7 +31,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 10 | Hardening & Activation | Planning pending | brainstorm not yet started |
+| 10 | Ecosystem Activation & Polish | Planning complete | Brainstormed 2026-06-07; ready for `/start-phase`. 5 workstreams: entry/exit commands; Phase 9 follow-up fixes (BUG-004 / ENH-021 / ENH-022); product positioning README rewrite; per-adapter smoke matrix + capability audit; cerebrio-ecosystem dogfood. Target v0.13.0. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -42,10 +42,17 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 10 | Hardening & Activation | Not Started (target v0.13.0) | systematic-debugging skill (full); SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting) |
-| 11 | Reach | Not Started (target v0.14.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 12 | Intelligence | Not Started (target v0.15.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 13 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync |
+| 11 | Dynamic Orchestration & Context Handover | Not Started (target v0.14.0) | Capability-driven `scout` / `dispatch` / `handoff` primitives; specs maintenance preserved across every primitive; Codex / Antigravity capability research up front. Planning stub: `specs/planning/phase-11-orchestration-handover.md`. |
+| 12 | Reach | Not Started (target v0.15.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 13 | Intelligence | Not Started (target v0.16.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 14 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+
+## Unscheduled Future Work
+
+| Name | Stub | Notes |
+|------|------|-------|
+| Hardening & Activation | `specs/planning/unscheduled-hardening-activation.md` | Originally Phase 10. Displaced 2026-06-07. Scope: full systematic-debugging skill; SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017. Pickable any time. |
+| Context Economy | `specs/planning/future-context-economy.md` | Trigger-gated. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
 
 ## Blockers
 
@@ -61,9 +68,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Brainstorm Phase 10 — Hardening & Activation (target v0.13.0). Inputs: systematic-debugging skill, SessionStart auto-activation, persuasion-hardening Rules 1/3/4/5/7/9, ENH-017 project-name preservation across upgrade.
+1. `/start-phase` Phase 10 — Ecosystem Activation & Polish (target v0.13.0). Planning complete; brainstorm landed 2026-06-07.
 2. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
-3. Bootstrap a `cerebrio-ecosystem/` repo over the cerebrio constellation to dogfood Phase 9 — retroactively capture the Memory module v1 work (2026-06-05/06) as initiative `0001-memory-module`.
+3. cerebrio-ecosystem bootstrap (Phase 9 dogfood) now folded into Phase 10 Workstream 5 — runs during Phase 10 implementation. Retroactively captures the Memory module v1 work as initiative `0001-memory-module`.
+4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
 
 ## Key Decisions Made
 
