@@ -1,40 +1,62 @@
 ---
 title: IDE support
-description: How to install momentum in Claude Code, Codex, Antigravity, Cursor, and Gemini CLI.
+description: How momentum installs in Claude Code, Codex, Antigravity today — and what's coming for Cursor and Gemini CLI in Phase 14.
 ---
 
-momentum is **agent-agnostic**. The same commands, rules, and workflow ship to
-every adapter; what changes is where the instruction file lives, how hooks
-attach, and which slash-command surface the IDE exposes.
+momentum is **agent-agnostic**. The same commands, rules, and workflow ship
+to every adapter; what changes is where the instruction file lives, how
+hooks attach, and which slash-command surface the IDE exposes.
 
-| Agent | Status | Primary instruction file | Hook surface |
-| --- | --- | --- | --- |
-| [Claude Code](#claude-code) | Shipped | `CLAUDE.md` | `.claude/settings.json` (PreToolUse, PostToolUse, SessionStart) |
-| [Codex](#codex) | Shipped | `AGENTS.md` | `.codex/hooks.json` |
-| [Antigravity](#antigravity) | Shipped | `AGENTS.md` | none today |
-| [Cursor](#cursor) | Planned (Phase 13) | `.cursor/rules/` | TBD |
-| [Gemini CLI](#gemini-cli) | Planned (Phase 13) | `GEMINI.md` | TBD |
+| Agent | Status | Primary instruction file | Hook surface | Slash commands |
+| --- | --- | --- | --- | --- |
+| [Claude Code](#claude-code) | Shipped | `CLAUDE.md` | `.claude/settings.json` — PreToolUse, PostToolUse, SessionStart | Native `.claude/commands/*.md` |
+| [Codex](#codex) | Shipped | `AGENTS.md` | `.codex/hooks.json` | Prompt-fragment recipes in `.codex/commands/` |
+| [Antigravity](#antigravity) | Shipped | `AGENTS.md` | None today | Markdown contract only |
+| [Cursor](#cursor) | Planned (Phase 14) | `.cursor/rules/` | TBD | Rules-based prompt fragments |
+| [Gemini CLI](#gemini-cli) | Planned (Phase 14) | `GEMINI.md` | TBD | Embedded sections |
 
 ## Claude Code
 
-The default adapter — `--agent claude-code` is implicit.
+Default adapter — `--agent claude-code` is implicit. The richest hook
+surface today.
 
 ```bash
 npx @avinash-singh-io/momentum init
 ```
 
-You get:
+### What you get
 
-- `CLAUDE.md` at the project root (primary instruction file)
-- `.agent/rules/project.md` (the 13 rules)
-- `.claude/commands/*.md` (15+ slash commands)
-- `.claude/settings.json` (PreToolUse + PostToolUse + SessionStart hooks)
-- `scripts/check-history-reminder.sh`, `brainstorm-gate.sh`,
-  `sessionstart-handoff.sh`
+- **`CLAUDE.md`** at the project root — Claude Code reads this automatically
+  at session start.
+- **`.agent/rules/project.md`** — the 13 autonomous rules (referenced from
+  `CLAUDE.md`).
+- **`.claude/commands/*.md`** — all 15+ slash commands available natively.
+- **`.claude/settings.json`** — hook wiring for the three hook surfaces.
+- **`scripts/check-history-reminder.sh`** — PostToolUse hook; reminds
+  about Rule 8 after edits to significant files.
+- **`scripts/brainstorm-gate.sh`** — PreToolUse hook; blocks Write/Edit
+  on `specs/` paths during `/brainstorm-phase`.
+- **`scripts/sessionstart-handoff.sh`** — SessionStart hook; auto-greets
+  pending handoffs in `.momentum/inbox/`.
 
-Hooks are the strongest signal: the brainstorm-gate hook physically blocks
-disk writes during `/brainstorm-phase` until you say "approve", and the
-SessionStart hook auto-greets pending handoffs.
+### Hook compatibility
+
+| Hook | What it does | When it fires |
+|---|---|---|
+| **PreToolUse** (`brainstorm-gate.sh`) | Blocks `Write`/`Edit`/`MultiEdit` calls targeting `specs/` paths when `.momentum/brainstorm-active` exists | Before every tool call during a brainstorm session |
+| **PostToolUse** (`check-history-reminder.sh`) | Reminds the agent to log a history entry when significant files (status, backlog, phase tasks, decisions, architecture) are edited; opportunistically appends to ecosystem session log | After every Write/Edit/Bash call |
+| **SessionStart** (`sessionstart-handoff.sh`) | Scans `.momentum/inbox/` for pending handoffs, banners + `[y/skip]` prompt | At each new session start |
+
+Hooks are the strongest discipline-enforcement layer: brainstorm-gate
+physically prevents premature disk writes, the history reminder closes the
+"I'll log it later" failure mode, SessionStart eliminates the "did anyone
+hand work off to me?" check.
+
+### When to pick Claude Code
+
+When you want the strongest discipline. The hooks make Rules 7 (brainstorm
+gate), 8 (history), and the handoff pickup all enforced rather than
+contractual.
 
 ## Codex
 
@@ -42,14 +64,26 @@ SessionStart hook auto-greets pending handoffs.
 npx @avinash-singh-io/momentum init --agent codex
 ```
 
-You get:
+### What you get
 
-- `AGENTS.md` (Codex's primary instruction file)
-- `.agent/rules/project.md`
-- `.codex/commands/*.md` (recipes — Codex doesn't natively support slash
-  commands the same way, so these are prompt fragments the agent runs
-  when you type the trigger)
-- `.codex/hooks.json` (Codex hook config)
+- **`AGENTS.md`** — Codex's primary instruction file (analogous to CLAUDE.md).
+- **`.agent/rules/project.md`** — the 13 rules.
+- **`.codex/commands/*.md`** — commands as prompt-fragment recipes (Codex
+  doesn't natively support slash commands the way Claude Code does; the
+  recipes are prompt fragments the agent runs when you type the trigger).
+- **`.codex/hooks.json`** — Codex hook config wiring the same three hook
+  scripts as Claude Code.
+
+### Hook compatibility
+
+Same three hook scripts as Claude Code — wired via `.codex/hooks.json`
+instead of `.claude/settings.json`. The discipline layer is the same; the
+configuration shape is per-adapter.
+
+### When to pick Codex
+
+When you're already using Codex and want momentum's discipline without
+switching IDEs. Hook coverage matches Claude Code.
 
 ## Antigravity
 
@@ -57,27 +91,53 @@ You get:
 npx @avinash-singh-io/momentum init --agent antigravity
 ```
 
-You get:
+### What you get
 
-- `AGENTS.md` (shared with Codex)
-- `.agent/rules/project.md`
+- **`AGENTS.md`** — shared format with Codex.
+- **`.agent/rules/project.md`** — the 13 rules.
 
-Antigravity has no hook surface today. Brainstorm-gate discipline relies on
-markdown contract — the agent still respects the convention, but the
-PreToolUse hook isn't there to physically enforce it.
+### Hook compatibility
+
+Antigravity has **no hook surface** today. The brainstorm-gate discipline
+relies on the markdown contract — the agent still respects the rule, but
+there's no PreToolUse hook to physically enforce it. Similarly, no
+SessionStart greet for handoffs (use `/continue` explicitly).
+
+The contract still works — the brainstorm gate is documented in
+`/brainstorm-phase`'s body, and a well-behaved agent honors it. But the
+**safety net** is gone. If you accidentally tell the agent "just write the
+draft to disk so I can see it" mid-brainstorm, nothing physically stops it
+on Antigravity.
+
+### When to pick Antigravity
+
+When you're already on Antigravity and want momentum's structure even
+without the hook enforcement layer. The discipline is still there; just
+trust-based.
 
 ## Cursor
 
-Planned for Phase 13. Cursor uses `.cursor/rules/*.mdc` files and doesn't
-support slash commands the same way as Claude Code. Commands will ship as
-rules-based prompt fragments.
+**Planned for Phase 14.** Cursor uses `.cursor/rules/*.mdc` files and
+doesn't support slash commands the way Claude Code does. Commands will ship
+as rules-based prompt fragments — typing the command name will trigger the
+relevant rule.
+
+Hook surface: TBD as part of Phase 14 design. Cursor's editor hooks are
+different from Claude Code's session hooks; the brainstorm-gate equivalent
+may need a different enforcement strategy (e.g., a file-watcher rule that
+warns if the sentinel exists).
 
 Track progress: [FEAT-007 in backlog](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md).
 
 ## Gemini CLI
 
-Planned for Phase 13. Gemini CLI uses `GEMINI.md` as the primary instruction
-file (single-file convention). Workflow prompts will embed as sections.
+**Planned for Phase 14.** Gemini CLI uses `GEMINI.md` as the primary
+instruction file (single-file convention). Workflow prompts will embed as
+sections within `GEMINI.md` rather than as separate command files.
+
+Hook surface: TBD. Gemini CLI's plugin model may support before/after-tool
+hooks similar to Claude Code; if it does, the same three hook scripts will
+attach with minimal porting.
 
 Track progress: [FEAT-008 in backlog](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md).
 
@@ -86,6 +146,52 @@ Track progress: [FEAT-008 in backlog](https://github.com/avinash-singh-io/moment
 If you have a choice today, **Claude Code** gives you the strongest
 discipline because hooks physically enforce the brainstorm gate and surface
 handoffs at session start. **Codex** is the close second — `AGENTS.md`
-auto-loads and `.codex/hooks.json` enforces the same discipline. **Antigravity**
-works fine but relies on agent compliance with the markdown contract rather
-than hook enforcement.
+auto-loads and `.codex/hooks.json` enforces the same discipline.
+**Antigravity** works fine but relies on agent compliance with the markdown
+contract rather than hook enforcement.
+
+If you're already on Cursor or Gemini CLI, momentum will support both in
+Phase 14 — for now, you can wait, or use `--agent claude-code` to scaffold
+the structure and adapt it manually (the `specs/` skeleton is agent-agnostic;
+only `.claude/` and `CLAUDE.md` are Claude-specific).
+
+## Multi-adapter projects
+
+If your team uses **multiple agents** (some on Claude Code, some on Codex),
+run `momentum init --agent claude-code` first, then `momentum upgrade
+--agent codex` to layer the Codex adapter overlay on top. Both
+`CLAUDE.md` and `AGENTS.md` will exist; both will reference the same
+`specs/` and `.agent/`.
+
+The adapter contract guarantees the overlays don't conflict — installing
+both is additive. Each agent reads its own primary instruction file at
+session start; they share the per-project state.
+
+## Upgrading
+
+```bash
+momentum upgrade
+```
+
+The upgrade is **marker-aware**: anything under `## Project Extensions` in
+`CLAUDE.md` / `AGENTS.md` is preserved across the upgrade. Default commands
+and rules update from the published template; project-specific content
+stays.
+
+Known regression: see [BUG-006](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md)
+for an upgrade-related title-line issue. Fix is on the backlog.
+
+## Diagnosing IDE setup
+
+```bash
+momentum doctor
+```
+
+Walks the local layout: does the project look like a momentum-installed
+project? Are the rules referenced from the instruction file? Are the
+adapter files where they should be? Is the project an ecosystem member
+(if `ecosystem.json` is detectable in a sibling dir)?
+
+Reports detected issues plus suggested fixes. Run `doctor` first whenever
+something feels off; it catches the common "the instruction file isn't
+loading" class of problems.

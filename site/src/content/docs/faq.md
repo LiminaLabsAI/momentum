@@ -1,6 +1,6 @@
 ---
 title: FAQ
-description: Common questions about installing, using, and contributing to momentum.
+description: Common questions about installing, using, comparing, and contributing to momentum.
 ---
 
 ## Why momentum vs. a plain `CLAUDE.md`?
@@ -8,29 +8,52 @@ description: Common questions about installing, using, and contributing to momen
 A plain `CLAUDE.md` tells your agent how you want it to behave. momentum
 gives the *project itself* a structured workflow: phases with explicit
 plans, a backlog with priorities, an append-only history of decisions,
-and hooks that enforce the discipline. The instruction file is one piece;
-the rest is what keeps state coherent across sessions, branches, and team
-members.
+hooks that enforce the discipline, and orchestration primitives for
+working across multiple repos.
+
+The instruction file is one piece; the rest is what keeps state coherent
+across sessions, branches, and team members. You can think of `CLAUDE.md`
+as the agent's prompt; momentum is the project's *state layer*.
+
+## How does this compare to Cursor / Copilot rules?
+
+Cursor's `.cursor/rules/*.mdc` files and GitHub Copilot's
+`.github/copilot-instructions.md` are **per-IDE instruction files**.
+They tell the agent how to write code in your project. They don't give the
+project itself a workflow.
+
+momentum is a layer above: it adds phases, backlog, history, ADRs,
+ecosystem mode, and orchestration. Its rules instruction is loaded into the
+same instruction-file slot — `CLAUDE.md`, `AGENTS.md`, `.cursor/rules/`,
+`GEMINI.md`, depending on adapter — so it composes with whatever the IDE
+already provides rather than competing.
 
 ## Is momentum locked to a specific AI agent?
 
 No. momentum is agent-agnostic. It ships adapters for Claude Code, Codex,
-and Antigravity today; Cursor and Gemini CLI are landing in Phase 13. The
+and Antigravity today; Cursor and Gemini CLI land in Phase 14. The
 specs, rules, and commands are the same across adapters — what changes is
 the instruction-file location and how hooks attach.
+
+You can switch adapters on the same project (`momentum upgrade --agent
+codex` after starting with Claude Code) and the per-project state survives.
 
 ## Does it work offline?
 
 Yes. After install, momentum is a folder of markdown, JS, and shell
-scripts. There are no API calls and no telemetry. Your agent might use a
-remote model, but momentum itself doesn't.
+scripts. There are no API calls, no telemetry, and no required network
+access. Your agent might use a remote model, but momentum itself doesn't.
 
 ## Does momentum send any data anywhere?
 
-No. There is no telemetry, no analytics, no phone-home. Read
-[`package.json`](https://github.com/avinash-singh-io/momentum/blob/main/package.json)
-and the install scripts — momentum is a static template plus a thin Node
-CLI.
+No. There is no telemetry, no analytics, no phone-home. The source is
+[on GitHub](https://github.com/avinash-singh-io/momentum) — read the
+`bin/`, `core/`, and `adapters/` directories. The install scripts and the
+runtime are static; nothing connects to external services.
+
+The only network calls are the ones you initiate: `momentum upgrade`
+fetches from the npm registry (same as `npm install`), and you may
+choose to publish from `/complete-phase`. Both are user-initiated.
 
 ## How do I upgrade an existing project?
 
@@ -43,6 +66,10 @@ momentum upgrade
 Extensions` in your `CLAUDE.md` / `AGENTS.md` is preserved across the
 upgrade. Default commands and rules update from the published templates.
 
+Known regression: [BUG-006](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md)
+— the project-title line in `CLAUDE.md` gets clobbered. Restore manually
+after upgrade until the fix lands.
+
 ## How do I uninstall?
 
 For a single project:
@@ -52,7 +79,8 @@ rm -rf specs/ .agent/ .claude/ .codex/ CLAUDE.md AGENTS.md scripts/
 ```
 
 For ecosystem mode, `momentum leave` removes the pointer block from your
-project's instruction file.
+project's instruction file and de-registers the project from
+`ecosystem.json`. The ecosystem repo itself is untouched.
 
 ## Can I use it in a monorepo?
 
@@ -61,9 +89,74 @@ at the workspace root and the whole monorepo gets the structure. For more
 sophisticated multi-package coordination, ecosystem mode (with each
 package as a member) is a better fit.
 
-## What's the license?
+The choice between "monorepo with momentum at the root" and "ecosystem of
+sibling repos" comes down to: does each package have its own release
+cycle? If yes, ecosystem mode. If no, monorepo + single momentum at root.
 
-MIT. See [LICENSE](https://github.com/avinash-singh-io/momentum/blob/main/LICENSE).
+## Can the agent skip the discipline if I tell it to?
+
+The hooks make it harder. The brainstorm-gate PreToolUse hook on Claude
+Code physically blocks Write/Edit on `specs/` paths when the sentinel
+exists — the agent **cannot** write phase files mid-brainstorm even if
+instructed to. That's the point of physical enforcement vs markdown
+contract.
+
+For projects on Antigravity (no hook surface today), the discipline is
+trust-based. You can tell the agent to skip and it will. The recommendation
+there is: don't, because the failure modes Rule 2/6/7/8/12 prevent are
+exactly the ones that compound silently.
+
+If you want to genuinely disable a rule per-project, edit
+`.agent/rules/project.md` under `## Project Extensions` and document the
+exception. The upgrade preserves the extension.
+
+## What happens if `/complete-phase` is interrupted?
+
+`/complete-phase` is designed to be safely re-runnable. If interrupted
+mid-flight (network blip, accidental Ctrl-C), running it again picks up
+where it left off: verification reruns from scratch, but bookkeeping
+(retrospective.md, status.md, version bump) is idempotent. The PR + tag +
+npm publish steps each have their own "already done?" check.
+
+The one thing to watch: if `npm publish` succeeded but the tag didn't get
+pushed, you'll have a version on npm without a matching git tag. Fix:
+push the tag manually (`git push origin vX.Y.Z`).
+
+## Can I write my own commands / skills?
+
+Yes. Skills are plain markdown files in `core/commands/` (for cross-adapter)
+or `adapters/<agent>/commands/` (for agent-specific). Each file has a
+short header explaining when to use it, then the body describing the steps
+the agent should follow.
+
+`momentum upgrade` doesn't touch files that don't ship with the package
+template — your custom skills are preserved. A dedicated `/specify` +
+skill-authoring command is on the roadmap for Phase 16.
+
+## Is this an MCP server?
+
+Not yet. An MCP server is on the Phase 16 (Platform) roadmap — that would
+expose momentum's primitives as MCP tools so agents that speak MCP can
+invoke them without needing a slash-command surface. Until then, momentum
+ships as adapters per agent (Claude Code, Codex, Antigravity, Cursor,
+Gemini CLI).
+
+## Does momentum work with private GitHub repos?
+
+Yes. The only network operation that touches GitHub is the optional
+`gh pr create` / `gh pr merge` steps in Rule 6 and `/complete-phase` —
+those use your local GitHub CLI auth, which works the same way against
+private repos as public.
+
+The npm publish step (for npm-package projects) goes to the npm registry,
+not GitHub.
+
+## Where do I report bugs?
+
+[GitHub Issues](https://github.com/avinash-singh-io/momentum/issues).
+Please include your `momentum --version`, the agent you're using, and a
+minimal reproduction. Bugs filed with momentum's own backlog conventions
+(priority, status, context block) are appreciated but not required.
 
 ## How do I contribute?
 
@@ -72,11 +165,14 @@ momentum is open source. The repo is at
 
 Issues, discussions, and PRs welcome. The project itself uses momentum,
 so contributing means following the same workflow you'd use in your own
-projects — phases, history entries, conventional commits, and `/complete-phase`
-before release.
+projects — phases, history entries, conventional commits, and
+`/complete-phase` before release.
 
-## Where do I report bugs?
+For first-time contributors: open an issue first to discuss scope before
+landing a PR. The phase model means contributions are easier to land when
+they slot into the current phase's plan, or into a clearly-scoped chore
+branch outside the active phase.
 
-[GitHub Issues](https://github.com/avinash-singh-io/momentum/issues).
-Please include your `momentum --version`, the agent you're using, and a
-minimal reproduction.
+## What's the license?
+
+MIT. See [LICENSE](https://github.com/avinash-singh-io/momentum/blob/main/LICENSE).

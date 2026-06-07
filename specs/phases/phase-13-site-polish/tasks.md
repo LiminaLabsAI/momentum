@@ -73,19 +73,18 @@
 
 ## Group 4 — Tutorial + supporting page refinements (Parallel with G1, G2, G3)
 
-- [ ] `getting-started.md` — add "Your first phase end-to-end" walkthrough section
-- [ ] Walkthrough — `/brainstorm-phase` step with agent question example
-- [ ] Walkthrough — brainstorm gate visible safety explanation
-- [ ] Walkthrough — `/start-phase` autonomous execution flow
-- [ ] Walkthrough — `/complete-phase` verification + tag + (optional) publish
-- [ ] Walkthrough — show real-ish `history.md` entries
-- [ ] `ide-support.md` — per-IDE hook compatibility deep dive
-- [ ] `ide-support.md` — troubleshooting tips section
-- [ ] `ide-support.md` — "if your IDE doesn't appear here…" placeholder
-- [ ] `faq.md` — current 9 retained, 6 new Q&As added (MCP / copilot compare / private repos / disable rules / interrupted complete-phase / authoring own skill)
-- [ ] `about.md` — philosophy gains "spec-driven development for agentic AI" rationale
-- [ ] `about.md` — design principles refined to 5 named principles, one-sentence each
-- [ ] Smoke build green
+- [x] `getting-started.md` rewrite — full installation + end-to-end "Your first phase" tutorial (5 steps from agent open → /complete-phase) (1,380 words; 3.03× baseline ✓)
+- [x] Walkthrough covers `/brainstorm-phase` + agent question example + brainstorm gate visible safety explanation
+- [x] Walkthrough covers `/start-phase` autonomous execution contract steps
+- [x] Walkthrough covers `/complete-phase` verification + retrospective + tag + npm publish flow
+- [x] Walkthrough shows what `tasks.md` / `history.md` / `status.md` look like during execution
+- [x] `ide-support.md` — per-IDE hook-compatibility deep dive (PreToolUse / PostToolUse / SessionStart explained per adapter) (1,141 words; 2.72× baseline)
+- [x] `ide-support.md` — multi-adapter projects section + upgrading + `momentum doctor` troubleshooting
+- [x] `ide-support.md` — "picking an adapter" guidance + Cursor / Gemini CLI Phase 14 plan
+- [x] `faq.md` expansion — original 9 retained + 6 new (MCP, copilot compare, private repos, disable rules, interrupted complete-phase, authoring own skill) (1,112 words; 2.73× baseline)
+- [x] `about.md` — 5 design principles named + 1-paragraph each (Agent-agnostic / Additive ecosystem / No telemetry / Discipline through markdown / Spec-driven)
+- [x] `about.md` — positioning note on "Spec-driven development for agentic AI" + roadmap preview (957 words; 2.82× baseline)
+- [x] Smoke build green: 11 pages
 - [ ] Commit Group 4: `feat(site): end-to-end tutorial + IDE / FAQ / About refinements`
 
 ## Group 5 — Verification + release (Sequential)
