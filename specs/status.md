@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-08
-> **Current Phase**: 14 — Site Refinement & Positioning Pivot (target v0.17.0)
-> **Latest Release**: v0.16.0 — Site Polish & Content Depth
+> **Current Phase**: (between phases — Phase 15 Reach planning pending)
+> **Latest Release**: v0.17.0 — Site Refinement & Positioning Pivot
 > **Health**: On Track
 
 ## Summary
@@ -30,12 +30,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 11 | Dynamic Orchestration & Context Handover | Complete | v0.14.0 (2026-06-07) |
 | 12 | Public Site | Complete | v0.15.0 (2026-06-08) |
 | 13 | Site Polish & Content Depth | Complete | v0.16.0 (2026-06-08) |
+| 14 | Site Refinement & Positioning Pivot | Complete | v0.17.0 (2026-06-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 14 | Site Refinement & Positioning Pivot | In Progress | Group 0 (renumber + heading-id plugin + ecosystem.mdx rename + word-count baseline) — fixes 4 user-flagged rendering bugs, completes the agentic-AI positioning pivot, sharpens ecosystem ↔ orchestration framing, ships new logo + README rewrite toward v0.17.0 |
+| _(between phases)_ | Phase 14 released as v0.17.0 on 2026-06-08. Phase 15 (Reach) planning pending. | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -72,10 +73,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Phase 14 Group 0 — Foundations + tooling.** Install `remark-custom-heading-id` plugin in `/site`; rename `ecosystem.md` → `ecosystem.mdx`; capture word-count baseline.
-2. **Phase 14 Groups 1+2+3+4+5 (parallel).** Rendering bug fixes · positioning pivot · terminology shift · ecosystem ↔ orchestration clarity + new diagram · new logo system.
-3. **Phase 14 Group 6.** README wholesale rewrite.
-4. **Phase 14 Group 7 — Verification + v0.17.0 release** with the new `gh release create` checklist from PR #11.
+1. **`/brainstorm-phase` Phase 15 — Reach** (target v0.18.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
 4. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.

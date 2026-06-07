@@ -65,7 +65,7 @@
       "topics": ["phase-13", "site-polish", "content-depth", "augment-in-place", "mermaid", "custom-svg", "diagrams", "landing-rewrite", "agentic-ai", "positioning", "feature-pillars", "phase-flow", "animated-hero", "topology", "ecosystem-rewrite", "orchestration-page", "scout", "dispatch", "handoff", "continue", "multi-repo-coordination", "concepts-deepening", "skills-examples", "rules-full-text", "tutorial", "end-to-end-walkthrough", "ide-support-deep", "faq-expansion", "word-count-baseline", "rehype-mermaid"]
     },
     "phase-14-site-refinement": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["phase-14", "site-refinement", "positioning-pivot", "agentic-ai", "remark-heading-id", "anchor-syntax", "mermaid-dark-mode", "phaseflow-animation", "ecosystem-mdx", "state-layer", "action-layer", "state-action-layers", "ecosystem-orchestration-clarity", "repo-to-project", "multi-project", "terminology-shift", "two-tone-logo", "concentric-arcs", "velocity-arrow-retired", "readme-rewrite", "github-readme", "release-checklist", "gh-release-create", "v0-17-0"]
     }
   }
