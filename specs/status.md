@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: (between phases — Phase 12 Reach planning pending)
+> **Current Phase**: 12 — Public Site (target v0.15.0)
 > **Latest Release**: v0.14.0 — Dynamic Orchestration & Context Handover
 > **Health**: On Track
 
@@ -33,7 +33,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 11 released as v0.14.0 on 2026-06-07. Phase 12 (Reach) planning pending. | | |
+| 12 | Public Site | In Progress | Group 0 (Foundations & brand direction lock-in) — Astro Starlight scaffold + brand direction selection up next |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -44,9 +44,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 12 | Reach | Not Started (target v0.15.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 13 | Intelligence | Not Started (target v0.16.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 14 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 13 | Reach | Not Started (target v0.16.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 14 | Intelligence | Not Started (target v0.17.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 15 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -70,11 +70,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 12 — Reach** (target v0.15.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision. The orchestration CLI floor (v0.14.0) is already universal — new adapters inherit `momentum scout/dispatch/handoff/continue` automatically. Slash command authoring is per-adapter overlay work.
-2. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
-3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
-4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
-5. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
+1. **Phase 12 Group 0 — Foundations & brand direction lock-in.** Scaffold Astro Starlight under `/site`, lock `astro.config.mjs` (URL, base, IA sidebar), present 2–3 brand direction options to the user (logo concepts, palette, font), select one, write `tokens.css`, stub the 9 IA pages, smoke-gate the empty-content build.
+2. **Phase 12 Groups 1 + 2 + 3 (parallel).** Brand identity assets · landing page · docs pages. Each consumes Group 0 tokens.
+3. **Phase 12 Groups 4 → 5 → 6.** GitHub Actions deploy · verification (Lighthouse / link audit / mobile) · v0.15.0 release.
+4. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
+5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
+6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
+7. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
 
 ## Key Decisions Made
 

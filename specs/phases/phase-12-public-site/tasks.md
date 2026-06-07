@@ -4,9 +4,9 @@
 
 ## Group 0 — Foundations & brand direction lock-in (Sequential)
 
-- [ ] Renumber `specs/planning/roadmap.md` — Site=12, Reach=13, Intelligence=14, Platform=15 (Timeline + Dependencies + Milestones)
-- [ ] Renumber `specs/status.md` Upcoming Phases table; set Active Phase → Phase 12 — Public Site; update Next Actions
-- [ ] Renumber `specs/phases/README.md` and `specs/phases/index.json` (whichever lists phases by number)
+- [x] Renumber `specs/planning/roadmap.md` — Site=12, Reach=13, Intelligence=14, Platform=15 (Timeline + Dependencies + Milestones)
+- [x] Renumber `specs/status.md` Upcoming Phases table; set Active Phase → Phase 12 — Public Site; update Next Actions
+- [x] Renumber `specs/phases/README.md` and `specs/phases/index.json` (whichever lists phases by number)
 - [ ] Scaffold Astro Starlight under `/site` (`npm create astro` with starlight template)
 - [ ] `cd site && npm install`; confirm `node_modules` lives under `/site`
 - [ ] Add `/site/node_modules`, `/site/dist`, `/site/.astro` to root `.gitignore`
