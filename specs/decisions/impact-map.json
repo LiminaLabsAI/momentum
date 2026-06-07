@@ -136,7 +136,73 @@
     },
     "phase-10": {
       "files": [
-        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"},
+        {"path": "specs/phases/phase-10-ecosystem-activation/overview.md", "section": null}
+      ]
+    },
+    "phase-11": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"},
+        {"path": "specs/planning/phase-11-orchestration-handover.md", "section": null}
+      ]
+    },
+    "join": {
+      "files": [
+        {"path": "bin/state-commands.js", "section": null},
+        {"path": "README.md", "section": "Ecosystem quickstart"}
+      ]
+    },
+    "leave": {
+      "files": [
+        {"path": "bin/state-commands.js", "section": null},
+        {"path": "README.md", "section": "Ecosystem quickstart"}
+      ]
+    },
+    "doctor": {
+      "files": [
+        {"path": "bin/state-commands.js", "section": null},
+        {"path": "README.md", "section": "Diagnosing state"}
+      ]
+    },
+    "state-machine": {
+      "files": [
+        {"path": "core/ecosystem/lib/state.js", "section": null}
+      ]
+    },
+    "sibling-walk": {
+      "files": [
+        {"path": "core/ecosystem/lib/state.js", "section": "findRegistration"},
+        {"path": "bin/ecosystem.js", "section": "resolveEcosystemRoot"}
+      ]
+    },
+    "max-parent-walk": {
+      "files": [
+        {"path": "core/ecosystem/lib/state.js", "section": "getMaxParentWalk"},
+        {"path": "core/ecosystem/lib/index.js", "section": "resolveMaxParentWalk"},
+        {"path": "core/ecosystem/scripts/session-append.sh", "section": "find_ecosystem_root"},
+        {"path": "core/ecosystem/layout.md", "section": "Discovery & limits"}
+      ]
+    },
+    "adapter-capabilities": {
+      "files": [
+        {"path": "core/adapter-capabilities.md", "section": null}
+      ]
+    },
+    "init-ecosystem": {
+      "files": [
+        {"path": "bin/momentum.js", "section": "scaffoldEcosystemAndJoin"},
+        {"path": "README.md", "section": "Ecosystem quickstart"}
+      ]
+    },
+    "auto-detect": {
+      "files": [
+        {"path": "bin/momentum.js", "section": "maybePromptForAutoEcosystem"}
+      ]
+    },
+    "single-project-invariant": {
+      "files": [
+        {"path": "tests/single-project-unchanged.test.js", "section": null},
+        {"path": "README.md", "section": "Single-project quickstart"}
       ]
     },
     "roadmap": {

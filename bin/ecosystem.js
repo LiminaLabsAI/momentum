@@ -19,10 +19,14 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const lib = require('../core/ecosystem/lib');
-
-const POINTER_BEGIN = '<!-- ecosystem:begin -->';
-const POINTER_END = '<!-- ecosystem:end -->';
-const PRIMARY_INSTRUCTION_CANDIDATES = ['CLAUDE.md', 'AGENTS.md'];
+const {
+  POINTER_BEGIN,
+  POINTER_END,
+  PRIMARY_INSTRUCTION_CANDIDATES,
+  findPrimaryInstructionFile,
+  ensurePointerInjected,
+  stripPointer,
+} = require('../core/ecosystem/lib/pointer');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public entrypoint
@@ -67,9 +71,14 @@ momentum ecosystem — Cross-repo coordination layer (Tier 1).
 
 Usage:
   momentum ecosystem init [name]
-  momentum ecosystem add <repo-path> [--role <role>] [--id <id>]
-  momentum ecosystem remove <member-id>
-  momentum ecosystem status [--no-git]
+  momentum ecosystem add <repo-path> [--role <role>] [--id <id>] [--ecosystem <path>]
+  momentum ecosystem remove <member-id> [--ecosystem <path>]
+  momentum ecosystem status [--no-git] [--ecosystem <path>]
+
+Location:
+  add / remove / status auto-locate the ecosystem root by walking up
+  from CWD (bounded by MOMENTUM_MAX_PARENT_WALK, default 5). Use
+  --ecosystem <path> to override explicitly.
 
 Subcommands:
   init       Scaffold a new ecosystem root in the CWD (or under [name]/).
@@ -199,15 +208,13 @@ function cmdAdd(args) {
     throw new Error('add: missing <repo-path> argument.');
   }
   const repoPath = args[0];
-  const opts = parseFlags(args.slice(1), { role: 'string', id: 'string' });
+  const opts = parseFlags(args.slice(1), {
+    role: 'string',
+    id: 'string',
+    ecosystem: 'string',
+  });
 
-  const root = lib.findRoot(process.cwd());
-  if (!root) {
-    throw new Error(
-      'add: not inside an ecosystem root (no ecosystem.json found in ' +
-      'this or any parent directory up to 5 levels).',
-    );
-  }
+  const root = resolveEcosystemRoot(opts.ecosystem, 'add');
 
   const absRepo = path.resolve(root, repoPath);
   if (!fs.existsSync(absRepo)) {
@@ -287,12 +294,10 @@ function cmdRemove(args) {
   if (args.length === 0) {
     throw new Error('remove: missing <member-id> argument.');
   }
+  const opts = parseFlags(args.slice(1), { ecosystem: 'string' });
   const id = args[0];
 
-  const root = lib.findRoot(process.cwd());
-  if (!root) {
-    throw new Error('remove: not inside an ecosystem root.');
-  }
+  const root = resolveEcosystemRoot(opts.ecosystem, 'remove');
 
   const manifest = lib.loadManifest(root);
   const member = lib.findMember(manifest, id);
@@ -333,11 +338,11 @@ function cmdRemove(args) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function cmdStatus(args) {
-  const opts = parseFlags(args, { 'no-git': 'boolean' });
-  const root = lib.findRoot(process.cwd());
-  if (!root) {
-    throw new Error('status: not inside an ecosystem root.');
-  }
+  const opts = parseFlags(args, {
+    'no-git': 'boolean',
+    ecosystem: 'string',
+  });
+  const root = resolveEcosystemRoot(opts.ecosystem, 'status');
   const manifest = lib.loadManifest(root);
 
   console.log(`Ecosystem: ${manifest.name} (root: ${root})`);
@@ -371,54 +376,46 @@ function cmdStatus(args) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
+//
+// findPrimaryInstructionFile / ensurePointerInjected / stripPointer moved
+// to core/ecosystem/lib/pointer.js in Phase 10 Group 0 for reuse by
+// `momentum join` and `momentum leave`. Imported above.
 
-function findPrimaryInstructionFile(repoPath) {
-  for (const name of PRIMARY_INSTRUCTION_CANDIDATES) {
-    if (fs.existsSync(path.join(repoPath, name))) {
-      return name;
+/**
+ * ENH-021 — resolve the ecosystem root from any directory.
+ *
+ * Resolution order:
+ *   1. explicit `--ecosystem <path>` (highest precedence)
+ *   2. ecosystem.json in CWD
+ *   3. walk up via findRoot() bounded by MOMENTUM_MAX_PARENT_WALK
+ *   4. error with a remediation message naming the subcommand
+ */
+function resolveEcosystemRoot(explicitPath, subcommand) {
+  if (explicitPath) {
+    const abs = path.resolve(process.cwd(), explicitPath);
+    if (!fs.existsSync(path.join(abs, lib.MANIFEST_FILENAME))) {
+      throw new Error(
+        `${subcommand}: --ecosystem ${explicitPath} → ${abs} has no ecosystem.json. ` +
+          `Did you mean a different path?`,
+      );
     }
+    return abs;
   }
-  return null;
-}
-
-function ensurePointerInjected(absRepo, primaryFile, root, ecosystemName) {
-  const filePath = path.join(absRepo, primaryFile);
-  const original = fs.readFileSync(filePath, 'utf8');
-  if (original.includes(POINTER_BEGIN)) {
-    // Already injected — leave it. (Re-runs preserve user edits inside
-    // the fence, which we intentionally don't rewrite.)
-    return;
-  }
-  const relFromMember = path.relative(absRepo, root) || '.';
-  const block =
-    `\n${POINTER_BEGIN}\n` +
-    `> Member of \`${ecosystemName}\` ecosystem at \`${relFromMember}\`.\n` +
-    `> See ecosystem.json for siblings and \`momentum ecosystem status\` for live state.\n` +
-    `${POINTER_END}\n`;
-  // Insert immediately after the first H1 line if one exists; otherwise prepend.
-  const lines = original.split('\n');
-  let insertAt = 0;
-  for (let i = 0; i < lines.length; i++) {
-    if (/^#\s+/.test(lines[i])) {
-      insertAt = i + 1;
-      break;
-    }
-  }
-  const next = lines.slice(0, insertAt).concat(block.split('\n').slice(0, -1), lines.slice(insertAt)).join('\n');
-  fs.writeFileSync(filePath, next, 'utf8');
-}
-
-function stripPointer(filePath) {
-  if (!fs.existsSync(filePath)) return;
-  const original = fs.readFileSync(filePath, 'utf8');
-  if (!original.includes(POINTER_BEGIN)) return;
-  // Greedy strip between the fences (and one optional surrounding blank line).
-  const re = new RegExp(`\\n?${escapeRegExp(POINTER_BEGIN)}[\\s\\S]*?${escapeRegExp(POINTER_END)}\\n?`, 'g');
-  fs.writeFileSync(filePath, original.replace(re, '\n'), 'utf8');
-}
-
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // First try parent walk-up — succeeds when CWD is inside the ecosystem root.
+  const found = lib.findRoot(process.cwd());
+  if (found) return found;
+  // Then try sibling walk — succeeds when CWD is inside a member repo
+  // whose ecosystem root is a sibling directory. This mirrors the
+  // session-append.sh hook's discovery pattern and is what makes
+  // ENH-021 actually feel location-agnostic from inside a member repo.
+  const stateLib = require('../core/ecosystem/lib/state');
+  const reg = stateLib.findRegistration(process.cwd());
+  if (reg) return reg.rootPath;
+  throw new Error(
+    `${subcommand}: no ecosystem.json found in this or any parent directory, ` +
+      `nor in any reachable sibling. Pass --ecosystem <path>, or cd to an ` +
+      `ecosystem root before running.`,
+  );
 }
 
 function printGitState(repoPath) {

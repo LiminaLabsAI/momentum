@@ -71,11 +71,39 @@ cleared by `… close`. The session-log hook reads this to inject the
 The ISO date of the most recent session file. Cheap cache so the hook
 doesn't re-stat every directory entry.
 
+## Discovery & limits
+
+The ecosystem root is **discovered** by walking up from `$PWD` (max 5
+parents by default) until a directory containing `ecosystem.json` is
+found. The resolution is memoized per session.
+
+**Configurable depth (ENH-022).** Override the parent-walk limit via
+the `MOMENTUM_MAX_PARENT_WALK` environment variable. Honored in both
+the JS path (`core/ecosystem/lib/index.js`, `core/ecosystem/lib/state.js`)
+and the shell path (`core/ecosystem/scripts/session-append.sh`).
+Non-numeric or negative values fall back to the default of 5.
+
+```
+MOMENTUM_MAX_PARENT_WALK=10 momentum ecosystem status
+```
+
+**Location-agnostic CLI (ENH-021).** `momentum ecosystem add`,
+`remove`, and `status` resolve the ecosystem root from CWD by default
+(via the walk-up above). Use `--ecosystem <path>` to override
+explicitly:
+
+```
+momentum ecosystem add ./client --ecosystem ../my-eco
+```
+
+**Concurrency (BUG-004).** Session-log writes are serialized via a
+`mkdir`-based lock per session file (atomic on POSIX filesystems,
+portable across macOS and Linux without depending on `flock`). Lock
+acquisition has a ~5s budget; on timeout the event is dropped
+silently rather than risking file corruption.
+
 ## Conventions
 
-- The ecosystem root is **discovered** by walking up from `$PWD` (max 5
-  parents) until a directory containing `ecosystem.json` is found.
-  The resolution is memoized per session.
 - The ecosystem layer **never writes** into a member repo's `specs/`.
   It only writes to its own directories above. The single touch on a
   member is one fenced line in its `CLAUDE.md` / `AGENTS.md`:
