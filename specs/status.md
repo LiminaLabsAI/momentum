@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 10 — Ecosystem Activation & Polish (`planning complete; implementation pending`)
+> **Current Phase**: Phase 10 — Ecosystem Activation & Polish (`in progress`)
 > **Latest Release**: v0.12.0 — Ecosystem (Tier 1)
 > **Health**: On Track
 
@@ -31,7 +31,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 10 | Ecosystem Activation & Polish | Planning complete | Brainstormed 2026-06-07; ready for `/start-phase`. 5 workstreams: entry/exit commands; Phase 9 follow-up fixes (BUG-004 / ENH-021 / ENH-022); product positioning README rewrite; per-adapter smoke matrix + capability audit; cerebrio-ecosystem dogfood. Target v0.13.0. |
+| 10 | Ecosystem Activation & Polish | **In Progress** | Started 2026-06-07. Group 0 (state machine + reusable helpers) → Groups 1/2/3 parallel → Group 4 (adapter coverage + cerebrio dogfood) → Group 5 (verification). 5 workstreams: entry/exit commands; Phase 9 follow-up fixes (BUG-004 / ENH-021 / ENH-022); product positioning README rewrite; per-adapter smoke matrix + capability audit; cerebrio-ecosystem dogfood. Target v0.13.0. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -68,9 +68,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. `/start-phase` Phase 10 — Ecosystem Activation & Polish (target v0.13.0). Planning complete; brainstorm landed 2026-06-07.
-2. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
-3. cerebrio-ecosystem bootstrap (Phase 9 dogfood) now folded into Phase 10 Workstream 5 — runs during Phase 10 implementation. Retroactively captures the Memory module v1 work as initiative `0001-memory-module`.
+1. **Implement Phase 10 Group 0** — state machine (`core/ecosystem/lib/state.js`), reusable pointer helpers (`core/ecosystem/lib/pointer.js`), test fixtures. Sequential, blocks Groups 1/2/3.
+2. Once Group 0 lands, Groups 1 (entry/exit commands), 2 (Phase 9 fixes), 3 (README + onboarding) proceed in parallel.
+3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
 
 ## Key Decisions Made
