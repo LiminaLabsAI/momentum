@@ -51,10 +51,14 @@ module.exports = {
     hooks: true,
     slashCommands: true,
     subagents: true,
+    parallelSubagents: true,
+    sessionStartHook: true,
     skills: false,
     browser: false,
     computerUse: false,
   },
+
+  roadmap: {},
 
   runInstall(targetDir, adapterDir, helpers) {
     const { copyFile, fileExists } = helpers;

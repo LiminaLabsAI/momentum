@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 11 — Dynamic Orchestration & Context Handover (`planning pending`)
-> **Latest Release**: v0.13.0 — Ecosystem Activation & Polish
+> **Current Phase**: (between phases — Phase 12 Reach planning pending)
+> **Latest Release**: v0.14.0 — Dynamic Orchestration & Context Handover
 > **Health**: On Track
 
 ## Summary
@@ -27,12 +27,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 7c | Autonomous Execution & TDD | Complete | v0.10.0 (2026-05-28) |
 | 9 | Ecosystem (Tier 1) | Complete | v0.12.0 (2026-06-07) |
 | 10 | Ecosystem Activation & Polish | Complete | v0.13.0 (2026-06-07) |
+| 11 | Dynamic Orchestration & Context Handover | Complete | v0.14.0 (2026-06-07) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 11 | Dynamic Orchestration & Context Handover | Planning pending | Planning stub at `specs/planning/phase-11-orchestration-handover.md`. Capability-driven `scout` / `dispatch` / `handoff` primitives. Codex / Antigravity capability research up front. Target v0.14.0. |
+| _(between phases)_ | Phase 11 released as v0.14.0 on 2026-06-07. Phase 12 (Reach) planning pending. | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -69,10 +70,11 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 11 — Dynamic Orchestration & Context Handover** (target v0.14.0). Inputs: planning stub at `specs/planning/phase-11-orchestration-handover.md`, capability matrix at `core/adapter-capabilities.md`.
-2. **cerebrio dogfood (post-v0.13.0 user action).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs. Initiative `0001-memory-module` captures the 2026-06-05/06 Memory module v1 work retroactively.
+1. **`/brainstorm-phase` Phase 12 — Reach** (target v0.15.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision. The orchestration CLI floor (v0.14.0) is already universal — new adapters inherit `momentum scout/dispatch/handoff/continue` automatically. Slash command authoring is per-adapter overlay work.
+2. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
 3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
+5. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
 
 ## Key Decisions Made
 
@@ -94,3 +96,4 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-05-08**: Phase 6 complete — v0.7.0 released. Adapter Contract v2 (per-agent commands/rules/scripts overlays, conflict = error); Rule 12 verify-before-claim; `/complete-phase` evidence rigor; `/review-code` (Claude Code, subagent-driven); ENH-014 cross-repo Rule 9 safeguards; `tests/` for momentum CLI (24 tests via node:test).
 - **2026-05-28**: Phase 7b complete — v0.9.0 released. Adapter Contract v3; Codex adapter (`AGENTS.md`, `.codex/hooks.json`, `.codex/commands/`); dynamic available-agent discovery; Claude regression coverage; ENH-018 tarball-shape test; prepublish test gate.
 - **2026-06-07**: Phase 10 complete — v0.13.0 released. Top-level entry/exit commands (`init --ecosystem`, `join`, `leave`, `doctor`); init auto-detect; BUG-004 / BUG-005 / ENH-021 / ENH-022 fixed; README rewrite as product positioning; per-adapter smoke matrix + capability audit. 165/165 tests pass (+64 from Phase 9). ENH-023/ENH-024 filed as follow-ups.
+- **2026-06-07**: Phase 11 complete — v0.14.0 released. Three orchestration primitives (scout / dispatch / handoff) + continue, with three invocation doors (slash / NL inference / CLI) over one shared `core/orchestration/` library. SessionStart hook auto-greet for pending handoffs. Tracking contract: cheap layer auto, curated layer auto-if-meaningful, no new history entry types. Capability-driven routing with labeled degraded modes. ENH-023 + ENH-024 closed. Per-adapter smoke matrix extended to 9 combinations. 246/246 tests pass (+81 from Phase 10).

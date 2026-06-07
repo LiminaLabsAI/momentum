@@ -163,6 +163,42 @@ The following are deferred to a future phase ("Tier 2"):
 - Inter-repo parallel agent orchestration (extending Phase 8
   worktrees across repos).
 
+## Orchestration (Phase 11, v0.14.0+)
+
+Once an ecosystem is set up, momentum gives you three primitives for
+working across member repos from one agent session — three doors into
+one shared library.
+
+| Primitive | Behaviour | Where it lands |
+|---|---|---|
+| `scout <repo> "<prompt>"` | Read-only context fetch from one member | `.momentum/runs/scout-NNN.md` in originating repo; one line in ecosystem session log; `[DISCOVERY]` in scouted repo's active phase history if a meaningful finding |
+| `dispatch <r1> <r2> … --prompt "<text>"` | Parallel fan-out + synthesis across members; sequential fallback labeled when adapter doesn't support parallel sub-agents | `.momentum/runs/dispatch-NNN.md`; one session log line; per-repo `[DISCOVERY]` for meaningful findings; `[NOTE]` in originating phase history for the synthesis |
+| `handoff <repo>` | Cross-session control transfer with a structured context block | `<receiving repo>/.momentum/inbox/handoff-NNN.md`; one session log line; `[DECISION]` in originating phase history |
+| `continue [--handoff <id>]` | Pick up a pending handoff in the current repo | Inbox file moved to `.momentum/inbox/read/`; `[NOTE]` in receiving phase history |
+
+**Three doors, identical output shape:**
+
+- **Slash command** (Claude Code, Codex): `/scout`, `/dispatch`, `/handoff`, `/continue`.
+- **Natural-language inference**: describe the task; the agent picks the primitive ("inferred: scout (single repo, read-only)").
+- **CLI**: `momentum scout|dispatch|handoff|continue` — universal floor, works on every adapter including chat-driven ones.
+
+**Tracking contract — auto when meaningful, never noise:**
+
+- **Cheap layer (always auto):** ecosystem session log line + `.momentum/runs/` artifact + handoff inbox file.
+- **Curated layer (auto when meaningful):** `[DISCOVERY]` / `[DECISION]` / `[NOTE]` entries in the relevant repo's active phase `history.md`, applying Rule 3 thresholds (real bug, real tech debt, real enhancement, real cross-repo decision). **No new entry types.**
+- **Never auto:** `backlog.md` writes — tracking proposes; the user confirms.
+
+**Capability-driven routing.** Some adapters don't support parallel
+sub-agent fan-out (Codex today, until parallel dispatch is validated
+in CI) or SessionStart hooks (Antigravity). The router degrades
+gracefully and labels the degraded mode up front, e.g.:
+
+```
+▸ note: this adapter does not declare parallel subagents — running sequentially
+```
+
+The user sees output of the same shape; just slower in degraded mode.
+
 ## Failure modes (operator playbook)
 
 | Symptom | Cause | Fix |
