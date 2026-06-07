@@ -1,0 +1,12 @@
+     957 site/src/content/docs/about.md
+    1597 site/src/content/docs/concepts.md
+    1112 site/src/content/docs/faq.md
+    1380 site/src/content/docs/getting-started.md
+    1141 site/src/content/docs/ide-support.md
+    1716 site/src/content/docs/orchestration.md
+    2157 site/src/content/docs/rules.md
+    1102 site/src/content/docs/skills.md
+    1289 site/src/content/docs/ecosystem.mdx
+     200 site/src/content/docs/index.mdx
+    2222 README.md
+   14873 total

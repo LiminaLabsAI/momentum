@@ -8,13 +8,13 @@
 - [x] Update `specs/status.md` Upcoming Phases + Active Phase → Phase 14 — Site Refinement
 - [x] Update `specs/phases/README.md` — append Phase 14 row, status In Progress
 - [x] Update `specs/phases/index.json` — add `phase-14-site-refinement` entry with topic keywords
-- [ ] `npm install -D remark-custom-heading-id` in `/site`
-- [ ] Wire `remark-custom-heading-id` into `astro.config.mjs` `markdown.remarkPlugins`
-- [ ] Smoke-test: temporary `## test {#test}` heading renders as `<h2 id="test">`
-- [ ] Rename `site/src/content/docs/ecosystem.md` → `ecosystem.mdx`
-- [ ] Verify `/ecosystem/` route still 200 after rename
-- [ ] Capture word-count baseline → `specs/phases/phase-14-site-refinement/artifacts/wc-baseline.txt`
-- [ ] Smoke build green: `cd site && npm run build`
+- [x] `npm install -D remark-custom-heading-id` in `/site`
+- [x] Wire `remark-custom-heading-id` into `astro.config.mjs` `markdown.remarkPlugins`
+- [x] Verified: `/orchestration/` has `id="scout"`, `id="dispatch"`, `id="handoff"`, `id="continue"` headings; 0 literal `${#...}` leaks
+- [x] Rename `site/src/content/docs/ecosystem.md` → `ecosystem.mdx`
+- [x] Verified: `/ecosystem/` renders `EcosystemTopology` SVG (2 matches in HTML); 0 leaked `import EcosystemTopology` text
+- [x] Capture word-count baseline → `artifacts/wc-baseline.txt` (14,873 docs + 2,222 README)
+- [x] Smoke build green: 11 pages, Pagefind 22 HTML files
 - [ ] Commit Group 0: `infra(site): heading-id plugin + roadmap renumber + ecosystem.mdx rename`
 
 ## Group 1 — Rendering bug fixes (Parallel with G2, G3, G4, G5)

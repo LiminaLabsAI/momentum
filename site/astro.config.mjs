@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import rehypeMermaid from 'rehype-mermaid';
+import remarkCustomHeadingId from 'remark-custom-heading-id';
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,6 +13,10 @@ export default defineConfig({
 	// Zero client-side JS for diagrams; keeps Lighthouse green.
 	markdown: {
 		syntaxHighlight: 'shiki',
+		// Parse kramdown-style {#custom-id} anchors so headings can keep
+		// stable short slugs for cross-page links (e.g. /orchestration/#scout)
+		// even when the full heading text would auto-slug to something long.
+		remarkPlugins: [remarkCustomHeadingId],
 		rehypePlugins: [
 			[
 				rehypeMermaid,

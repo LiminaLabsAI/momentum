@@ -119,3 +119,11 @@ Affects-specs: specs/phases/phase-14-site-refinement/plan.md
 Detail: Rough estimate: Group 0 ~1h (renumber + plugin + rename), Group 1 ~2-3h (3 rendering bugs), Group 2 ~3-4h (positioning rewrite across 5+ pages), Group 3 ~1-2h (terminology find-replace + audit), Group 4 ~3-4h (NEW diagram + restructure + cross-link rewrites), Group 5 ~2-3h (logo system regen), Group 6 ~2-3h (README rewrite + verify GitHub rendering), Group 7 ~2-3h (verification + release). Total ~16-23h focused work — slightly smaller than Phase 13 (~22-32h) because most heavy framework code (Mermaid wiring, Playwright, brand system) is already in place. Mitigation against scope creep: aggressive non-goals (no palette/font change, no IA restructure, no Cursor/Gemini, no per-page OG, no DevOps persona); parallel Groups 1-5 keep wall-clock bounded.
 
 ---
+
+### [DECISION] 2026-06-08 — Group 0 foundations landed: heading-id plugin + ecosystem rename fix 2 of 4 bugs
+Topics: phase-14, group-0, remark-custom-heading-id, ecosystem-mdx, baseline, rendering-bugs
+Affects-phases: phase-14-site-refinement
+Affects-specs: site/astro.config.mjs, site/src/content/docs/ecosystem.mdx, specs/phases/phase-14-site-refinement/artifacts/wc-baseline.txt
+Detail: Group 0 (Foundations + tooling) landed. `remark-custom-heading-id` installed and wired into `markdown.remarkPlugins` in `astro.config.mjs`. Verified post-build: `/orchestration/index.html` contains `id="scout"`, `id="dispatch"`, `id="handoff"`, `id="continue"` heading IDs and ZERO literal `${#...}` leaks (grep confirms). `ecosystem.md` → `ecosystem.mdx` rename + smoke confirms the `EcosystemTopology` SVG now renders (2 matches in dist HTML, ZERO leaked import statements). Word-count baseline captured at `artifacts/wc-baseline.txt`: docs total 14,873 + README 2,222. Roadmap renumber (Site Refinement = 14; Reach → 15; Intelligence → 16; Platform → 17) was absorbed into start-phase setup commit per Phase 12/13 precedent. **Net: 2 of the 4 user-flagged rendering bugs (anchor syntax + ecosystem MDX leak) are already fixed.** Groups 1 takes care of the remaining 2 (Mermaid dark mode + PhaseFlow animation).
+
+---
