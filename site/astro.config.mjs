@@ -99,7 +99,13 @@ export default defineConfig({
 						{ label: 'Skills', slug: 'skills' },
 						{ label: 'Rules', slug: 'rules' },
 						{ label: 'IDE support', slug: 'ide-support' },
+					],
+				},
+				{
+					label: 'Multi-repo coordination',
+					items: [
 						{ label: 'Ecosystem mode', slug: 'ecosystem' },
+						{ label: 'Orchestration', slug: 'orchestration' },
 					],
 				},
 				{

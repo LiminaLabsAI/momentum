@@ -1,92 +1,260 @@
 ---
 title: Ecosystem mode
-description: Coordinate work across multiple related repos from a single AI agent session — opt-in, additive.
+description: Coordinate work across multiple related repos from a single AI agent session. Opt-in, additive, and built so single-project usage stays identical.
 ---
 
-Single-project momentum is the default. When you have **multiple related
-projects** that need to coordinate — a platform + SDK + CLI, or a
-frontend + backend + infra — ecosystem mode lets one agent session work
-across all of them while preserving per-project tracking discipline.
+import EcosystemTopology from '../../components/diagrams/EcosystemTopology.astro';
+
+Single-project momentum is the default. When you have multiple related
+projects that need to coordinate — a platform + SDK + CLI, or a frontend +
+backend + infra — **ecosystem mode** lets one agent session work across all
+of them while preserving per-project tracking discipline.
 
 **Hard invariant**: a project running `momentum init` without `--ecosystem`
 sees zero difference from before ecosystem mode existed. Ecosystem mode is
 purely additive.
 
-## When to use it
+<EcosystemTopology />
 
-Reach for ecosystem mode when:
+## What ecosystem mode adds
 
-- You have **≥ 2 repos** that share a single product or platform.
-- You frequently change two repos for one feature.
+When you opt in, an ecosystem root appears as a sibling git repo containing
+shared state. Each member project keeps its own `specs/` exactly as in
+single-project mode, plus a small **pointer block** in its primary
+instruction file that tells the agent it's a member.
+
+```
+parent-dir/
+├── my-eco/                    ← ecosystem root (sibling git repo)
+│   ├── ecosystem.json         ← members, roles, dependency edges
+│   ├── initiatives/           ← cross-repo features
+│   │   └── 0001-memory.md
+│   ├── sessions/              ← daily activity log (auto-appended)
+│   │   └── 2026-06-08.md
+│   ├── .state/                ← state-machine artifacts
+│   └── README.md
+├── sapience/                  ← member: own specs/ + pointer block
+├── sdk/                       ← member: own specs/ + pointer block
+└── cli/                       ← member: own specs/ + pointer block
+```
+
+Each member's `CLAUDE.md` / `AGENTS.md` gets a fenced pointer block injected
+by `momentum join`:
+
+```
+<!-- momentum:ecosystem-pointer:start -->
+> Member of `my-eco` ecosystem at `../my-eco/`.
+> Cross-repo work → `../my-eco/initiatives/`. Don't create
+> coordination files here.
+> See `ecosystem.json` for siblings and `momentum ecosystem
+> status` for live state.
+<!-- momentum:ecosystem-pointer:end -->
+```
+
+The pointer is the agent's discovery surface — "you're in a coordination
+layer; cross-repo coordination lives next door."
+
+## When to use ecosystem mode
+
+Reach for it when:
+
+- You have **two or more repos** that share a single product or platform.
+- You frequently change two or more repos for one feature.
 - You want one agent session to scan all of them, draft initiatives that
   span them, and keep a unified daily log.
 
 Skip it when:
 
-- You only have one repo.
+- You only have one repo. (Single-project mode is the default for a reason.)
 - Your "related" repos are loosely coupled and rarely change together.
+- You're not yet on a sustained build cadence — ecosystem mode pays off
+  most when there's enough cross-repo activity for the shared log + initiatives
+  to be useful.
 
 ## Quickstart
 
+### Create from your first project
+
 ```bash
-# From inside the first project:
+# From inside the first project you want to anchor:
 npx @avinash-singh-io/momentum init --ecosystem my-eco
+```
 
-# Creates ../my-eco/ as a sibling git repo + registers this project
-# as the first member.
+This creates `../my-eco/` as a sibling git repo, scaffolds the manifest +
+initiatives + sessions dirs, and registers the current project as the
+first member.
 
-# From each additional project:
+### Add subsequent members
+
+```bash
+# From inside each additional project:
 npx @avinash-singh-io/momentum join ../my-eco
 ```
 
-You now have:
+`join` is idempotent — running it twice does the right thing. It registers
+the project in `ecosystem.json` and injects the pointer block into the
+instruction file (skipped if already present).
 
-```
-parent-dir/
-├── my-eco/                ← ecosystem root (new, sibling git repo)
-│   ├── ecosystem.json     ← members, roles, dependency edges
-│   ├── initiatives/       ← cross-repo features
-│   └── sessions/          ← daily activity log (auto-appended)
-├── project-a/             ← member: own specs/, has pointer block
-├── project-b/             ← member: own specs/, has pointer block
-└── project-c/             ← member: own specs/, has pointer block
+### Diagnose state
+
+```bash
+momentum doctor
 ```
 
-## What ecosystem mode adds
+Reports whether the current directory is a standalone project, an ecosystem
+root, or an ecosystem member, plus detected issues with the state files.
+Walk-and-check covers parent dirs AND sibling dirs (the ecosystem root is
+typically a sibling of members, not an ancestor).
 
-- **Cross-repo session log** — `sessions/YYYY-MM-DD.md` auto-records commits
-  and PRs across every member repo. One file per day.
-- **Cross-repo initiatives** — `initiatives/NNNN-<slug>.md`. A feature that
-  spans multiple repos gets one initiative file with sub-tasks per member.
-- **`/track` aggregation** — one view across all members' backlogs.
-- **Ecosystem CLI** — `momentum ecosystem status`, `momentum doctor`,
-  `momentum join`, `momentum leave`.
-- **Orchestration primitives** — `/scout`, `/dispatch`, `/handoff`,
-  `/continue`. The main agent composes these per task.
-
-## What it doesn't change
-
-- Each member's `specs/` is **untouched**. Phases, backlog, history all live
-  in the member repo, exactly as in single-project mode.
-- Every per-project slash command works the same way it did before.
-- The npm package surface is unchanged.
-
-## Leaving an ecosystem
+### Leave an ecosystem
 
 ```bash
 # From inside the member project:
 npx @avinash-singh-io/momentum leave
 ```
 
-Removes the pointer block from `CLAUDE.md` / `AGENTS.md` and de-registers
-the project from `ecosystem.json`. Per-project work continues unchanged.
+Removes the pointer block and de-registers the project from `ecosystem.json`.
+Per-project work continues unchanged.
 
-## Diagnosing state
+## Initiatives — cross-repo features
 
-```bash
-npx @avinash-singh-io/momentum doctor
+When a feature genuinely spans multiple repos, write an **initiative file** at
+`<eco-root>/initiatives/NNNN-<slug>.md`. The initiative captures cross-repo
+context: which members are involved, what each member's role is, dependency
+order, links to per-member phases or PRs.
+
+```markdown
+# Initiative 0001 — Memory module v1
+
+## Summary
+Ship persistent memory for the platform — sapience exposes the API,
+SDK consumes it, CLI documents it.
+
+## Members involved
+- sapience/ — backend implementation
+- sdk/ — client SDK update
+- cli/ — docs + examples
+
+## Dependency order
+1. sapience/ (Phase 5 of that repo)
+2. sdk/ (consumer phase — depends on sapience@v1.0)
+3. cli/ (docs phase — depends on sdk@v0.4)
+
+## References
+- sapience: specs/phases/phase-5-memory/
+- ADR: ../sapience/specs/decisions/0042-memory-api.md
 ```
 
-Reports whether the current directory is a standalone project, an
-ecosystem root, or an ecosystem member, plus any detected issues with the
-state files.
+Initiatives are written by the user or by an agent invoking `/initiative` —
+both work the same way. They live in the ecosystem repo, not in any member.
+Per-member phases reference the initiative; the initiative references the
+phases.
+
+## Sessions — auto-recorded activity log
+
+Every git commit and `gh pr create / merge` in any member repo
+auto-appends a line to today's session file at
+`<eco-root>/sessions/YYYY-MM-DD.md`. The auto-append runs from a `PostToolUse`
+hook on Claude Code (other adapters via equivalent hooks).
+
+```
+# Session — 2026-06-08
+
+## sapience
+- 09:42 commit  feat(memory): kv store + JSON schema (abc1234)
+- 11:15 pr      merge #128 — memory write-path
+## sdk
+- 12:03 commit  feat(memory): typed client + tests (def5678)
+## cli
+- 14:30 commit  docs(memory): worked example for /init (789abcd)
+```
+
+One file per day. The log is **best-effort** and never blocks user work —
+a session-append failure logs to stderr but doesn't error out the commit.
+
+### Concurrent-commit safety
+
+Two members committing simultaneously could race on the same session file.
+The auto-append script uses a per-session-file `mkdir`-based lock (portable
+across macOS / Linux without `flock`). Verified via 10-process stress test
+in Phase 10.
+
+## What ecosystem mode doesn't change
+
+- Each member's `specs/` is **untouched** — phases, backlog, history all live
+  in the member repo exactly as in single-project mode.
+- Every per-project slash command (`/start-phase`, `/complete-phase`,
+  `/track`, etc.) works the same way.
+- The npm package surface is unchanged — `@avinash-singh-io/momentum` ships
+  one CLI that handles both modes.
+- The 13 autonomous agent rules apply identically; Rule 9 (multi-repo doc
+  sync) adds the "don't modify docs you don't own" guard for cross-repo
+  agent sessions.
+
+## A worked example
+
+Imagine you maintain three related repos:
+
+```
+~/work/
+├── platform/      ← Node.js backend, monorepo, owns the API
+├── sdk/           ← Python client SDK that consumes the API
+└── cli/           ← Go CLI that ships with the platform docs
+```
+
+You're already running momentum in each individually. Now you want to ship
+"memory module v1" — a feature that touches all three.
+
+### Step 1 — Create the ecosystem
+
+```bash
+cd ~/work/platform
+npx @avinash-singh-io/momentum init --ecosystem my-stack
+```
+
+`../my-stack/` appears as a new sibling. The `platform` repo gains a pointer
+block. `momentum ecosystem status` from inside `platform` now reports a
+1-member ecosystem.
+
+### Step 2 — Join the other members
+
+```bash
+cd ~/work/sdk
+npx @avinash-singh-io/momentum join ../my-stack
+
+cd ~/work/cli
+npx @avinash-singh-io/momentum join ../my-stack
+```
+
+Now `ecosystem status` reports 3 members. The shared `ecosystem.json` lists
+all three.
+
+### Step 3 — Write an initiative
+
+From any member, run `/initiative` (or hand-write the file at
+`../my-stack/initiatives/0001-memory.md`). The initiative captures
+cross-repo context, dependency order, and link-outs to per-member phases.
+
+### Step 4 — Work normally in each member
+
+In `platform/`, you brainstorm and start a phase: `/brainstorm-phase` →
+`/start-phase`. The phase plan references the initiative. Every commit
+auto-records to today's session log. The ecosystem layer adds no friction
+to the per-project workflow.
+
+### Step 5 — Cross-repo questions
+
+When the agent needs to know "where is the SDK on consuming the memory
+API?" — instead of opening a session in `sdk/`, the agent can `scout sdk`
+or `dispatch platform sdk cli` for parallel state checks. See the
+[Orchestration page](/orchestration/) for the deep dive.
+
+---
+
+## See also
+
+- [Orchestration](/orchestration/) — the four primitives (scout / dispatch /
+  handoff / continue) the main agent composes to work across member repos.
+- [Skills](/skills/) — all slash commands, including `/ecosystem`,
+  `/initiative`, `/session`.
+- [Concepts](/concepts/) — phases, backlog, history, ADRs.

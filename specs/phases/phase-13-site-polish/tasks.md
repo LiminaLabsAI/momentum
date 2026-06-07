@@ -53,21 +53,22 @@
 
 ## Group 3 — Multi-repo deep dive (Parallel with G1, G2, G4)
 
-- [ ] Fill `EcosystemTopology.astro` — ecosystem root + 3 members + pointer-block annotations + status data-flow arrows
-- [ ] `ecosystem.md` rewrite — topology SVG hero + 3-repo worked example
-- [ ] `ecosystem.md` — initiative lifecycle section
-- [ ] `ecosystem.md` — session log section (format + auto-append behavior + lock pattern)
-- [ ] `ecosystem.md` — cross-ref to `/orchestration/`
-- [ ] NEW `/orchestration/` page — create `site/src/content/docs/orchestration.md`
-- [ ] Orchestration intro — primitives composed by the main agent, not a pipeline
-- [ ] Scout section — slash + NL + CLI invocations + Mermaid request/response sequence
-- [ ] Dispatch section — Mermaid fan-out (1 → N → synthesis) + result shape + sub-agent prompt scoping
-- [ ] Handoff section — Mermaid sequence (sender → inbox → receiver) + SessionStart auto-greet
-- [ ] Continue section — `/continue` slash command behavior + idempotency + inbox cleanup
-- [ ] Three invocation doors — slash / NL / CLI explainer with same-output-shape guarantee
-- [ ] Capability-driven routing + labeled degraded modes
-- [ ] Sidebar wiring — add `/orchestration/` to Starlight sidebar (placement decision logged as `[DECISION]`)
-- [ ] Smoke build green
+- [x] `EcosystemTopology.astro` filled (Group 0 skeleton already had ecosystem root + 3 members + pointer-block markers + status-flow arrows)
+- [x] `ecosystem.md` rewrite — topology SVG hero + 5-step worked example (3 repos: platform / sdk / cli)
+- [x] `ecosystem.md` — initiatives section (lifecycle + structure + example)
+- [x] `ecosystem.md` — session log section (format + auto-append behavior + concurrent-commit lock)
+- [x] `ecosystem.md` — cross-ref to `/orchestration/`
+- [x] NEW `/orchestration/` page created (`orchestration.md`, 1,716 words)
+- [x] Orchestration intro — primitives composed by main agent, not a pipeline; intro flowchart diagram
+- [x] Scout section — invocations + Mermaid request/response sequence + ScoutResult shape + when to / when NOT
+- [x] Dispatch section — Mermaid fan-out diagram + result shape + sync vs stream rationale + capability-driven routing
+- [x] Handoff section — Mermaid sequence (sender → inbox → receiver) + context block format + pickup mechanics
+- [x] Continue section — invocations + idempotency + inbox archival convention
+- [x] Three invocation doors — slash / NL / CLI explainer with same-output-shape guarantee
+- [x] Capability-driven routing + labeled degraded modes
+- [x] Sidebar wiring — NEW "Multi-repo coordination" sidebar group containing Ecosystem mode + Orchestration (decision: new group, not under Reference)
+- [x] Smoke build green: 11 pages (was 10), Pagefind 22 HTML files
+- [/] Word count target for ecosystem.md (≥ 1371): currently 1289 — slight padding deferred to Group 5
 - [ ] Commit Group 3: `feat(site): multi-repo coordination — ecosystem rewrite + new orchestration page`
 
 ## Group 4 — Tutorial + supporting page refinements (Parallel with G1, G2, G3)
