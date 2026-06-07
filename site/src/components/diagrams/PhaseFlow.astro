@@ -1,14 +1,25 @@
 ---
 /**
- * <PhaseFlow /> — animated landing-hero diagram.
+ * <PhaseFlow /> — landing-hero diagram.
  *
  * Shows the momentum workflow as five connected nodes:
  *   brainstorm → plan → execute → verify → release
  *
- * Subtle CSS pulse animation cycles a highlight left-to-right across
- * the arrows. Respects `prefers-reduced-motion` — animation falls back
- * to a static gradient highlight.
+ * Animation: each node lights up sequentially (stroke + halo pulse).
+ * No separate pulse circle on the path; the flow is "felt" via the
+ * staggered node animations cycling left-to-right.
+ *
+ * Total cycle = 7.5s (5 nodes × 1.5s each). `prefers-reduced-motion`
+ * holds the static state.
  */
+
+const nodes = [
+	{ x: 80, label: 'brainstorm', i: 0 },
+	{ x: 220, label: 'plan', i: 1 },
+	{ x: 360, label: 'execute', i: 2 },
+	{ x: 500, label: 'verify', i: 3 },
+	{ x: 640, label: 'release', i: 4 },
+];
 ---
 
 <div class="phaseflow" aria-hidden="true">
@@ -20,21 +31,9 @@
 	>
 		<defs>
 			<linearGradient id="pf-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-				<stop offset="0%" stop-color="var(--brand-primary)" stop-opacity="0.12" />
+				<stop offset="0%" stop-color="var(--brand-primary)" stop-opacity="0.14" />
 				<stop offset="100%" stop-color="var(--brand-primary)" stop-opacity="0.04" />
 			</linearGradient>
-			<marker
-				id="pf-arrow"
-				viewBox="0 0 12 12"
-				refX="10"
-				refY="6"
-				markerUnits="strokeWidth"
-				markerWidth="6"
-				markerHeight="6"
-				orient="auto"
-			>
-				<path d="M 0 0 L 12 6 L 0 12 Z" fill="var(--brand-primary)" />
-			</marker>
 		</defs>
 
 		{/* Connecting baseline */}
@@ -48,25 +47,24 @@
 			stroke-dasharray="4 6"
 		/>
 
-		{/* Animated pulse */}
-		<circle r="6" fill="var(--brand-primary)" class="pf-pulse">
-			<animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
-				<mpath href="#pf-path" />
-			</animateMotion>
-		</circle>
-		<path id="pf-path" d="M 80 100 L 640 100" fill="none" />
-
-		{/* Nodes — 5 stages */}
+		{/* Nodes — 5 stages with staggered lighting */}
 		{
-			[
-				{ x: 80, label: 'brainstorm' },
-				{ x: 220, label: 'plan' },
-				{ x: 360, label: 'execute' },
-				{ x: 500, label: 'verify' },
-				{ x: 640, label: 'release' },
-			].map((node) => (
-				<g class="pf-node" transform={`translate(${node.x} 100)`}>
-					<circle r="32" fill="url(#pf-fill)" stroke="var(--brand-primary)" stroke-width="2" />
+			nodes.map((node) => (
+				<g
+					class="pf-node"
+					transform={`translate(${node.x} 100)`}
+					style={`--i: ${node.i}`}
+				>
+					{/* Halo (animated) */}
+					<circle class="pf-halo" r="32" fill="var(--brand-primary)" />
+					{/* Node body */}
+					<circle
+						class="pf-body"
+						r="32"
+						fill="url(#pf-fill)"
+						stroke="var(--brand-primary)"
+						stroke-width="2"
+					/>
 					<text
 						y="6"
 						text-anchor="middle"
@@ -93,12 +91,56 @@
 		height: auto;
 		display: block;
 	}
-	@media (prefers-reduced-motion: reduce) {
-		.pf-pulse animateMotion {
-			animation: none !important;
+
+	/* The halo is invisible by default; the animation brings it in. */
+	.pf-halo {
+		opacity: 0;
+		transform-box: fill-box;
+		transform-origin: center;
+		transform: scale(1);
+	}
+
+	/* Each node's body has a subtle base stroke; the animation
+	 * temporarily boosts opacity + scales the halo. */
+	@media (prefers-reduced-motion: no-preference) {
+		.pf-halo {
+			animation: pf-halo-pulse 7.5s linear infinite;
+			animation-delay: calc(var(--i, 0) * 1.5s);
 		}
-		.pf-pulse {
-			display: none;
+		.pf-body {
+			animation: pf-body-pulse 7.5s linear infinite;
+			animation-delay: calc(var(--i, 0) * 1.5s);
+		}
+	}
+
+	@keyframes pf-halo-pulse {
+		0%, 100% {
+			opacity: 0;
+			transform: scale(1);
+		}
+		5% {
+			opacity: 0.22;
+			transform: scale(1.18);
+		}
+		15% {
+			opacity: 0;
+			transform: scale(1.4);
+		}
+		20%, 100% {
+			opacity: 0;
+			transform: scale(1);
+		}
+	}
+
+	@keyframes pf-body-pulse {
+		0%, 100% {
+			stroke-width: 2;
+		}
+		5%, 12% {
+			stroke-width: 3.5;
+		}
+		20%, 100% {
+			stroke-width: 2;
 		}
 	}
 </style>

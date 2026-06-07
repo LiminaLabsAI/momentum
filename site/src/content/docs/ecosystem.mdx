@@ -1,14 +1,21 @@
 ---
 title: Ecosystem mode
-description: Coordinate work across multiple related repos from a single AI agent session. Opt-in, additive, and built so single-project usage stays identical.
+description: Coordinate work across multiple related projects from a single agent session. Opt-in, additive, and built so single-project usage stays identical.
 ---
 
 import EcosystemTopology from '../../components/diagrams/EcosystemTopology.astro';
 
+Ecosystem mode is the **state layer** for multi-project work — the durable
+record that **[Orchestration](/orchestration/)** primitives (the action
+layer) read and write. Together they form the canonical multi-project
+pattern. Ecosystem mode without orchestration is just bookkeeping;
+orchestration without ecosystem mode is action with no record. You'll
+typically reach for both.
+
 Single-project momentum is the default. When you have multiple related
 projects that need to coordinate — a platform + SDK + CLI, or a frontend +
-backend + infra — **ecosystem mode** lets one agent session work across all
-of them while preserving per-project tracking discipline.
+backend + infra — ecosystem mode lets **one agent session work across all
+of them** while preserving every project's per-project tracking discipline.
 
 **Hard invariant**: a project running `momentum init` without `--ecosystem`
 sees zero difference from before ecosystem mode existed. Ecosystem mode is
@@ -27,7 +34,7 @@ instruction file that tells the agent it's a member.
 parent-dir/
 ├── my-eco/                    ← ecosystem root (sibling git repo)
 │   ├── ecosystem.json         ← members, roles, dependency edges
-│   ├── initiatives/           ← cross-repo features
+│   ├── initiatives/           ← cross-project features
 │   │   └── 0001-memory.md
 │   ├── sessions/              ← daily activity log (auto-appended)
 │   │   └── 2026-06-08.md
@@ -52,7 +59,7 @@ by `momentum join`:
 ```
 
 The pointer is the agent's discovery surface — "you're in a coordination
-layer; cross-repo coordination lives next door."
+layer; cross-project coordination lives next door."
 
 ## When to use ecosystem mode
 
@@ -68,7 +75,7 @@ Skip it when:
 - You only have one repo. (Single-project mode is the default for a reason.)
 - Your "related" repos are loosely coupled and rarely change together.
 - You're not yet on a sustained build cadence — ecosystem mode pays off
-  most when there's enough cross-repo activity for the shared log + initiatives
+  most when there's enough cross-project activity for the shared log + initiatives
   to be useful.
 
 ## Quickstart
@@ -116,10 +123,10 @@ npx @avinash-singh-io/momentum leave
 Removes the pointer block and de-registers the project from `ecosystem.json`.
 Per-project work continues unchanged.
 
-## Initiatives — cross-repo features
+## Initiatives — cross-project features
 
 When a feature genuinely spans multiple repos, write an **initiative file** at
-`<eco-root>/initiatives/NNNN-<slug>.md`. The initiative captures cross-repo
+`<eco-root>/initiatives/NNNN-<slug>.md`. The initiative captures cross-project
 context: which members are involved, what each member's role is, dependency
 order, links to per-member phases or PRs.
 
@@ -187,8 +194,8 @@ in Phase 10.
   `/track`, etc.) works the same way.
 - The npm package surface is unchanged — `@avinash-singh-io/momentum` ships
   one CLI that handles both modes.
-- The 13 autonomous agent rules apply identically; Rule 9 (multi-repo doc
-  sync) adds the "don't modify docs you don't own" guard for cross-repo
+- The 13 autonomous agent rules apply identically; Rule 9 (multi-project doc
+  sync) adds the "don't modify docs you don't own" guard for cross-project
   agent sessions.
 
 ## A worked example
@@ -233,7 +240,7 @@ all three.
 
 From any member, run `/initiative` (or hand-write the file at
 `../my-stack/initiatives/0001-memory.md`). The initiative captures
-cross-repo context, dependency order, and link-outs to per-member phases.
+cross-project context, dependency order, and link-outs to per-member phases.
 
 ### Step 4 — Work normally in each member
 

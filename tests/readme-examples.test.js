@@ -116,9 +116,21 @@ test('README CLI reference flags are recognized by the CLI', () => {
   assert.match(r2.stdout, /--agent/);
 });
 
-test('README MOMENTUM_MAX_PARENT_WALK env var is documented and honored', () => {
-  // Documentation check.
-  assert.ok(/MOMENTUM_MAX_PARENT_WALK/.test(README));
+test('MOMENTUM_MAX_PARENT_WALK env var is documented and honored', () => {
+  // Documentation check — env var must be documented in the ecosystem
+  // architecture layout doc (canonical home for ecosystem internals).
+  // Was checked against README in Phase 13 and earlier; Phase 14
+  // rewrote the README as a marketing intro and moved env-var
+  // documentation to the canonical site + architecture docs.
+  const layoutDoc = fs.readFileSync(
+    path.join(REPO_ROOT, 'core/ecosystem/layout.md'),
+    'utf8'
+  );
+  assert.ok(
+    /MOMENTUM_MAX_PARENT_WALK/.test(layoutDoc),
+    'env var must be documented in core/ecosystem/layout.md'
+  );
+
   // Behavior check: the env var sets the JS-side walk limit.
   const state = require('../core/ecosystem/lib/state');
   const saved = process.env.MOMENTUM_MAX_PARENT_WALK;

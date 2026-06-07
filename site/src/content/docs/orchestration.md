@@ -1,18 +1,26 @@
 ---
 title: Orchestration
-description: scout, dispatch, handoff, continue — primitives the main agent composes per task to work across multiple repos in one session.
+description: scout, dispatch, handoff, continue — the action layer for multi-project work. Four verbs the main agent composes per task.
 ---
 
-When you work across multiple related projects, you don't want N parallel agent
-sessions losing track of each other. You want **one agent session that can
-reach into other repos when it needs to** — read state without opening a
-session there, fan out work in parallel, hand off control with full context.
+Orchestration is the **action layer** for multi-project work. Four verbs
+the agent composes per task — `scout`, `dispatch`, `handoff`, `continue`.
+They read and write the durable state that **[Ecosystem mode](/ecosystem/)**
+provides; together, the two layers form the canonical multi-project
+pattern (each pointless without the other — actions with no record turn
+into vapor; records with no actions are just bookkeeping).
 
-momentum ships four **orchestration primitives** for exactly that. They are
-**primitives the main agent composes per task — not a pipeline.** Some tasks
-need just a single `scout`. Others need a parallel `dispatch` across five
-repos. Some end in a `handoff` to another machine or session for the
-implementation. The primitives are the verbs; your agent picks the sentence.
+When you work across multiple related projects, you don't want N parallel
+agent sessions losing track of each other. You want **one agent session
+that can reach into other projects when it needs to** — read state without
+opening a session there, fan out work in parallel, hand off control with
+full context. The four primitives are the verbs; your agent picks the
+sentence. Some tasks need just a single `scout`. Others need a parallel
+`dispatch` across five projects. Some end in a `handoff` to another
+machine or session for the implementation.
+
+momentum ships these as **primitives the main agent composes per task —
+not a pipeline.**
 
 ```mermaid
 flowchart LR
@@ -97,7 +105,7 @@ Scout returns a `ScoutResult`:
 
 ### When to reach for `scout`
 
-- Before you draft a cross-repo PR or initiative — know what the other repo's
+- Before you draft a cross-project PR or initiative — know what the other repo's
   current state is.
 - When the user asks "what's going on with repo-x?" and you don't want to
   invent an answer.
@@ -112,7 +120,7 @@ Scout returns a `ScoutResult`:
 
 ---
 
-## `dispatch` — parallel multi-repo fan-out {#dispatch}
+## `dispatch` — parallel multi-project fan-out {#dispatch}
 
 When the question genuinely spans multiple repos and you need each to answer
 **at the same time**, with the originating agent synthesizing the result.
@@ -186,7 +194,7 @@ explanation.
 
 - When the question genuinely depends on N repos' state and synthesis adds
   value over per-repo scouts.
-- For multi-repo refactors where you need to know which member has the
+- For multi-project refactors where you need to know which member has the
   pattern and which has the gap.
 - When you'd otherwise be tempted to open N parallel agent sessions and
   manually compare notes.
@@ -194,7 +202,7 @@ explanation.
 ### When NOT to reach for `dispatch`
 
 - When you only need ONE repo's state — use `scout`.
-- When the work requires **coordinated writes** across repos — better to
+- When the work requires **coordinated writes** across projects — better to
   scout, then hand off, then write per-repo.
 
 ---
@@ -320,7 +328,7 @@ Findings worth a future reader's time land in the target repo's `backlog.md`
 or `history.md` — but **only when meaningful**. Orchestration metadata never
 pollutes curated docs. This is non-negotiable.
 
-The discipline isn't in the way; it's the point. Without it, multi-repo work
+The discipline isn't in the way; it's the point. Without it, multi-project work
 is just N agent sessions losing track of each other — which is the exact
 failure mode momentum exists to prevent.
 

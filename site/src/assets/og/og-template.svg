@@ -13,21 +13,18 @@
 	</defs>
 	<rect width="1200" height="630" fill="url(#halo)" />
 
-	<!-- Echo arcs (speed lines) -->
-	<g fill="none" stroke="#818CF8" stroke-linecap="round">
-		<path d="M 80 540 C 280 360 540 240 800 180" stroke-width="2" stroke-dasharray="2 12" opacity="0.35" />
-		<path d="M 100 560 C 320 380 580 260 840 200" stroke-width="2" stroke-dasharray="2 12" opacity="0.22" />
+	<!-- Logo mark — concentric arcs + arrow (scaled up 8x from 64 viewBox) -->
+	<g transform="translate(820 130)">
+		<g stroke="#CBD5E1" stroke-width="20" stroke-linecap="round" fill="none">
+			<path d="M 80 80 A 60 60 0 0 1 80 200" />
+			<path d="M 80 30 A 110 110 0 0 1 80 250" />
+			<path d="M 80 -20 A 160 160 0 0 1 80 300" />
+		</g>
+		<path d="M -20 280 Q 140 140 280 -10"
+			stroke="#818CF8" stroke-width="44"
+			stroke-linecap="round" fill="none" />
+		<path d="M 200 -60 L 320 20 L 250 110 Z" fill="#818CF8" />
 	</g>
-
-	<!-- Velocity arc + arrowhead -->
-	<path
-		d="M 96 552 C 288 320 564 200 880 180"
-		fill="none"
-		stroke="#818CF8"
-		stroke-width="16"
-		stroke-linecap="round"
-	/>
-	<path d="M 864 140 L 944 200 L 884 260 Z" fill="#818CF8" />
 
 	<!-- Wordmark text -->
 	<text
@@ -49,7 +46,7 @@
 		font-size="32"
 		font-weight="450"
 		letter-spacing="-0.01em"
-	>Spec-driven discipline for AI-assisted coding</text>
+	>Spec-driven development for agentic AI</text>
 
 	<!-- Footer ribbon -->
 	<text
@@ -60,5 +57,5 @@
 		font-size="22"
 		font-weight="500"
 		letter-spacing="0"
-	>Claude Code · Codex · Antigravity · Cursor · Gemini CLI</text>
+	>Phases · Decisions · History · Backlog · Multi-project orchestration</text>
 </svg>

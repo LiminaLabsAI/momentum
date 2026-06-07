@@ -171,10 +171,10 @@ accidental.
 - **During a phase:** record to `history.md` only. Do NOT update other specs.
 - **At phase completion:** run `/sync-docs` BEFORE `/complete-phase`.
 
-### Multi-repo projects (cross-repo guard)
+### Multi-project projects (cross-project guard)
 
 **NEVER modify docs in another repo.** If a history `Affects-specs:` path
-starts with `../`, leave that file alone and flag the cross-repo impact to
+starts with `../`, leave that file alone and flag the cross-project impact to
 the user with the exact path. Cross-repo doc ownership is structural — never
 quietly change docs you don't own.
 

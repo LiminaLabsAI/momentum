@@ -3,10 +3,14 @@ title: Getting started
 description: Install momentum, scaffold a project, and run your first phase end-to-end. About 15 minutes from zero to verified release.
 ---
 
-momentum is an open-source toolkit for AI-assisted coding. Install it once,
+momentum is an open-source state layer for agentic AI. Install it once,
 let your agent do the rest. This page walks you through installation,
 scaffolding, and a full first-phase walkthrough so you've seen the whole
-loop before you trust it with real work.
+loop before you trust it with real work. The tutorial below uses a
+coding-flavored example because that's the most concrete path today, but
+the same loop (`/brainstorm-phase` → `/start-phase` → `/complete-phase`)
+applies to agents that manage infrastructure, run research, or handle
+data pipelines.
 
 By the end you'll have a project with `specs/`, your agent's primary
 instruction file, the 13 autonomous rules in place, and a first phase
@@ -253,6 +257,6 @@ Let the workflow remove it.
 - [Rules](/rules/) — the 13 autonomous agent rules with full text + red
   flags + counters.
 - [IDE support](/ide-support/) — per-agent setup details and hook compatibility.
-- [Ecosystem mode](/ecosystem/) — when and how to coordinate across repos.
+- [Ecosystem mode](/ecosystem/) — when and how to coordinate across projects.
 - [Orchestration](/orchestration/) — scout / dispatch / handoff / continue
-  for cross-repo work.
+  for cross-project work.

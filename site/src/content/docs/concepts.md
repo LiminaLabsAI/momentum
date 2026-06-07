@@ -14,7 +14,7 @@ The primitives are deliberately separate:
   current phase.
 - **History** is the append-only record of *why* decisions were made.
 - **ADRs** are the deeper context for structural decisions.
-- **Ecosystem mode** is the optional layer for cross-repo coordination.
+- **Ecosystem mode** is the optional layer for cross-project coordination.
 
 Each is a file (or a small set of files) on disk. The agent reads and writes
 them as part of the standard workflow. Humans read them too — that's the
@@ -46,7 +46,7 @@ stateDiagram-v2
 
 ### Why phases?
 
-AI-assisted coding without phases turns into a sprawl. The agent picks up
+Agentic AI work without phases turns into a sprawl. The agent picks up
 loose threads, drops them halfway, picks up new ones. Six weeks in, you
 can't tell what's shipped, what's half-done, what got abandoned.
 
@@ -229,18 +229,31 @@ later phase's history, promote it to an ADR then.
 
 ## Ecosystem mode
 
-The optional layer for cross-repo coordination. When you have multiple
+The optional layer for cross-project coordination. When you have multiple
 related projects, ecosystem mode adds:
 
 - A shared **ecosystem manifest** (`ecosystem.json`)
-- **Initiatives** — features that span multiple repos
+- **Initiatives** — features that span multiple projects
 - A **daily session log** — auto-appended on commits / PRs across members
-- **Orchestration primitives** — `scout` / `dispatch` / `handoff` / `continue`
+- Hard invariant: single-project usage is unchanged.
 
-Single-project usage is the default and unchanged. Ecosystem mode is purely
-additive.
+### How they relate — ecosystem mode + orchestration
 
-**[Read the ecosystem deep dive →](/ecosystem/)**
+These two are a **pair**, not alternatives:
+
+- **Ecosystem mode = STATE layer.** The durable record: manifest,
+  initiatives, sessions, pointer blocks. Nouns. What the agent reads
+  and writes.
+- **Orchestration = ACTION layer.** Four verbs the agent composes:
+  `scout` / `dispatch` / `handoff` / `continue`. What the agent
+  *does* across projects.
+
+Orchestration verbs read and write ecosystem state. Ecosystem state
+gives orchestration something durable to point at. Either alone is
+half the pattern — ecosystem without orchestration is bookkeeping;
+orchestration without ecosystem is action with no record.
+
+**Deep dives:** [Ecosystem mode](/ecosystem/) · [Orchestration](/orchestration/)
 
 ## How they fit together
 

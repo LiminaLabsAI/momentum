@@ -28,10 +28,34 @@ same instruction-file slot — `CLAUDE.md`, `AGENTS.md`, `.cursor/rules/`,
 `GEMINI.md`, depending on adapter — so it composes with whatever the IDE
 already provides rather than competing.
 
+## Can I use momentum for non-coding agents (DevOps, research, data)?
+
+Yes. The discipline is domain-agnostic — phases, decisions, history,
+backlog, doc sync, git lifecycle, verify-before-claim apply to any agentic
+AI work, not just code generation. The slash commands (`/start-phase`,
+`/complete-phase`, etc.) drive the workflow regardless of what the agent
+is actually shipping. The default scaffolding leans coding-flavored
+because that's the most-developed concrete example today (CI hooks, npm
+release helpers, `/review-code`), but the core primitives don't care.
+
+Concrete examples worth pointing at:
+
+- **Infrastructure / DevOps agents** — plan a Terraform refactor as a
+  phase; record the `apply` runs as history entries; tag releases
+  per-environment.
+- **Research agents** — phases = experiments; history = "we tried X with
+  results Y" decisions; backlog = follow-up questions to chase.
+- **Data-pipeline agents** — phases = schema migrations / pipeline
+  refactors; history = "we picked Avro over JSON because Z" decisions.
+
+You can disable / replace the coding-specific helpers (e.g. `/review-code`)
+under `## Project Extensions` in `CLAUDE.md` if they don't apply to your
+domain. The 13 rules + 5 lifecycle primitives stay.
+
 ## Is momentum locked to a specific AI agent?
 
 No. momentum is agent-agnostic. It ships adapters for Claude Code, Codex,
-and Antigravity today; Cursor and Gemini CLI land in Phase 14. The
+and Antigravity today; Cursor and Gemini CLI land in Phase 15. The
 specs, rules, and commands are the same across adapters — what changes is
 the instruction-file location and how hooks attach.
 

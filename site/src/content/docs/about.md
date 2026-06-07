@@ -5,15 +5,17 @@ description: Why momentum exists, the design principles behind it, the name's or
 
 ## Why momentum exists
 
-AI-assisted coding raised the floor on individual productivity. Anyone can
-generate code now. What didn't scale was **coherent project state**:
+Agentic AI raised the floor on individual productivity. Anyone can spawn an
+agent to write code, manage infrastructure, run research, or operate a
+data pipeline now. What didn't scale was **coherent project state**:
 phases that drift, decisions that disappear into chat transcripts,
 backlogs that exist only in someone's head, history that lives between
 two engineers' Slack DMs.
 
 momentum is the missing layer. Specs, decisions, history, backlog — all as
-first-class files your AI agent reads and writes automatically. The
-*project itself* becomes durable, not just the code.
+first-class files your agent reads and writes automatically. The
+*project itself* becomes durable, not just whatever the agent shipped
+this session.
 
 The thesis is narrow: **state that outlives any single session**. Every
 primitive (phases, backlog, history, ADRs, ecosystem mode, orchestration)
@@ -117,7 +119,7 @@ Spec-driven development gives the agent context that outlives any single
 session. The agent reads `status.md` at session start (Rule 1). The agent
 records why it chose path A over path B (Rule 8). The agent verifies before
 claiming done (Rule 12). The agent doesn't pollute curated docs with
-orchestration noise (Rule 9). The agent works across repos when the task
+orchestration noise (Rule 9). The agent works across projects when the task
 genuinely spans them, and not when it doesn't (orchestration primitives).
 
 The discipline is the differentiator. The toolkit is the implementation.
@@ -132,9 +134,9 @@ Near-term phases:
 
 | Phase | Theme |
 |---|---|
-| **14** | Reach — Cursor + Gemini CLI adapters; distribution decision |
-| **15** | Intelligence — self-learning hooks; retrospective-driven rule evolution; self-healing |
-| **16** | Platform — MCP server; `/specify` auto-spec; `/decide` ADR creation; skill authoring; ecosystem Tier 2 |
+| **15** | Reach — Cursor + Gemini CLI adapters; distribution decision |
+| **16** | Intelligence — self-learning hooks; retrospective-driven rule evolution; self-healing |
+| **17** | Platform — MCP server; `/specify` auto-spec; `/decide` ADR creation; skill authoring; ecosystem Tier 2 |
 
 The build is incremental on purpose. Every phase ships a release; every
 release is a coherent story; every story builds on what shipped before.

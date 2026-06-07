@@ -2,8 +2,8 @@
 /**
  * <LogoMark /> — momentum mark only (no wordmark).
  *
- * Use in tight spaces (sidebar collapsed, mobile header, share buttons).
- * Inherits color from `currentColor`.
+ * Two-tone: slate-400 arcs, indigo-600 arrow. Use in tight spaces
+ * (sidebar collapsed, mobile header, share buttons, favicons).
  */
 interface Props {
 	size?: number;
@@ -22,11 +22,30 @@ const { size = 32, label = 'momentum' } = Astro.props;
 	height={size}
 	width={size}
 >
+	<g class="lm-arcs" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" fill="none">
+		<path d="M 22 22 A 8 8 0 0 1 22 38" />
+		<path d="M 22 16 A 14 14 0 0 1 22 44" />
+		<path d="M 22 10 A 20 20 0 0 1 22 50" />
+	</g>
 	<path
-		d="M 8 52 C 16 28 30 12 48 12"
-		stroke="currentColor"
-		stroke-width="10"
+		class="lm-arrow-body"
+		d="M 10 52 Q 30 30 50 14"
+		stroke="#4F46E5"
+		stroke-width="6"
 		stroke-linecap="round"
+		fill="none"
 	/>
-	<path d="M 40 4 L 60 16 L 44 30 Z" fill="currentColor" />
+	<path class="lm-arrow-head" d="M 44 4 L 60 14 L 50 26 Z" fill="#4F46E5" />
 </svg>
+
+<style>
+	[data-theme='dark'] svg .lm-arcs path {
+		stroke: #CBD5E1;
+	}
+	[data-theme='dark'] svg .lm-arrow-body {
+		stroke: #818CF8;
+	}
+	[data-theme='dark'] svg .lm-arrow-head {
+		fill: #818CF8;
+	}
+</style>
