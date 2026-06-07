@@ -119,3 +119,27 @@ Affects-specs: site/src/content.config.ts
 Detail: First `npm run build` failed with `InvalidContentEntryDataError` on `._about.md` — the macOS AppleDouble sidecar files that the T7 Shield external drive (HFS+) generates next to every real `.md` file. Starlight's default `docsLoader()` glob includes them. Fix: replaced `docsLoader()` with `docsLoader({ pattern: ['**/*.{md,mdx}', '!**/._*'] })` in `site/src/content.config.ts`. Build smoke gate now passes with 10 pages built (9 IA + 404), Pagefind search index built, sitemap generated. Same class of bug as the historic BUG-003 in `momentum init`; the fix lives in the site, not the CLI. No backlog entry needed — the workaround is self-contained and the AppleDouble files are already in `.gitignore`.
 
 ---
+
+### [DISCOVERY] 2026-06-07 — Ecosystem repos have no agent-discoverable instruction file
+Topics: ecosystem, agent-discovery, claude-md, initiatives
+Affects-phases: none (filed as ENH-025 in backlog; out of scope for Phase 12)
+Affects-specs: none
+Detail: Surfaced from a dogfood session in `../cerebrio-ecosystem/`. Agent invoked there proposed updating a "Current Phase Map" table in a parent-dir `CLAUDE.md` instead of writing an `initiatives/NNNN-<slug>.md` — the correct momentum pattern. Root cause verified: `cmdInit` (bin/ecosystem.js:113-200) writes `ecosystem.json`, `README.md`, `initiatives/`, `sessions/`, `.state/`, `.gitignore` but no CLAUDE.md / AGENTS.md, and the live `cerebrio-ecosystem/` repo has none (`ls` confirmed). CLAUDE.md (and AGENTS.md for Codex) is the only auto-loaded agent-discovery surface at session start, so the ecosystem layer is invisible to agents working inside it; they default to the most-familiar pattern in any loaded parent CLAUDE.md. One root cause, one fix: filed ENH-025 (P1) to have `ecosystem init` write a minimal managed CLAUDE.md/AGENTS.md. Initially also filed ENH-026 (detect parent-dir legacy CLAUDE.md), ENH-027 (expand member-repo pointer), ENH-028 (Rule 13 — write initiative before cross-repo planning), ENH-029 (SessionStart breadcrumb) — all dropped on review. ENH-026 was user-specific (cleaning a parent file momentum doesn't own; not framework concern). ENH-027/028/029 addressed hypothetical scenarios not observed in the failure; the principle "don't design for hypothetical requirements" applies. Scheduling deferred — natural home is Phase 15 (Platform / Ecosystem Tier 2) or a standalone ecosystem-polish branch before then.
+
+---
+
+### [DECISION] 2026-06-07 — Group 1 brand assets shipped (logo + favicon + OG card + font + hero)
+Topics: phase-12, group-1, brand, assets, logo, favicon, og-cards, fontsource, hero
+Affects-phases: phase-12-public-site
+Affects-specs: site/src/assets/logo/, site/src/components/, site/public/favicon.svg, site/public/og/, site/scripts/generate-og-cards.mjs, site/astro.config.mjs
+Detail: Group 1 (Brand & Identity Assets) landed. **Logo**: single-file SVG mark and wordmark using `currentColor` (one file serves both light and dark themes — no need to maintain duplicates). **Components**: `<Logo />` (wordmark) + `<LogoMark />` (mark only) in `src/components/`. Logo wired into Starlight via `logo.src` + `replacesTitle: true`. **Favicon**: brand-color SVG with `prefers-color-scheme: dark` media query swap; legacy `.ico` + iOS PNG variants deferred to Group 5 follow-up (single SVG favicon covers all evergreen browsers). **OG cards**: 1200×630 SVG template with momentum mark + tagline + IDE-matrix ribbon. `site/scripts/generate-og-cards.mjs` renders SVG → PNG via `sharp` (already in deps); wired as `prebuild` hook. `og:image` + `twitter:card` meta added via Starlight `head` config; PNG output (53KB) lands at `public/og/default.png` and ships in `dist`. **Font**: switched from manual WOFF2 self-host to `@fontsource-variable/inter` v5.2.8 npm package — proper locked dependency, no external download. Loaded via Starlight `customCss` before brand tokens. **Hero**: CSS/SVG composition under `<Hero />` — radial halo, three echo arcs (speed lines) with dashed pattern, main velocity arc + arrowhead, right-side phase-stack grid. Respects `prefers-reduced-motion`. Build smoke remains green (10 pages, Pagefind, sitemap, OG PNG, brand assets all present in `dist`).
+
+---
+
+### [DECISION] 2026-06-07 — Font self-hosting via @fontsource npm package, not curl download
+Topics: phase-12, group-1, font, inter, fontsource, supply-chain, sandbox
+Affects-phases: phase-12-public-site
+Affects-specs: site/package.json, site/astro.config.mjs, site/src/styles/tokens.css
+Detail: Initial attempt to `curl` Inter Variable WOFF2 directly from `github.com/rsms/inter/raw/...` was blocked by the auto-mode classifier as an external-source binary download (the agent picked the source itself; user only said "Inter"). Pivot: `npm install @fontsource-variable/inter` — proper version-locked dependency in `package.json`, no external curl, no surprise binary at runtime. Tradeoff: pulls one more npm package (~2MB on disk) vs a single 150KB WOFF2; in return we get a maintained, audited supply chain. `tokens.css` no longer declares its own `@font-face` — fontsource provides them. Family name `'Inter Variable'` matches the brand token already declared.
+
+---

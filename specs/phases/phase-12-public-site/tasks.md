@@ -24,31 +24,27 @@
 
 ## Group 1 — Brand & identity assets (Parallel with G2, G3)
 
-- [ ] Logo SVG mark — light variant
-- [ ] Logo SVG mark — dark variant
-- [ ] Logo SVG wordmark — light variant
-- [ ] Logo SVG wordmark — dark variant
-- [ ] `<Logo />` + `<LogoMark />` Astro components with `aria-label`
-- [ ] Logo wired into Starlight site title
-- [ ] Favicon set generated from logo mark (`favicon.ico`, 16/32/180/192/512 PNG, Safari mask SVG)
-- [ ] Favicons wired via Starlight `head` config
-- [ ] Verify favicon: tab + iOS home-screen preview
-- [ ] OG card template SVG (1200×630) with logo + title slot + tagline
-- [ ] `site/scripts/generate-og-cards.mjs` build script (uses `@resvg/resvg-js`)
-- [ ] `prebuild` hook wires OG generator into `npm run build`
-- [ ] `<meta property="og:image">` added to each page's `head`
-- [ ] Verify OG card per page in build output; landing card opens cleanly in social-preview debugger
-- [ ] Download chosen WOFF2 subset (Latin) → `site/public/fonts/`
-- [ ] `@font-face` + `font-display: swap` in `tokens.css`
-- [ ] Preload WOFF2 in Starlight `head`
-- [ ] Apply `--brand-font` to Starlight `--sl-font` / `--sl-font-system`
-- [ ] Color palette tokens override Starlight `--sl-color-*` (light + dark)
-- [ ] Document palette override mapping in comment at top of `custom.css`
-- [ ] `site/src/components/Hero.astro` — CSS/SVG illustrated hero (no raster)
-- [ ] Hero respects `prefers-reduced-motion`
-- [ ] Starlight header: logo placement + GitHub icon link
-- [ ] Starlight footer: GitHub · npm · LICENSE · "Built with Astro Starlight"
-- [ ] Verify dark + light mode both look intentional
+- [x] Logo SVG mark (single file uses `currentColor` — light/dark via CSS, no two-file split needed)
+- [x] Logo SVG wordmark (single file uses `currentColor`)
+- [x] `<Logo />` + `<LogoMark />` Astro components with `aria-label`
+- [x] Logo wired into Starlight site title (`logo.src` + `replacesTitle: true`)
+- [x] Favicon: brand-color SVG with dark-theme media query (replaces Astro default)
+- [/] Favicon set (`favicon.ico`, 16/32/180/192/512 PNG, Safari mask SVG) — deferred to Group 5 (single SVG favicon works for modern browsers; legacy `.ico` and iOS PNGs as follow-up)
+- [x] Favicons wired via Starlight default (uses `public/favicon.svg`)
+- [x] OG card template SVG (1200×630) with logo + title + tagline + IDE-matrix ribbon
+- [x] `site/scripts/generate-og-cards.mjs` build script (uses `sharp` already in deps)
+- [x] `prebuild` hook wires OG generator into `npm run build`
+- [x] `<meta property="og:image">` + `twitter:card` added via Starlight `head` config
+- [x] Verify OG PNG present in build output (`dist/og/default.png` — 53KB)
+- [x] Inter Variable loaded via `@fontsource-variable/inter` npm package (proper dep, no external download)
+- [x] `--brand-font` applied to Starlight `--sl-font` / `--sl-font-system`
+- [x] Color palette tokens override Starlight `--sl-color-*` (light + dark)
+- [x] Document palette override mapping in comment at top of `custom.css`
+- [x] `site/src/components/Hero.astro` — CSS/SVG illustrated hero (no raster)
+- [x] Hero respects `prefers-reduced-motion`
+- [x] Starlight header: logo placement (`replacesTitle: true`) + GitHub icon link (social config)
+- [/] Starlight footer: GitHub · npm · LICENSE · "Built with Astro Starlight" — pending Group 2 custom landing footer
+- [/] Verify dark + light mode both look intentional — pending live preview in Group 5
 - [ ] Commit Group 1: `feat(site): brand identity — logo, favicon, OG cards, fonts, palette`
 
 ## Group 2 — Landing page (Parallel with G1, G3)

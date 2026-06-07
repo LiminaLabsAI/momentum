@@ -12,7 +12,37 @@ export default defineConfig({
 			title: 'momentum',
 			description:
 				'Spec-driven discipline for AI-assisted coding. Works with Claude Code, Codex, Antigravity, and more.',
-			customCss: ['./src/styles/custom.css'],
+			logo: {
+				src: './src/assets/logo/wordmark.svg',
+				replacesTitle: true,
+			},
+			customCss: [
+				'@fontsource-variable/inter',
+				'./src/styles/custom.css',
+			],
+			head: [
+				{
+					tag: 'meta',
+					attrs: {
+						property: 'og:image',
+						content: 'https://avinash-singh-io.github.io/momentum/og/default.png',
+					},
+				},
+				{
+					tag: 'meta',
+					attrs: {
+						name: 'twitter:card',
+						content: 'summary_large_image',
+					},
+				},
+				{
+					tag: 'meta',
+					attrs: {
+						name: 'twitter:image',
+						content: 'https://avinash-singh-io.github.io/momentum/og/default.png',
+					},
+				},
+			],
 			social: [
 				{
 					icon: 'github',

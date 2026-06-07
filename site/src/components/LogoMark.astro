@@ -1,0 +1,32 @@
+---
+/**
+ * <LogoMark /> — momentum mark only (no wordmark).
+ *
+ * Use in tight spaces (sidebar collapsed, mobile header, share buttons).
+ * Inherits color from `currentColor`.
+ */
+interface Props {
+	size?: number;
+	label?: string;
+}
+
+const { size = 32, label = 'momentum' } = Astro.props;
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 64 64"
+	fill="none"
+	role="img"
+	aria-label={label}
+	height={size}
+	width={size}
+>
+	<path
+		d="M 8 52 C 16 28 30 12 48 12"
+		stroke="currentColor"
+		stroke-width="10"
+		stroke-linecap="round"
+	/>
+	<path d="M 40 4 L 60 16 L 44 30 Z" fill="currentColor" />
+</svg>

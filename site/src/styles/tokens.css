@@ -17,13 +17,9 @@
  * future path; browsers fall back to system-ui until the file lands.
  */
 
-@font-face {
-	font-family: 'Inter Variable';
-	font-style: normal;
-	font-weight: 100 900;
-	font-display: swap;
-	src: url('/momentum/fonts/InterVariable.woff2') format('woff2-variations');
-}
+/* Inter Variable @font-face declarations come from the
+ * @fontsource-variable/inter package, loaded via Starlight's customCss
+ * in astro.config.mjs (and so listed BEFORE this file in the cascade). */
 
 :root {
 	/* ── Brand palette — light theme defaults ───────────────────── */
