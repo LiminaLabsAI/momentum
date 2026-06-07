@@ -100,12 +100,25 @@ function printOrchHelp(verb) {
   for (const line of blocks[verb] || []) console.log(line);
 }
 
+/**
+ * Light-weight flag parser. `knownFlags` may be:
+ *   - a string array of flag tokens (value flags — consume the next non-flag token)
+ *   - an object { valueFlags: [...], boolFlags: [...] } for explicit shapes
+ */
 function parseFlags(args, knownFlags) {
+  let valueFlags = [];
+  let boolFlags = [];
+  if (Array.isArray(knownFlags)) {
+    valueFlags = knownFlags;
+  } else if (knownFlags && typeof knownFlags === 'object') {
+    valueFlags = knownFlags.valueFlags || [];
+    boolFlags = knownFlags.boolFlags || [];
+  }
   const positional = [];
   const flags = {};
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
-    if (knownFlags.includes(a)) {
+    if (valueFlags.includes(a)) {
       const next = args[i + 1];
       if (next !== undefined && !next.startsWith('--')) {
         flags[a.slice(2)] = next;
@@ -113,6 +126,8 @@ function parseFlags(args, knownFlags) {
       } else {
         flags[a.slice(2)] = true;
       }
+    } else if (boolFlags.includes(a)) {
+      flags[a.slice(2)] = true;
     } else if (a === '--help' || a === '-h') {
       flags.help = true;
     } else {
@@ -156,7 +171,10 @@ async function cmdScout(args) {
 // ── cmdDispatch ────────────────────────────────────────────────────────────
 
 async function cmdDispatch(args) {
-  const { positional, flags } = parseFlags(args, ['--prompt']);
+  const { positional, flags } = parseFlags(args, {
+    valueFlags: ['--prompt'],
+    boolFlags: ['--sequential'],
+  });
   if (flags.help || positional.length === 0 || !flags.prompt) {
     printOrchHelp('dispatch');
     process.exit(flags.help ? 0 : 1);
