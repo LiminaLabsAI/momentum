@@ -143,3 +143,19 @@ Affects-specs: site/package.json, site/astro.config.mjs, site/src/styles/tokens.
 Detail: Initial attempt to `curl` Inter Variable WOFF2 directly from `github.com/rsms/inter/raw/...` was blocked by the auto-mode classifier as an external-source binary download (the agent picked the source itself; user only said "Inter"). Pivot: `npm install @fontsource-variable/inter` — proper version-locked dependency in `package.json`, no external curl, no surprise binary at runtime. Tradeoff: pulls one more npm package (~2MB on disk) vs a single 150KB WOFF2; in return we get a maintained, audited supply chain. `tokens.css` no longer declares its own `@font-face` — fontsource provides them. Family name `'Inter Variable'` matches the brand token already declared.
 
 ---
+
+### [DECISION] 2026-06-07 — Group 2 landing page shipped (Starlight splash + custom MDX components)
+Topics: phase-12, group-2, landing-page, hero, ide-matrix, feature-grid, install, personas, mdx
+Affects-phases: phase-12-public-site
+Affects-specs: site/src/content/docs/index.mdx, site/src/components/IDEMatrix.astro, site/src/components/FeatureGrid.astro, site/src/components/InstallSnippet.astro, site/src/components/Personas.astro, site/src/styles/custom.css
+Detail: Group 2 (Landing Page) landed using Starlight's splash template + a custom MDX body that composes five new Astro components. **Hero**: Starlight's built-in splash hero handles tagline + Install/GitHub CTAs; custom `<Hero />` background SVG defined in Group 1 is wired via CSS overrides. **IDEMatrix**: agent grid with status badges (Shipped/Planned) and per-agent file-path notes; each card links into `/ide-support/#<anchor>`. **FeatureGrid**: 6 cards (Phases / Backlog / History / Rules / Skills / Ecosystem) with hand-rolled inline SVG icons (no icon library dependency) and per-feature links into the right docs pages. **InstallSnippet**: vanilla-JS copy button (no React/web component runtime); navigator.clipboard with graceful "Press ⌘C" fallback when clipboard is blocked; 2s "Copied" feedback. **Personas**: three short cards (Solo builder / Tech Lead / PM exploring AI coding). **Closing block**: "One repo or many" CTA toward ecosystem docs. Build smoke green; landing dist HTML confirmed to contain all five sections.
+
+---
+
+### [DISCOVERY] 2026-06-07 — MDX rejects inline `<style>` blocks because CSS braces parse as JSX expressions
+Topics: phase-12, group-2, mdx, style-blocks, css-in-mdx
+Affects-phases: phase-12-public-site
+Affects-specs: site/src/content/docs/index.mdx, site/src/styles/custom.css
+Detail: First Group 2 build failed with `@mdx-js/rollup` parse error: "Unexpected content after expression" at the `<style>` block inside `index.mdx`. Root cause: MDX treats HTML-like elements as JSX, and `{...}` inside CSS rules (`.foo { color: red; }`) gets parsed as a JS expression. Fix: moved the landing-only `.lead-block` and `.landing-closing` styles out of `index.mdx` and into `site/src/styles/custom.css` (under a comment-marked "Landing-page sections" block). Tradeoff: tiny coupling between content (index.mdx) and styles (custom.css); acceptable because the landing is the one page where they belong together. Workaround for future MDX style needs: write a tiny Astro wrapper component (`.astro` allows `<style>` natively) and import it into MDX. No backlog entry — this is a documented MDX constraint.
+
+---

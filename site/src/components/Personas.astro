@@ -1,0 +1,70 @@
+---
+/**
+ * <Personas /> — three short use-case personas.
+ */
+const personas = [
+	{
+		role: 'Solo builder',
+		body:
+			"Your project doesn't forget what it was building when you stepped away for a week. Pick up exactly where you left off, with the agent already oriented.",
+	},
+	{
+		role: 'Tech lead',
+		body:
+			"Bring discipline to AI-assisted coding across your team. Every decision logged, every phase planned, every release tagged — without enforcement overhead.",
+	},
+	{
+		role: 'PM exploring AI coding',
+		body:
+			"Read the why behind every decision your engineers' agents make. Phases, decisions, and history are first-class artifacts, not lost in chat transcripts.",
+	},
+];
+---
+
+<section class="personas" aria-labelledby="personas-heading">
+	<h2 id="personas-heading">Built for the way you work</h2>
+	<div class="personas-grid">
+		{
+			personas.map((persona) => (
+				<article class="persona">
+					<h3>{persona.role}</h3>
+					<p>{persona.body}</p>
+				</article>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.personas {
+		margin: 4rem 0;
+	}
+	.personas h2 {
+		font-size: 1.75rem;
+		font-weight: 650;
+		letter-spacing: -0.02em;
+		margin: 0 0 1.5rem;
+	}
+	.personas-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1.25rem;
+	}
+	.persona {
+		padding: 1.25rem;
+		border-left: 3px solid var(--brand-primary);
+		background: var(--brand-surface-subtle);
+		border-radius: 0 10px 10px 0;
+	}
+	.persona h3 {
+		margin: 0 0 0.5rem;
+		font-size: 1.05rem;
+		font-weight: 600;
+		color: var(--brand-primary);
+	}
+	.persona p {
+		margin: 0;
+		color: var(--brand-text-muted);
+		line-height: 1.55;
+	}
+</style>

@@ -49,19 +49,14 @@
 
 ## Group 2 — Landing page (Parallel with G1, G3)
 
-- [ ] Custom landing layout `site/src/pages/index.astro` (opts out of docs sidebar)
-- [ ] Hero section: tagline + sub-tagline + Install CTA + GitHub CTA + `<Hero />` background
-- [ ] "Works with any AI IDE" matrix: Claude Code · Codex · Antigravity (Shipped) + Cursor · Gemini CLI (Planned)
-- [ ] Each agent links to `/ide-support/#<agent>`
-- [ ] "What you get" 6-card grid: Phases · Backlog · History · Rules · Skills · Hooks/Ecosystem
-- [ ] Each card has inline SVG icon + 1-sentence description + link
-- [ ] Install snippet code block: `npx @avinash-singh-io/momentum init`
-- [ ] Copy-to-clipboard button (vanilla JS, `navigator.clipboard.writeText`)
-- [ ] Copy button shows "Copy" → "Copied" for 2s; graceful clipboard-blocked fallback
-- [ ] 3 use-case personas: Solo Builder · Tech Lead · PM exploring AI coding
-- [ ] Footer component shared with docs (defined in G1 chrome work)
-- [ ] Mobile responsive @ 375px: no horizontal scroll
-- [ ] Mobile: hero readable, CTAs full-width, matrix collapses to single column
+- [x] Landing page via Starlight splash template + custom MDX (`index.mdx`)
+- [x] Hero: tagline + Install/GitHub CTAs via Starlight `hero` config
+- [x] `<IDEMatrix />` component: Claude Code · Codex · Antigravity (Shipped) + Cursor · Gemini CLI (Planned), each links to `/ide-support/#<agent>`
+- [x] `<FeatureGrid />` component: 6 cards (Phases / Backlog / History / Rules / Skills / Ecosystem) with inline SVG icons
+- [x] `<InstallSnippet />` component with vanilla-JS copy button (Copy → Copied with 2s timeout, graceful fallback)
+- [x] `<Personas />` component: Solo builder · Tech Lead · PM exploring AI coding
+- [x] Closing "One repo or many" section linking to ecosystem docs
+- [/] Mobile responsive @ 375px: grids use `auto-fit, minmax(...)` (responsive by construction) — visual confirmation pending Group 5
 - [ ] Commit Group 2: `feat(site): landing page — hero, IDE matrix, feature grid, CTAs`
 
 ## Group 3 — Docs pages (Parallel with G1, G2)

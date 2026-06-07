@@ -51,3 +51,32 @@
 	--sl-color-gray-7: #1e293b;
 	--sl-color-black: var(--brand-surface);
 }
+
+/* ── Landing-page sections (consumed by src/content/docs/index.mdx) ───── */
+
+.lead-block {
+	max-width: 38em;
+	margin: 0 0 2rem;
+}
+
+.landing-closing {
+	margin: 4rem 0 2rem;
+	padding: 2rem;
+	border-radius: 14px;
+	background: var(--brand-primary-soft);
+	border: 1px solid var(--brand-border);
+}
+.landing-closing h2 {
+	margin-top: 0;
+	font-size: 1.5rem;
+	font-weight: 650;
+	letter-spacing: -0.02em;
+}
+.landing-closing a {
+	color: var(--brand-primary);
+	font-weight: 550;
+}
+
+[data-theme='dark'] .landing-closing {
+	background: rgba(79, 70, 229, 0.08);
+}

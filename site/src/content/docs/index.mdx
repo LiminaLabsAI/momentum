@@ -8,32 +8,47 @@ hero:
     - text: Get started
       link: /momentum/getting-started/
       icon: right-arrow
+      variant: primary
     - text: View on GitHub
       link: https://github.com/avinash-singh-io/momentum
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import Hero from '../../components/Hero.astro';
+import IDEMatrix from '../../components/IDEMatrix.astro';
+import FeatureGrid from '../../components/FeatureGrid.astro';
+import InstallSnippet from '../../components/InstallSnippet.astro';
+import Personas from '../../components/Personas.astro';
 
-> Placeholder landing — custom landing layout lands in Group 2.
+<div class="lead-block">
 
-<CardGrid stagger>
-  <Card title="What is momentum?" icon="rocket">
-    Every project gets structured workflow: phase planning, backlog tracking,
-    history logging, doc sync, and git discipline — driven by slash commands
-    your AI coding agent runs automatically.
-  </Card>
-  <Card title="Works with any AI IDE" icon="puzzle">
-    Claude Code, Codex, Antigravity today. Cursor and Gemini CLI coming next.
-  </Card>
-  <Card title="Single project or ecosystem" icon="seti:folder">
-    Scales from one repo to N — ecosystem mode orchestrates work across
-    multiple related projects from one agent session.
-  </Card>
-  <Card title="Install" icon="open-book">
-    ```bash
-    npx @avinash-singh-io/momentum init
-    ```
-  </Card>
-</CardGrid>
+momentum is an **open-source toolkit** that gives every project a structured
+workflow: phase planning, backlog tracking, history logging, doc sync, and
+git discipline — all driven by slash commands your AI coding agent runs
+automatically. Every decision recorded. Every phase planned. Every release
+tagged.
+
+<InstallSnippet />
+
+</div>
+
+<IDEMatrix />
+
+<FeatureGrid />
+
+<Personas />
+
+<section class="landing-closing">
+
+## One repo or many
+
+Single-project usage is the default. Run `momentum init` in any directory and
+get a complete workflow — no ecosystem files, no cross-repo state. When you
+need to coordinate across multiple related projects, ecosystem mode lets one
+agent session orchestrate them together without losing momentum's per-repo
+tracking discipline.
+
+[Read the ecosystem quickstart →](/momentum/ecosystem/)
+
+</section>
