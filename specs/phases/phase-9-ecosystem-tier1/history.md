@@ -96,6 +96,30 @@ Detail: Initiative subsystem complete. `core/ecosystem/lib/initiative.js` expose
 
 ---
 
+### [FEATURE] 2026-06-07 — Group 4 landed: agent-facing slash-command surface
+Topics: ecosystem, slash-commands, agent-surface, group-4
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: core/commands/ecosystem.md, core/commands/session.md, core/commands/track.md
+Detail: Group 4 ships three agent-facing recipes. `core/commands/ecosystem.md` documents the full `momentum ecosystem` CLI surface plus the on-disk model so an agent reading it cold knows how to discover an ecosystem root, query state, register/remove members, and read sessions/initiatives. `core/commands/session.md` documents `/session log` for narrative entries (auto-events still fire from the hook). `core/commands/track.md` gains a "Cross-repo backlog items" appendix pointing at `/initiative` for cross-repo features. No per-adapter overlays needed — all three recipes are agent-agnostic markdown and ride the existing `copyDir(core/commands → adapter destination)` paths in init/upgrade.
+
+---
+
+### [FEATURE] 2026-06-07 — Group 5 landed: 30+ new tests, 101/101 green
+Topics: ecosystem, tests, group-5
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: tests/ecosystem-cli.test.js, tests/ecosystem-initiative.test.js, tests/ecosystem-hook.test.js
+Detail: Three new test files added covering Groups 0-3. ecosystem-cli.test.js (13 cases) covers validateManifest's error reporting (does-not-bail-on-first), findRoot's bounded walk + memoization (verified 5-parent ceiling), CLI init scaffolding, idempotent add, pre-flight pre-check, remove cleanup, status with/without active initiative banner, pointer inject/strip, sanitizeId. ecosystem-initiative.test.js (10 cases) covers the hand-rolled YAML frontmatter parse/serialize round-trip, validation including the "closed requires closed date" constraint, monotonic numbering, active state round-trip. ecosystem-hook.test.js (7 cases) covers session-append.sh end-to-end (first/subsequent writes, active-initiative header banner, orphan no-op) AND the upstream hook (commit detection via tool_input.command, phase-history reminder still works, non-significant edits silent). Test fixes: macOS /var → /private/var symlink handling (use path.resolve not realpathSync); explicit slug arg in init-overwrite test (mktmp basenames contain uppercase). Final tally: 101/101 (was 64; +37 new).
+
+---
+
+### [FEATURE] 2026-06-07 — Group 6 landed: architecture doc + README section
+Topics: ecosystem, docs, group-6
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: core/specs-templates/specs/architecture/ecosystem.md, README.md, specs/changelog/2026-06.md
+Detail: Group 6 ships the architecture reference doc (`core/specs-templates/specs/architecture/ecosystem.md` — installed into every momentum project from v0.12.0) and the user-facing README section. The architecture doc captures: what an ecosystem is, on-disk layout, opt-in/out commands, initiative model + frontmatter shape, session log triggers, discovery via bounded walk-up, per-repo vs cross-repo file ownership, what's deferred to Tier 2, operator failure-mode playbook. README "Ecosystems" section ~50 lines with worked cerebrio example. The `/sync-docs` propagation + retrospective populate are deferred to `/complete-phase` per the standard convention.
+
+---
+
 ### [FEATURE] 2026-06-07 — Group 3 landed: auto session-log via hook
 Topics: ecosystem, session-log, hook, post-tool-use, group-3
 Affects-phases: phase-9-ecosystem-tier1
