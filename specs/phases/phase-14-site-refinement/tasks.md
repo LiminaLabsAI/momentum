@@ -87,18 +87,17 @@
 
 ## Group 5 — New logo + identity asset refresh (Parallel with G1, G2, G3, G4)
 
-- [ ] `site/src/assets/logo/mark.svg` — concentric arcs (slate-400) + curved arrow piercing through (indigo-600)
-- [ ] mark — viewBox `0 0 64 64`; two `<g>` groups (`.arcs` + `.arrow`); arcs use `currentColor`, arrow stays brand-indigo
-- [ ] `site/src/assets/logo/wordmark.svg` — mark + "momentum" wordmark in Inter Variable semibold
-- [ ] `site/public/favicon.svg` — simplified mark + `prefers-color-scheme: dark` media query swap
-- [ ] `site/src/components/Logo.astro` — inline SVG matching new mark
-- [ ] `site/src/components/LogoMark.astro` — mark-only variant for tight spaces
-- [ ] `site/src/assets/og/og-template.svg` — replace Velocity Arc with new mark
-- [ ] Visual verify: Starlight header logo in light + dark
-- [ ] Visual verify: browser tab favicon in light + dark
-- [ ] Visual verify: OG card preview (opengraph.xyz debugger) after `prebuild` regenerates `public/og/default.png`
-- [ ] No residual Velocity Arc paths in `site/src/` (search audit)
-- [ ] Smoke build green
+- [x] `site/src/assets/logo/mark.svg` — 3 concentric arcs (slate-400 stroked) + curved arrow piercing through (indigo-600 stroke + arrowhead fill)
+- [x] mark — viewBox `0 0 64 64`; single SVG with `.arcs` group + arrow body + arrow head; explicit hex colors (slate-400 #94A3B8 / indigo-600 #4F46E5)
+- [x] `site/src/assets/logo/wordmark.svg` — 260x64 wordmark with mark on left + "momentum" Inter Variable semibold slate-700
+- [x] `site/public/favicon.svg` — same mark + `prefers-color-scheme: dark` media query lifts to slate-300 + indigo-400 for dark visibility
+- [x] `site/src/components/Logo.astro` — inline SVG matching new mark; wordmark text uses `currentColor`; arcs/arrow have explicit hex with `[data-theme='dark']` CSS overrides
+- [x] `site/src/components/LogoMark.astro` — mark-only variant (64x64) with same dark-theme CSS overrides
+- [x] `site/src/assets/og/og-template.svg` — replaced Velocity Arc with new mark (scaled 8x); tagline updated to "Spec-driven development for agentic AI"; footer reads "Phases · Decisions · History · Backlog · Multi-project orchestration"
+- [x] OG card PNG regenerated (35KB) via prebuild script — `public/og/default.png` present
+- [/] Visual verify (header / favicon / OG preview in browser) — deferred to Group 7 post-merge
+- [x] No residual Velocity Arc paths — grepped `site/src/`, no Velocity-Arc-specific paths remain
+- [x] Smoke build green: 11 pages, wordmark SVG in dist
 - [ ] Commit Group 5: `feat(site): new logo — concentric arcs + arrow, two-tone treatment`
 
 ## Group 6 — README rewrite (Sequential, after Groups 1–5)
