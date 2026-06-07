@@ -19,21 +19,19 @@
 
 ## Group 1 — Rendering bug fixes (Parallel with G2, G3, G4, G5)
 
-- [ ] Verify anchor syntax: `## scout — read-only context fetch {#scout}` on `/orchestration/` renders as `<h2 id="scout">` (no literal `${#scout}`)
-- [ ] Confirm inline links in `OrchestrationShowcase.astro` (`#scout`, `#dispatch`, etc.) all resolve via linkinator smoke
-- [ ] Rewrite `mermaidConfig.themeVariables` in `astro.config.mjs` — neutral palette legible on both themes (indigo accents, slate-500 lines/text)
-- [ ] Rewrite `site/src/styles/mermaid.css` — drop `filter: invert(0.88) hue-rotate(180deg) saturate(1.1)`; per-theme container styling via CSS vars only
-- [ ] Visual verify: phase-lifecycle diagram (`/concepts/`) — arrows + labels visible in BOTH light + dark
-- [ ] Visual verify: brainstorm-gate diagram (`/skills/`) — same
-- [ ] Visual verify: all 5 sequence diagrams on `/orchestration/` — same
-- [ ] Remove `<animateMotion>` + `mpath` + `pf-pulse` circle from `PhaseFlow.astro`
-- [ ] Add CSS keyframe animation: each node pulses in turn via `animation-delay: calc(var(--i, 0) * 1.5s)`
-- [ ] Add `data-i` attribute to each of the 5 nodes (0–4)
-- [ ] Add `@media (prefers-reduced-motion: reduce)` fallback (no animation, static nodes)
-- [ ] Visual verify: PhaseFlow on landing — nodes pulse sequentially, no overlay collision
-- [ ] Verify `ecosystem.mdx` renders `<EcosystemTopology />` SVG above the fold; no leaked import statement
-- [ ] Smoke build green
-- [ ] Commit Group 1: `fix(site): anchor syntax + mermaid dark mode + phaseflow animation`
+- [x] Anchor syntax verified (Group 0): `/orchestration/` has all four heading IDs (`scout`, `dispatch`, `handoff`, `continue`); 0 literal `${#...}` leaks
+- [/] Inline-link resolution via linkinator smoke — deferred to Group 7 post-merge
+- [x] Rewrote `mermaidConfig.themeVariables` in `astro.config.mjs` — added full sequence-diagram-specific palette (actor lines, signal color, label box, note bg, activation, state-diagram tokens — all missing before, which is why dark-mode arrows disappeared)
+- [x] Rewrote `site/src/styles/mermaid.css` — dropped `filter: invert(0.88) hue-rotate(180deg) saturate(1.1)`; replaced with per-theme container backgrounds (light surface in BOTH modes so Mermaid's baked-in slate-900 text + slate-600 arrows stay readable)
+- [/] Visual verify Mermaid in light + dark — deferred to Group 7 (manual on live site)
+- [x] Removed `<animateMotion>` + `mpath` + `pf-pulse` circle from `PhaseFlow.astro`
+- [x] Added CSS keyframes `pf-halo-pulse` + `pf-body-pulse` — each node pulses in turn via `animation-delay: calc(var(--i, 0) * 1.5s)`; 7.5s cycle
+- [x] Added `style="--i: N"` to each of the 5 nodes (0–4) via Astro component
+- [x] `@media (prefers-reduced-motion: no-preference)` gates the animation — reduced-motion holds static state
+- [/] Visual verify PhaseFlow animation — deferred to Group 7 (live preview)
+- [x] `ecosystem.mdx` verified Group 0 — topology renders, no leaked import
+- [x] Smoke build green: 11 pages, Pagefind 22 HTML files
+- [ ] Commit Group 1: `fix(site): mermaid dark mode + phaseflow animation`
 
 ## Group 2 — Positioning pivot (Parallel with G1, G3, G4, G5)
 

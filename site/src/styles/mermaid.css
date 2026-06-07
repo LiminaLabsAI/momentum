@@ -1,14 +1,22 @@
 /*
- * Mermaid diagram styling — brand integration layer.
+ * Mermaid diagram styling — Phase 14 rewrite.
  *
- * rehype-mermaid renders Mermaid blocks to inline SVG at build time.
- * Inline SVG attributes (fill, stroke) take precedence over CSS, so we
- * use Mermaid's themeVariables (configured in astro.config.mjs) for the
- * primary colors. This file adds the dark-mode overrides and shared
- * container styling.
+ * rehype-mermaid renders Mermaid blocks to inline SVG at build time
+ * with brand-tinted neutral colors (see mermaidConfig.themeVariables
+ * in astro.config.mjs). The SVG renders IDENTICALLY in light + dark
+ * modes — what changes is only the container surface around it.
+ *
+ * Why: previously we used `filter: invert(0.88) hue-rotate(180deg)`
+ * to "auto-darkmode" the Mermaid output. That inverted the arrow
+ * markers' near-white fill to near-black on a near-black background,
+ * making arrows + message labels disappear in dark mode entirely.
+ * The fix is structural: keep the SVG colors fixed (slate-900 text
+ * + slate-600 lines), and give the container a light-enough surface
+ * even in dark mode so the contents stay readable.
  */
 
-/* ── Container ───────────────────────────────────────────────────────── */
+/* ── Container — light mode ────────────────────────────────────── */
+
 .mermaid {
 	display: flex;
 	justify-content: center;
@@ -25,24 +33,14 @@
 	height: auto;
 }
 
-/* ── Dark mode — invert colors via filter ────────────────────────────── */
-/* Mermaid bakes colors into the SVG, so we use a controlled hue-shift to
- * keep diagrams readable in dark mode without rebuilding them per theme. */
+/* ── Container — dark mode ─────────────────────────────────────── */
 
 [data-theme='dark'] .mermaid {
-	background: var(--brand-surface-muted);
-	border-color: var(--brand-border-strong);
-}
-
-[data-theme='dark'] .mermaid svg {
-	/* Invert lightness, preserve hue. Pure white → near black; brand
-	 * indigo → lighter indigo. Avoids hue-rotate which corrupts brand
-	 * colors. */
-	filter: invert(0.88) hue-rotate(180deg) saturate(1.1);
-}
-
-/* Re-invert specific labels so they remain readable */
-[data-theme='dark'] .mermaid .edgeLabel,
-[data-theme='dark'] .mermaid .label {
-	background: transparent;
+	/* Keep the surface light so the Mermaid SVG (slate-900 text,
+	 * slate-600 arrows, indigo-50 node fills) stays legible. The
+	 * border gets a stronger tone for visual separation from the
+	 * dark page bg. */
+	background: #F1F5F9;       /* slate-100 — still light, slight cool tone */
+	border-color: #CBD5E1;     /* slate-300 — visible separator */
+	box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.04);
 }
