@@ -1,0 +1,48 @@
+/*
+ * Mermaid diagram styling — brand integration layer.
+ *
+ * rehype-mermaid renders Mermaid blocks to inline SVG at build time.
+ * Inline SVG attributes (fill, stroke) take precedence over CSS, so we
+ * use Mermaid's themeVariables (configured in astro.config.mjs) for the
+ * primary colors. This file adds the dark-mode overrides and shared
+ * container styling.
+ */
+
+/* ── Container ───────────────────────────────────────────────────────── */
+.mermaid {
+	display: flex;
+	justify-content: center;
+	padding: 1.5rem 1rem;
+	margin: 1.5rem 0;
+	background: var(--brand-surface-subtle);
+	border: 1px solid var(--brand-border);
+	border-radius: 12px;
+	overflow-x: auto;
+}
+
+.mermaid svg {
+	max-width: 100%;
+	height: auto;
+}
+
+/* ── Dark mode — invert colors via filter ────────────────────────────── */
+/* Mermaid bakes colors into the SVG, so we use a controlled hue-shift to
+ * keep diagrams readable in dark mode without rebuilding them per theme. */
+
+[data-theme='dark'] .mermaid {
+	background: var(--brand-surface-muted);
+	border-color: var(--brand-border-strong);
+}
+
+[data-theme='dark'] .mermaid svg {
+	/* Invert lightness, preserve hue. Pure white → near black; brand
+	 * indigo → lighter indigo. Avoids hue-rotate which corrupts brand
+	 * colors. */
+	filter: invert(0.88) hue-rotate(180deg) saturate(1.1);
+}
+
+/* Re-invert specific labels so they remain readable */
+[data-theme='dark'] .mermaid .edgeLabel,
+[data-theme='dark'] .mermaid .label {
+	background: transparent;
+}

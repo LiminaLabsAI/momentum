@@ -55,28 +55,28 @@
 /* ── Landing-page sections (consumed by src/content/docs/index.mdx) ───── */
 
 .lead-block {
-	max-width: 38em;
-	margin: 0 0 2rem;
+	max-width: 42em;
+	margin: 0 0 2.5rem;
+	font-size: 1.05rem;
+	line-height: 1.65;
 }
 
-.landing-closing {
-	margin: 4rem 0 2rem;
-	padding: 2rem;
-	border-radius: 14px;
-	background: var(--brand-primary-soft);
-	border: 1px solid var(--brand-border);
+.scales {
+	margin: 4rem 0;
 }
-.landing-closing h2 {
-	margin-top: 0;
-	font-size: 1.5rem;
-	font-weight: 650;
-	letter-spacing: -0.02em;
+.scales h2 {
+	margin: 0 0 0.5rem;
+	font-size: 1.875rem;
+	font-weight: 700;
+	letter-spacing: -0.025em;
+	line-height: 1.2;
 }
-.landing-closing a {
-	color: var(--brand-primary);
-	font-weight: 550;
+.section-lead {
+	max-width: 42em;
+	margin: 0 0 1.5rem;
+	color: var(--brand-text-muted);
+	line-height: 1.6;
 }
-
-[data-theme='dark'] .landing-closing {
-	background: rgba(79, 70, 229, 0.08);
+.section-anchor {
+	scroll-margin-top: 80px;
 }

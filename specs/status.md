@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-08
-> **Current Phase**: (between phases — Phase 13 Reach planning pending)
-> **Latest Release**: v0.15.0 — Public Site
+> **Current Phase**: (between phases — Phase 14 Reach planning pending)
+> **Latest Release**: v0.16.0 — Site Polish & Content Depth
 > **Health**: On Track
 
 ## Summary
@@ -29,12 +29,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 10 | Ecosystem Activation & Polish | Complete | v0.13.0 (2026-06-07) |
 | 11 | Dynamic Orchestration & Context Handover | Complete | v0.14.0 (2026-06-07) |
 | 12 | Public Site | Complete | v0.15.0 (2026-06-08) |
+| 13 | Site Polish & Content Depth | Complete | v0.16.0 (2026-06-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 12 released as v0.15.0 on 2026-06-08. Phase 13 (Reach) planning pending. | | |
+| _(between phases)_ | Phase 13 released as v0.16.0 on 2026-06-08. Phase 14 (Reach) planning pending. | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -45,9 +46,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 13 | Reach | Not Started (target v0.16.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 14 | Intelligence | Not Started (target v0.17.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 15 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 14 | Reach | Not Started (target v0.17.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 15 | Intelligence | Not Started (target v0.18.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 16 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -71,7 +72,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 13 — Reach** (target v0.16.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
+1. **`/brainstorm-phase` Phase 14 — Reach** (target v0.17.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
 4. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
@@ -99,3 +100,4 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-06-07**: Phase 10 complete — v0.13.0 released. Top-level entry/exit commands (`init --ecosystem`, `join`, `leave`, `doctor`); init auto-detect; BUG-004 / BUG-005 / ENH-021 / ENH-022 fixed; README rewrite as product positioning; per-adapter smoke matrix + capability audit. 165/165 tests pass (+64 from Phase 9). ENH-023/ENH-024 filed as follow-ups.
 - **2026-06-07**: Phase 11 complete — v0.14.0 released. Three orchestration primitives (scout / dispatch / handoff) + continue, with three invocation doors (slash / NL inference / CLI) over one shared `core/orchestration/` library. SessionStart hook auto-greet for pending handoffs. Tracking contract: cheap layer auto, curated layer auto-if-meaningful, no new history entry types. Capability-driven routing with labeled degraded modes. ENH-023 + ENH-024 closed. Per-adapter smoke matrix extended to 9 combinations. 246/246 tests pass (+81 from Phase 10).
 - **2026-06-08**: Phase 12 complete — v0.15.0 released. Public GitHub Pages site at <https://trymomentum.github.io/> — landing page + 8 docs pages built with Astro Starlight. Full identity pass: Velocity Arc logo (single-fill SVG, light/dark via `currentColor`), Indigo + Slate palette, Inter Variable font (self-hosted via `@fontsource-variable/inter`), CSS/SVG illustrated hero, 1200×630 OG card generated at build via `sharp`. Cross-repo deploy from `avinash-singh-io/momentum` (source) → `trymomentum/trymomentum.github.io` (deploy target) via GH Actions + fine-grained PAT. Lighthouse landing: Performance 98 / Accessibility 96 / Best Practices 100 / SEO 100. Linkinator: 0/24 broken links. CLI regression: 246/246 still pass (metadata-only npm bump — no CLI behavior change). Roadmap renumber landed: Site = 12 / Reach → 13 / Intelligence → 14 / Platform → 15. BUG-006 filed for `momentum upgrade` regressing CLAUDE.md project title.
+- **2026-06-08**: Phase 13 complete — v0.16.0 released. Site polish + content depth pass on top of v0.15.0. Positioning shift to "Spec-driven development for agentic AI." Landing wholesale rewrite (7 sections + hero, was 4 + hero): NEW PhaseFlow animated SVG hero diagram, Topology single-vs-ecosystem comparison, OrchestrationShowcase featuring scout/dispatch/handoff/continue, RulesCallout, SkillsPreview with code-block previews. NEW `/orchestration/` page (1,716 words) with full scout/dispatch/handoff/continue documentation + 5 Mermaid sequence diagrams. Ecosystem page rewritten (1,289 words) with multi-repo topology SVG + 5-step worked example. Concepts/Skills/Rules deepened (1,597 / 1,102 / 2,157 words). End-to-end "Your first phase" tutorial on getting-started. Mermaid plugin (`rehype-mermaid` + Playwright/Chromium) wired into Starlight; inline-svg strategy keeps zero client JS for diagrams. Sidebar restructured with "Multi-repo coordination" group. CLI regression: 246/246 still pass (metadata-only npm bump).
