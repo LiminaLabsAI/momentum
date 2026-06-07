@@ -85,7 +85,7 @@ manifests, initiatives, and a daily session log. Each member project keeps
 its own `specs/` — ecosystem mode adds, never replaces. Per-project commands
 still work exactly as in single-project mode.
 
-[Read the ecosystem quickstart →](/momentum/ecosystem/)
+[Read the ecosystem quickstart →](/ecosystem/)
 
 ## How they fit together
 

@@ -5,7 +5,7 @@
 
 [![npm](https://img.shields.io/npm/v/@avinash-singh-io/momentum)](https://www.npmjs.com/package/@avinash-singh-io/momentum)
 
-[**Visit the site →**](https://avinash-singh-io.github.io/momentum)
+[**Visit the site →**](https://trymomentum.github.io)
 
 ---
 

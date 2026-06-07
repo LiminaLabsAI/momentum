@@ -87,7 +87,7 @@ is in the directory the agent was launched from.
 
 ## Next
 
-- [Concepts](/momentum/concepts/) — phases, backlog, history, ADRs, ecosystem
-- [Skills](/momentum/skills/) — every slash command and what it does
-- [Rules](/momentum/rules/) — the 13 autonomous agent rules
-- [IDE support](/momentum/ide-support/) — per-agent setup details
+- [Concepts](/concepts/) — phases, backlog, history, ADRs, ecosystem
+- [Skills](/skills/) — every slash command and what it does
+- [Rules](/rules/) — the 13 autonomous agent rules
+- [IDE support](/ide-support/) — per-agent setup details

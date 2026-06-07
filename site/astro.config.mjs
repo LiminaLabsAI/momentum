@@ -4,8 +4,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://avinash-singh-io.github.io',
-	base: '/momentum',
+	site: 'https://trymomentum.github.io',
+	base: '/',
 	trailingSlash: 'always',
 	integrations: [
 		starlight({
@@ -25,7 +25,7 @@ export default defineConfig({
 					tag: 'meta',
 					attrs: {
 						property: 'og:image',
-						content: 'https://avinash-singh-io.github.io/momentum/og/default.png',
+						content: 'https://trymomentum.github.io/og/default.png',
 					},
 				},
 				{
@@ -39,7 +39,7 @@ export default defineConfig({
 					tag: 'meta',
 					attrs: {
 						name: 'twitter:image',
-						content: 'https://avinash-singh-io.github.io/momentum/og/default.png',
+						content: 'https://trymomentum.github.io/og/default.png',
 					},
 				},
 			],
