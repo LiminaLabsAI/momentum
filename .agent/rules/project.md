@@ -139,6 +139,17 @@ Before marking any task `[x]`, run the verification command (test, lint, typeche
 
 If verification was not run in this session, the task is unverified — leave it `[/]` (in progress). If a command can't run in the current environment, say so explicitly — never silently downgrade to "looks correct".
 
+### Rule 13: Test-Driven Development (TDD) (Opt-in)
+If enabled in the project rules extensions (under `## Project Extensions` in this file or `AGENTS.md`), follow a strict test-first development loop:
+1. **Red**: Write a unit or integration test that specifies the new behavior *before* writing any application code.
+2. **Verify Failure**: Run the test runner and verify that the newly added test fails. Do not write any implementation code until you have seen the test fail.
+3. **Green**: Write the minimal application code necessary to make the test pass.
+4. **Refactor**: Clean up and optimize the code while keeping all tests green.
+
+**Red Flags (STOP and write tests first):**
+- "I will write the tests at the end" — writing tests post-facto is not TDD and leads to confirmation bias.
+- "The change is too simple to warrant a test-first approach" — simple changes are excellent TDD candidates to establish correct wiring.
+
 ---
 
 ## Naming Conventions
