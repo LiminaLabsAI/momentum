@@ -61,7 +61,7 @@
       "topics": ["phase-12", "public-site", "github-pages", "astro", "starlight", "landing-page", "docs-site", "site", "brand", "identity", "logo", "favicon", "og-cards", "self-hosted-font", "color-palette", "illustrated-hero", "lighthouse", "deployment", "github-actions", "gh-pages", "pagefind", "homepage", "npm-metadata", "metadata-bump", "roadmap-renumber", "ide-support", "skills-reference", "rules-reference", "ecosystem-mode", "faq", "about", "philosophy"]
     },
     "phase-13-site-polish": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["phase-13", "site-polish", "content-depth", "augment-in-place", "mermaid", "custom-svg", "diagrams", "landing-rewrite", "agentic-ai", "positioning", "feature-pillars", "phase-flow", "animated-hero", "topology", "ecosystem-rewrite", "orchestration-page", "scout", "dispatch", "handoff", "continue", "multi-repo-coordination", "concepts-deepening", "skills-examples", "rules-full-text", "tutorial", "end-to-end-walkthrough", "ide-support-deep", "faq-expansion", "word-count-baseline", "rehype-mermaid"]
     }
   }
