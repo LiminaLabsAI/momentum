@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 11 — Dynamic Orchestration & Context Handover (`planning pending`)
+> **Current Phase**: Phase 11 — Dynamic Orchestration & Context Handover (`planned, ready to start`)
 > **Latest Release**: v0.13.0 — Ecosystem Activation & Polish
 > **Health**: On Track
 
@@ -32,7 +32,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 11 | Dynamic Orchestration & Context Handover | Planning pending | Planning stub at `specs/planning/phase-11-orchestration-handover.md`. Capability-driven `scout` / `dispatch` / `handoff` primitives. Codex / Antigravity capability research up front. Target v0.14.0. |
+| 11 | Dynamic Orchestration & Context Handover | Planned, ready to start | Brainstorm complete 2026-06-07. Phase scaffold at `specs/phases/phase-11-orchestration-handover/`. Six groups: G0 foundations + capability flag cleanup → (G1 scout + G2 dispatch + G3 handoff in parallel) → G4 tracking contract integration → G5 per-adapter smoke + docs. Three invocation doors (slash + NL inference + CLI) over one shared `core/orchestration/` library. Live narration + persistent log. Tracking contract: cheap layer always auto, curated layer auto-if-meaningful, no new history entry types. ENH-023 + ENH-024 ride this phase in G0. Target v0.14.0. Run `/start-phase` when ready. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -69,7 +69,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 11 — Dynamic Orchestration & Context Handover** (target v0.14.0). Inputs: planning stub at `specs/planning/phase-11-orchestration-handover.md`, capability matrix at `core/adapter-capabilities.md`.
+1. **`/start-phase` Phase 11 — Dynamic Orchestration & Context Handover** (target v0.14.0). Brainstorm complete; scaffold at `specs/phases/phase-11-orchestration-handover/`. Start with Group 0 (foundations + capability flag cleanup).
 2. **cerebrio dogfood (post-v0.13.0 user action).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs. Initiative `0001-memory-module` captures the 2026-06-05/06 Memory module v1 work retroactively.
 3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.

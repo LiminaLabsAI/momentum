@@ -1,0 +1,103 @@
+# Phase 11 — Dynamic Orchestration & Context Handover: Implementation History
+
+> Append-only log. Do NOT edit existing entries.
+
+## Entry Types
+
+| Type | When to use |
+|------|-------------|
+| [DECISION] | ADR created, technology choice made |
+| [SCOPE_CHANGE] | Phase deliverables added or removed |
+| [DISCOVERY] | Bug, tech debt, or enhancement found |
+| [FEATURE] | New planned feature |
+| [ARCH_CHANGE] | Architectural pattern changed |
+| [EVALUATOR] | Locked evaluator defined or evaluation set changed |
+| [NOTE] | Anything else worth recording |
+
+## Entries
+
+### [DECISION] 2026-06-07 — Phase 11 scope locked: all three orchestration primitives ship equally weighted
+Topics: phase-11, orchestration, scope, scout, dispatch, handoff
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md
+Detail: User-confirmed during brainstorm: scout, dispatch, and handoff all ship in v0.14.0 with equal polish and tests. Partial set (e.g., scout-only) rejected — leaves users guessing at the larger story. Risk of going long mitigated by aggressive non-goals (no streaming dispatch, no new history entry types, no ADR auto-creation, no multi-machine handoff) and by group decomposition (G0 foundations → parallel G1/G2/G3 primitives → G4 wiring → G5 verification).
+
+---
+
+### [DECISION] 2026-06-07 — Three invocation doors, one shared library, identical output shape
+Topics: phase-11, invocation, slash-commands, natural-language, cli, library
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: User-confirmed: every primitive is invokable three ways — slash command, natural-language inference, CLI. The honest tradeoff: testing surface grows; we manage it by routing all three doors through one shared `core/orchestration/` library so they cannot diverge in behavior. NL inference is opt-in guidance baked into slash-command docstrings — not new infrastructure. Output shape must be identical across all three doors so users don't get surprised switching between them. User rationale: "every user has their own specific way to work."
+
+---
+
+### [DECISION] 2026-06-07 — Visibility model: live narration + persistent log via single event stream
+Topics: phase-11, visibility, ux, narration, session-log, event-stream
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: User explicitly emphasized: "it should look like and it should be understandable, visible for the user." Locked design: every primitive emits typed events through `core/orchestration/events.js`. Two subscribers — a renderer that prints `▸ <message>` lines to chat AND a persister that appends the same content to the ecosystem session log. Single source, two surfaces. Auditable in the moment AND after the session closes. Rejected alternatives: terse + post-hoc artifact (trust problem on long dispatches); verbose streaming with no artifact (no durable record); status bar only (black-box during execution).
+
+---
+
+### [DECISION] 2026-06-07 — Handoff pickup: SessionStart auto-greet PLUS explicit /continue, layered
+Topics: phase-11, handoff, sessionstart, pickup, ux, auto-mode, manual-mode
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: User initially confused about how the two mechanisms differ; after clarification confirmed both ship as complementary layers, never competing alternatives. **Auto-greet (passive notification)**: SessionStart hook detects pending `.momentum/inbox/handoff-*.md` files on new session, prints a banner naming each pending handoff, prompts `[y/skip]`. On `y`, agent invokes `/continue`. On `skip`, handoff stays in inbox. **Explicit `/continue` + `momentum continue` (active control)**: works whether or not the auto-greet fired; works on adapters without SessionStart hooks (Antigravity today, Cursor/Gemini future). **Hard constraint**: auto-greet NEVER silently reads the handoff; always a confirm prompt. Otherwise we surprise the user with context they may not want yet. One inbox file format, two ways to pick it up — never both firing at once.
+
+---
+
+### [DECISION] 2026-06-07 — Dispatch result shape: synthesis + collapsible per-repo + artifact; synchronous
+Topics: phase-11, dispatch, synthesis, ux, result-shape, sync-mode
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: User-confirmed: dispatch returns a top-level synthesis answering the user's actual question, followed by collapsible per-repo detail blocks, with a full trace at `.momentum/runs/dispatch-NNN.md`. Synthesis is generated by the originating agent reading structured sub-agent results — in-band, not via a separate model call. Sync mode locked: sub-agents finish, THEN synthesize. Streaming explicitly rejected — non-reproducible output order, harder to test deterministically, can feel chaotic on 7+ repos. Per-repo blocks default to collapsed; user expands them when they want detail. Full trace artifact is the durable record for later.
+
+---
+
+### [DECISION] 2026-06-07 — Tracking contract: cheap layer always auto, curated layer auto-if-meaningful, no new entry types
+Topics: phase-11, tracking, specs-maintenance, history, backlog, session-log, meaningful-context
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: User principle: "we do not have to overly create context, we just need to create meaningful context, context in the sense, history, log, phase, everything." Locked contract: **Cheap layer (always auto, no confirmation):** ecosystem session log line + run artifact + handoff inbox file. These are bounded, greppable, and don't bloat curated docs. **Curated layer (auto IF meaningful):** per-repo `history.md` (as `[DISCOVERY]` or `[DECISION]`) and `backlog.md` entries. Agent applies existing Rule 3 criteria — real bug, real tech debt, real enhancement, real cross-repo decision. **No new history entry types**: no `[SCOUT]` / `[DISPATCH]` / `[HANDOFF]` markers polluting history. Reuse existing `[DISCOVERY]` / `[DECISION]` / `[NOTE]`. **No confirmation prompts in happy path**: agent judges meaningfulness using same calibration as Rule 3 and writes. User can always override after the fact. Risk: agent over-judges → noise; agent under-judges → missed tracking. Mitigation: clear thresholds in slash-command docstrings; tracking-contract tests pin the boundary cases.
+
+---
+
+### [DECISION] 2026-06-07 — Adapter fallback: graceful degradation, CLI as universal floor, all degraded modes labeled
+Topics: phase-11, adapters, capability-routing, degradation, cli-floor, fallback, antigravity, cursor, gemini
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: User-confirmed: every adapter gets a working primitive. Slash commands where the adapter supports them (Claude Code + Codex today; Antigravity uses NL inference path via chat); CLI works on all adapters as the universal floor. Dispatch without parallel subagents runs sequentially — but the sequential mode is LABELED ("this adapter does not declare parallel subagents — running sequentially") so the user knows they're in a degraded mode, not silently slower. Capability-routing helper `core/orchestration/capability-routing.js` consults `adapter-capabilities.md` and decides. Rejected: strict capability gating (blocks Cursor/Gemini entirely from dispatch); CLI-only (loses subagent isolation, feels less native); capability-aware with hidden degradation (trust problem when dispatch takes 4× longer with no explanation).
+
+---
+
+### [DECISION] 2026-06-07 — ENH-023 + ENH-024 ride this phase in Group 0
+Topics: phase-11, enh-023, enh-024, capability-flags, type-unification, group-0
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/backlog/backlog.md, core/adapter-capabilities.md
+Detail: User-confirmed during plan presentation. The Phase 10 audit surfaced two capability-flag type inconsistencies — ENH-023 (`subagents` is bool on Claude Code/Antigravity but explanatory string on Codex) and ENH-024 (`skills`/`browser`/`computerUse` are `false` on Claude Code but `'future'` sentinel strings on Codex). Phase 11's capability-routing code consumes those flags. Resolving the type inconsistencies AT the foundation (Group 0) is cheaper than working around them in every primitive. "Future-planned" notes move to a new `roadmap` field on adapter metadata — a `false` flag plus a roadmap entry is clearer than embedding "future" in capability data. ENH-023 and ENH-024 close in `backlog.md` at the end of Group 0.
+
+---
+
+### [DECISION] 2026-06-07 — Defaults locked without separate questions
+Topics: phase-11, defaults, scoping, failure-handling, artifacts, sync-vs-stream
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md, specs/phases/phase-11-orchestration-handover/plan.md
+Detail: After locking the seven major UX decisions, several remaining open questions from the stub (`specs/planning/phase-11-orchestration-handover.md`) were resolved as reasonable defaults without separate question rounds — the user's pattern throughout brainstorm had been "do the right thing" answers. **Sub-agent prompt scoping**: agent auto-tailors per-repo prompts from user's high-level intent; sub-agent receives `{ user_intent, target_repo, target_repo_state_summary }`. **Sync vs stream**: synchronous only (subsumes the dispatch-result decision). **Failure handling**: sub-agent crashes captured in `failures[]`, never thrown; partial synthesis proceeds with explicit per-failure callouts; user decides retry vs proceed. **Artifact locations**: `.momentum/runs/scout-NNN.md`, `.momentum/runs/dispatch-NNN.md`, `.momentum/inbox/handoff-NNN.md` (NNN = monotonic per primitive). **Run-id scope**: per primitive, per repo (so `scout-001` and `dispatch-001` are independent counters).
+
+---
+
+### [SCOPE_CHANGE] 2026-06-07 — User confirmed single-phase scope despite size
+Topics: phase-11, scope, sizing, no-split
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/phases/phase-11-orchestration-handover/overview.md
+Detail: After presenting the design with six groups (G0–G5) and ~30 testable units of work, asked the user whether to consider splitting into 11a (scout + handoff) and 11b (dispatch) for a smaller v0.14.0. User declined: "we should be able to complete into its single phase". Phase ships as one unit targeting v0.14.0. Non-goals and group decomposition are the levers we hold to keep the size manageable; explicit non-goals listed in overview.md scope-out section.
+
+---
+
+### [NOTE] 2026-06-07 — Phase 11 supersedes planning stub
+Topics: phase-11, planning-stub, brainstorm-output
+Affects-phases: phase-11-orchestration-handover
+Affects-specs: specs/planning/phase-11-orchestration-handover.md, specs/status.md
+Detail: The planning stub at `specs/planning/phase-11-orchestration-handover.md` was the input to this brainstorm. Its open questions (handoff inbox location, receiving-agent learn mechanism, sub-agent scoping, multi-repo test fixtures, dispatch sync-vs-stream, failure reconciliation) have all been answered above. The stub remains in place as a historical record of how the phase was scoped pre-brainstorm but is no longer the source-of-truth — that's now overview.md + plan.md. status.md updated to reflect Phase 11 = Planned (was: Planning pending).
