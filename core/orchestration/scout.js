@@ -176,6 +176,14 @@ function record(opts) {
       context: `run-${runId} → ${path.relative(originatingRepo, artifactPath)}`,
     });
   }
+  // Tracking contract: each finding proposed as [DISCOVERY] in the
+  // SCOUTED repo's active phase history when meaningful per Rule 3.
+  // No backlog.md writes — tracking returns a hint the caller can act
+  // on with explicit user confirmation.
+  const tracking = require('./tracking');
+  for (const finding of findings) {
+    tracking.proposeDiscovery({ primitive: 'scout', finding, targetRepo: repo });
+  }
   const result = {
     repo, prompt, summary,
     findings, filesRead,

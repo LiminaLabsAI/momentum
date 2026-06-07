@@ -198,6 +198,25 @@ function record(opts) {
       context: `run-${runId} → ${path.relative(originatingRepo, artifactPath)}`,
     });
   }
+  // Tracking contract: each per-repo finding proposed as [DISCOVERY]
+  // in THAT repo's active phase history (only when meaningful per
+  // Rule 3). The synthesis is proposed as a [NOTE] in the
+  // ORIGINATING repo's active phase history when present.
+  const tracking = require('./tracking');
+  for (const perRepo of perRepoResults) {
+    if (!perRepo.findings) continue;
+    for (const finding of perRepo.findings) {
+      tracking.proposeDiscovery({ primitive: 'dispatch', finding, targetRepo: perRepo.repo });
+    }
+  }
+  if (synthesis) {
+    tracking.proposeHistoryNote({
+      primitive: 'dispatch',
+      originatingRepo,
+      message: `dispatch across ${repos.length} repo(s) for: ${userIntent}`,
+      runArtifactRef: path.relative(originatingRepo, artifactPath),
+    });
+  }
   const result = {
     repos, userIntent, mode, modeNotes,
     perRepoResults, failures, synthesis,
