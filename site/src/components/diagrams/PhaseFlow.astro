@@ -1,0 +1,104 @@
+---
+/**
+ * <PhaseFlow /> — animated landing-hero diagram.
+ *
+ * Shows the momentum workflow as five connected nodes:
+ *   brainstorm → plan → execute → verify → release
+ *
+ * Subtle CSS pulse animation cycles a highlight left-to-right across
+ * the arrows. Respects `prefers-reduced-motion` — animation falls back
+ * to a static gradient highlight.
+ */
+---
+
+<div class="phaseflow" aria-hidden="true">
+	<svg
+		viewBox="0 0 720 200"
+		xmlns="http://www.w3.org/2000/svg"
+		role="img"
+		aria-label="momentum workflow: brainstorm to plan to execute to verify to release"
+	>
+		<defs>
+			<linearGradient id="pf-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+				<stop offset="0%" stop-color="var(--brand-primary)" stop-opacity="0.12" />
+				<stop offset="100%" stop-color="var(--brand-primary)" stop-opacity="0.04" />
+			</linearGradient>
+			<marker
+				id="pf-arrow"
+				viewBox="0 0 12 12"
+				refX="10"
+				refY="6"
+				markerUnits="strokeWidth"
+				markerWidth="6"
+				markerHeight="6"
+				orient="auto"
+			>
+				<path d="M 0 0 L 12 6 L 0 12 Z" fill="var(--brand-primary)" />
+			</marker>
+		</defs>
+
+		{/* Connecting baseline */}
+		<line
+			x1="80"
+			y1="100"
+			x2="640"
+			y2="100"
+			stroke="var(--brand-border)"
+			stroke-width="2"
+			stroke-dasharray="4 6"
+		/>
+
+		{/* Animated pulse */}
+		<circle r="6" fill="var(--brand-primary)" class="pf-pulse">
+			<animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
+				<mpath href="#pf-path" />
+			</animateMotion>
+		</circle>
+		<path id="pf-path" d="M 80 100 L 640 100" fill="none" />
+
+		{/* Nodes — 5 stages */}
+		{
+			[
+				{ x: 80, label: 'brainstorm' },
+				{ x: 220, label: 'plan' },
+				{ x: 360, label: 'execute' },
+				{ x: 500, label: 'verify' },
+				{ x: 640, label: 'release' },
+			].map((node) => (
+				<g class="pf-node" transform={`translate(${node.x} 100)`}>
+					<circle r="32" fill="url(#pf-fill)" stroke="var(--brand-primary)" stroke-width="2" />
+					<text
+						y="6"
+						text-anchor="middle"
+						font-size="13"
+						font-weight="600"
+						fill="var(--brand-text)"
+					>
+						{node.label}
+					</text>
+				</g>
+			))
+		}
+	</svg>
+</div>
+
+<style>
+	.phaseflow {
+		width: 100%;
+		max-width: 720px;
+		margin: 1.5rem auto;
+	}
+	.phaseflow svg {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pf-pulse animateMotion {
+			animation: none !important;
+		}
+		.pf-pulse {
+			display: none;
+		}
+	}
+</style>

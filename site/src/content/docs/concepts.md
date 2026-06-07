@@ -22,6 +22,15 @@ specs/phases/phase-N-shortname/
 
 A phase lifecycle is: `/brainstorm-phase` → `/start-phase` → ship → `/sync-docs` → `/complete-phase`.
 
+```mermaid
+stateDiagram-v2
+    [*] --> Planned: /brainstorm-phase
+    Planned --> InProgress: /start-phase
+    InProgress --> Verified: groups complete
+    Verified --> Released: /complete-phase
+    Released --> [*]: tag + publish
+```
+
 Phases are the unit of git discipline too. Each phase gets its own branch,
 its own PR, and a tagged release at the end. Direct commits to `main` are
 blocked by convention.

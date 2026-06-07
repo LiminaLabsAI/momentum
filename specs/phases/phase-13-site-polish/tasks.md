@@ -8,17 +8,19 @@
 - [x] Renumber `specs/status.md` Upcoming Phases + Active Phase → Phase 13 — Site Polish
 - [x] Update `specs/phases/README.md` — append Phase 13 row, status In Progress
 - [x] Update `specs/phases/index.json` — add `phase-13-site-polish` entry with topic keywords
-- [ ] `npm install -D rehype-mermaid playwright` in `/site`
-- [ ] Wire Mermaid into `astro.config.mjs` via `markdown.rehypePlugins`
-- [ ] Smoke-test: add `flowchart` block to a stub page, build, verify SVG output in `dist`
-- [ ] Author `site/src/styles/mermaid.css` — brand-themed overrides, light + dark
-- [ ] Wire `mermaid.css` into Starlight `customCss` array
-- [ ] Create `site/src/components/diagrams/` directory
-- [ ] Create `PhaseFlow.astro` skeleton (landing hero — Group 1 fills in)
-- [ ] Create `Topology.astro` skeleton (single-vs-ecosystem — Group 1 fills in)
-- [ ] Create `EcosystemTopology.astro` skeleton (multi-repo topology — Group 3 fills in)
-- [ ] Capture word-count baseline: `wc -w site/src/content/docs/*.md site/src/content/docs/index.mdx | tee specs/phases/phase-13-site-polish/artifacts/wc-baseline.txt`
-- [ ] Smoke build green: `cd site && npm run build`
+- [x] `npm install -D rehype-mermaid playwright` in `/site`
+- [x] `npx playwright install chromium` (92MB browser binary cached at ~/Library/Caches/ms-playwright/)
+- [x] Wire Mermaid into `astro.config.mjs` via `markdown.rehypePlugins` with `strategy: 'inline-svg'`
+- [x] Mermaid themeVariables: brand indigo + slate + Inter Variable font wired through
+- [x] Smoke-test: state-diagram block in concepts.md → inline SVG with brand colors (verified)
+- [x] Author `site/src/styles/mermaid.css` — container + dark-mode filter overrides
+- [x] Wire `mermaid.css` into Starlight `customCss` array
+- [x] Create `site/src/components/diagrams/` directory
+- [x] Create `PhaseFlow.astro` skeleton (landing hero — Group 1 fills in)
+- [x] Create `Topology.astro` skeleton (single-vs-ecosystem — Group 1 fills in)
+- [x] Create `EcosystemTopology.astro` skeleton (multi-repo topology — Group 3 fills in)
+- [x] Capture word-count baseline (4,011 total; per-file in `artifacts/wc-baseline.txt`)
+- [x] Smoke build green: 10 pages built, Mermaid SVG inline-rendered, Pagefind + sitemap clean
 - [ ] Commit Group 0: `infra(site): Mermaid + diagram tooling + roadmap renumber + baseline capture`
 
 ## Group 1 — Landing wholesale rewrite (Parallel with G2, G3, G4)

@@ -87,3 +87,19 @@ Affects-specs: specs/phases/phase-13-site-polish/plan.md
 Detail: Rough estimate: Group 0 ~1-2h, Group 1 (landing) ~4-6h, Group 2 (Concepts/Skills/Rules deepening) ~6-8h, Group 3 (multi-repo deep dive + NEW orchestration page) ~6-8h, Group 4 (tutorial + 3 page refinements) ~4-6h, Group 5 (verification + release) ~1-2h. Total ~22-32h focused work — larger than Phase 12 but appropriately sized for the v0.16.0 target. Mitigation against runaway scope: aggressive non-goals (no custom domain, no rebrand, no IA restructure beyond `/orchestration/`, no per-item sub-pages); parallel Groups 1-4 keep wall-clock bounded; Group 5's "6 of 8 diagrams" floor (vs hard 8/8) leaves a release-safety valve.
 
 ---
+
+### [DECISION] 2026-06-08 — Group 0 foundations shipped: rehype-mermaid + Playwright/Chromium + 3 diagram skeletons + baseline
+Topics: phase-13, group-0, rehype-mermaid, playwright, chromium, inline-svg, brand-theme, diagrams, baseline
+Affects-phases: phase-13-site-polish
+Affects-specs: site/astro.config.mjs, site/src/styles/mermaid.css, site/src/components/diagrams/, site/src/content/docs/concepts.md, specs/phases/phase-13-site-polish/artifacts/wc-baseline.txt
+Detail: Group 0 (Foundations & tooling) landed. **Mermaid toolchain**: `rehype-mermaid@3.0.0` + `playwright` installed; Chromium 148 (92MB) cached at `~/Library/Caches/ms-playwright/`. **Strategy locked: `inline-svg`** — Mermaid blocks render to inline SVG at BUILD time via headless Chromium. Zero client-side JS for diagrams; protects Lighthouse Performance (acceptance criterion ≥ 90). **Brand theming via Mermaid themeVariables** (in `astro.config.mjs`): primaryColor `#EEF2FF` (indigo-50), primaryBorderColor `#4F46E5` (indigo), text `#0F172A` (slate-900), line `#475569` (slate-600), fontFamily Inter Variable. Smoke-test verified: state diagram in `concepts.md` rendered to inline SVG with brand colors burned in (no fallback `<pre class="mermaid">`). **Dark-mode strategy**: `filter: invert(0.88) hue-rotate(180deg) saturate(1.1)` on `.mermaid svg` under `[data-theme='dark']` — preserves hue, inverts lightness, no per-theme rebuild. **3 diagram component skeletons** created under `site/src/components/diagrams/`: `PhaseFlow.astro` (landing hero, animated brainstorm→plan→execute→verify→release, respects prefers-reduced-motion), `Topology.astro` (single-vs-ecosystem comparison), `EcosystemTopology.astro` (deep-dive: root + 3 members + pointer-blocks + status flow). All three pure SVG + brand tokens, no raster. **Word-count baseline**: 4,011 total across 9 pages; per-page captured in `artifacts/wc-baseline.txt`. Group 5 word-count assertion (≥ 3× baseline) has a fixed target. Build clean: 10 pages built, Pagefind + sitemap green.
+
+---
+
+### [DECISION] 2026-06-08 — Skipped `--with-deps` flag on Chromium install (local dev only)
+Topics: phase-13, group-0, playwright, chromium, with-deps, ci-deferral
+Affects-phases: phase-13-site-polish
+Affects-specs: .github/workflows/deploy-site.yml
+Detail: `npx playwright install chromium` (without `--with-deps`) succeeded locally on macOS — system already has the libs Chromium needs. CI is a separate concern: the deploy workflow on Ubuntu may need `--with-deps` to install OS-level libraries. Deferred to Group 5 verification — will update `.github/workflows/deploy-site.yml` to either (a) `npx playwright install --with-deps chromium` or (b) use a Playwright Docker image / pre-installed action. If the first cross-repo deploy run fails after Phase 13 merge, the fix is a one-line workflow edit; logged as a known follow-up rather than blocking now.
+
+---

@@ -1,0 +1,10 @@
+     339 site/src/content/docs/about.md
+     560 site/src/content/docs/concepts.md
+     457 site/src/content/docs/ecosystem.md
+     407 site/src/content/docs/faq.md
+     455 site/src/content/docs/getting-started.md
+     419 site/src/content/docs/ide-support.md
+     698 site/src/content/docs/rules.md
+     492 site/src/content/docs/skills.md
+     184 site/src/content/docs/index.mdx
+    4011 total
