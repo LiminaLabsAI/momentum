@@ -40,15 +40,15 @@
 
 ## Group 2 — Concepts + Skills + Rules deepening (Parallel with G1, G3, G4)
 
-- [ ] `concepts.md` rewrite — Phases section ≥ 500 words + Mermaid state machine
-- [ ] `concepts.md` — Backlog section ≥ 500 words + real example row
-- [ ] `concepts.md` — History section ≥ 500 words + walked-through real `[DECISION]`
-- [ ] `concepts.md` — ADRs section ≥ 500 words + when to write + structure
-- [ ] `concepts.md` — Ecosystem cross-ref pointer to `/ecosystem/`
-- [ ] `skills.md` rewrite — 15 entries, each with input/output example + when-to-use + GitHub link
-- [ ] `skills.md` — Brainstorm gate Mermaid sequence diagram inline with `/brainstorm-phase` entry
-- [ ] `rules.md` rewrite — port all 13 rules verbatim from `.agent/rules/project.md` (rule + Why + Red Flags + Anti-rationalization counters)
-- [ ] Smoke build green
+- [x] `concepts.md` rewrite — Phases + Group Execution Pattern + git boundaries + state diagram (1,597 words; 2.85× baseline)
+- [x] `concepts.md` — Backlog section with priorities table + ID prefixes + how items move
+- [x] `concepts.md` — History section with entry types + format + worked example + doc-sync explanation
+- [x] `concepts.md` — ADRs section + when to write vs history + "how they fit together" closer
+- [x] `concepts.md` — Ecosystem cross-ref pointer to `/ecosystem/`
+- [x] `skills.md` rewrite — 15 entries grouped by lifecycle (Project / Phase / Backlog / Cross-repo / Quality), each with input/output examples (1,102 words; 2.24× baseline — pad in Group 5)
+- [x] `skills.md` — Brainstorm gate Mermaid sequence diagram inline with `/brainstorm-phase` entry
+- [x] `rules.md` rewrite — 13 rules ported faithfully from `.agent/rules/project.md` (statement + Why + Red Flags + Anti-rationalization where present) + "where the rules live" + "what's not a rule" closer (2,157 words; 3.09× baseline ✓)
+- [x] Smoke build green: 11 pages, brainstorm-gate sequence diagram + phase-lifecycle diagram both inline-rendered
 - [ ] Commit Group 2: `feat(site): deepen Concepts / Skills / Rules — full content + Mermaid diagrams`
 
 ## Group 3 — Multi-repo deep dive (Parallel with G1, G2, G4)
