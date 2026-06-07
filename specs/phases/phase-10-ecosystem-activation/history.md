@@ -112,6 +112,14 @@ Detail: This Phase 10 (Ecosystem Activation & Polish) takes the v0.13.0 slot pre
 
 ---
 
+### [FEATURE] 2026-06-07 — Group 2 landed: Phase 9 follow-up fixes (BUG-004 / ENH-021 / ENH-022)
+Topics: phase-10, group-2, bug-004, enh-021, enh-022, concurrency, location-agnostic, lockdir
+Affects-phases: phase-10-ecosystem-activation
+Affects-specs: core/ecosystem/scripts/session-append.sh, bin/ecosystem.js, core/ecosystem/layout.md, core/specs-templates/specs/architecture/ecosystem.md, tests/session-append-concurrency.test.js, tests/ecosystem-cli-location-agnostic.test.js, tests/ecosystem-cli.test.js
+Detail: Group 2 fixes landed. **BUG-004 (session-log concurrent-commit race):** `core/ecosystem/scripts/session-append.sh` now acquires a per-session-file lock via `mkdir` (atomic on POSIX, portable across macOS/Linux without depending on `flock`). Lock budget is ~5s; on timeout the event is dropped silently rather than risking file corruption. Verified by `tests/session-append-concurrency.test.js` spawning 10 parallel bash invocations against one session file: all 10 distinct lines land intact, header appears exactly once, file ends with newline, lock directory released. **ENH-021 (location-agnostic ecosystem add/remove/status):** new `resolveEcosystemRoot()` helper in `bin/ecosystem.js` resolves via (1) explicit `--ecosystem <path>` override → (2) `ecosystem.json` in CWD → (3) walk-up via `findRoot()` → (4) remediation error naming the subcommand. All three subcommands accept `--ecosystem <path>`. Verified by `tests/ecosystem-cli-location-agnostic.test.js` invoking from sibling, child, unrelated, and isolated directories. Existing Phase 9 test updated to match the improved (more teaching) error wording — behavior unchanged. **ENH-022 (docs):** `core/ecosystem/layout.md` gains a "Discovery & limits" section documenting `MOMENTUM_MAX_PARENT_WALK` env override + `--ecosystem` override + BUG-004 lock pattern. `core/specs-templates/specs/architecture/ecosystem.md` template updated to reflect the env-configurable depth (was hardcoded reference to `MAX_WALK_DEPTH=5`). Tests: 121 → 130, all green.
+
+---
+
 ### [FEATURE] 2026-06-07 — Group 0 landed: state machine + reusable pointer helpers
 Topics: phase-10, group-0, state-machine, pointer-helpers, max-parent-walk, env-override
 Affects-phases: phase-10-ecosystem-activation

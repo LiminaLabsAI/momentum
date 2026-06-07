@@ -108,6 +108,36 @@ TODAY=$(date -u +%F)
 SESSION_FILE="$SESSION_DIR/$TODAY.md"
 HHMM=$(date -u +%H:%M)
 
+# ── BUG-004 fix: serialize concurrent writers via mkdir lock ────────────────
+# `mkdir` is atomic on POSIX filesystems and portable across macOS/Linux
+# without depending on flock (which is not present by default on macOS).
+# The lock covers the "check + header-write + append" sequence so two
+# concurrent commits in different member repos can't both write the
+# header or interleave their data lines.
+LOCK_DIR="$SESSION_FILE.lock"
+acquire_session_lock() {
+  local tries=100  # ~5s total at 50ms each
+  while [ $tries -gt 0 ]; do
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      return 0
+    fi
+    sleep 0.05
+    tries=$((tries - 1))
+  done
+  return 1
+}
+release_session_lock() {
+  rmdir "$LOCK_DIR" 2>/dev/null || true
+}
+trap release_session_lock EXIT INT TERM
+
+# If we cannot acquire the lock within the budget, drop the event silently
+# rather than corrupt the file. Session events are advisory; momentum's
+# correctness does not depend on every one landing.
+if ! acquire_session_lock; then
+  exit 0
+fi
+
 # First write of the day → write header (and active initiative banner).
 if [ ! -f "$SESSION_FILE" ]; then
   {
@@ -133,4 +163,5 @@ fi
 mkdir -p "$ROOT/.state"
 echo "$TODAY" > "$ROOT/.state/last-session"
 
+# Lock is released by the EXIT trap.
 exit 0

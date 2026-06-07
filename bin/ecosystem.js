@@ -71,9 +71,14 @@ momentum ecosystem — Cross-repo coordination layer (Tier 1).
 
 Usage:
   momentum ecosystem init [name]
-  momentum ecosystem add <repo-path> [--role <role>] [--id <id>]
-  momentum ecosystem remove <member-id>
-  momentum ecosystem status [--no-git]
+  momentum ecosystem add <repo-path> [--role <role>] [--id <id>] [--ecosystem <path>]
+  momentum ecosystem remove <member-id> [--ecosystem <path>]
+  momentum ecosystem status [--no-git] [--ecosystem <path>]
+
+Location:
+  add / remove / status auto-locate the ecosystem root by walking up
+  from CWD (bounded by MOMENTUM_MAX_PARENT_WALK, default 5). Use
+  --ecosystem <path> to override explicitly.
 
 Subcommands:
   init       Scaffold a new ecosystem root in the CWD (or under [name]/).
@@ -203,15 +208,13 @@ function cmdAdd(args) {
     throw new Error('add: missing <repo-path> argument.');
   }
   const repoPath = args[0];
-  const opts = parseFlags(args.slice(1), { role: 'string', id: 'string' });
+  const opts = parseFlags(args.slice(1), {
+    role: 'string',
+    id: 'string',
+    ecosystem: 'string',
+  });
 
-  const root = lib.findRoot(process.cwd());
-  if (!root) {
-    throw new Error(
-      'add: not inside an ecosystem root (no ecosystem.json found in ' +
-      'this or any parent directory up to 5 levels).',
-    );
-  }
+  const root = resolveEcosystemRoot(opts.ecosystem, 'add');
 
   const absRepo = path.resolve(root, repoPath);
   if (!fs.existsSync(absRepo)) {
@@ -291,12 +294,10 @@ function cmdRemove(args) {
   if (args.length === 0) {
     throw new Error('remove: missing <member-id> argument.');
   }
+  const opts = parseFlags(args.slice(1), { ecosystem: 'string' });
   const id = args[0];
 
-  const root = lib.findRoot(process.cwd());
-  if (!root) {
-    throw new Error('remove: not inside an ecosystem root.');
-  }
+  const root = resolveEcosystemRoot(opts.ecosystem, 'remove');
 
   const manifest = lib.loadManifest(root);
   const member = lib.findMember(manifest, id);
@@ -337,11 +338,11 @@ function cmdRemove(args) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function cmdStatus(args) {
-  const opts = parseFlags(args, { 'no-git': 'boolean' });
-  const root = lib.findRoot(process.cwd());
-  if (!root) {
-    throw new Error('status: not inside an ecosystem root.');
-  }
+  const opts = parseFlags(args, {
+    'no-git': 'boolean',
+    ecosystem: 'string',
+  });
+  const root = resolveEcosystemRoot(opts.ecosystem, 'status');
   const manifest = lib.loadManifest(root);
 
   console.log(`Ecosystem: ${manifest.name} (root: ${root})`);
@@ -379,6 +380,36 @@ function cmdStatus(args) {
 // findPrimaryInstructionFile / ensurePointerInjected / stripPointer moved
 // to core/ecosystem/lib/pointer.js in Phase 10 Group 0 for reuse by
 // `momentum join` and `momentum leave`. Imported above.
+
+/**
+ * ENH-021 — resolve the ecosystem root from any directory.
+ *
+ * Resolution order:
+ *   1. explicit `--ecosystem <path>` (highest precedence)
+ *   2. ecosystem.json in CWD
+ *   3. walk up via findRoot() bounded by MOMENTUM_MAX_PARENT_WALK
+ *   4. error with a remediation message naming the subcommand
+ */
+function resolveEcosystemRoot(explicitPath, subcommand) {
+  if (explicitPath) {
+    const abs = path.resolve(process.cwd(), explicitPath);
+    if (!fs.existsSync(path.join(abs, lib.MANIFEST_FILENAME))) {
+      throw new Error(
+        `${subcommand}: --ecosystem ${explicitPath} → ${abs} has no ecosystem.json. ` +
+          `Did you mean a different path?`,
+      );
+    }
+    return abs;
+  }
+  const found = lib.findRoot(process.cwd());
+  if (!found) {
+    throw new Error(
+      `${subcommand}: no ecosystem.json found in this or any parent directory. ` +
+        `Pass --ecosystem <path>, or cd to an ecosystem root before running.`,
+    );
+  }
+  return found;
+}
 
 function printGitState(repoPath) {
   // Suppress stderr from git so "fatal: not a git repository" doesn't

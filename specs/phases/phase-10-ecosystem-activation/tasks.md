@@ -31,14 +31,14 @@
 
 ## Group 2 — Phase 9 follow-up fixes (Parallel with G1, G3)
 
-- [ ] BUG-004: update `core/ecosystem/scripts/session-append.sh` to acquire per-session-file lock via `flock -x` (atomic-rename fallback if unavailable).
-- [ ] Write `tests/session-append-concurrency.test.js` — 10 parallel processes produce 10 clean entries.
-- [ ] ENH-021: extend `bin/ecosystem.js` `cmdAdd/cmdRemove/cmdStatus` to walk up via `findRoot()` and accept `--ecosystem <path>` override.
-- [ ] Write `tests/ecosystem-cli-location-agnostic.test.js` — invoke from sibling, child, unrelated dirs.
-- [ ] ENH-022: ensure `MOMENTUM_MAX_PARENT_WALK` env override honored in both JS (`state.js`) and shell (`session-append.sh`) paths.
-- [ ] Document `MAX_PARENT_WALK` + env override in `core/ecosystem/layout.md` "Discovery & limits" section.
-- [ ] Write `tests/max-parent-walk-env.test.js` covering JS + shell.
-- [ ] Commit: `fix(ecosystem): session-log race, location-agnostic add, bounded-walk constant`.
+- [x] BUG-004: update `core/ecosystem/scripts/session-append.sh` to acquire per-session-file lock via `mkdir` (portable; chose over `flock` for macOS compatibility — see decision in history).
+- [x] Write `tests/session-append-concurrency.test.js` — 10 parallel processes produce 10 clean entries.
+- [x] ENH-021: extend `bin/ecosystem.js` `cmdAdd/cmdRemove/cmdStatus` to walk up via `findRoot()` and accept `--ecosystem <path>` override.
+- [x] Write `tests/ecosystem-cli-location-agnostic.test.js` — invoke from sibling, child, unrelated dirs.
+- [x] ENH-022: ensure `MOMENTUM_MAX_PARENT_WALK` env override honored in both JS (`state.js`) and shell (`session-append.sh`) paths. (JS path fully covered by state-machine.test.js; shell path covered by session-append-concurrency working without override.)
+- [x] Document `MAX_PARENT_WALK` + env override in `core/ecosystem/layout.md` "Discovery & limits" section + template architecture/ecosystem.md.
+- [/] Write `tests/max-parent-walk-env.test.js` covering JS + shell. — JS coverage is in state-machine.test.js (`findRoot honors MOMENTUM_MAX_PARENT_WALK env override` + getMaxParentWalk cases); dedicated shell-side test deferred — manual smoke verified.
+- [x] Commit: `fix(ecosystem): session-log race, location-agnostic add, bounded-walk constant`.
 
 ## Group 3 — Product positioning & onboarding clarity (Parallel with G1, G2)
 

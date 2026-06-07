@@ -283,12 +283,15 @@ test('ecosystem status prints members + active initiative banner', () => {
   }
 });
 
-test('ecosystem requires being inside an ecosystem root', () => {
+test('ecosystem requires a reachable ecosystem root (ENH-021: location-agnostic)', () => {
   const tmp = mktmp();
   try {
     const res = runCli(['ecosystem', 'status'], { cwd: tmp });
     assert.notEqual(res.status, 0);
-    assert.match(res.stderr, /not inside an ecosystem/i);
+    // ENH-021 reworded the error to teach the user about --ecosystem and
+    // walk-up resolution. Behavior unchanged: still errors when no
+    // ecosystem is reachable.
+    assert.match(res.stderr, /no ecosystem\.json found/i);
   } finally {
     rmrf(tmp);
   }

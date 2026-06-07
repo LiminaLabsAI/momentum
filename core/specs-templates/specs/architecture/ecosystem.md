@@ -112,9 +112,10 @@ momentum projects see no change.
 ## How discovery works
 
 Every command (CLI or hook) finds the ecosystem root via a
-bounded upward walk. From `$PWD`, climb up to
-`MAX_WALK_DEPTH=5` parents looking for a directory whose **siblings**
-contain a `ecosystem.json`. First hit wins; cached per-process.
+bounded upward walk. From `$PWD`, climb up to 5 parents by default
+(configurable via the `MOMENTUM_MAX_PARENT_WALK` env var) looking for
+a directory whose **siblings** contain an `ecosystem.json`. First hit
+wins; cached per-process.
 
 This means the ecosystem repo and member repos live as **siblings**
 under one parent directory:
