@@ -401,14 +401,21 @@ function resolveEcosystemRoot(explicitPath, subcommand) {
     }
     return abs;
   }
+  // First try parent walk-up — succeeds when CWD is inside the ecosystem root.
   const found = lib.findRoot(process.cwd());
-  if (!found) {
-    throw new Error(
-      `${subcommand}: no ecosystem.json found in this or any parent directory. ` +
-        `Pass --ecosystem <path>, or cd to an ecosystem root before running.`,
-    );
-  }
-  return found;
+  if (found) return found;
+  // Then try sibling walk — succeeds when CWD is inside a member repo
+  // whose ecosystem root is a sibling directory. This mirrors the
+  // session-append.sh hook's discovery pattern and is what makes
+  // ENH-021 actually feel location-agnostic from inside a member repo.
+  const stateLib = require('../core/ecosystem/lib/state');
+  const reg = stateLib.findRegistration(process.cwd());
+  if (reg) return reg.rootPath;
+  throw new Error(
+    `${subcommand}: no ecosystem.json found in this or any parent directory, ` +
+      `nor in any reachable sibling. Pass --ecosystem <path>, or cd to an ` +
+      `ecosystem root before running.`,
+  );
 }
 
 function printGitState(repoPath) {

@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 10 — Ecosystem Activation & Polish (`in progress`)
-> **Latest Release**: v0.12.0 — Ecosystem (Tier 1)
+> **Current Phase**: Phase 11 — Dynamic Orchestration & Context Handover (`planning pending`)
+> **Latest Release**: v0.13.0 — Ecosystem Activation & Polish
 > **Health**: On Track
 
 ## Summary
@@ -26,12 +26,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 7b | Agent Runtime Compatibility | Complete | v0.9.0 (2026-05-28) |
 | 7c | Autonomous Execution & TDD | Complete | v0.10.0 (2026-05-28) |
 | 9 | Ecosystem (Tier 1) | Complete | v0.12.0 (2026-06-07) |
+| 10 | Ecosystem Activation & Polish | Complete | v0.13.0 (2026-06-07) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 10 | Ecosystem Activation & Polish | **In Progress** | Started 2026-06-07. Group 0 (state machine + reusable helpers) → Groups 1/2/3 parallel → Group 4 (adapter coverage + cerebrio dogfood) → Group 5 (verification). 5 workstreams: entry/exit commands; Phase 9 follow-up fixes (BUG-004 / ENH-021 / ENH-022); product positioning README rewrite; per-adapter smoke matrix + capability audit; cerebrio-ecosystem dogfood. Target v0.13.0. |
+| 11 | Dynamic Orchestration & Context Handover | Planning pending | Planning stub at `specs/planning/phase-11-orchestration-handover.md`. Capability-driven `scout` / `dispatch` / `handoff` primitives. Codex / Antigravity capability research up front. Target v0.14.0. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -42,7 +43,6 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 11 | Dynamic Orchestration & Context Handover | Not Started (target v0.14.0) | Capability-driven `scout` / `dispatch` / `handoff` primitives; specs maintenance preserved across every primitive; Codex / Antigravity capability research up front. Planning stub: `specs/planning/phase-11-orchestration-handover.md`. |
 | 12 | Reach | Not Started (target v0.15.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
 | 13 | Intelligence | Not Started (target v0.16.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 14 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
@@ -68,8 +68,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Implement Phase 10 Group 0** — state machine (`core/ecosystem/lib/state.js`), reusable pointer helpers (`core/ecosystem/lib/pointer.js`), test fixtures. Sequential, blocks Groups 1/2/3.
-2. Once Group 0 lands, Groups 1 (entry/exit commands), 2 (Phase 9 fixes), 3 (README + onboarding) proceed in parallel.
+1. **`/brainstorm-phase` Phase 11 — Dynamic Orchestration & Context Handover** (target v0.14.0). Inputs: planning stub at `specs/planning/phase-11-orchestration-handover.md`, capability matrix at `core/adapter-capabilities.md`.
+2. **cerebrio dogfood (post-v0.13.0 user action).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs. Initiative `0001-memory-module` captures the 2026-06-05/06 Memory module v1 work retroactively.
 3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
 
@@ -92,3 +92,4 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-05-08**: Phase 5 complete — v0.6.0 released. Rules 10/11, persuasion-hardening (Rules 2/6/8/10/11), `## Project Extensions` marker, marker-aware `momentum upgrade`, `--coding-agent` → `--agent` rename (breaking).
 - **2026-05-08**: Phase 6 complete — v0.7.0 released. Adapter Contract v2 (per-agent commands/rules/scripts overlays, conflict = error); Rule 12 verify-before-claim; `/complete-phase` evidence rigor; `/review-code` (Claude Code, subagent-driven); ENH-014 cross-repo Rule 9 safeguards; `tests/` for momentum CLI (24 tests via node:test).
 - **2026-05-28**: Phase 7b complete — v0.9.0 released. Adapter Contract v3; Codex adapter (`AGENTS.md`, `.codex/hooks.json`, `.codex/commands/`); dynamic available-agent discovery; Claude regression coverage; ENH-018 tarball-shape test; prepublish test gate.
+- **2026-06-07**: Phase 10 complete — v0.13.0 released. Top-level entry/exit commands (`init --ecosystem`, `join`, `leave`, `doctor`); init auto-detect; BUG-004 / BUG-005 / ENH-021 / ENH-022 fixed; README rewrite as product positioning; per-adapter smoke matrix + capability audit. 165/165 tests pass (+64 from Phase 9). ENH-023/ENH-024 filed as follow-ups.

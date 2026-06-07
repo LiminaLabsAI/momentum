@@ -150,3 +150,22 @@ test('ecosystem status — no ecosystem reachable produces a remediation error',
     rmrf(tmp);
   }
 });
+
+test('ecosystem status — from inside a member, sibling-walk finds ecosystem root (ENH-021)', () => {
+  const tmp = mktmp();
+  try {
+    const { mkMemberRepo } = require('./helpers/ecosystem-fixtures');
+    const memberDir = mkMemberRepo(path.join(tmp, 'member-a'), 'demo');
+    mkEcosystemRoot(path.join(tmp, 'demo'), 'demo', [
+      { id: 'member-a', path: '../member-a', role: 'platform' },
+    ]);
+    lib._clearRootCache();
+    // From inside the member repo (no --ecosystem flag, no parent has
+    // ecosystem.json), CLI must walk siblings to find the ecosystem root.
+    const r = runCli(['ecosystem', 'status'], { cwd: memberDir });
+    assert.equal(r.status, 0, `stderr: ${r.stderr}`);
+    assert.match(r.stdout, /Ecosystem: demo/);
+  } finally {
+    rmrf(tmp);
+  }
+});

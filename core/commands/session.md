@@ -66,7 +66,13 @@ $MOMENTUM_SCRIPTS/session-append.sh log "<message>" "<optional-context>"
 ## Idempotency / safety
 
 - Multiple `/session log` calls in the same minute produce multiple
-  lines — each invocation is its own atomic append.
+  lines. Concurrent writes (a `/session log` plus a `git commit` hook
+  in another member repo at the same instant) are serialized via a
+  per-session-file `mkdir` lock (Phase 10 / BUG-004). ~5s acquisition
+  budget; on timeout the event is dropped rather than risking
+  corruption.
+- The walk-up that locates the ecosystem root honors the
+  `MOMENTUM_MAX_PARENT_WALK` env var (default 5).
 - Outside an ecosystem the helper silently no-ops, so harmless to
   invoke speculatively.
 - The session log is gitignore-free (committed) but `.state/` is not —

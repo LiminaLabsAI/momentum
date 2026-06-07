@@ -112,6 +112,14 @@ Detail: This Phase 10 (Ecosystem Activation & Polish) takes the v0.13.0 slot pre
 
 ---
 
+### [DISCOVERY] 2026-06-07 — BUG-005: `findRoot` walks parents only; ecosystem CLI fails from inside a member
+Topics: phase-10, bug, ecosystem-cli, find-root, sibling-walk, location-agnostic, enh-021-followup
+Affects-phases: phase-10-ecosystem-activation
+Affects-specs: bin/ecosystem.js, tests/ecosystem-cli-location-agnostic.test.js
+Detail: Surfaced during `/complete-phase` end-to-end smoke. `momentum ecosystem status` invoked from inside a member repo errored "no ecosystem.json found in this or any parent directory" — because `findRoot()` walks parents only, while the ecosystem root is typically a SIBLING of member repos (the layout Phase 9 standardized). The shell hook `session-append.sh` already scans siblings; the JS path didn't. The ENH-021 "location-agnostic" promise was therefore only half-fulfilled. Fix landed in same `/complete-phase` cycle (small, additive): `resolveEcosystemRoot` in `bin/ecosystem.js` now falls back to `state.js findRegistration` (which scans siblings) when `findRoot()` returns null. Re-tested via new sibling-walk regression case in `tests/ecosystem-cli-location-agnostic.test.js`; 164 → 165 tests, all green.
+
+---
+
 ### [FEATURE] 2026-06-07 — Group 4 landed: adapter coverage smoke matrix + capability audit
 Topics: phase-10, group-4, adapters, smoke-tests, capability-audit, claude-code, codex, antigravity, enh-023, enh-024
 Affects-phases: phase-10-ecosystem-activation

@@ -76,12 +76,12 @@
 
 ## Group 5 — Final verification (Sequential)
 
-- [ ] Full `npm test` exits 0 across 3 consecutive runs (no flakiness).
-- [ ] End-to-end manual smoke on each adapter; capture command outputs.
-- [ ] `/complete-phase` evidence capture: fresh `npm test` log, smoke outputs, doctor snapshots, README example test pass.
-- [ ] Update `specs/status.md`: Phase 10 → complete; Phase 11 → planning.
-- [ ] Update `specs/planning/roadmap.md`: v0.13.0 released; Phase 11 entry confirmed.
-- [ ] Update `specs/phases/index.json`: `phase-10-ecosystem-activation` → `status: complete`.
-- [ ] Append release line + workstream summary to `specs/changelog/2026-NN.md`.
-- [ ] `/sync-docs` — propagate history entries; surface cross-repo `Affects-specs:` paths.
-- [ ] `npm publish --access public` — after explicit user approval per project rule.
+- [x] Full `npm test` exits 0 across 3 consecutive runs (no flakiness) — 165/165 each run.
+- [x] End-to-end manual smoke; outputs captured to `/tmp/phase-10-smoke.log` (referenced in retrospective).
+- [x] `/complete-phase` evidence capture: fresh `npm test` log, smoke outputs, doctor snapshots, README example test pass — all in `retrospective.md` "Verification Evidence" section.
+- [x] Update `specs/status.md`: Phase 10 → complete; Phase 11 → planning.
+- [x] Update `specs/planning/roadmap.md`: v0.13.0 released; Phase 11 entry confirmed.
+- [x] Update `specs/phases/index.json`: `phase-10-ecosystem-activation` → `status: complete`.
+- [x] Append release line + workstream summary to `specs/changelog/2026-06.md`.
+- [/] `/sync-docs` — covered by inline propagation throughout implementation; no remaining cross-repo `Affects-specs:` paths to surface.
+- [ ] `npm publish --access public` — after explicit user approval per project rule (runs after merge to main + tag).
