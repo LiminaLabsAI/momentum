@@ -45,7 +45,7 @@
       "topics": ["phase-7c", "autonomous-execution", "tdd", "rule-13", "retry-budget", "antigravity", "systematic-debug", "subagent"]
     },
     "phase-9-ecosystem-tier1": {
-      "status": "not-started",
+      "status": "in-progress",
       "topics": ["phase-9", "ecosystem", "multi-repo", "cross-repo", "manifest", "initiative", "session-log", "track", "post-tool-use-hook", "additive", "tier-1"]
     }
   }
