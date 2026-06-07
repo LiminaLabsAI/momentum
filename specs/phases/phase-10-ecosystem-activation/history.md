@@ -112,6 +112,14 @@ Detail: This Phase 10 (Ecosystem Activation & Polish) takes the v0.13.0 slot pre
 
 ---
 
+### [FEATURE] 2026-06-07 — Group 3 landed: product positioning README rewrite + onboarding clarity
+Topics: phase-10, group-3, docs, readme, positioning, decision-tree, onboarding, supported-agents-matrix
+Affects-phases: phase-10-ecosystem-activation
+Affects-specs: README.md, core/specs-templates/specs/architecture/ecosystem.md, tests/readme-examples.test.js
+Detail: Group 3 (parallel with G1/G2) landed. Full README rewrite from the v0.4-era "single-project + Claude Code" framing to the current product story: tagline ("agent-agnostic, specs-driven development framework"); 4-row "Which scale are you?" decision tree at the top mapping use case → command → docs link; supported-agents matrix (Claude Code / Codex / Antigravity shipped; Cursor / Gemini CLI planned); side-by-side single-project + ecosystem quickstarts with file-tree diagrams; architecture one-pager showing core/ + adapters/ overlay; commands organized by purpose (planning / execution / ecosystem / maintenance) instead of alphabetically; full CLI reference table; install paths; "How it works (90 seconds)" closing. Hard invariant restated up front: single-project usage stays identical when no flags are passed. **Template architecture/ecosystem.md** gains a "When to use ecosystem mode" decision tree at the top mirroring the README — propagates to every momentum-installed project from v0.13.0. **`tests/readme-examples.test.js`** structural sanity checks: every `momentum ...` token in the README dispatches to a known CLI command (catches typos / stale flags); single-project quickstart actually works against local source; ecosystem quickstart (init --ecosystem → init + join) sequences end-to-end; --help surface mentions every documented flag; MOMENTUM_MAX_PARENT_WALK env var is both documented AND honored. Tests: 152 → 157, all green.
+
+---
+
 ### [FEATURE] 2026-06-07 — Group 1 landed: ecosystem entry/exit commands
 Topics: phase-10, group-1, cli, join, leave, doctor, init-ecosystem, auto-detect, single-project-invariant, realpath
 Affects-phases: phase-10-ecosystem-activation

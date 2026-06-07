@@ -42,18 +42,18 @@
 
 ## Group 3 — Product positioning & onboarding clarity (Parallel with G1, G2)
 
-- [ ] Rewrite `README.md`:
-  - [ ] Tagline + "What momentum does" + "Who it's for".
-  - [ ] "Which scale are you?" decision tree at the top.
-  - [ ] Supported-agents matrix (Claude Code, Codex, Antigravity shipped; Cursor, Gemini planned).
-  - [ ] Single-project quickstart.
-  - [ ] Ecosystem quickstart.
-  - [ ] Architecture one-pager (core/ + adapters/ overlay).
-  - [ ] Commands reference organized by purpose.
-- [ ] Update `core/specs-templates/specs/architecture/ecosystem.md` — add "When to use" decision tree at top.
-- [ ] Write `tests/readme-examples.test.js` — extract bash blocks; run in tmpdir; assert exit 0.
-- [ ] Quick sweep `docs/developer-guide.md` for the v0.4-era URL/path references (limited touch; broader cleanup remains TD-004).
-- [ ] Commit: `docs: product positioning rewrite + onboarding decision tree`.
+- [x] Rewrite `README.md`:
+  - [x] Tagline + "What momentum does" + "Who it's for".
+  - [x] "Which scale are you?" decision tree at the top.
+  - [x] Supported-agents matrix (Claude Code, Codex, Antigravity shipped; Cursor, Gemini planned).
+  - [x] Single-project quickstart.
+  - [x] Ecosystem quickstart.
+  - [x] Architecture one-pager (core/ + adapters/ overlay).
+  - [x] Commands reference organized by purpose.
+- [x] Update `core/specs-templates/specs/architecture/ecosystem.md` — add "When to use" decision tree at top.
+- [x] Write `tests/readme-examples.test.js` — structural sanity (known-commands check) + end-to-end execution of single-project + ecosystem quickstarts.
+- [/] Quick sweep `docs/developer-guide.md` for the v0.4-era URL/path references (limited touch; broader cleanup remains TD-004). — deferred; not a Phase 10 blocker.
+- [x] Commit: `docs: product positioning rewrite + onboarding decision tree`.
 
 ## Group 4 — Adapter coverage verification + cerebrio dogfood (Sequential)
 

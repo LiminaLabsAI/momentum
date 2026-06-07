@@ -6,6 +6,18 @@
 > contract; the runtime helpers live in the momentum package itself
 > at `core/ecosystem/`.
 
+## When to use ecosystem mode
+
+| You have… | Use mode | First command |
+|---|---|---|
+| One project | **Single-project** *(default)* | `momentum init` |
+| Several related projects working as one product | **Ecosystem** | `momentum init --ecosystem <name>` |
+| An existing momentum project that should join an existing ecosystem | **Ecosystem** *(join)* | `momentum join <ecosystem-path>` |
+| A member repo you want to detach from its ecosystem | **Standalone** *(leave)* | `momentum leave` |
+| Confusion about what state a repo is in | **Diagnostic** | `momentum doctor` |
+
+**Single-project usage is fully supported and is the default.** Ecosystem mode is strictly additive — when no ecosystem.json is reachable, every `momentum` and slash command behaves identically to single-project use. There is no cost to ignoring this entire document if you only have one project.
+
 ## What an ecosystem is
 
 A **momentum ecosystem** is a sibling git repo that coordinates a set
