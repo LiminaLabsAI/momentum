@@ -79,3 +79,27 @@ Affects-specs: core/ecosystem/schema/ecosystem.schema.json, core/ecosystem/schem
 Detail: Group 0 (contracts and on-disk layout) is complete. Wrote the two JSON Schemas (ecosystem manifest + initiative frontmatter), the on-disk layout reference doc, and a zero-dependency lib exposing findRoot/loadManifest/listMembers/findMember/validateManifest. validateManifest is a hand-rolled structural check that mirrors the JSON Schema; we keep momentum CLI dependency-free (no ajv/joi). Smoke-tested via inline node script: valid manifest accepted, malformed manifests yield typed-error lists; findRoot returns null outside an ecosystem. Existing 64-test suite green; no regressions.
 
 ---
+
+### [FEATURE] 2026-06-07 — Group 1 landed: momentum ecosystem CLI
+Topics: ecosystem, cli, init, add, remove, status, group-1
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: bin/ecosystem.js, bin/momentum.js
+Detail: `momentum ecosystem init/add/remove/status` shipped. init scaffolds a new ecosystem root (manifest, initiatives/, sessions/, .state/, README, .gitignore) and runs `git init` + initial commit. add registers a member, idempotent on re-run, injects a fenced one-line pointer into the target's CLAUDE.md/AGENTS.md, with pre-flight refusing non-momentum-installed targets. remove inverses both. status prints manifest + per-member git state; stderr from `git status` is now suppressed so non-git members show a clean "(not a git repo)" line. Verified end-to-end via tmpdir smoke test: init → add → idempotent re-add → status → remove cycle works; pointer block is correctly added/removed.
+
+---
+
+### [FEATURE] 2026-06-07 — Group 2 landed: initiative subsystem
+Topics: ecosystem, initiatives, slash-commands, group-2
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: core/commands/initiative.md, core/ecosystem/lib/initiative.js, core/ecosystem/templates/initiative-template.md
+Detail: Initiative subsystem complete. `core/ecosystem/lib/initiative.js` exposes parseFrontmatter / serializeFrontmatter / validateFrontmatter (hand-rolled minimal YAML parser — single-level scalars + inline arrays; zero deps), nextInitiativeId, initiativePath, loadInitiative, writeInitiative, setActive, getActive, clearActive. The slash-command recipe (`core/commands/initiative.md`) defines create / status / close / list with one-question-at-a-time prompts. Template at `core/ecosystem/templates/initiative-template.md` enforces fixed sections (Why / Per-repo contributions / Linked decisions / Deploy chronology / Close).
+
+---
+
+### [FEATURE] 2026-06-07 — Group 3 landed: auto session-log via hook
+Topics: ecosystem, session-log, hook, post-tool-use, group-3
+Affects-phases: phase-9-ecosystem-tier1
+Affects-specs: core/ecosystem/scripts/session-append.sh, core/scripts/check-history-reminder.sh, bin/momentum.js
+Detail: Auto session-logging works end-to-end. session-append.sh (pure bash + python3 for JSON) locates the ecosystem root via bounded walk-up looking at sibling directories for ecosystem.json, resolves the member id by matching realpath($PWD) against manifest.members[].path, and atomically appends a one-line entry to sessions/YYYY-MM-DD.md. First write of the day prepends a header line plus the active initiative banner when set. The existing PostToolUse hook (check-history-reminder.sh) now reads tool_name + tool_input.command, detects `git commit` and `gh pr {merge,create}` Bash invocations, and invokes session-append. Init+upgrade both ship the helper alongside the hook. Smoke test: two consecutive commits in a registered member repo produce two appended lines under the correct header; running the hook outside any ecosystem is a silent no-op.
+
+---

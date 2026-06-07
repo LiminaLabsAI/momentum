@@ -326,6 +326,13 @@ function init(targetDir, agent) {
   const hookDest = path.join(target, ...dests.scripts, 'check-history-reminder.sh');
   copyFile(hookSrc, hookDest);
   fs.chmodSync(hookDest, 0o755);
+  // Phase 9 — ecosystem session-append helper, sourced by the hook above.
+  const sessionSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
+  if (fs.existsSync(sessionSrc)) {
+    const sessionDest = path.join(target, ...dests.scripts, 'session-append.sh');
+    copyFile(sessionSrc, sessionDest);
+    fs.chmodSync(sessionDest, 0o755);
+  }
 
   // core/engines/
   console.log('→ Installing execution engines...');
@@ -416,6 +423,13 @@ function upgrade(targetDir, agent) {
     path.join(target, ...dests.scripts),
     upgradeOpts
   );
+  // Phase 9 — ecosystem session-append helper lives outside core/scripts/
+  // (it belongs to the ecosystem subsystem) but ships alongside the hook.
+  const sessionUpgradeSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
+  if (fs.existsSync(sessionUpgradeSrc)) {
+    const sessionUpgradeDest = path.join(target, ...dests.scripts, 'session-append.sh');
+    copyFile(sessionUpgradeSrc, sessionUpgradeDest);
+  }
   // Re-apply executable bit to all .sh scripts
   const scriptsDir = path.join(target, ...dests.scripts);
   if (fs.existsSync(scriptsDir)) {
@@ -530,6 +544,8 @@ Usage:
                                       (defaults to current directory)
   momentum upgrade [target-dir]       Upgrade momentum files in an existing project
                                       (defaults to current directory)
+  momentum ecosystem <sub> [...]      Multi-repo coordination (Phase 9, Tier 1)
+                                      Subcommands: init | add | remove | status
 
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
@@ -588,6 +604,14 @@ async function main() {
     const targetDir = args[1] || process.cwd();
     try {
       upgrade(targetDir, agent);
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'ecosystem') {
+    try {
+      const { runEcosystem } = require('./ecosystem');
+      runEcosystem(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

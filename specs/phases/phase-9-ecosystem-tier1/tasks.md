@@ -7,25 +7,26 @@
   - `[x]` Implement `core/ecosystem/lib/index.js` (`loadManifest`, `findRoot`, `listMembers`, `findMember`, `validateManifest`)
   - `[x]` Bounded-walk + caching for `findRoot` (max 5 parents)
 
-- `[ ]` **Group 1 — Manifest CLI**
-  - `[ ]` `bin/commands/ecosystem.js` with `init / add / remove / status`
-  - `[ ]` Register `ecosystem` in `bin/momentum.js`
-  - `[ ]` Idempotent fenced pointer write in target CLAUDE.md
-  - `[ ]` Pre-flight: target must be momentum-installed
-  - `[ ]` `init` runs `git init` and produces initial commit
+- `[x]` **Group 1 — Manifest CLI**
+  - `[x]` `bin/ecosystem.js` with `init / add / remove / status`
+  - `[x]` Register `ecosystem` in `bin/momentum.js`
+  - `[x]` Idempotent fenced pointer write in target CLAUDE.md
+  - `[x]` Pre-flight: target must be momentum-installed
+  - `[x]` `init` runs `git init` and produces initial commit
 
-- `[ ]` **Group 2 — Initiative Subsystem**
-  - `[ ]` `core/commands/initiative.md` recipe (create / status / close)
-  - `[ ]` `core/ecosystem/lib/initiative.js` (numbering, load, write, set/get-active)
-  - `[ ]` `core/ecosystem/templates/initiative-template.md`
-  - `[ ]` Frontmatter validation against schema
+- `[x]` **Group 2 — Initiative Subsystem**
+  - `[x]` `core/commands/initiative.md` recipe (create / status / close / list)
+  - `[x]` `core/ecosystem/lib/initiative.js` (numbering, load, write, set/get-active, frontmatter parse/serialize, validation)
+  - `[x]` `core/ecosystem/templates/initiative-template.md`
+  - `[x]` Frontmatter validation against schema
 
-- `[ ]` **Group 3 — Session Log & Hook**
-  - `[ ]` `core/ecosystem/scripts/session-append.sh` (pure shell)
-  - `[ ]` Extend `core/scripts/check-history-reminder.sh` to source it
-  - `[ ]` Detect commit / PR / deploy events (commit first; PR + deploy v0.12.x cleanup)
-  - `[ ]` Header injection on first write of the day
-  - `[ ]` Silent no-op when no ecosystem root
+- `[x]` **Group 3 — Session Log & Hook**
+  - `[x]` `core/ecosystem/scripts/session-append.sh` (pure shell)
+  - `[x]` Extend `core/scripts/check-history-reminder.sh` to source it
+  - `[x]` Detect commit + `gh pr` events
+  - `[x]` Header injection on first write of the day (with active initiative banner)
+  - `[x]` Silent no-op when no ecosystem root
+  - `[x]` `init` + `upgrade` ship the session-append helper alongside the hook
 
 - `[ ]` **Group 4 — `/track` Aggregation + Slash Commands**
   - `[ ]` Extend `core/commands/track.md` for ecosystem mode
