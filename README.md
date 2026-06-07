@@ -209,6 +209,70 @@ Organized by purpose. All commands are agent-agnostic markdown recipes the agent
 
 ---
 
+## Orchestration (ecosystem mode)
+
+When you're in an ecosystem and need to work across member repos from one agent session, momentum gives you three primitives. Three doors into one shared library — slash commands inside the agent (Claude Code, Codex), natural-language inference when you describe a task without naming the primitive, and `momentum <verb>` from the terminal (works on every adapter, including Antigravity).
+
+| Primitive | What it does | Typical use |
+|---|---|---|
+| `scout <repo>` | Read-only context fetch from one ecosystem member | "What's the current auth shape in `sapience`?" |
+| `dispatch <r1> <r2> ...` | Parallel fan-out + synthesis across multiple members | "Audit `X-Cerebrio-Auth` usage across the stack" |
+| `handoff <repo>` | Cross-session control transfer with a structured context block | "I'm done in `sapience` — pick up in `frontend`" |
+
+**End-to-end examples:**
+
+```bash
+# Scout before changing — read sapience without leaving your frontend session
+momentum scout sapience "auth endpoint shape"
+# → ▸ scout sapience: auth endpoint shape
+# → ▸ reading specs/status.md, specs/architecture/...
+# → ▸ Summary: POST /core/auth/v1/login (totp_code, 401, 423)
+# → logged to sessions/<today>.md, trace at .momentum/runs/scout-001.md
+
+# Dispatch — fan out across 4 repos
+momentum dispatch sapience frontend py cli --prompt "audit X-Cerebrio-Auth header usage"
+# → ▸ dispatch 4 repos in parallel ...
+# → ▸ Synthesis: 19 call sites total; rename safe with 3 caveats ...
+
+# Handoff — write a context block for the receiving repo
+momentum handoff frontend --summary "wire X-CB-Auth rename to LoginForm" \
+  --decision "Renamed header" --file core/auth/login.ts \
+  --verify "npm test" --question "back-compat shim?"
+# → writes .momentum/inbox/handoff-001.md in frontend
+# → emits [DECISION] in sapience phase history
+# Next agent session in frontend gets greeted by the SessionStart hook:
+# → ▸ 1 pending handoff: handoff-001 from sapience — Read now? [y/skip]
+momentum continue   # picks up the oldest pending
+```
+
+### Pick your door
+
+- **Slash command** (Claude Code, Codex): `/scout`, `/dispatch`, `/handoff`, `/continue` — predictable, in-context.
+- **Natural language** (any adapter): describe the task in prose; the agent infers the primitive ("inferred: scout (single repo, read-only)").
+- **CLI** (every adapter, scripts, CI): `momentum scout`, `momentum dispatch`, `momentum handoff`, `momentum continue` — universal floor, scriptable.
+
+All three doors call into `core/orchestration/` so the output shape is identical.
+
+### Capability-driven routing
+
+Some adapters don't yet support all surfaces. The router degrades gracefully and **labels the degraded mode up front** so you're never silently slower:
+
+| Adapter | Slash commands | Parallel sub-agents (`dispatch`) | SessionStart auto-greet |
+|---|---|---|---|
+| Claude Code | ✅ | ✅ | ✅ |
+| Codex | ✅ | sequential (pending live validation) | ✅ |
+| Antigravity | ❌ chat-driven | ✅ | ❌ banner via instruction text |
+
+When you run `momentum dispatch` on a sequential-only adapter, you'll see `▸ note: this adapter does not declare parallel subagents — running sequentially`. The output shape is identical to parallel mode.
+
+### Tracking contract — "auto when meaningful, never noise"
+
+- **Cheap layer (always auto):** one line in the ecosystem session log per primitive invocation; a structured `.momentum/runs/<primitive>-NNN.md` artifact; handoff inbox file in the receiving repo.
+- **Curated layer (auto when meaningful):** `[DISCOVERY]` in the scouted / per-repo active phase `history.md` when a finding meets Rule 3 thresholds (real bug, real tech debt, real enhancement); `[NOTE]` in the originating phase history for dispatch syntheses; `[DECISION]` in the originating phase history for every handoff. **No new entry types** — orchestration plugs into existing `[DISCOVERY]` / `[DECISION]` / `[NOTE]`.
+- **Never auto:** `backlog.md` writes. Tracking proposes; you confirm.
+
+---
+
 ## CLI reference
 
 ```
@@ -218,6 +282,10 @@ momentum join <ecosystem-path>
 momentum leave
 momentum doctor
 momentum ecosystem <init | add | remove | status> [...]
+momentum scout <repo> "<prompt>"
+momentum dispatch <r1> [r2 ...] --prompt "<text>" [--sequential]
+momentum handoff <repo> [--summary "<text>"] [--decision "..."]* [--file "..."]* [--verify "..."]* [--question "..."]*
+momentum continue [--handoff <id>]
 ```
 
 **Notable flags:**

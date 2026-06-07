@@ -118,4 +118,111 @@ function runAdapterSmoke(agent, env) {
   }
 }
 
-module.exports = { runAdapterSmoke };
+/**
+ * Phase 11 G5 — orchestration smoke for a given adapter. Exercises
+ * the three orchestration primitives (scout, dispatch, handoff) via
+ * the CLI floor — the universal door that works on every adapter.
+ *
+ * Slash-command presence (where the adapter supports them) is asserted
+ * separately. Antigravity passes the same scenario via CLI; its slash-
+ * command assertions are skipped per `env.slashCommandsExpected`.
+ *
+ * @param {string} agent
+ * @param {object} env
+ * @param {string} env.primary                primary instruction filename
+ * @param {string[]} [env.commandsDir]        slash-commands dir components
+ * @param {boolean} env.slashCommandsExpected whether to assert /scout, /dispatch, /handoff, /continue overlay files
+ */
+function runOrchestrationSmoke(agent, env) {
+  const tmp = mktmp(`momentum-orch-${agent}-`);
+  try {
+    // Build a 3-member fixture ecosystem with the right adapter installed.
+    const ecoRoot = path.join(tmp, `${agent}-orch-eco`);
+    fs.mkdirSync(ecoRoot, { recursive: true });
+    fs.writeFileSync(path.join(ecoRoot, 'ecosystem.json'), JSON.stringify({
+      name: `${agent}-orch-eco`,
+      version: 1,
+      members: [
+        { id: 'a', path: 'a', role: 'other' },
+        { id: 'b', path: 'b', role: 'other' },
+        { id: 'c', path: 'c', role: 'other' },
+      ],
+    }, null, 2));
+
+    for (const name of ['a', 'b', 'c']) {
+      const repo = path.join(ecoRoot, name);
+      fs.mkdirSync(repo, { recursive: true });
+      lib._clearRootCache();
+      const r = runCli(['init', '--agent', agent, '--no-ecosystem'], { cwd: repo });
+      assert.equal(r.status, 0, `[${agent}] init for member ${name} failed: ${r.stderr}`);
+      // Override status.md so scout has interesting content per-repo.
+      fs.writeFileSync(
+        path.join(repo, 'specs', 'status.md'),
+        `# ${name} status\n\nAuth header: X-Cerebrio-Auth\nEndpoint: POST /core/auth/v1/login (in ${name})\n`,
+      );
+    }
+
+    // If the adapter ships slash commands, assert overlay files exist.
+    if (env.slashCommandsExpected) {
+      for (const cmd of ['scout', 'dispatch', 'handoff', 'continue']) {
+        assert.ok(
+          fs.existsSync(path.join(ecoRoot, 'a', ...env.commandsDir, `${cmd}.md`)),
+          `[${agent}] slash command overlay missing: ${env.commandsDir.join('/')}/${cmd}.md`,
+        );
+      }
+    }
+
+    const a = path.join(ecoRoot, 'a');
+    const b = path.join(ecoRoot, 'b');
+    const c = path.join(ecoRoot, 'c');
+
+    // ── scoutSingle ────────────────────────────────────────────────────
+    lib._clearRootCache();
+    let r = runCli(['scout', 'b', 'auth header'], { cwd: a });
+    assert.equal(r.status, 0, `[${agent}] scout failed: ${r.stderr}`);
+    const scoutArtifacts = fs.readdirSync(path.join(a, '.momentum', 'runs'))
+      .filter((f) => f.startsWith('scout-'));
+    assert.equal(scoutArtifacts.length, 1, `[${agent}] expected one scout artifact`);
+
+    // ── dispatchFanout ─────────────────────────────────────────────────
+    lib._clearRootCache();
+    r = runCli(['dispatch', 'a', 'b', 'c', '--prompt', 'audit header'], { cwd: a });
+    assert.equal(r.status, 0, `[${agent}] dispatch failed: ${r.stderr}`);
+    const dispatchArtifacts = fs.readdirSync(path.join(a, '.momentum', 'runs'))
+      .filter((f) => f.startsWith('dispatch-'));
+    assert.equal(dispatchArtifacts.length, 1, `[${agent}] expected one dispatch artifact`);
+
+    // ── handoffRoundtrip ───────────────────────────────────────────────
+    lib._clearRootCache();
+    r = runCli(['handoff', 'b', '--summary', 'continue the audit in b'], { cwd: a });
+    assert.equal(r.status, 0, `[${agent}] handoff failed: ${r.stderr}`);
+    assert.ok(
+      fs.existsSync(path.join(b, '.momentum', 'inbox', 'handoff-001.md')),
+      `[${agent}] inbox file not written`,
+    );
+
+    lib._clearRootCache();
+    r = runCli(['continue'], { cwd: b });
+    assert.equal(r.status, 0, `[${agent}] continue failed: ${r.stderr}`);
+    assert.match(r.stdout, /picking up handoff-001 from a/);
+    assert.ok(
+      fs.existsSync(path.join(b, '.momentum', 'inbox', 'read', 'handoff-001.md')),
+      `[${agent}] inbox file not moved to read/ after continue`,
+    );
+
+    // Session log shows all three primitives — proof the cheap layer
+    // wires through identically on each adapter.
+    const sessionsDir = path.join(ecoRoot, 'sessions');
+    assert.ok(fs.existsSync(sessionsDir), `[${agent}] sessions dir missing`);
+    const sessionFiles = fs.readdirSync(sessionsDir);
+    assert.equal(sessionFiles.length, 1, `[${agent}] expected one session file`);
+    const log = fs.readFileSync(path.join(sessionsDir, sessionFiles[0]), 'utf8');
+    assert.match(log, /\[a\] scout:/, `[${agent}] session log missing scout entry`);
+    assert.match(log, /\[a\] dispatch:/, `[${agent}] session log missing dispatch entry`);
+    assert.match(log, /\[a\] handoff:/, `[${agent}] session log missing handoff entry`);
+  } finally {
+    rmrf(tmp);
+  }
+}
+
+module.exports = { runAdapterSmoke, runOrchestrationSmoke };

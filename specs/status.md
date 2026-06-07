@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 11 — Dynamic Orchestration & Context Handover (`in progress — Group 0`)
-> **Latest Release**: v0.13.0 — Ecosystem Activation & Polish
+> **Current Phase**: Phase 11 — Dynamic Orchestration & Context Handover (`implementation complete — pending /complete-phase + release`)
+> **Latest Release**: v0.13.0 — Ecosystem Activation & Polish (v0.14.0 staged on branch `phase-11-orchestration-handover`)
 > **Health**: On Track
 
 ## Summary
@@ -32,7 +32,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 11 | Dynamic Orchestration & Context Handover | In Progress — Group 0 | Started 2026-06-07 on branch `phase-11-orchestration-handover`. Six groups: **G0 foundations + capability flag cleanup (active)** → (G1 scout + G2 dispatch + G3 handoff in parallel) → G4 tracking contract integration → G5 per-adapter smoke + docs. Three invocation doors (slash + NL inference + CLI) over one shared `core/orchestration/` library. Live narration + persistent log. Tracking contract: cheap layer always auto, curated layer auto-if-meaningful, no new history entry types. ENH-023 + ENH-024 ride this phase in G0. Target v0.14.0. |
+| 11 | Dynamic Orchestration & Context Handover | Implementation complete | All six groups landed on branch `phase-11-orchestration-handover`. **G0** (foundations + ENH-023/024 capability flag unification), **G1** (scout), **G2** (dispatch), **G3** (handoff + SessionStart hook), **G4** (tracking contract — meaningful-only history writes), **G5** (per-adapter smoke matrix extended, README orchestration section, ecosystem.md template updated, tarball test extended, version bumped to 0.14.0). Tests: 165 baseline → 246 green (+81, no flakes). Pending: `/sync-docs`, `/complete-phase`, user-approved merge to staging + main, user-approved `npm publish --access public`, tag v0.14.0. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
