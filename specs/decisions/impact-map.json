@@ -189,6 +189,60 @@
       "files": [
         {"path": "specs/planning/roadmap.md", "section": "Phase 7"}
       ]
+    },
+    "ecosystem": {
+      "files": [
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"},
+        {"path": "README.md", "section": "Ecosystems"},
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What an ecosystem is"}
+      ]
+    },
+    "multi-repo": {
+      "files": [
+        {"path": "README.md", "section": "Ecosystems"},
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What an ecosystem is"}
+      ]
+    },
+    "cross-repo": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What stays per-repo (unchanged)"},
+        {"path": "README.md", "section": "Ecosystems"}
+      ]
+    },
+    "initiative": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "Initiatives"},
+        {"path": "core/commands/initiative.md", "section": "Subcommands"}
+      ]
+    },
+    "session-log": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "Session log"},
+        {"path": "core/commands/session.md", "section": "Usage"}
+      ]
+    },
+    "manifest": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "Layout"},
+        {"path": "core/ecosystem/schema/ecosystem.schema.json", "section": null}
+      ]
+    },
+    "post-tool-use-hook": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "Session log"},
+        {"path": "core/scripts/check-history-reminder.sh", "section": null}
+      ]
+    },
+    "tier-1": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What's NOT in Tier 1"}
+      ]
+    },
+    "tier-2": {
+      "files": [
+        {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What's NOT in Tier 1"},
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"}
+      ]
     }
   }
 }
