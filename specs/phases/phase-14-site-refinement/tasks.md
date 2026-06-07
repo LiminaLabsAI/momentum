@@ -67,21 +67,22 @@
 
 ## Group 4 — Ecosystem ↔ Orchestration clarity (Parallel with G1, G2, G3, G5)
 
-- [ ] NEW `site/src/components/diagrams/StateActionLayers.astro` — pure SVG + brand tokens
-- [ ] StateActionLayers — top half ACTION layer (4 verb cards: scout/dispatch/handoff/continue)
-- [ ] StateActionLayers — bottom half STATE layer (ecosystem.json + initiatives + sessions + pointer blocks surface)
-- [ ] StateActionLayers — connecting arrows from verbs down to state
-- [ ] StateActionLayers — eyebrow text "ACTION LAYER" / "STATE LAYER" in monospace slate-500
-- [ ] StateActionLayers — mobile: collapses to single-column
-- [ ] `OrchestrationShowcase.astro` restructure — outer heading "Work across multiple projects"
-- [ ] OrchestrationShowcase — sub-feature 1: "Ecosystem mode — the state layer" with link to `/ecosystem/`
-- [ ] OrchestrationShowcase — sub-feature 2: "Orchestration — the action layer" with 4-primitive grid
-- [ ] OrchestrationShowcase — embed `<StateActionLayers />` between the two sub-features
-- [ ] `ecosystem.mdx` intro (first 2 paragraphs) rewritten — leads with "state layer for multi-project work" + cross-link to `/orchestration/`
-- [ ] `orchestration.md` intro (first 2 paragraphs) rewritten — leads with "action layer for multi-project work" + cross-link to `/ecosystem/`
-- [ ] `concepts.md` Ecosystem mode section — add "How they relate" subsection with state/action split + dual cross-links
-- [ ] Both deep pages cross-reference each other in intro AND closer "See also" blocks
-- [ ] Smoke build green
+- [x] NEW `site/src/components/diagrams/StateActionLayers.astro` — pure SVG + brand tokens, 800x440 viewBox
+- [x] StateActionLayers — top half ACTION layer (4 verb cards: scout/dispatch/handoff/continue) with eyebrow "ACTION LAYER · ORCHESTRATION"
+- [x] StateActionLayers — bottom half STATE layer (4 chips: ecosystem.json / initiatives/ / sessions/ / pointer blocks) on accent-tinted surface with eyebrow "STATE LAYER · ECOSYSTEM MODE"
+- [x] StateActionLayers — dashed arrows from each verb down to corresponding state chip with arrow markers
+- [x] StateActionLayers — "reads + writes" pill in the gap between layers
+- [x] StateActionLayers — caption below diagram summarizing the relationship
+- [x] StateActionLayers — mobile responsive via SVG width:100% (auto-scales)
+- [x] `OrchestrationShowcase.astro` restructure — outer h2 "Work across multiple projects"
+- [x] OrchestrationShowcase — sub-feature 1 article: "State layer · Ecosystem mode" with link to `/ecosystem/`
+- [x] OrchestrationShowcase — `<StateActionLayers />` embedded between sub-features
+- [x] OrchestrationShowcase — sub-feature 2 article: "Action layer · Orchestration primitives" leading the 4-primitive grid
+- [x] `ecosystem.mdx` intro rewritten — leads with "**state layer** for multi-project work" + cross-link to `/orchestration/` + pair-not-alternatives framing
+- [x] `orchestration.md` intro rewritten — leads with "**action layer** for multi-project work" + cross-link to `/ecosystem/` + pair-not-alternatives framing
+- [x] `concepts.md` Ecosystem section — NEW "How they relate" subsection explaining state/action split with dual cross-links
+- [x] Verified: 5 `/orchestration/` cross-links on ecosystem page; 4 `/ecosystem/` cross-links on orchestration page
+- [x] Smoke build green: 11 pages, StateActionLayers rendered with both eyebrow labels in dist/index.html
 - [ ] Commit Group 4: `feat(site): ecosystem ↔ orchestration as state layer + action layer + new diagram`
 
 ## Group 5 — New logo + identity asset refresh (Parallel with G1, G2, G3, G4)

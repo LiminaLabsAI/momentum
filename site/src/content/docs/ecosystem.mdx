@@ -5,10 +5,17 @@ description: Coordinate work across multiple related projects from a single agen
 
 import EcosystemTopology from '../../components/diagrams/EcosystemTopology.astro';
 
+Ecosystem mode is the **state layer** for multi-project work — the durable
+record that **[Orchestration](/orchestration/)** primitives (the action
+layer) read and write. Together they form the canonical multi-project
+pattern. Ecosystem mode without orchestration is just bookkeeping;
+orchestration without ecosystem mode is action with no record. You'll
+typically reach for both.
+
 Single-project momentum is the default. When you have multiple related
 projects that need to coordinate — a platform + SDK + CLI, or a frontend +
-backend + infra — **ecosystem mode** lets one agent session work across all
-of them while preserving per-project tracking discipline.
+backend + infra — ecosystem mode lets **one agent session work across all
+of them** while preserving every project's per-project tracking discipline.
 
 **Hard invariant**: a project running `momentum init` without `--ecosystem`
 sees zero difference from before ecosystem mode existed. Ecosystem mode is

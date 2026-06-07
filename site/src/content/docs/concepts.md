@@ -233,14 +233,27 @@ The optional layer for cross-project coordination. When you have multiple
 related projects, ecosystem mode adds:
 
 - A shared **ecosystem manifest** (`ecosystem.json`)
-- **Initiatives** — features that span multiple repos
+- **Initiatives** — features that span multiple projects
 - A **daily session log** — auto-appended on commits / PRs across members
-- **Orchestration primitives** — `scout` / `dispatch` / `handoff` / `continue`
+- Hard invariant: single-project usage is unchanged.
 
-Single-project usage is the default and unchanged. Ecosystem mode is purely
-additive.
+### How they relate — ecosystem mode + orchestration
 
-**[Read the ecosystem deep dive →](/ecosystem/)**
+These two are a **pair**, not alternatives:
+
+- **Ecosystem mode = STATE layer.** The durable record: manifest,
+  initiatives, sessions, pointer blocks. Nouns. What the agent reads
+  and writes.
+- **Orchestration = ACTION layer.** Four verbs the agent composes:
+  `scout` / `dispatch` / `handoff` / `continue`. What the agent
+  *does* across projects.
+
+Orchestration verbs read and write ecosystem state. Ecosystem state
+gives orchestration something durable to point at. Either alone is
+half the pattern — ecosystem without orchestration is bookkeeping;
+orchestration without ecosystem is action with no record.
+
+**Deep dives:** [Ecosystem mode](/ecosystem/) · [Orchestration](/orchestration/)
 
 ## How they fit together
 

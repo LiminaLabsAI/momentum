@@ -1,18 +1,26 @@
 ---
 title: Orchestration
-description: scout, dispatch, handoff, continue — primitives the main agent composes per task to work across multiple repos in one session.
+description: scout, dispatch, handoff, continue — the action layer for multi-project work. Four verbs the main agent composes per task.
 ---
 
-When you work across multiple related projects, you don't want N parallel agent
-sessions losing track of each other. You want **one agent session that can
-reach into other repos when it needs to** — read state without opening a
-session there, fan out work in parallel, hand off control with full context.
+Orchestration is the **action layer** for multi-project work. Four verbs
+the agent composes per task — `scout`, `dispatch`, `handoff`, `continue`.
+They read and write the durable state that **[Ecosystem mode](/ecosystem/)**
+provides; together, the two layers form the canonical multi-project
+pattern (each pointless without the other — actions with no record turn
+into vapor; records with no actions are just bookkeeping).
 
-momentum ships four **orchestration primitives** for exactly that. They are
-**primitives the main agent composes per task — not a pipeline.** Some tasks
-need just a single `scout`. Others need a parallel `dispatch` across five
-repos. Some end in a `handoff` to another machine or session for the
-implementation. The primitives are the verbs; your agent picks the sentence.
+When you work across multiple related projects, you don't want N parallel
+agent sessions losing track of each other. You want **one agent session
+that can reach into other projects when it needs to** — read state without
+opening a session there, fan out work in parallel, hand off control with
+full context. The four primitives are the verbs; your agent picks the
+sentence. Some tasks need just a single `scout`. Others need a parallel
+`dispatch` across five projects. Some end in a `handoff` to another
+machine or session for the implementation.
+
+momentum ships these as **primitives the main agent composes per task —
+not a pipeline.**
 
 ```mermaid
 flowchart LR
