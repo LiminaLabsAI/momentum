@@ -35,16 +35,18 @@
 
 ## Group 2 — Positioning pivot (Parallel with G1, G3, G4, G5)
 
-- [ ] `index.mdx` lead block rewritten — "state layer for agentic AI" framing
-- [ ] `about.md` "Why momentum exists" rewritten — broader examples (infra / research / ops, coding as concrete-today)
-- [ ] `about.md` "A note on positioning" updated — wider agentic AI scope acknowledged
-- [ ] `concepts.md` tone pass — "AI-assisted coding" → "agentic AI" throughout
-- [ ] `getting-started.md` intro signals breadth — one-line acknowledgment that the loop works for non-coding agents
-- [ ] `faq.md` — NEW Q&A: "Can I use momentum for non-coding agents (DevOps, research, data agents)?"
-- [ ] `Personas.astro` copy refresh — 3 personas (Solo / Tech lead / PM) language updated; no 4th persona
-- [ ] `OrchestrationShowcase.astro` / `RulesCallout.astro` / `SkillsPreview.astro` — "your AI coding agent" → "your agent" where applicable
-- [ ] Site-wide audit: `grep -ri "AI-assisted coding\|AI coding agent\|coding agent\|just for coding"` in `site/src/content/docs/` returns 0 hits (apart from historical-quote contexts)
-- [ ] Smoke build green
+- [x] `index.mdx` lead block rewritten — "state layer for agentic AI" framing + coding/infra/research/pipelines scope mention
+- [x] `about.md` "Why momentum exists" rewritten — "agentic AI" replaces "AI-assisted coding"; examples broadened to infra / research / data pipelines
+- [/] `about.md` "A note on positioning" already aligned (will absorb terminology shift in Group 3)
+- [x] `concepts.md` tone pass — "AI-assisted coding" → "Agentic AI work"
+- [x] `getting-started.md` intro signals breadth — "open-source state layer for agentic AI"; one-paragraph callout that the loop applies to infra / research / data agents
+- [x] `faq.md` — NEW Q&A: "Can I use momentum for non-coding agents (DevOps, research, data)?" with 3 concrete examples (infra agents, research agents, data-pipeline agents)
+- [x] `Personas.astro` copy refresh — 3 personas (Solo / Tech lead / "PM exploring agentic AI"); language updated
+- [x] `FeatureGrid.astro` "your AI agent runs" → "your agent runs"
+- [x] `skills.md` intro "your AI agent runs" → "your agent runs"
+- [x] `ecosystem.mdx` description "AI agent session" → "agent session" + "multiple related repos" → "multiple related projects"
+- [x] Site-wide audit clean: grep for `AI-assisted coding | AI coding agent | coding agent` returns only the new FAQ heading (intentional)
+- [x] Smoke build green
 - [ ] Commit Group 2: `feat(site): pivot to agentic AI positioning site-wide`
 
 ## Group 3 — Terminology shift (Parallel with G1, G2, G4, G5)

@@ -46,7 +46,7 @@ stateDiagram-v2
 
 ### Why phases?
 
-AI-assisted coding without phases turns into a sprawl. The agent picks up
+Agentic AI work without phases turns into a sprawl. The agent picks up
 loose threads, drops them halfway, picks up new ones. Six weeks in, you
 can't tell what's shipped, what's half-done, what got abandoned.
 

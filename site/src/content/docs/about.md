@@ -5,15 +5,17 @@ description: Why momentum exists, the design principles behind it, the name's or
 
 ## Why momentum exists
 
-AI-assisted coding raised the floor on individual productivity. Anyone can
-generate code now. What didn't scale was **coherent project state**:
+Agentic AI raised the floor on individual productivity. Anyone can spawn an
+agent to write code, manage infrastructure, run research, or operate a
+data pipeline now. What didn't scale was **coherent project state**:
 phases that drift, decisions that disappear into chat transcripts,
 backlogs that exist only in someone's head, history that lives between
 two engineers' Slack DMs.
 
 momentum is the missing layer. Specs, decisions, history, backlog — all as
-first-class files your AI agent reads and writes automatically. The
-*project itself* becomes durable, not just the code.
+first-class files your agent reads and writes automatically. The
+*project itself* becomes durable, not just whatever the agent shipped
+this session.
 
 The thesis is narrow: **state that outlives any single session**. Every
 primitive (phases, backlog, history, ADRs, ecosystem mode, orchestration)

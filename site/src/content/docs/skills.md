@@ -3,7 +3,7 @@ title: Skills
 description: All ~15 slash commands your agent uses to drive the momentum workflow — grouped by lifecycle, with examples for each.
 ---
 
-A **skill** is a slash command your AI agent runs to drive the momentum
+A **skill** is a slash command your agent runs to drive the momentum
 workflow. They're not hidden behind a CLI — they're the *primary* surface
 the agent uses while working.
 
