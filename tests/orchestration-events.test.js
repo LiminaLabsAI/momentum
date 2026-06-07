@@ -123,7 +123,8 @@ test('createPersister appends lifecycle events to the ecosystem session log', ()
     // Set up a fake ecosystem root.
     fs.writeFileSync(path.join(tmp, 'ecosystem.json'), JSON.stringify({
       name: 'test-eco',
-      members: [{ id: 'm1', path: 'm1' }],
+      version: 1,
+      members: [{ id: 'm1', path: 'm1', role: 'other' }],
     }, null, 2));
 
     const persister = events.createPersister({ ecosystemRoot: tmp, memberId: 'm1' });
