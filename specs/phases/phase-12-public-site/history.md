@@ -95,3 +95,27 @@ Affects-specs: specs/planning/roadmap.md
 Detail: Prior roadmap entry for Phase 12 was "Reach — Cursor + Gemini CLI adapters + ENH-009 distribution decision." That work is intact and shifts to Phase 13 (v0.16.0). All deliverables, FEAT-007, FEAT-008, ENH-009 carry over unchanged. Group 0 task in this phase performs the roadmap renumber as a single atomic update across roadmap.md, status.md, phases/README.md, and phases/index.json.
 
 ---
+
+### [DECISION] 2026-06-07 — Group 0 brand direction locked: Velocity Arc + Indigo/Slate + Inter
+Topics: phase-12, group-0, brand, identity, logo, palette, font, inter, indigo
+Affects-phases: phase-12-public-site
+Affects-specs: site/src/styles/tokens.css, site/src/styles/custom.css, site/src/assets/logo/
+Detail: Brand direction lock-in step in Group 0. User selected Indigo + Slate palette and Inter font outright; deferred logo choice to the agent. Logo mark chosen: **Velocity Arc with integrated arrowhead** — a single bold geometric arc sweeping up-and-right that resolves at its tip into a forward-pointing wedge. Conveys motion + direction in one shape; single-fill geometry scales cleanly from favicon (16px) to hero size; works as light or dark variant via fill color swap. Palette locked: primary `#4F46E5` indigo, surface slate scale (`#F8FAFC` → `#0F172A`), accent slate-700. Font locked: Inter Variable WOFF2, self-hosted in `site/public/fonts/`, with system-ui fallback. Rationale captured in tokens.css comment block; actual SVG mark + wordmark + WOFF2 file land in Group 1 (Brand & Identity Assets). Rejected alternatives: Phase Rings (less iconic motion story), Forward Delta (too sharp, less "momentum"), m-only wordmark (no mark hurts recognition at favicon size).
+
+---
+
+### [DECISION] 2026-06-07 — Group 0 start-phase setup absorbed the roadmap renumber
+Topics: phase-12, group-0, start-phase, renumber, bookkeeping
+Affects-phases: phase-12-public-site
+Affects-specs: specs/planning/roadmap.md, specs/status.md, specs/phases/README.md, specs/phases/index.json, specs/phases/phase-12-public-site/tasks.md
+Detail: Original Group 0 plan put the roadmap renumber as Tasks 0.1–0.3 to execute on the phase branch. In practice the renumber is small, atomic, and a /start-phase setup concern — it landed in the `docs: start Phase 12 — Public Site` initial commit alongside the rest of the bookkeeping. Tasks 0.1–0.3 marked `[x]` in tasks.md before any code in Group 0. Net effect: Group 0 on-branch work narrows to scaffold + config + brand tokens + smoke gate. No scope change, just a cleaner sequence.
+
+---
+
+### [DISCOVERY] 2026-06-07 — T7 Shield AppleDouble files break Starlight content loader
+Topics: phase-12, group-0, appledouble, t7-shield, content-loader, starlight
+Affects-phases: phase-12-public-site
+Affects-specs: site/src/content.config.ts
+Detail: First `npm run build` failed with `InvalidContentEntryDataError` on `._about.md` — the macOS AppleDouble sidecar files that the T7 Shield external drive (HFS+) generates next to every real `.md` file. Starlight's default `docsLoader()` glob includes them. Fix: replaced `docsLoader()` with `docsLoader({ pattern: ['**/*.{md,mdx}', '!**/._*'] })` in `site/src/content.config.ts`. Build smoke gate now passes with 10 pages built (9 IA + 404), Pagefind search index built, sitemap generated. Same class of bug as the historic BUG-003 in `momentum init`; the fix lives in the site, not the CLI. No backlog entry needed — the workaround is self-contained and the AppleDouble files are already in `.gitignore`.
+
+---

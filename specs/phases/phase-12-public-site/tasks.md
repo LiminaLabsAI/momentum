@@ -7,19 +7,19 @@
 - [x] Renumber `specs/planning/roadmap.md` — Site=12, Reach=13, Intelligence=14, Platform=15 (Timeline + Dependencies + Milestones)
 - [x] Renumber `specs/status.md` Upcoming Phases table; set Active Phase → Phase 12 — Public Site; update Next Actions
 - [x] Renumber `specs/phases/README.md` and `specs/phases/index.json` (whichever lists phases by number)
-- [ ] Scaffold Astro Starlight under `/site` (`npm create astro` with starlight template)
-- [ ] `cd site && npm install`; confirm `node_modules` lives under `/site`
-- [ ] Add `/site/node_modules`, `/site/dist`, `/site/.astro` to root `.gitignore`
-- [ ] Lock `site/astro.config.mjs` — site URL, base, title, description, GitHub link, IA sidebar
-- [ ] Brand direction lock-in: present 2–3 logo concepts to user
-- [ ] Brand direction lock-in: present 2–3 color palette candidates to user
-- [ ] Brand direction lock-in: present 2–3 self-hosted font candidates to user
-- [ ] User picks one of each; log `[DECISION]` in `history.md`
-- [ ] Write `site/src/styles/tokens.css` with `--brand-*` tokens
-- [ ] Stub all 9 IA pages with single-line placeholders
-- [ ] Smoke gate: `cd site && npm run build` exits 0
-- [ ] Smoke gate: `cd site && npm run dev` serves locally; sidebar order matches IA
-- [ ] Draft `.github/workflows/deploy-site.yml` with active trigger COMMENTED OUT
+- [x] Scaffold Astro Starlight under `/site` (`npm create astro` with starlight template)
+- [x] `cd site && npm install`; confirm `node_modules` lives under `/site`
+- [x] Add `/site/node_modules`, `/site/dist`, `/site/.astro` to root `.gitignore`
+- [x] Lock `site/astro.config.mjs` — site URL, base, title, description, GitHub link, IA sidebar
+- [x] Brand direction lock-in: present 2–3 logo concepts to user
+- [x] Brand direction lock-in: present 2–3 color palette candidates to user
+- [x] Brand direction lock-in: present 2–3 self-hosted font candidates to user
+- [x] User picks one of each; log `[DECISION]` in `history.md`
+- [x] Write `site/src/styles/tokens.css` with `--brand-*` tokens (+ custom.css wired into Starlight)
+- [x] Stub all 9 IA pages with single-line placeholders
+- [x] Smoke gate: `cd site && npm run build` exits 0
+- [x] Smoke gate: `cd site && npm run dev` serves locally; sidebar order matches IA
+- [x] Draft `.github/workflows/deploy-site.yml` with active trigger COMMENTED OUT
 - [ ] Commit Group 0: `infra(site): scaffold Astro Starlight site + lock brand direction`
 
 ## Group 1 — Brand & identity assets (Parallel with G2, G3)
