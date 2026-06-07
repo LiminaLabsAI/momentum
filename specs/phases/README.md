@@ -12,6 +12,7 @@
 | 7a | Planning Contracts | Complete (v0.8.0) | [phase-7a-planning-contracts/](phase-7a-planning-contracts/) |
 | 7b | Agent Runtime Compatibility | Complete (v0.9.0) | [phase-7b-agent-runtime-compat/](phase-7b-agent-runtime-compat/) |
 | 9 | Ecosystem (Tier 1) | Complete (v0.12.0) | [phase-9-ecosystem-tier1/](phase-9-ecosystem-tier1/) |
+| 10 | Ecosystem Activation & Polish | Complete (v0.13.0) | [phase-10-ecosystem-activation/](phase-10-ecosystem-activation/) |
 
 ## Phase Structure
 

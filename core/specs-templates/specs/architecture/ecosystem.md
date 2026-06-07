@@ -6,6 +6,18 @@
 > contract; the runtime helpers live in the momentum package itself
 > at `core/ecosystem/`.
 
+## When to use ecosystem mode
+
+| You have… | Use mode | First command |
+|---|---|---|
+| One project | **Single-project** *(default)* | `momentum init` |
+| Several related projects working as one product | **Ecosystem** | `momentum init --ecosystem <name>` |
+| An existing momentum project that should join an existing ecosystem | **Ecosystem** *(join)* | `momentum join <ecosystem-path>` |
+| A member repo you want to detach from its ecosystem | **Standalone** *(leave)* | `momentum leave` |
+| Confusion about what state a repo is in | **Diagnostic** | `momentum doctor` |
+
+**Single-project usage is fully supported and is the default.** Ecosystem mode is strictly additive — when no ecosystem.json is reachable, every `momentum` and slash command behaves identically to single-project use. There is no cost to ignoring this entire document if you only have one project.
+
 ## What an ecosystem is
 
 A **momentum ecosystem** is a sibling git repo that coordinates a set
@@ -112,9 +124,10 @@ momentum projects see no change.
 ## How discovery works
 
 Every command (CLI or hook) finds the ecosystem root via a
-bounded upward walk. From `$PWD`, climb up to
-`MAX_WALK_DEPTH=5` parents looking for a directory whose **siblings**
-contain a `ecosystem.json`. First hit wins; cached per-process.
+bounded upward walk. From `$PWD`, climb up to 5 parents by default
+(configurable via the `MOMENTUM_MAX_PARENT_WALK` env var) looking for
+a directory whose **siblings** contain an `ecosystem.json`. First hit
+wins; cached per-process.
 
 This means the ecosystem repo and member repos live as **siblings**
 under one parent directory:

@@ -12,7 +12,9 @@
 #   $3 — optional context (sha, PR number, deploy tag, …)
 #
 # Resolves the ecosystem root by walking up from $PWD looking for a
-# sibling directory containing ecosystem.json (bounded to 5 parents).
+# sibling directory containing ecosystem.json (bounded to 5 parents by
+# default; override via MOMENTUM_MAX_PARENT_WALK env var — see
+# core/ecosystem/lib/state.js for the JS counterpart).
 # Resolves the member id by matching $PWD against the manifest's
 # members[].path entries.
 #
@@ -40,7 +42,12 @@ find_ecosystem_root() {
   local start="$PWD"
   local current="$start"
   local depth=0
-  while [ $depth -le 5 ]; do
+  local max_depth="${MOMENTUM_MAX_PARENT_WALK:-5}"
+  # Guard against non-numeric / negative env value.
+  case "$max_depth" in
+    ''|*[!0-9]*) max_depth=5 ;;
+  esac
+  while [ $depth -le $max_depth ]; do
     # Same-directory check (caller might already be in ecosystem root)
     if [ -f "$current/ecosystem.json" ]; then
       echo "$current"
@@ -101,6 +108,36 @@ TODAY=$(date -u +%F)
 SESSION_FILE="$SESSION_DIR/$TODAY.md"
 HHMM=$(date -u +%H:%M)
 
+# ── BUG-004 fix: serialize concurrent writers via mkdir lock ────────────────
+# `mkdir` is atomic on POSIX filesystems and portable across macOS/Linux
+# without depending on flock (which is not present by default on macOS).
+# The lock covers the "check + header-write + append" sequence so two
+# concurrent commits in different member repos can't both write the
+# header or interleave their data lines.
+LOCK_DIR="$SESSION_FILE.lock"
+acquire_session_lock() {
+  local tries=100  # ~5s total at 50ms each
+  while [ $tries -gt 0 ]; do
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+      return 0
+    fi
+    sleep 0.05
+    tries=$((tries - 1))
+  done
+  return 1
+}
+release_session_lock() {
+  rmdir "$LOCK_DIR" 2>/dev/null || true
+}
+trap release_session_lock EXIT INT TERM
+
+# If we cannot acquire the lock within the budget, drop the event silently
+# rather than corrupt the file. Session events are advisory; momentum's
+# correctness does not depend on every one landing.
+if ! acquire_session_lock; then
+  exit 0
+fi
+
 # First write of the day → write header (and active initiative banner).
 if [ ! -f "$SESSION_FILE" ]; then
   {
@@ -126,4 +163,5 @@ fi
 mkdir -p "$ROOT/.state"
 echo "$TODAY" > "$ROOT/.state/last-session"
 
+# Lock is released by the EXIT trap.
 exit 0
