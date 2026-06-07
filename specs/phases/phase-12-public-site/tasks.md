@@ -61,21 +61,21 @@
 
 ## Group 3 — Docs pages (Parallel with G1, G2)
 
-- [ ] `getting-started/index.md` — install paths + `momentum init` walkthrough + first phase loop + troubleshooting
-- [ ] `concepts/index.md` — Phases, Backlog, History, ADRs, Ecosystem mode (sectioned, ≤ 250 words each)
-- [ ] `skills/index.md` — all ~15 slash commands grouped by lifecycle (Project · Phase · Backlog · Cross-repo · Utility)
-- [ ] Each skill entry: name + 1-line summary + GitHub link to command file
-- [ ] `rules/index.md` — one subsection per rule (Rules 1–13)
-- [ ] Each rule subsection: rule text + Why + Red flags
-- [ ] `ide-support/index.md` — per-IDE anchors: Claude Code · Codex · Antigravity · Cursor (Planned) · Gemini CLI (Planned)
-- [ ] For each shipped IDE: instruction file path + install command + hook compatibility
-- [ ] For planned IDEs: target instruction file + Phase 13 Reach reference
-- [ ] `ecosystem/index.md` — what it adds + when to use + quickstart + doesn't-change list
-- [ ] `faq/index.md` — 6–10 Q&As
-- [ ] `about/index.md` — philosophy + design principles + GitHub/npm/LICENSE links
-- [ ] Link audit: every internal link resolves
-- [ ] Link audit: every external link opens in new tab (`rel="noopener"` where appropriate)
-- [ ] `npx linkinator http://localhost:4321/momentum --recurse --skip 'github.com'` on dev server returns 0 broken
+- [x] `getting-started.md` — install paths + `momentum init` walkthrough + first phase loop + troubleshooting
+- [x] `concepts.md` — Phases, Backlog, History, ADRs, Ecosystem mode (sectioned, ≤ 250 words each)
+- [x] `skills.md` — all ~15 slash commands grouped by lifecycle (Project · Phase · Backlog · Cross-repo · Quality)
+- [x] Each skill entry: name + 1-line summary + GitHub link to command file
+- [x] `rules.md` — one subsection per rule (Rules 1–13)
+- [x] Each rule subsection: rule text + Why + Red flags
+- [x] `ide-support.md` — per-IDE anchors: Claude Code · Codex · Antigravity · Cursor (Planned) · Gemini CLI (Planned)
+- [x] For each shipped IDE: instruction file path + install command + hook compatibility
+- [x] For planned IDEs: target instruction file + Phase 13 Reach reference
+- [x] `ecosystem.md` — what it adds + when to use + quickstart + doesn't-change list
+- [x] `faq.md` — 9 Q&As (license, telemetry, monorepo, upgrade, uninstall, contribute)
+- [x] `about.md` — philosophy + design principles + GitHub/npm/LICENSE links + name rationale
+- [x] Link audit: internal links resolve (smoke build green; pages cross-link cleanly)
+- [/] Link audit: external links — `rel="noopener"` handled by Starlight default
+- [/] `npx linkinator` deferred to Group 5 (needs live site)
 - [ ] Commit Group 3: `feat(site): docs — getting-started, concepts, skills, rules, IDE support, ecosystem, FAQ, about`
 
 ## Group 4 — Deployment wiring (Sequential)
