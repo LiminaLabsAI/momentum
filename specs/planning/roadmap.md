@@ -21,10 +21,11 @@
 | 10 | Ecosystem Activation & Polish | **Complete (v0.13.0)** | Top-level entry/exit commands (`init --ecosystem`, `join`, `leave`, `doctor`) + init auto-detect; Phase 9 follow-up fixes (BUG-004, BUG-005, ENH-021, ENH-022); README rewrite as product positioning; per-adapter smoke matrix + capability audit. 165/165 tests pass. cerebrio dogfood deferred to a post-release user action. |
 | 11 | Dynamic Orchestration & Context Handover | Not Started (target v0.14.0) | Capability-driven orchestration primitives (`scout` read-only context fetch, `dispatch` parallel fan-out, `handoff` control transfer) the main agent composes per task; capability-driven routing via Adapter Contract v3; specs maintenance preserved across every primitive. Codex / Antigravity capability research up front. See [`specs/planning/phase-11-orchestration-handover.md`](phase-11-orchestration-handover.md). |
 | 12 | Public Site | **Complete (v0.15.0)** | GitHub Pages site at `trymomentum.github.io` built with Astro Starlight — landing page + 8 docs pages. Full identity pass (custom logo, brand palette, self-hosted display font, illustrated hero, OG/social cards). Two-repo cross-deploy. Lighthouse: 98 / 96 / 100 / 100. No CLI behavior changes. |
-| 13 | Site Polish & Content Depth | In Progress (target v0.16.0) | Augment-in-place site revamp: wholesale landing rewrite ("Spec-driven development for agentic AI" positioning) with editorial diagram + animated phase flow; NEW `/orchestration/` page (scout / dispatch / handoff / continue with sequence diagrams); Concepts / Skills / Rules deepened 3× word count; Ecosystem rewritten with topology SVG + worked example; Mermaid plugin wired into Starlight; end-to-end "Your first phase" tutorial; FAQ expanded. Metadata-only npm bump. |
-| 14 | Reach | Not Started (target v0.17.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
-| 15 | Intelligence | Not Started (target v0.18.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
-| 16 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; dependency-aware task ordering; bidirectional spec sync (experimental); ecosystem Tier 2 (federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`). |
+| 13 | Site Polish & Content Depth | **Complete (v0.16.0)** | Augment-in-place site revamp: wholesale landing rewrite ("Spec-driven development for agentic AI" positioning) with editorial diagram + animated phase flow; NEW `/orchestration/` page; Concepts / Skills / Rules deepened 3× word count; Ecosystem rewritten with topology SVG + worked example; Mermaid plugin wired into Starlight; end-to-end "Your first phase" tutorial; FAQ expanded. Lighthouse: 96/96/100/100. |
+| 14 | Site Refinement & Positioning Pivot | In Progress (target v0.17.0) | Fix 4 rendering bugs from v0.16.0 (anchor syntax, Mermaid dark mode, PhaseFlow animation, ecosystem MDX leak); complete agentic-AI positioning pivot in body copy; terminology shift "repo" → "project" in positioning; sharpen ecosystem ↔ orchestration framing (state layer + action layer) with NEW `StateActionLayers` diagram; new logo (concentric arcs + arrow, two-tone slate+indigo); README wholesale rewrite. Metadata-only npm bump. |
+| 15 | Reach | Not Started (target v0.18.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
+| 16 | Intelligence | Not Started (target v0.19.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
+| 17 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; dependency-aware task ordering; bidirectional spec sync (experimental); ecosystem Tier 2 (federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`). |
 
 ## Unscheduled Future Work
 
@@ -55,9 +56,10 @@ Phase 0 (Bootstrap)
                                                               └── Phase 11 (Dynamic Orchestration & Context Handover — assumes capability audit)
                                                                    └── Phase 12 (Public Site — assumes mature toolkit story)
                                                                         └── Phase 13 (Site Polish & Content Depth — assumes shipped site)
-                                                                             └── Phase 14 (Reach — assumes hardened execution)
-                                                                                  └── Phase 15 (Intelligence — assumes multi-agent base)
-                                                                                       └── Phase 16 (Platform — assumes the rest)
+                                                                             └── Phase 14 (Site Refinement & Positioning Pivot — fixes + completes Phase 13)
+                                                                                  └── Phase 15 (Reach — assumes hardened execution)
+                                                                                       └── Phase 16 (Intelligence — assumes multi-agent base)
+                                                                                            └── Phase 17 (Platform — assumes the rest)
                                                                                    ‖
                                                                                    Unscheduled: Hardening & Activation can slot in anywhere
                                                                                    before its absence becomes a blocker.
@@ -92,8 +94,9 @@ Phase 0 (Bootstrap)
 | v0.13.0 — Ecosystem Activation & Polish | 10 | **Released 2026-06-07** — Top-level entry/exit commands; Phase 9 follow-up fixes (incl. BUG-005 surfaced + fixed in-cycle); README rewrite; per-adapter smoke matrix + capability audit. 165/165 tests pass. |
 | v0.14.0 — Dynamic Orchestration & Context Handover | 11 | Capability-driven `scout` / `dispatch` / `handoff` primitives; specs maintenance contract; Codex / Antigravity capability research |
 | v0.15.0 — Public Site | 12 | **Released 2026-06-08** — GitHub Pages site (Astro Starlight) at trymomentum.github.io — landing + 8 docs pages; full identity pass; cross-repo deploy; metadata-only npm bump. Lighthouse 98/96/100/100. |
-| v0.16.0 — Site Polish & Content Depth | 13 | Landing wholesale rewrite ("Spec-driven development for agentic AI"); NEW /orchestration/ page; Concepts/Skills/Rules deepened 3×; Ecosystem rewritten with topology + worked example; Mermaid plugin wired; end-to-end tutorial; FAQ expanded |
-| v0.17.0 — Reach | 14 | Cursor + Gemini adapters; ENH-009 distribution decision |
-| v0.18.0 — Intelligence | 15 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |
-| v1.0.0 — Platform | 16 | MCP server, /specify, /decide, skill authoring, dependency-aware tasks; ecosystem Tier 2 |
+| v0.16.0 — Site Polish & Content Depth | 13 | **Released 2026-06-08** — Landing wholesale rewrite; NEW /orchestration/; Concepts/Skills/Rules deepened; Ecosystem rewritten with topology + worked example; Mermaid plugin wired; end-to-end tutorial. Lighthouse 96/96/100/100. |
+| v0.17.0 — Site Refinement & Positioning Pivot | 14 | 4 rendering-bug fixes (anchor syntax, Mermaid dark mode, PhaseFlow animation, ecosystem MDX leak); agentic-AI positioning pivot in body copy; repo→project terminology; ecosystem ↔ orchestration as state+action layers with NEW StateActionLayers diagram; new logo (two-tone concentric arcs + arrow); README wholesale rewrite |
+| v0.18.0 — Reach | 15 | Cursor + Gemini adapters; ENH-009 distribution decision |
+| v0.19.0 — Intelligence | 16 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |
+| v1.0.0 — Platform | 17 | MCP server, /specify, /decide, skill authoring, dependency-aware tasks; ecosystem Tier 2 |
 | Unscheduled | — | Hardening & Activation: systematic-debugging skill (full); SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017 |

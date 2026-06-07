@@ -4,10 +4,10 @@
 
 ## Group 0 — Foundations + tooling fixes (Sequential)
 
-- [ ] Renumber `specs/planning/roadmap.md` — Site Refinement = 14, Reach = 15, Intelligence = 16, Platform = 17 (Timeline + Dependencies + Milestones)
-- [ ] Update `specs/status.md` Upcoming Phases + Active Phase → Phase 14 — Site Refinement
-- [ ] Update `specs/phases/README.md` — append Phase 14 row, status In Progress
-- [ ] Update `specs/phases/index.json` — add `phase-14-site-refinement` entry with topic keywords
+- [x] Renumber `specs/planning/roadmap.md` — Site Refinement = 14, Reach = 15, Intelligence = 16, Platform = 17 (Timeline + Dependencies + Milestones)
+- [x] Update `specs/status.md` Upcoming Phases + Active Phase → Phase 14 — Site Refinement
+- [x] Update `specs/phases/README.md` — append Phase 14 row, status In Progress
+- [x] Update `specs/phases/index.json` — add `phase-14-site-refinement` entry with topic keywords
 - [ ] `npm install -D remark-custom-heading-id` in `/site`
 - [ ] Wire `remark-custom-heading-id` into `astro.config.mjs` `markdown.remarkPlugins`
 - [ ] Smoke-test: temporary `## test {#test}` heading renders as `<h2 id="test">`

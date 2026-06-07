@@ -16,6 +16,7 @@
 | 11 | Dynamic Orchestration & Context Handover | Complete (v0.14.0) | [phase-11-orchestration-handover/](phase-11-orchestration-handover/) |
 | 12 | Public Site | Complete (v0.15.0) | [phase-12-public-site/](phase-12-public-site/) |
 | 13 | Site Polish & Content Depth | Complete (v0.16.0) | [phase-13-site-polish/](phase-13-site-polish/) |
+| 14 | Site Refinement & Positioning Pivot | **In Progress** (target v0.17.0) | [phase-14-site-refinement/](phase-14-site-refinement/) |
 
 ## Phase Structure
 
