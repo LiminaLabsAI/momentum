@@ -40,3 +40,15 @@ Track a backlog item — bug, feature, tech debt, or enhancement.
    git add specs/backlog/
    git commit -m "docs(backlog): add {ID} - {short title}"
    ```
+
+## Cross-repo backlog items
+
+`/track` operates on the current repo's `specs/backlog/`. The ecosystem
+layer (Phase 9) does NOT aggregate backlogs across member repos in
+Tier 1 — each repo's backlog stays authoritative for its own work. If
+an item's scope genuinely spans repos, file it in the repo that owns
+the most surface area and add a one-line cross-link from the others.
+
+For cross-repo features as a whole (vs. individual backlog items), use
+`/initiative create <slug>` — see the `/ecosystem` and `/initiative`
+command recipes.
