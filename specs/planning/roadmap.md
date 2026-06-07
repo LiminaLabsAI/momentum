@@ -31,6 +31,7 @@ Work items captured against the roadmap with no committed version target. Pickab
 | Name | Stub | Notes |
 |------|------|-------|
 | Hardening & Activation | [`specs/planning/unscheduled-hardening-activation.md`](unscheduled-hardening-activation.md) | Originally slotted as Phase 10 (v0.13.0); displaced 2026-06-07 when Ecosystem Activation took priority. Scope intact: full systematic-debugging skill; SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting); ENH-017 project-name preservation across upgrade. |
+| Parallel Stream Development | [`specs/planning/unscheduled-parallel-streams.md`](unscheduled-parallel-streams.md) | Enables working on multiple features of one project in parallel without conflicts — single-repo concurrent feature streams via git worktrees. Existing implementation on `phase-8-parallel-worktrees` branch (`bin/commands/worktree-manager.js` + slash recipe + 226 LOC tests, unmerged). Don't merge as-is — predates Phase 9/10; needs reconciliation with the Phase 10 state machine. |
 | Context Economy (deferred) | [`specs/planning/future-context-economy.md`](future-context-economy.md) | Trigger-gated, not on the shelf. Section Map headers + ecosystem `STATE.md` router. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
 
 ## Phase Dependencies

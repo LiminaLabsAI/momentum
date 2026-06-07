@@ -52,6 +52,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | Name | Stub | Notes |
 |------|------|-------|
 | Hardening & Activation | `specs/planning/unscheduled-hardening-activation.md` | Originally Phase 10. Displaced 2026-06-07. Scope: full systematic-debugging skill; SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017. Pickable any time. |
+| Parallel Stream Development | `specs/planning/unscheduled-parallel-streams.md` | Enable parallel feature work on a single project via git worktrees. Existing implementation on `phase-8-parallel-worktrees` branch (unmerged; needs reconciliation with Phase 10 state machine before merge). |
 | Context Economy | `specs/planning/future-context-economy.md` | Trigger-gated. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
 
 ## Blockers
