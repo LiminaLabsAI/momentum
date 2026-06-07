@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+	<title>momentum</title>
+	<path
+		d="M 8 52 C 16 28 30 12 48 12"
+		stroke="#4F46E5"
+		stroke-width="10"
+		stroke-linecap="round"
+	/>
+	<path d="M 40 4 L 60 16 L 44 30 Z" fill="#4F46E5" />
+	<style>
+		@media (prefers-color-scheme: dark) {
+			path { stroke: #818CF8; fill: #818CF8; }
+		}
+	</style>
+</svg>

@@ -1,0 +1,76 @@
+/*
+ * momentum — brand tokens
+ *
+ * Locked in Phase 12 Group 0 (see history.md). Single source of truth for
+ * the palette, type system, and motion vocabulary used across the site.
+ *
+ * Selection rationale:
+ *   Palette: Indigo + Slate — calm, accessible, developer-tool feel, works
+ *            equally in light + dark mode without tuning per page.
+ *   Font:    Inter Variable — neutral, highly legible, scales from 12px
+ *            body to 64px hero without retuning.
+ *   Logo:    Velocity Arc with integrated arrowhead (Group 1 SVG assets).
+ *
+ * Group 1 (Brand & Identity Assets) downloads the WOFF2 file into
+ * /public/fonts/InterVariable.woff2 and the logo SVGs into
+ * /src/assets/logo/. Until then, the @font-face below references the
+ * future path; browsers fall back to system-ui until the file lands.
+ */
+
+/* Inter Variable @font-face declarations come from the
+ * @fontsource-variable/inter package, loaded via Starlight's customCss
+ * in astro.config.mjs (and so listed BEFORE this file in the cascade). */
+
+:root {
+	/* ── Brand palette — light theme defaults ───────────────────── */
+	--brand-primary: #4f46e5; /* indigo-600 */
+	--brand-primary-hover: #4338ca; /* indigo-700 */
+	--brand-primary-soft: #eef2ff; /* indigo-50, for soft surfaces */
+	--brand-accent: #334155; /* slate-700 */
+
+	/* Surfaces */
+	--brand-surface: #ffffff;
+	--brand-surface-subtle: #f8fafc; /* slate-50 */
+	--brand-surface-muted: #f1f5f9; /* slate-100 */
+
+	/* Text */
+	--brand-text: #0f172a; /* slate-900 */
+	--brand-text-muted: #475569; /* slate-600 */
+	--brand-text-subtle: #64748b; /* slate-500 */
+
+	/* Borders */
+	--brand-border: #e2e8f0; /* slate-200 */
+	--brand-border-strong: #cbd5e1; /* slate-300 */
+
+	/* Type */
+	--brand-font:
+		'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+		'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--brand-font-mono:
+		ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+		monospace;
+
+	/* Motion */
+	--brand-ease: cubic-bezier(0.4, 0, 0.2, 1);
+	--brand-duration-fast: 150ms;
+	--brand-duration-base: 250ms;
+}
+
+[data-theme='dark'] {
+	/* ── Brand palette — dark theme overrides ───────────────────── */
+	--brand-primary: #818cf8; /* indigo-400 — lifted for dark surfaces */
+	--brand-primary-hover: #a5b4fc; /* indigo-300 */
+	--brand-primary-soft: #1e1b4b; /* indigo-950 */
+	--brand-accent: #cbd5e1; /* slate-300 */
+
+	--brand-surface: #0f172a; /* slate-900 */
+	--brand-surface-subtle: #1e293b; /* slate-800 */
+	--brand-surface-muted: #334155; /* slate-700 */
+
+	--brand-text: #f8fafc; /* slate-50 */
+	--brand-text-muted: #cbd5e1; /* slate-300 */
+	--brand-text-subtle: #94a3b8; /* slate-400 */
+
+	--brand-border: #334155; /* slate-700 */
+	--brand-border-strong: #475569; /* slate-600 */
+}

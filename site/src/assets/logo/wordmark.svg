@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none" aria-hidden="true">
+	<title>momentum</title>
+	<!-- Mark on the left -->
+	<g transform="translate(0 0)">
+		<path
+			d="M 8 52 C 16 28 30 12 48 12"
+			stroke="currentColor"
+			stroke-width="10"
+			stroke-linecap="round"
+		/>
+		<path d="M 40 4 L 60 16 L 44 30 Z" fill="currentColor" />
+	</g>
+	<!-- Wordmark "momentum" — Inter Variable, semibold -->
+	<text
+		x="76"
+		y="44"
+		fill="currentColor"
+		font-family="'Inter Variable', Inter, system-ui, sans-serif"
+		font-size="32"
+		font-weight="650"
+		letter-spacing="-0.02em"
+	>momentum</text>
+</svg>

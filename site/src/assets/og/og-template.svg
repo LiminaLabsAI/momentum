@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+	<!-- momentum default OG card (1200 x 630 for Twitter/LinkedIn/Facebook) -->
+
+	<!-- Background -->
+	<rect width="1200" height="630" fill="#0F172A" />
+
+	<!-- Subtle halo behind the mark -->
+	<defs>
+		<radialGradient id="halo" cx="62%" cy="42%" r="55%">
+			<stop offset="0%" stop-color="#4F46E5" stop-opacity="0.18" />
+			<stop offset="100%" stop-color="#4F46E5" stop-opacity="0" />
+		</radialGradient>
+	</defs>
+	<rect width="1200" height="630" fill="url(#halo)" />
+
+	<!-- Echo arcs (speed lines) -->
+	<g fill="none" stroke="#818CF8" stroke-linecap="round">
+		<path d="M 80 540 C 280 360 540 240 800 180" stroke-width="2" stroke-dasharray="2 12" opacity="0.35" />
+		<path d="M 100 560 C 320 380 580 260 840 200" stroke-width="2" stroke-dasharray="2 12" opacity="0.22" />
+	</g>
+
+	<!-- Velocity arc + arrowhead -->
+	<path
+		d="M 96 552 C 288 320 564 200 880 180"
+		fill="none"
+		stroke="#818CF8"
+		stroke-width="16"
+		stroke-linecap="round"
+	/>
+	<path d="M 864 140 L 944 200 L 884 260 Z" fill="#818CF8" />
+
+	<!-- Wordmark text -->
+	<text
+		x="80"
+		y="430"
+		fill="#F8FAFC"
+		font-family="'Inter Variable', Inter, system-ui, sans-serif"
+		font-size="86"
+		font-weight="700"
+		letter-spacing="-0.02em"
+	>momentum</text>
+
+	<!-- Tagline -->
+	<text
+		x="80"
+		y="490"
+		fill="#CBD5E1"
+		font-family="'Inter Variable', Inter, system-ui, sans-serif"
+		font-size="32"
+		font-weight="450"
+		letter-spacing="-0.01em"
+	>Spec-driven discipline for AI-assisted coding</text>
+
+	<!-- Footer ribbon -->
+	<text
+		x="80"
+		y="572"
+		fill="#94A3B8"
+		font-family="'Inter Variable', Inter, system-ui, sans-serif"
+		font-size="22"
+		font-weight="500"
+		letter-spacing="0"
+	>Claude Code · Codex · Antigravity · Cursor · Gemini CLI</text>
+</svg>

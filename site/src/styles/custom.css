@@ -1,0 +1,82 @@
+/*
+ * momentum — Starlight theme overrides
+ *
+ * Maps the brand tokens defined in tokens.css onto Starlight's CSS custom
+ * properties so the entire docs theme inherits the brand without us having
+ * to touch individual components.
+ *
+ * Starlight's theming model (see https://starlight.astro.build/guides/css-and-tailwind/):
+ *   - Accent ramp drives links, focus rings, sidebar active state.
+ *   - Gray ramp drives surfaces and text.
+ *   - --sl-font drives body text; --sl-font-system is the system fallback.
+ */
+
+@import './tokens.css';
+
+:root {
+	/* Accent — indigo ramp */
+	--sl-color-accent-low: #c7d2fe; /* indigo-200 */
+	--sl-color-accent: var(--brand-primary);
+	--sl-color-accent-high: #312e81; /* indigo-900 */
+
+	/* Surfaces — slate ramp */
+	--sl-color-white: var(--brand-text);
+	--sl-color-gray-1: #1e293b;
+	--sl-color-gray-2: #334155;
+	--sl-color-gray-3: #475569;
+	--sl-color-gray-4: #64748b;
+	--sl-color-gray-5: #94a3b8;
+	--sl-color-gray-6: #cbd5e1;
+	--sl-color-gray-7: #e2e8f0;
+	--sl-color-black: var(--brand-surface);
+
+	/* Type */
+	--sl-font: var(--brand-font);
+	--sl-font-system: var(--brand-font);
+	--sl-font-system-mono: var(--brand-font-mono);
+}
+
+[data-theme='dark'] {
+	--sl-color-accent-low: #1e1b4b; /* indigo-950 */
+	--sl-color-accent: var(--brand-primary);
+	--sl-color-accent-high: #c7d2fe; /* indigo-200 */
+
+	--sl-color-white: var(--brand-text);
+	--sl-color-gray-1: #f1f5f9;
+	--sl-color-gray-2: #cbd5e1;
+	--sl-color-gray-3: #94a3b8;
+	--sl-color-gray-4: #64748b;
+	--sl-color-gray-5: #475569;
+	--sl-color-gray-6: #334155;
+	--sl-color-gray-7: #1e293b;
+	--sl-color-black: var(--brand-surface);
+}
+
+/* ── Landing-page sections (consumed by src/content/docs/index.mdx) ───── */
+
+.lead-block {
+	max-width: 38em;
+	margin: 0 0 2rem;
+}
+
+.landing-closing {
+	margin: 4rem 0 2rem;
+	padding: 2rem;
+	border-radius: 14px;
+	background: var(--brand-primary-soft);
+	border: 1px solid var(--brand-border);
+}
+.landing-closing h2 {
+	margin-top: 0;
+	font-size: 1.5rem;
+	font-weight: 650;
+	letter-spacing: -0.02em;
+}
+.landing-closing a {
+	color: var(--brand-primary);
+	font-weight: 550;
+}
+
+[data-theme='dark'] .landing-closing {
+	background: rgba(79, 70, 229, 0.08);
+}

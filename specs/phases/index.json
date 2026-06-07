@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-06-07",
+  "updated": "2026-06-07-phase-12-start",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -55,6 +55,10 @@
     "phase-11-orchestration-handover": {
       "status": "complete",
       "topics": ["phase-11", "orchestration", "scout", "dispatch", "handoff", "continue", "context-handover", "sessionstart-hook", "auto-greet", "inbox", "capability-routing", "graceful-degradation", "cli-floor", "natural-language-inference", "three-doors", "live-narration", "event-stream", "tracking-contract", "meaningful-context", "no-orchestration-noise", "synthesis", "parallel-fanout", "sequential-fallback", "enh-023", "enh-024", "capability-flag-unification"]
+    },
+    "phase-12-public-site": {
+      "status": "in-progress",
+      "topics": ["phase-12", "public-site", "github-pages", "astro", "starlight", "landing-page", "docs-site", "site", "brand", "identity", "logo", "favicon", "og-cards", "self-hosted-font", "color-palette", "illustrated-hero", "lighthouse", "deployment", "github-actions", "gh-pages", "pagefind", "homepage", "npm-metadata", "metadata-bump", "roadmap-renumber", "ide-support", "skills-reference", "rules-reference", "ecosystem-mode", "faq", "about", "philosophy"]
     }
   }
 }

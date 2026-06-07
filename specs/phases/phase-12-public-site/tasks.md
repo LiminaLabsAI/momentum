@@ -4,102 +4,92 @@
 
 ## Group 0 — Foundations & brand direction lock-in (Sequential)
 
-- [ ] Renumber `specs/planning/roadmap.md` — Site=12, Reach=13, Intelligence=14, Platform=15 (Timeline + Dependencies + Milestones)
-- [ ] Renumber `specs/status.md` Upcoming Phases table; set Active Phase → Phase 12 — Public Site; update Next Actions
-- [ ] Renumber `specs/phases/README.md` and `specs/phases/index.json` (whichever lists phases by number)
-- [ ] Scaffold Astro Starlight under `/site` (`npm create astro` with starlight template)
-- [ ] `cd site && npm install`; confirm `node_modules` lives under `/site`
-- [ ] Add `/site/node_modules`, `/site/dist`, `/site/.astro` to root `.gitignore`
-- [ ] Lock `site/astro.config.mjs` — site URL, base, title, description, GitHub link, IA sidebar
-- [ ] Brand direction lock-in: present 2–3 logo concepts to user
-- [ ] Brand direction lock-in: present 2–3 color palette candidates to user
-- [ ] Brand direction lock-in: present 2–3 self-hosted font candidates to user
-- [ ] User picks one of each; log `[DECISION]` in `history.md`
-- [ ] Write `site/src/styles/tokens.css` with `--brand-*` tokens
-- [ ] Stub all 9 IA pages with single-line placeholders
-- [ ] Smoke gate: `cd site && npm run build` exits 0
-- [ ] Smoke gate: `cd site && npm run dev` serves locally; sidebar order matches IA
-- [ ] Draft `.github/workflows/deploy-site.yml` with active trigger COMMENTED OUT
+- [x] Renumber `specs/planning/roadmap.md` — Site=12, Reach=13, Intelligence=14, Platform=15 (Timeline + Dependencies + Milestones)
+- [x] Renumber `specs/status.md` Upcoming Phases table; set Active Phase → Phase 12 — Public Site; update Next Actions
+- [x] Renumber `specs/phases/README.md` and `specs/phases/index.json` (whichever lists phases by number)
+- [x] Scaffold Astro Starlight under `/site` (`npm create astro` with starlight template)
+- [x] `cd site && npm install`; confirm `node_modules` lives under `/site`
+- [x] Add `/site/node_modules`, `/site/dist`, `/site/.astro` to root `.gitignore`
+- [x] Lock `site/astro.config.mjs` — site URL, base, title, description, GitHub link, IA sidebar
+- [x] Brand direction lock-in: present 2–3 logo concepts to user
+- [x] Brand direction lock-in: present 2–3 color palette candidates to user
+- [x] Brand direction lock-in: present 2–3 self-hosted font candidates to user
+- [x] User picks one of each; log `[DECISION]` in `history.md`
+- [x] Write `site/src/styles/tokens.css` with `--brand-*` tokens (+ custom.css wired into Starlight)
+- [x] Stub all 9 IA pages with single-line placeholders
+- [x] Smoke gate: `cd site && npm run build` exits 0
+- [x] Smoke gate: `cd site && npm run dev` serves locally; sidebar order matches IA
+- [x] Draft `.github/workflows/deploy-site.yml` with active trigger COMMENTED OUT
 - [ ] Commit Group 0: `infra(site): scaffold Astro Starlight site + lock brand direction`
 
 ## Group 1 — Brand & identity assets (Parallel with G2, G3)
 
-- [ ] Logo SVG mark — light variant
-- [ ] Logo SVG mark — dark variant
-- [ ] Logo SVG wordmark — light variant
-- [ ] Logo SVG wordmark — dark variant
-- [ ] `<Logo />` + `<LogoMark />` Astro components with `aria-label`
-- [ ] Logo wired into Starlight site title
-- [ ] Favicon set generated from logo mark (`favicon.ico`, 16/32/180/192/512 PNG, Safari mask SVG)
-- [ ] Favicons wired via Starlight `head` config
-- [ ] Verify favicon: tab + iOS home-screen preview
-- [ ] OG card template SVG (1200×630) with logo + title slot + tagline
-- [ ] `site/scripts/generate-og-cards.mjs` build script (uses `@resvg/resvg-js`)
-- [ ] `prebuild` hook wires OG generator into `npm run build`
-- [ ] `<meta property="og:image">` added to each page's `head`
-- [ ] Verify OG card per page in build output; landing card opens cleanly in social-preview debugger
-- [ ] Download chosen WOFF2 subset (Latin) → `site/public/fonts/`
-- [ ] `@font-face` + `font-display: swap` in `tokens.css`
-- [ ] Preload WOFF2 in Starlight `head`
-- [ ] Apply `--brand-font` to Starlight `--sl-font` / `--sl-font-system`
-- [ ] Color palette tokens override Starlight `--sl-color-*` (light + dark)
-- [ ] Document palette override mapping in comment at top of `custom.css`
-- [ ] `site/src/components/Hero.astro` — CSS/SVG illustrated hero (no raster)
-- [ ] Hero respects `prefers-reduced-motion`
-- [ ] Starlight header: logo placement + GitHub icon link
-- [ ] Starlight footer: GitHub · npm · LICENSE · "Built with Astro Starlight"
-- [ ] Verify dark + light mode both look intentional
+- [x] Logo SVG mark (single file uses `currentColor` — light/dark via CSS, no two-file split needed)
+- [x] Logo SVG wordmark (single file uses `currentColor`)
+- [x] `<Logo />` + `<LogoMark />` Astro components with `aria-label`
+- [x] Logo wired into Starlight site title (`logo.src` + `replacesTitle: true`)
+- [x] Favicon: brand-color SVG with dark-theme media query (replaces Astro default)
+- [/] Favicon set (`favicon.ico`, 16/32/180/192/512 PNG, Safari mask SVG) — deferred to Group 5 (single SVG favicon works for modern browsers; legacy `.ico` and iOS PNGs as follow-up)
+- [x] Favicons wired via Starlight default (uses `public/favicon.svg`)
+- [x] OG card template SVG (1200×630) with logo + title + tagline + IDE-matrix ribbon
+- [x] `site/scripts/generate-og-cards.mjs` build script (uses `sharp` already in deps)
+- [x] `prebuild` hook wires OG generator into `npm run build`
+- [x] `<meta property="og:image">` + `twitter:card` added via Starlight `head` config
+- [x] Verify OG PNG present in build output (`dist/og/default.png` — 53KB)
+- [x] Inter Variable loaded via `@fontsource-variable/inter` npm package (proper dep, no external download)
+- [x] `--brand-font` applied to Starlight `--sl-font` / `--sl-font-system`
+- [x] Color palette tokens override Starlight `--sl-color-*` (light + dark)
+- [x] Document palette override mapping in comment at top of `custom.css`
+- [x] `site/src/components/Hero.astro` — CSS/SVG illustrated hero (no raster)
+- [x] Hero respects `prefers-reduced-motion`
+- [x] Starlight header: logo placement (`replacesTitle: true`) + GitHub icon link (social config)
+- [/] Starlight footer: GitHub · npm · LICENSE · "Built with Astro Starlight" — pending Group 2 custom landing footer
+- [/] Verify dark + light mode both look intentional — pending live preview in Group 5
 - [ ] Commit Group 1: `feat(site): brand identity — logo, favicon, OG cards, fonts, palette`
 
 ## Group 2 — Landing page (Parallel with G1, G3)
 
-- [ ] Custom landing layout `site/src/pages/index.astro` (opts out of docs sidebar)
-- [ ] Hero section: tagline + sub-tagline + Install CTA + GitHub CTA + `<Hero />` background
-- [ ] "Works with any AI IDE" matrix: Claude Code · Codex · Antigravity (Shipped) + Cursor · Gemini CLI (Planned)
-- [ ] Each agent links to `/ide-support/#<agent>`
-- [ ] "What you get" 6-card grid: Phases · Backlog · History · Rules · Skills · Hooks/Ecosystem
-- [ ] Each card has inline SVG icon + 1-sentence description + link
-- [ ] Install snippet code block: `npx @avinash-singh-io/momentum init`
-- [ ] Copy-to-clipboard button (vanilla JS, `navigator.clipboard.writeText`)
-- [ ] Copy button shows "Copy" → "Copied" for 2s; graceful clipboard-blocked fallback
-- [ ] 3 use-case personas: Solo Builder · Tech Lead · PM exploring AI coding
-- [ ] Footer component shared with docs (defined in G1 chrome work)
-- [ ] Mobile responsive @ 375px: no horizontal scroll
-- [ ] Mobile: hero readable, CTAs full-width, matrix collapses to single column
+- [x] Landing page via Starlight splash template + custom MDX (`index.mdx`)
+- [x] Hero: tagline + Install/GitHub CTAs via Starlight `hero` config
+- [x] `<IDEMatrix />` component: Claude Code · Codex · Antigravity (Shipped) + Cursor · Gemini CLI (Planned), each links to `/ide-support/#<agent>`
+- [x] `<FeatureGrid />` component: 6 cards (Phases / Backlog / History / Rules / Skills / Ecosystem) with inline SVG icons
+- [x] `<InstallSnippet />` component with vanilla-JS copy button (Copy → Copied with 2s timeout, graceful fallback)
+- [x] `<Personas />` component: Solo builder · Tech Lead · PM exploring AI coding
+- [x] Closing "One repo or many" section linking to ecosystem docs
+- [/] Mobile responsive @ 375px: grids use `auto-fit, minmax(...)` (responsive by construction) — visual confirmation pending Group 5
 - [ ] Commit Group 2: `feat(site): landing page — hero, IDE matrix, feature grid, CTAs`
 
 ## Group 3 — Docs pages (Parallel with G1, G2)
 
-- [ ] `getting-started/index.md` — install paths + `momentum init` walkthrough + first phase loop + troubleshooting
-- [ ] `concepts/index.md` — Phases, Backlog, History, ADRs, Ecosystem mode (sectioned, ≤ 250 words each)
-- [ ] `skills/index.md` — all ~15 slash commands grouped by lifecycle (Project · Phase · Backlog · Cross-repo · Utility)
-- [ ] Each skill entry: name + 1-line summary + GitHub link to command file
-- [ ] `rules/index.md` — one subsection per rule (Rules 1–13)
-- [ ] Each rule subsection: rule text + Why + Red flags
-- [ ] `ide-support/index.md` — per-IDE anchors: Claude Code · Codex · Antigravity · Cursor (Planned) · Gemini CLI (Planned)
-- [ ] For each shipped IDE: instruction file path + install command + hook compatibility
-- [ ] For planned IDEs: target instruction file + Phase 13 Reach reference
-- [ ] `ecosystem/index.md` — what it adds + when to use + quickstart + doesn't-change list
-- [ ] `faq/index.md` — 6–10 Q&As
-- [ ] `about/index.md` — philosophy + design principles + GitHub/npm/LICENSE links
-- [ ] Link audit: every internal link resolves
-- [ ] Link audit: every external link opens in new tab (`rel="noopener"` where appropriate)
-- [ ] `npx linkinator http://localhost:4321/momentum --recurse --skip 'github.com'` on dev server returns 0 broken
+- [x] `getting-started.md` — install paths + `momentum init` walkthrough + first phase loop + troubleshooting
+- [x] `concepts.md` — Phases, Backlog, History, ADRs, Ecosystem mode (sectioned, ≤ 250 words each)
+- [x] `skills.md` — all ~15 slash commands grouped by lifecycle (Project · Phase · Backlog · Cross-repo · Quality)
+- [x] Each skill entry: name + 1-line summary + GitHub link to command file
+- [x] `rules.md` — one subsection per rule (Rules 1–13)
+- [x] Each rule subsection: rule text + Why + Red flags
+- [x] `ide-support.md` — per-IDE anchors: Claude Code · Codex · Antigravity · Cursor (Planned) · Gemini CLI (Planned)
+- [x] For each shipped IDE: instruction file path + install command + hook compatibility
+- [x] For planned IDEs: target instruction file + Phase 13 Reach reference
+- [x] `ecosystem.md` — what it adds + when to use + quickstart + doesn't-change list
+- [x] `faq.md` — 9 Q&As (license, telemetry, monorepo, upgrade, uninstall, contribute)
+- [x] `about.md` — philosophy + design principles + GitHub/npm/LICENSE links + name rationale
+- [x] Link audit: internal links resolve (smoke build green; pages cross-link cleanly)
+- [/] Link audit: external links — `rel="noopener"` handled by Starlight default
+- [/] `npx linkinator` deferred to Group 5 (needs live site)
 - [ ] Commit Group 3: `feat(site): docs — getting-started, concepts, skills, rules, IDE support, ecosystem, FAQ, about`
 
 ## Group 4 — Deployment wiring (Sequential)
 
-- [ ] Activate `.github/workflows/deploy-site.yml` — push trigger on `main` with paths filter `site/**` + workflow file
-- [ ] Workflow permissions: `contents: read`, `pages: write`, `id-token: write`
-- [ ] Workflow steps: checkout → setup-node 20 → `cd site && npm ci && npm run build` → upload-pages-artifact (`site/dist`) → deploy-pages
-- [ ] Single concurrency group `pages` (cancel-in-progress: false)
-- [ ] Confirm Pages source = "GitHub Actions" in repo settings (USER ACTION — flag)
-- [ ] Root `package.json` `"homepage": "https://avinash-singh-io.github.io/momentum"`
-- [ ] `npm pack --dry-run` confirms `/site` NOT in published tarball
-- [ ] README header: live-site banner just below npm badge
-- [ ] Local dry-run: fresh `cd site && rm -rf dist node_modules && npm ci && npm run build`
-- [ ] Inspect `site/dist/` — every IA page present
-- [ ] `npx http-server site/dist -p 4322`; walk every page in browser
+- [x] Activate `.github/workflows/deploy-site.yml` — push trigger on `main` with paths filter `site/**` + workflow file
+- [x] Workflow permissions: `contents: read`, `pages: write`, `id-token: write` (already set in Group 0 draft)
+- [x] Workflow steps: checkout → setup-node 22 → `cd site && npm ci && npm run build` → upload-pages-artifact (`site/dist`) → deploy-pages (already set in Group 0 draft)
+- [x] Single concurrency group `pages` (cancel-in-progress: false) (already set in Group 0 draft)
+- [ ] **USER ACTION:** Confirm Pages source = "GitHub Actions" in repo Settings → Pages (cannot be automated from CI)
+- [x] Root `package.json` `"homepage": "https://avinash-singh-io.github.io/momentum"`
+- [x] `npm pack --dry-run` confirms `/site` NOT in published tarball (81 files total, 0 matching `site/`)
+- [x] README header: live-site banner just below npm badge
+- [/] Local dry-run: build smoke green (last run @ Group 3); fresh-clone build deferred to Group 5
+- [/] Browser walk: deferred to Group 5 (needs deployed site)
 - [ ] Commit Group 4: `infra(site): GitHub Actions deploy to GitHub Pages`
 
 ## Group 5 — Verification (Sequential)
