@@ -13,7 +13,7 @@
 | 7b | Agent Runtime Compatibility | Complete (v0.9.0) | [phase-7b-agent-runtime-compat/](phase-7b-agent-runtime-compat/) |
 | 9 | Ecosystem (Tier 1) | Complete (v0.12.0) | [phase-9-ecosystem-tier1/](phase-9-ecosystem-tier1/) |
 | 10 | Ecosystem Activation & Polish | Complete (v0.13.0) | [phase-10-ecosystem-activation/](phase-10-ecosystem-activation/) |
-| 11 | Dynamic Orchestration & Context Handover | In Progress (target v0.14.0) | [phase-11-orchestration-handover/](phase-11-orchestration-handover/) |
+| 11 | Dynamic Orchestration & Context Handover | Complete (v0.14.0) | [phase-11-orchestration-handover/](phase-11-orchestration-handover/) |
 
 ## Phase Structure
 
