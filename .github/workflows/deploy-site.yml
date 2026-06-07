@@ -1,12 +1,20 @@
-# Deploy the momentum GitHub Pages site (Astro Starlight).
+# Deploy the momentum GitHub Pages site (Astro Starlight) to
+# trymomentum.github.io via cross-repo push.
 #
-# Site lives at: https://avinash-singh-io.github.io/momentum
+# Source repo:   avinash-singh-io/momentum         (this repo — site under /site)
+# Deploy target: trymomentum/trymomentum.github.io (org-owned User/Org Pages repo)
 #
-# User action required once before first deploy: in repo Settings → Pages,
-# set Source = "GitHub Actions". After that, every push to main touching
-# `site/**` triggers a deploy. workflow_dispatch lets you re-run manually.
+# Auth uses a Fine-grained PAT stored as `PAGES_DEPLOY_TOKEN` in this
+# repo's Actions secrets. The token only needs `Contents: Read and write`
+# on the single target repo.
+#
+# GitHub Pages on the target repo must be configured to serve from
+# `Deploy from a branch → main / root` (NOT "GitHub Actions" — the build
+# happens here, the target just hosts the static output).
+#
+# Site URL: https://trymomentum.github.io/
 
-name: Deploy site to GitHub Pages
+name: Deploy site to trymomentum.github.io
 
 on:
   push:
@@ -18,18 +26,16 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: pages-deploy
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -39,7 +45,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: site/package-lock.json
 
-      - name: Install site dependencies
+      - name: Install dependencies
         working-directory: site
         run: npm ci
 
@@ -47,18 +53,24 @@ jobs:
         working-directory: site
         run: npm run build
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site/dist
+      - name: Prepare dist for GitHub Pages
+        run: |
+          touch site/dist/.nojekyll
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy dist → trymomentum/trymomentum.github.io
+        env:
+          PAGES_DEPLOY_TOKEN: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          cd site/dist
+          git init -q -b main
+          git config commit.gpgsign false
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_REPOSITORY}@${GITHUB_SHA::8}"
+          git push --force -q \
+            "https://x-access-token:${PAGES_DEPLOY_TOKEN}@github.com/trymomentum/trymomentum.github.io.git" \
+            main
