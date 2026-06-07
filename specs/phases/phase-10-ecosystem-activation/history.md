@@ -112,6 +112,14 @@ Detail: This Phase 10 (Ecosystem Activation & Polish) takes the v0.13.0 slot pre
 
 ---
 
+### [FEATURE] 2026-06-07 — Group 4 landed: adapter coverage smoke matrix + capability audit
+Topics: phase-10, group-4, adapters, smoke-tests, capability-audit, claude-code, codex, antigravity, enh-023, enh-024
+Affects-phases: phase-10-ecosystem-activation
+Affects-specs: core/adapter-capabilities.md, tests/helpers/adapter-smoke.js, tests/adapter-smoke-claude-code.test.js, tests/adapter-smoke-codex.test.js, tests/adapter-smoke-antigravity.test.js, tests/adapter-capabilities-declared.test.js, specs/backlog/backlog.md
+Detail: Group 4 (sequential, depends on G1/G2/G3) landed. **Adapter smoke matrix:** one shared scenario in `tests/helpers/adapter-smoke.js` runs end-to-end against each of Claude Code, Codex, Antigravity via thin per-adapter test files. Scenario: init standalone → doctor (standalone) → init --ecosystem (member) → doctor (member) → join solo → ecosystem status (location-agnostic via `--ecosystem`) → leave → doctor → cleanup. Each adapter asserts its primary instruction file (CLAUDE.md / AGENTS.md / AGENTS.md) and slash-commands directory (`.claude` / `.codex` / `.antigravity` `/commands/`) are populated correctly. **Capability flag audit:** new `core/adapter-capabilities.md` is the single source of truth for what each adapter declares it can do. Audited by `tests/adapter-capabilities-declared.test.js`: every shipped adapter must export a `capabilities` block; must declare the minimum surface (`hooks`, `slashCommands`, `subagents`) that Phase 11 orchestration code will lean on. **Inconsistencies flagged as backlog ENHs (not Phase 10 blockers):** ENH-023 (`subagents` declaration is bool on Claude Code/Antigravity but explanatory string on Codex); ENH-024 (`skills`/`browser`/`computerUse` are `false` on Claude Code but `'future'` sentinel strings on Codex). Tracked in the matrix doc; resolved when Phase 11 capability research closes them. **cerebrio dogfood (Workstream 5) deferred to a separate user action.** The plan calls for bootstrapping `../cerebrio-ecosystem/` as a real artifact and joining 7 cerebrio member repos via separate PRs in those repos. That work touches user repositories outside the momentum branch and is unsafe to auto-execute from the agent session — captured as a Phase 10 retrospective follow-up to be executed manually post-release. The adapter smoke tests are the in-CI proxy for the dogfood: same code paths, hermetic tmpdir scenarios, no risk to real repos. Tests: 157 → 164, all green.
+
+---
+
 ### [FEATURE] 2026-06-07 — Group 3 landed: product positioning README rewrite + onboarding clarity
 Topics: phase-10, group-3, docs, readme, positioning, decision-tree, onboarding, supported-agents-matrix
 Affects-phases: phase-10-ecosystem-activation

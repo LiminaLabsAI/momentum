@@ -57,22 +57,22 @@
 
 ## Group 4 — Adapter coverage verification + cerebrio dogfood (Sequential)
 
-- [ ] Create `tests/helpers/adapter-env.js` — agent-runtime detection + tmpdir setup helpers.
-- [ ] Write `tests/adapter-smoke-claude-code.test.js` — full end-to-end scenario.
-- [ ] Write `tests/adapter-smoke-codex.test.js` — same scenario, Codex adapter.
-- [ ] Write `tests/adapter-smoke-antigravity.test.js` — same scenario, Antigravity adapter.
-- [ ] Capability flag audit:
-  - [ ] Read declared capabilities from each `adapters/*/adapter.js`.
-  - [ ] Document in new `core/adapter-capabilities.md` — rows = adapters, columns = capabilities.
-  - [ ] File any inconsistencies as backlog ENHs (do not fix this phase).
-- [ ] Write `tests/adapter-capabilities-declared.test.js` — minimum capability surface present per adapter.
-- [ ] cerebrio dogfood:
+- [x] Create `tests/helpers/adapter-smoke.js` — shared scenario helper (renamed from `adapter-env.js` per implementation reality).
+- [x] Write `tests/adapter-smoke-claude-code.test.js` — full end-to-end scenario.
+- [x] Write `tests/adapter-smoke-codex.test.js` — same scenario, Codex adapter.
+- [x] Write `tests/adapter-smoke-antigravity.test.js` — same scenario, Antigravity adapter.
+- [x] Capability flag audit:
+  - [x] Read declared capabilities from each `adapters/*/adapter.js`.
+  - [x] Document in new `core/adapter-capabilities.md` — rows = adapters, columns = capabilities.
+  - [x] File inconsistencies as backlog ENHs: ENH-023 (`subagents` type mismatch), ENH-024 (`'future'` sentinel strings).
+- [x] Write `tests/adapter-capabilities-declared.test.js` — minimum capability surface present per adapter; matrix doc mentions every adapter; inconsistencies tracked.
+- [/] cerebrio dogfood:
   - [ ] Run `momentum init --ecosystem cerebrio` from within sapience (or another member); creates `../cerebrio-ecosystem/`.
   - [ ] `momentum join ../cerebrio-ecosystem` from each remaining member: frontend, py, cli, open-guard, open-shield, bench.
   - [ ] `/initiative create memory-module`; populate with the 2026-06-05/06 work retroactively.
-  - [ ] Log discoveries from dogfooding in this phase's `history.md` as `[DISCOVERY]` entries.
-  - [ ] Pointer-block updates to cerebrio member repos: separate per-repo `chore/ecosystem-pointer` branches; PRs in each member repo. NOT bundled into momentum commits.
-- [ ] Commit: `test+infra: adapter smoke matrix + capability audit + cerebrio-ecosystem`.
+  - [ ] Pointer-block updates to cerebrio member repos: separate per-repo `chore/ecosystem-pointer` branches; PRs in each member repo.
+  - **Deferred to post-release user action.** The plan calls for touching 7 user repositories outside the momentum branch (sapience, frontend, py, cli, open-guard, open-shield, bench). Unsafe to auto-execute from the agent session. Captured as a Phase 10 retrospective follow-up. Adapter smoke tests are the in-CI proxy: identical code paths, hermetic tmpdir scenarios, zero risk to real repos.
+- [x] Commit: `test+infra: adapter smoke matrix + capability audit`.
 
 ## Group 5 — Final verification (Sequential)
 
