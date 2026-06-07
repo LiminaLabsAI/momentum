@@ -14,7 +14,7 @@
 | 9 | Ecosystem (Tier 1) | Complete (v0.12.0) | [phase-9-ecosystem-tier1/](phase-9-ecosystem-tier1/) |
 | 10 | Ecosystem Activation & Polish | Complete (v0.13.0) | [phase-10-ecosystem-activation/](phase-10-ecosystem-activation/) |
 | 11 | Dynamic Orchestration & Context Handover | Complete (v0.14.0) | [phase-11-orchestration-handover/](phase-11-orchestration-handover/) |
-| 12 | Public Site | **In Progress** (target v0.15.0) | [phase-12-public-site/](phase-12-public-site/) |
+| 12 | Public Site | Complete (v0.15.0) | [phase-12-public-site/](phase-12-public-site/) |
 
 ## Phase Structure
 

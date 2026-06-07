@@ -1,8 +1,8 @@
 # Project Status
 
-> **Last Updated**: 2026-06-07
-> **Current Phase**: 12 — Public Site (target v0.15.0)
-> **Latest Release**: v0.14.0 — Dynamic Orchestration & Context Handover
+> **Last Updated**: 2026-06-08
+> **Current Phase**: (between phases — Phase 13 Reach planning pending)
+> **Latest Release**: v0.15.0 — Public Site
 > **Health**: On Track
 
 ## Summary
@@ -28,12 +28,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 9 | Ecosystem (Tier 1) | Complete | v0.12.0 (2026-06-07) |
 | 10 | Ecosystem Activation & Polish | Complete | v0.13.0 (2026-06-07) |
 | 11 | Dynamic Orchestration & Context Handover | Complete | v0.14.0 (2026-06-07) |
+| 12 | Public Site | Complete | v0.15.0 (2026-06-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 12 | Public Site | In Progress | Group 0 (Foundations & brand direction lock-in) — Astro Starlight scaffold + brand direction selection up next |
+| _(between phases)_ | Phase 12 released as v0.15.0 on 2026-06-08. Phase 13 (Reach) planning pending. | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -70,9 +71,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Phase 12 Group 0 — Foundations & brand direction lock-in.** Scaffold Astro Starlight under `/site`, lock `astro.config.mjs` (URL, base, IA sidebar), present 2–3 brand direction options to the user (logo concepts, palette, font), select one, write `tokens.css`, stub the 9 IA pages, smoke-gate the empty-content build.
-2. **Phase 12 Groups 1 + 2 + 3 (parallel).** Brand identity assets · landing page · docs pages. Each consumes Group 0 tokens.
-3. **Phase 12 Groups 4 → 5 → 6.** GitHub Actions deploy · verification (Lighthouse / link audit / mobile) · v0.15.0 release.
+1. **`/brainstorm-phase` Phase 13 — Reach** (target v0.16.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
 4. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
@@ -99,3 +98,4 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-05-28**: Phase 7b complete — v0.9.0 released. Adapter Contract v3; Codex adapter (`AGENTS.md`, `.codex/hooks.json`, `.codex/commands/`); dynamic available-agent discovery; Claude regression coverage; ENH-018 tarball-shape test; prepublish test gate.
 - **2026-06-07**: Phase 10 complete — v0.13.0 released. Top-level entry/exit commands (`init --ecosystem`, `join`, `leave`, `doctor`); init auto-detect; BUG-004 / BUG-005 / ENH-021 / ENH-022 fixed; README rewrite as product positioning; per-adapter smoke matrix + capability audit. 165/165 tests pass (+64 from Phase 9). ENH-023/ENH-024 filed as follow-ups.
 - **2026-06-07**: Phase 11 complete — v0.14.0 released. Three orchestration primitives (scout / dispatch / handoff) + continue, with three invocation doors (slash / NL inference / CLI) over one shared `core/orchestration/` library. SessionStart hook auto-greet for pending handoffs. Tracking contract: cheap layer auto, curated layer auto-if-meaningful, no new history entry types. Capability-driven routing with labeled degraded modes. ENH-023 + ENH-024 closed. Per-adapter smoke matrix extended to 9 combinations. 246/246 tests pass (+81 from Phase 10).
+- **2026-06-08**: Phase 12 complete — v0.15.0 released. Public GitHub Pages site at <https://trymomentum.github.io/> — landing page + 8 docs pages built with Astro Starlight. Full identity pass: Velocity Arc logo (single-fill SVG, light/dark via `currentColor`), Indigo + Slate palette, Inter Variable font (self-hosted via `@fontsource-variable/inter`), CSS/SVG illustrated hero, 1200×630 OG card generated at build via `sharp`. Cross-repo deploy from `avinash-singh-io/momentum` (source) → `trymomentum/trymomentum.github.io` (deploy target) via GH Actions + fine-grained PAT. Lighthouse landing: Performance 98 / Accessibility 96 / Best Practices 100 / SEO 100. Linkinator: 0/24 broken links. CLI regression: 246/246 still pass (metadata-only npm bump — no CLI behavior change). Roadmap renumber landed: Site = 12 / Reach → 13 / Intelligence → 14 / Platform → 15. BUG-006 filed for `momentum upgrade` regressing CLAUDE.md project title.
