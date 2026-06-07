@@ -537,29 +537,234 @@ function checkForUpdates() {
 
 function usage() {
   console.log(`
-momentum v${pkg.version} — Spec-driven development toolkit for AI coding agents
+momentum v${pkg.version} — Agent-agnostic, specs-driven development framework
 
-Usage:
-  momentum init [target-dir]          Scaffold momentum into a project directory
+Use momentum for a single project, or to orchestrate multiple related
+projects as one ecosystem from a single agent session.
+
+Single-project use:
+  momentum init [target-dir]          Scaffold momentum into one project
                                       (defaults to current directory)
-  momentum upgrade [target-dir]       Upgrade momentum files in an existing project
-                                      (defaults to current directory)
-  momentum ecosystem <sub> [...]      Multi-repo coordination (Phase 9, Tier 1)
-                                      Subcommands: init | add | remove | status
+  momentum upgrade [target-dir]       Update momentum files in an existing project
+
+Ecosystem use — entry/exit commands (run from any repo):
+  momentum init --ecosystem <name>    Scaffold an ecosystem in a sibling dir
+                                      and register this repo as the first member
+  momentum join <ecosystem-path>      Register THIS repo as a member of an
+                                      existing ecosystem
+  momentum leave                      Detach THIS repo from its ecosystem
+  momentum doctor                     Diagnose state + list available transitions
+
+Ecosystem use — operator toolkit (advanced):
+  momentum ecosystem <sub> [...]      Subcommands: init | add | remove | status
 
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
+  --no-ecosystem                      Skip the post-init auto-detect prompt
   -h, --help                          Show this help message
   -v, --version                       Show version number
 
 Examples:
+  # Single project (unchanged from v0.12.0):
   npx @avinash-singh-io/momentum init
-  npx @avinash-singh-io/momentum init ./my-project
-  npx @avinash-singh-io/momentum init ./my-project --agent claude-code
-  npx @avinash-singh-io/momentum upgrade
-  npx @avinash-singh-io/momentum upgrade ./my-project
+  npx @avinash-singh-io/momentum init ./my-project --agent codex
+
+  # Ecosystem from scratch:
+  npx @avinash-singh-io/momentum init --ecosystem my-eco
+
+  # Add THIS repo to an existing ecosystem:
+  npx @avinash-singh-io/momentum join ../my-eco
+
+  # Where am I?
+  npx @avinash-singh-io/momentum doctor
 `.trim());
+}
+
+// ── Phase 10 init extensions: --ecosystem + auto-detect ──────────────────────
+
+/**
+ * Parse Phase 10 init-only flags out of argv in place.
+ * Removes the matched tokens; returns the parsed options + remaining target.
+ *
+ * Supported flags:
+ *   --ecosystem <name>     Scaffold ecosystem in sibling dir, register this repo.
+ *   --no-ecosystem         Bypass the post-init auto-detect prompt.
+ */
+function extractInitFlags(args) {
+  // args[0] === 'init' — leave it; consume the rest.
+  const out = { target: undefined, ecosystem: undefined, noEcosystem: false };
+  const filtered = ['init'];
+  for (let i = 1; i < args.length; i++) {
+    const a = args[i];
+    if (a === '--ecosystem') {
+      out.ecosystem = args[i + 1];
+      i++;
+    } else if (a === '--no-ecosystem') {
+      out.noEcosystem = true;
+    } else if (!out.target && !a.startsWith('--')) {
+      out.target = a;
+    } else {
+      filtered.push(a);
+    }
+  }
+  // Splice in place so any downstream consumers see the cleaned args.
+  args.length = 0;
+  for (const a of filtered) args.push(a);
+  return out;
+}
+
+/**
+ * After `init` succeeds, optionally:
+ *   - scaffold an ecosystem (when --ecosystem <name> was passed)
+ *   - prompt the user to register as a member (auto-detect)
+ *
+ * Single-project usage (no flags, no adjacent ecosystem) is a no-op.
+ */
+async function postInitEcosystem(targetDir, opts) {
+  const target = path.resolve(targetDir);
+  if (opts.ecosystem) {
+    return scaffoldEcosystemAndJoin(target, opts.ecosystem);
+  }
+  if (opts.noEcosystem) return;
+  return maybePromptForAutoEcosystem(target);
+}
+
+function scaffoldEcosystemAndJoin(target, ecosystemName) {
+  if (!/^[a-z][a-z0-9-]*$/.test(ecosystemName)) {
+    throw new Error(
+      `init --ecosystem: name "${ecosystemName}" must match /^[a-z][a-z0-9-]*$/.`,
+    );
+  }
+  const parentDir = path.dirname(target);
+  const ecosystemDir = path.join(parentDir, ecosystemName);
+  if (fs.existsSync(ecosystemDir)) {
+    throw new Error(
+      `init --ecosystem: ${ecosystemDir} already exists. Refusing to overwrite.`,
+    );
+  }
+
+  const { runEcosystem } = require('./ecosystem');
+  const pointer = require('../core/ecosystem/lib/pointer');
+
+  let createdEcosystem = false;
+  let injectedPointer = false;
+  const cwd0 = process.cwd();
+  try {
+    // Scaffold the ecosystem root via existing CLI surface, run from parentDir
+    // so cmdInit creates ./<name>/ under it.
+    process.chdir(parentDir);
+    runEcosystem(['init', ecosystemName]);
+    createdEcosystem = true;
+
+    // Now register this repo as a member, using realpathed absolutes so
+    // path.relative produces a clean ../target instead of a cross-symlink
+    // monstrosity (on macOS where /tmp → /private/tmp).
+    process.chdir(target);
+    let targetReal = target;
+    let ecosystemReal = ecosystemDir;
+    try { targetReal = fs.realpathSync(target); } catch (_e) {}
+    try { ecosystemReal = fs.realpathSync(ecosystemDir); } catch (_e) {}
+    runEcosystem(['add', targetReal, '--ecosystem', ecosystemReal]);
+    injectedPointer = true;
+  } catch (err) {
+    // Rollback partial state.
+    if (createdEcosystem && fs.existsSync(ecosystemDir)) {
+      try {
+        fs.rmSync(ecosystemDir, { recursive: true, force: true });
+      } catch (_e) { /* best-effort */ }
+    }
+    if (injectedPointer) {
+      const primary = pointer.findPrimaryInstructionFile(target);
+      if (primary) {
+        try {
+          pointer.stripPointer(path.join(target, primary));
+        } catch (_e) { /* best-effort */ }
+      }
+    }
+    throw err;
+  } finally {
+    process.chdir(cwd0);
+  }
+
+  console.log('');
+  console.log(`✓ Ecosystem "${ecosystemName}" created at ${ecosystemDir}`);
+  console.log(`  This project is registered as the first member.`);
+  console.log('');
+  console.log('  Add another repo:');
+  console.log(`    cd <other-repo> && momentum join ${path.relative(process.cwd(), ecosystemDir) || ecosystemDir}`);
+}
+
+async function maybePromptForAutoEcosystem(target) {
+  const skipFile = path.join(target, '.momentum', 'skip-ecosystem-prompt');
+  if (fs.existsSync(skipFile)) return;
+
+  const parentDir = path.dirname(target);
+  let entries;
+  try {
+    entries = fs.readdirSync(parentDir, { withFileTypes: true });
+  } catch (_e) {
+    return;
+  }
+
+  for (const e of entries) {
+    if (!e.isDirectory()) continue;
+    const candidate = path.join(parentDir, e.name);
+    if (candidate === target) continue;
+    const manifestPath = path.join(candidate, 'ecosystem.json');
+    if (!fs.existsSync(manifestPath)) continue;
+    let manifest;
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch (_err) {
+      continue;
+    }
+    if (!manifest || !manifest.name) continue;
+
+    // Non-interactive: silently skip (no skip-file written; a future
+    // interactive session can still prompt).
+    if (!process.stdin.isTTY) return;
+
+    const accepted = await promptYesNo(
+      `Detected ecosystem "${manifest.name}" at ${path.relative(target, candidate) || candidate}.\n` +
+        `Register this project as a member? [y/N] `,
+    );
+    if (accepted) {
+      const { runEcosystem } = require('./ecosystem');
+      const cwd0 = process.cwd();
+      try {
+        process.chdir(target);
+        let targetReal = target;
+        let candidateReal = candidate;
+        try { targetReal = fs.realpathSync(target); } catch (_e) {}
+        try { candidateReal = fs.realpathSync(candidate); } catch (_e) {}
+        runEcosystem(['add', targetReal, '--ecosystem', candidateReal]);
+        console.log(`✓ Registered as a member of "${manifest.name}".`);
+      } finally {
+        process.chdir(cwd0);
+      }
+    } else {
+      try {
+        fs.mkdirSync(path.dirname(skipFile), { recursive: true });
+        fs.writeFileSync(skipFile, 'declined at init time\n');
+      } catch (_e) { /* best-effort */ }
+    }
+    return;
+  }
+}
+
+function promptYesNo(question) {
+  return new Promise((resolve) => {
+    const readline = require('readline');
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(/^y(es)?$/i.test((answer || '').trim()));
+    });
+  });
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────────
@@ -593,9 +798,11 @@ async function main() {
   } else if (args[0] === '--version' || args[0] === '-v') {
     console.log(pkg.version);
   } else if (args[0] === 'init') {
-    const targetDir = args[1] || process.cwd();
+    const initOpts = extractInitFlags(args);
+    const targetDir = initOpts.target || process.cwd();
     try {
       init(targetDir, agent);
+      await postInitEcosystem(targetDir, initOpts);
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
@@ -612,6 +819,30 @@ async function main() {
     try {
       const { runEcosystem } = require('./ecosystem');
       runEcosystem(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'join') {
+    try {
+      const { cmdJoin } = require('./state-commands');
+      cmdJoin(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'leave') {
+    try {
+      const { cmdLeave } = require('./state-commands');
+      cmdLeave(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'doctor') {
+    try {
+      const { cmdDoctor } = require('./state-commands');
+      cmdDoctor(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

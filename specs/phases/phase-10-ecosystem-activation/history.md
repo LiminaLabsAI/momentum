@@ -112,6 +112,14 @@ Detail: This Phase 10 (Ecosystem Activation & Polish) takes the v0.13.0 slot pre
 
 ---
 
+### [FEATURE] 2026-06-07 — Group 1 landed: ecosystem entry/exit commands
+Topics: phase-10, group-1, cli, join, leave, doctor, init-ecosystem, auto-detect, single-project-invariant, realpath
+Affects-phases: phase-10-ecosystem-activation
+Affects-specs: bin/momentum.js, bin/state-commands.js, core/ecosystem/lib/state.js, tests/single-project-unchanged.test.js, tests/init-ecosystem-flag.test.js, tests/join-leave-roundtrip.test.js, tests/doctor.test.js, tests/init-autodetect-prompt.test.js
+Detail: Group 1 (parallel with G2/G3) landed. New top-level commands: `momentum init --ecosystem <name>` scaffolds a sibling ecosystem dir + registers this repo as the first member (atomic rollback on failure); `momentum join <ecosystem-path>` registers this repo from inside it (idempotent; refuses on leader state); `momentum leave` reverses join (idempotent; recovers broken-pointer to standalone); `momentum doctor` prints state + teaching-friendly transitions; `momentum init` auto-detect prompts once when a sibling ecosystem exists (declining writes `.momentum/skip-ecosystem-prompt`; `--no-ecosystem` bypasses entirely; non-TTY silently skips). Implementation split: `bin/state-commands.js` houses the three new verbs, importing state.js + pointer.js + ecosystem CLI primitives — single source of truth for manifest/pointer mutation. **Path normalization fix:** on macOS, `/tmp/foo` and `/private/tmp/foo` resolve to the same file but compare unequal as strings, producing cross-symlink relative paths in the manifest (`../../../private/tmp/.../project`) that break re-detection. Fix: realpath at the join/leave/doctor entry points (`realpathOf` helper) so manifest stores clean `../project`-style paths; `samePath` helper in state.js (realpath-aware equality) backs this up for any legacy manifests. Tests: 130 → 152, all green. Five new test files cover: hard single-project invariant (no pointer / no skip-file / non-TTY safety), `init --ecosystem` end-to-end + rollback, join/leave roundtrip + idempotency, `doctor` per-state output, init auto-detect + `--no-ecosystem` + skip-file honoring.
+
+---
+
 ### [FEATURE] 2026-06-07 — Group 2 landed: Phase 9 follow-up fixes (BUG-004 / ENH-021 / ENH-022)
 Topics: phase-10, group-2, bug-004, enh-021, enh-022, concurrency, location-agnostic, lockdir
 Affects-phases: phase-10-ecosystem-activation

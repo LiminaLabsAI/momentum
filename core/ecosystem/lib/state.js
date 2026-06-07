@@ -145,7 +145,7 @@ function matchInManifest(candidateRoot, repoAbs) {
   for (const m of lib.listMembers(manifest)) {
     if (!m || typeof m.path !== 'string') continue;
     const memberAbs = path.resolve(candidateRoot, m.path);
-    if (memberAbs === repoAbs) {
+    if (samePath(memberAbs, repoAbs)) {
       return {
         rootPath: candidateRoot,
         ecosystemName: manifest.name,
@@ -163,6 +163,25 @@ function safeIsFile(p) {
   } catch (_err) {
     return false;
   }
+}
+
+/**
+ * Path equality that's symlink-aware. On macOS `/tmp/foo` and
+ * `/private/tmp/foo` are the same path but compare unequal as strings.
+ * realpathSync collapses both; if either side cannot be realpathed
+ * (missing file) we fall back to a strict string compare.
+ */
+function samePath(a, b) {
+  if (a === b) return true;
+  let ra = a;
+  let rb = b;
+  try {
+    ra = fs.realpathSync(a);
+  } catch (_e) { /* keep original */ }
+  try {
+    rb = fs.realpathSync(b);
+  } catch (_e) { /* keep original */ }
+  return ra === rb;
 }
 
 /**

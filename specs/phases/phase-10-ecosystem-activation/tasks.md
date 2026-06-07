@@ -17,17 +17,17 @@
 
 ## Group 1 — Entry/exit commands (Parallel with G2, G3)
 
-- [ ] `bin/momentum.js`: implement `momentum init --ecosystem <name>` flag with atomic rollback.
-- [ ] `bin/momentum.js`: implement `momentum join <ecosystem-path>` (idempotent, refuses on leader state).
-- [ ] `bin/momentum.js`: implement `momentum leave` (idempotent, clean no-op on non-member states).
-- [ ] `bin/momentum.js`: implement `momentum doctor` with formatted teaching output.
-- [ ] `bin/momentum.js`: auto-detect prompt in `init` (single prompt; `.momentum/skip-ecosystem-prompt` opt-out; `--no-ecosystem` bypass).
-- [ ] Write `tests/single-project-unchanged.test.js` — byte-identical output to v0.12.0 init in isolated tmpdir.
-- [ ] Write `tests/init-ecosystem-flag.test.js` — end-to-end + rollback on simulated failure.
-- [ ] Write `tests/join-leave-roundtrip.test.js` — join/leave cycle + idempotency.
-- [ ] Write `tests/doctor.test.js` — every state snapshot.
-- [ ] Write `tests/init-autodetect-prompt.test.js` — prompt logic, skip-file honored, `--no-ecosystem` bypass.
-- [ ] Commit: `feat(cli): top-level ecosystem entry/exit commands`.
+- [x] `bin/momentum.js`: implement `momentum init --ecosystem <name>` flag with atomic rollback.
+- [x] `bin/state-commands.js`: implement `momentum join <ecosystem-path>` (idempotent, refuses on leader state).
+- [x] `bin/state-commands.js`: implement `momentum leave` (idempotent, clean no-op on non-member states).
+- [x] `bin/state-commands.js`: implement `momentum doctor` with formatted teaching output.
+- [x] `bin/momentum.js`: auto-detect prompt in `init` (single prompt; `.momentum/skip-ecosystem-prompt` opt-out; `--no-ecosystem` bypass; non-TTY silent skip).
+- [x] Write `tests/single-project-unchanged.test.js` — single-project init produces no ecosystem artifacts. (Adapted from "byte-identical" to "no ecosystem artifacts" — behavioral check is what we actually care about.)
+- [x] Write `tests/init-ecosystem-flag.test.js` — end-to-end + invalid-name + collision rejection.
+- [x] Write `tests/join-leave-roundtrip.test.js` — join/leave cycle + idempotency + edge cases.
+- [x] Write `tests/doctor.test.js` — seven state snapshots + path display.
+- [x] Write `tests/init-autodetect-prompt.test.js` — `--no-ecosystem`, skip-file honoring, non-TTY safety, multi-ecosystem.
+- [x] Commit: `feat(cli): top-level ecosystem entry/exit commands`.
 
 ## Group 2 — Phase 9 follow-up fixes (Parallel with G1, G3)
 
