@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-07
-> **Current Phase**: Phase 9 — Ecosystem (Tier 1) (`in-progress`)
-> **Latest Release**: v0.10.0 — Autonomous Execution & TDD
+> **Current Phase**: Phase 10 — Hardening & Activation (`planning pending`)
+> **Latest Release**: v0.12.0 — Ecosystem (Tier 1)
 > **Health**: On Track
 
 ## Summary
@@ -25,12 +25,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 7a | Planning Contracts | Complete | v0.8.0 (2026-05-27) |
 | 7b | Agent Runtime Compatibility | Complete | v0.9.0 (2026-05-28) |
 | 7c | Autonomous Execution & TDD | Complete | v0.10.0 (2026-05-28) |
+| 9 | Ecosystem (Tier 1) | Complete | v0.12.0 (2026-06-07) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 9 | Ecosystem (Tier 1) | In Progress | Groups 0-6 implementation landed on `phase-9-ecosystem-tier1-impl`; 101/101 tests; awaiting `/sync-docs` + `/complete-phase` + release |
+| 10 | Hardening & Activation | Planning pending | brainstorm not yet started |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -60,8 +61,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. Run `/start-phase` to begin Phase 9 — Ecosystem (Tier 1) implementation (target v0.12.0).
-2. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream.
+1. Brainstorm Phase 10 — Hardening & Activation (target v0.13.0). Inputs: systematic-debugging skill, SessionStart auto-activation, persuasion-hardening Rules 1/3/4/5/7/9, ENH-017 project-name preservation across upgrade.
+2. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
+3. Bootstrap a `cerebrio-ecosystem/` repo over the cerebrio constellation to dogfood Phase 9 — retroactively capture the Memory module v1 work (2026-06-05/06) as initiative `0001-memory-module`.
 
 ## Key Decisions Made
 

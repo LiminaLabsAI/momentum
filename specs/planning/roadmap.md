@@ -17,7 +17,7 @@
 | 7b | Agent Runtime Compatibility | **Complete (v0.9.0)** | Adapter Contract v3; Codex adapter MVP (`AGENTS.md`, `.codex/hooks.json`, Codex command recipes); Claude regression coverage; ENH-018 tarball-shape test |
 | 7c | Autonomous Execution & TDD | Not Started (target v0.10.0) | Subagent/autonomous execution engine implementing the autonomy contract from 7a on Adapter Contract v3; TDD opt-in (Rule 13); retry budget per-task |
 | 8 | Parallel Worktree Orchestration | Not Started (target v0.11.0) | Multiple concurrent streams via git worktrees; `momentum worktree-manager` command; branch-per-stream conventions; conflict avoidance; cross-stream status visibility |
-| 9 | Ecosystem (Tier 1) | Planned (target v0.12.0) | Cross-repo ecosystem layer: `ecosystem.json` manifest; initiative concept; auto-logged daily session file; `momentum ecosystem init/add/remove/status` CLI; `/track` ecosystem aggregation; `/initiative` + `/session` slash commands; PostToolUse hook extension. Single-repo momentum unchanged when no ecosystem root is present. |
+| 9 | Ecosystem (Tier 1) | **Complete (v0.12.0)** | Cross-repo ecosystem layer: `ecosystem.json` manifest; initiative concept; auto-logged daily session file; `momentum ecosystem init/add/remove/status` CLI; `/ecosystem` + `/initiative` + `/session` slash commands; PostToolUse hook extension. Single-repo momentum unchanged when no ecosystem root is present. 101/101 tests pass (+37 new). |
 | 10 | Hardening & Activation | Not Started (target v0.13.0) | Full systematic-debugging skill; SessionStart auto-activation (Claude Code); persuasion-hardening Rules 1/3/4/5/7/9 (evidence-permitting); ENH-017 project-name preservation across upgrade |
 | 11 | Reach | Not Started (target v0.14.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
 | 12 | Intelligence | Not Started (target v0.15.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
@@ -69,7 +69,7 @@ Phase 0 (Bootstrap)
 | v0.9.0 — Agent Runtime Compatibility | 7b | Adapter Contract v3; Codex adapter MVP; Claude regression coverage; tarball-shape test |
 | v0.10.0 — Autonomous Execution & TDD | 7c | Autonomous execution engine; TDD opt-in Rule 13; retry budget per-task |
 | v0.11.0 — Parallel Worktree Orchestration | 8 | Multi-stream concurrent development via git worktrees; worktree-manager command; branch-per-stream conventions |
-| v0.12.0 — Ecosystem (Tier 1) | 9 | Cross-repo manifest + initiatives + auto session log + `momentum ecosystem` CLI + `/track` aggregation. Single-repo momentum unchanged. |
+| v0.12.0 — Ecosystem (Tier 1) | 9 | **Released 2026-06-07** — cross-repo manifest + initiatives + auto session log + `momentum ecosystem` CLI + `/ecosystem` / `/initiative` / `/session` slash commands. Single-repo momentum unchanged. 101/101 tests pass. |
 | v0.13.0 — Hardening & Activation | 10 | systematic-debugging skill (full); SessionStart auto-activation; Rules 1/3/4/5/7/9 hardening; ENH-017 |
 | v0.14.0 — Reach | 11 | Cursor + Gemini adapters; ENH-009 distribution decision |
 | v0.15.0 — Intelligence | 12 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |

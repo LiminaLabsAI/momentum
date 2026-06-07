@@ -11,7 +11,7 @@
 | 6 | Adapter Overlay & Verification | Complete (v0.7.0) | [phase-6-overlay-and-verify/](phase-6-overlay-and-verify/) |
 | 7a | Planning Contracts | Complete (v0.8.0) | [phase-7a-planning-contracts/](phase-7a-planning-contracts/) |
 | 7b | Agent Runtime Compatibility | Complete (v0.9.0) | [phase-7b-agent-runtime-compat/](phase-7b-agent-runtime-compat/) |
-| 9 | Ecosystem (Tier 1) | In Progress (target v0.12.0) | [phase-9-ecosystem-tier1/](phase-9-ecosystem-tier1/) |
+| 9 | Ecosystem (Tier 1) | Complete (v0.12.0) | [phase-9-ecosystem-tier1/](phase-9-ecosystem-tier1/) |
 
 ## Phase Structure
 
