@@ -1,0 +1,166 @@
+---
+/**
+ * <SkillsPreview /> — landing section showing 3 slash commands with
+ * code-block previews. Conveys "your agent already knows how to drive
+ * this."
+ */
+const skills = [
+	{
+		command: '/brainstorm-phase',
+		caption: 'Plan the next phase through structured dialogue. Disk writes blocked until you approve.',
+		preview: `> /brainstorm-phase
+
+Reading specs/status.md... Phase 12 just completed.
+Checking backlog... no P0 blockers.
+
+What's the goal of this phase? (one question at a time)
+> _`,
+	},
+	{
+		command: '/start-phase',
+		caption: 'Begin implementation. Autonomous execution per the contract — stops only at merge + release gate.',
+		preview: `> /start-phase
+
+Creating branch phase-13-site-polish...
+Updating status.md... Current Phase → 13.
+Group 0: Mermaid tooling + baseline...     ✓
+Group 1: Landing rewrite...                ✓
+Group 2: Docs deepening...                 ✓
+...`,
+	},
+	{
+		command: '/complete-phase',
+		caption: 'Verify, finalize, tag, publish. The receipts (Rule 12 evidence) get captured into retrospective.md.',
+		preview: `> /complete-phase
+
+Running verification:
+  npm test         → 246/246 ✓
+  linkinator       → 0 broken ✓
+  lighthouse       → 98/96/100/100 ✓
+
+Tagging v0.16.0. npm publish? (y/N) _`,
+	},
+];
+---
+
+<section class="skills-preview" aria-labelledby="skills-heading">
+	<header>
+		<p class="eyebrow">15+ slash commands</p>
+		<h2 id="skills-heading">Your agent already knows how to drive this.</h2>
+		<p class="lead">
+			Phases, backlog, history, doc-sync — all run as slash commands. Three of the
+			most-used:
+		</p>
+	</header>
+
+	<ul class="skill-previews" role="list">
+		{
+			skills.map((s) => (
+				<li class="skill">
+					<header class="skill-head">
+						<code class="skill-cmd">{s.command}</code>
+						<p>{s.caption}</p>
+					</header>
+					<pre class="skill-preview-code">
+						<code>{s.preview}</code>
+					</pre>
+				</li>
+			))
+		}
+	</ul>
+
+	<p class="footer-cta">
+		<a class="cta-link" href="/skills/">Browse all 15+ skills →</a>
+	</p>
+</section>
+
+<style>
+	.skills-preview {
+		margin: 4rem 0;
+	}
+	.skills-preview header {
+		max-width: 42em;
+		margin: 0 0 2rem;
+	}
+	.eyebrow {
+		margin: 0;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--brand-primary);
+	}
+	.skills-preview h2 {
+		margin: 0.5rem 0 0.75rem;
+		font-size: 1.875rem;
+		font-weight: 700;
+		letter-spacing: -0.025em;
+		line-height: 1.2;
+	}
+	.lead {
+		margin: 0;
+		color: var(--brand-text-muted);
+	}
+	.skill-previews {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: 1rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.skill {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 1.25rem;
+		border-radius: 12px;
+		background: var(--brand-surface);
+		border: 1px solid var(--brand-border);
+	}
+	.skill-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+	.skill-cmd {
+		font-family: var(--brand-font-mono);
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--brand-primary);
+		background: transparent;
+		padding: 0;
+		width: max-content;
+	}
+	.skill-head p {
+		margin: 0;
+		color: var(--brand-text-muted);
+		font-size: 0.9rem;
+		line-height: 1.5;
+	}
+	.skill-preview-code {
+		margin: 0;
+		padding: 0.9rem 1rem;
+		border-radius: 8px;
+		background: var(--brand-surface-muted);
+		font-family: var(--brand-font-mono);
+		font-size: 0.78rem;
+		line-height: 1.55;
+		color: var(--brand-text);
+		overflow-x: auto;
+		white-space: pre;
+		flex: 1;
+	}
+	.footer-cta {
+		margin: 1.5rem 0 0;
+	}
+	.cta-link {
+		color: var(--brand-primary);
+		font-weight: 600;
+		text-decoration: none;
+		font-size: 0.95rem;
+	}
+	.cta-link:hover {
+		text-decoration: underline;
+	}
+</style>

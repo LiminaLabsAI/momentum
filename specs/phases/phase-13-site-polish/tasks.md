@@ -25,17 +25,17 @@
 
 ## Group 1 — Landing wholesale rewrite (Parallel with G2, G3, G4)
 
-- [ ] Update Starlight `description` in `astro.config.mjs` → "Spec-driven development for agentic AI"
-- [ ] Update landing `index.mdx` hero tagline → "Spec-driven development for agentic AI"
-- [ ] Fill `PhaseFlow.astro` — 5 nodes (brainstorm / plan / execute / verify / release), brand-indigo arrows, CSS pulse animation, prefers-reduced-motion respected
-- [ ] Section "One workflow, many scales" — fill `Topology.astro`; single repo ↔ ecosystem visual
-- [ ] Section "Multi-repo coordination" — 4 orchestration primitive mini-blocks (scout / dispatch / handoff / continue) + link to `/orchestration/`
-- [ ] Section "The 13 rules" — callout with 3–4 standout rules (Rule 6 / Rule 8 / Rule 12) in compact cards + link to `/rules/`
-- [ ] Section "15+ slash commands" — three code-block previews (`/brainstorm-phase`, `/start-phase`, `/complete-phase`) + link to `/skills/`
-- [ ] Refine existing IDE matrix (flag Cursor / Gemini CLI as Phase 14 shipping)
-- [ ] Refine existing personas (compress copy where possible)
-- [ ] Mobile pass @ 375px — no horizontal scroll; hero SVG scales; all sections single-column
-- [ ] Smoke build green
+- [x] Update Starlight `description` in `astro.config.mjs` → "Spec-driven development for agentic AI…"
+- [x] Update landing `index.mdx` hero tagline → "Spec-driven development for agentic AI."
+- [x] `PhaseFlow.astro` filled — 5 nodes (brainstorm / plan / execute / verify / release), brand arc, animated pulse via animateMotion, prefers-reduced-motion respected
+- [x] Section "One workflow, many scales" — `Topology.astro` rendered (single repo ↔ ecosystem visual; eyebrow + heading + lead + diagram)
+- [x] Section "Multi-repo coordination" — NEW `OrchestrationShowcase.astro` (4 primitive cards: scout / dispatch / handoff / continue with icons + body text + link to `/orchestration/`)
+- [x] Section "The 13 rules" — NEW `RulesCallout.astro` (Rule 6 / Rule 8 / Rule 12 standouts + link to `/rules/`)
+- [x] Section "15+ slash commands" — NEW `SkillsPreview.astro` (3 code-block previews with realistic-looking command output)
+- [x] IDE matrix unchanged (already accurate — Cursor / Gemini CLI flagged as Planned)
+- [x] Personas unchanged from v0.15.0 (still accurate)
+- [/] Mobile pass @ 375px — CSS auto-fit grids responsive by construction; visual confirmation in Group 5
+- [x] Smoke build green: 10 pages, all 5 new sections rendered + PhaseFlow/Topology SVGs inline
 - [ ] Commit Group 1: `feat(site): landing rewrite — agentic AI positioning + feature pillars + animated hero`
 
 ## Group 2 — Concepts + Skills + Rules deepening (Parallel with G1, G3, G4)

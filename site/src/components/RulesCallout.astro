@@ -1,0 +1,143 @@
+---
+/**
+ * <RulesCallout /> — landing section surfacing 3 standout autonomous
+ * rules. Conveys "discipline preserved without enforcement overhead."
+ */
+const standouts = [
+	{
+		num: 6,
+		name: 'Git Lifecycle',
+		blurb:
+			'Feature branch auto-created. Conventional commits. Push silently. NEVER merge to main without your explicit OK.',
+	},
+	{
+		num: 8,
+		name: 'Record Phase History',
+		blurb:
+			'Every meaningful decision, discovery, or scope change lands in history.md the moment it happens. The "why" outlives every session.',
+	},
+	{
+		num: 12,
+		name: 'Verify Before Claim',
+		blurb:
+			'No completion without evidence. Run the test, read the output, mark done only if the output shows pass. Closes the most common "should work now" failure mode.',
+	},
+];
+---
+
+<section class="rules-callout" aria-labelledby="rules-heading">
+	<header>
+		<p class="eyebrow">The 13 rules</p>
+		<h2 id="rules-heading">Discipline preserved — without enforcement overhead.</h2>
+		<p class="lead">
+			Thirteen autonomous behaviors your agent follows in the background. Three of
+			the highest-leverage:
+		</p>
+	</header>
+
+	<ol class="rules-list" reversed>
+		{
+			standouts.map((rule) => (
+				<li>
+					<article class="rule">
+						<header class="rule-head">
+							<span class="rule-num" aria-hidden="true">
+								Rule {rule.num}
+							</span>
+							<h3>{rule.name}</h3>
+						</header>
+						<p>{rule.blurb}</p>
+					</article>
+				</li>
+			))
+		}
+	</ol>
+
+	<p class="footer-cta">
+		<a class="cta-link" href="/rules/">All 13 rules with full text + red flags →</a>
+	</p>
+</section>
+
+<style>
+	.rules-callout {
+		margin: 4rem 0;
+	}
+	.rules-callout header {
+		max-width: 42em;
+		margin: 0 0 2rem;
+	}
+	.eyebrow {
+		margin: 0;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--brand-primary);
+	}
+	.rules-callout h2 {
+		margin: 0.5rem 0 0.75rem;
+		font-size: 1.875rem;
+		font-weight: 700;
+		letter-spacing: -0.025em;
+		line-height: 1.2;
+	}
+	.lead {
+		margin: 0;
+		color: var(--brand-text-muted);
+	}
+	.rules-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.rule {
+		padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+		border-radius: 12px;
+		background: var(--brand-surface);
+		border: 1px solid var(--brand-border);
+		border-left: 3px solid var(--brand-primary);
+		height: 100%;
+	}
+	.rule-head {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin: 0 0 0.5rem;
+	}
+	.rule-num {
+		font-family: var(--brand-font-mono);
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: var(--brand-primary);
+		background: var(--brand-primary-soft);
+		padding: 0.18rem 0.55rem;
+		border-radius: 999px;
+		letter-spacing: 0.04em;
+	}
+	.rule h3 {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.rule p {
+		margin: 0;
+		color: var(--brand-text-muted);
+		font-size: 0.93rem;
+		line-height: 1.55;
+	}
+	.footer-cta {
+		margin: 1.5rem 0 0;
+	}
+	.cta-link {
+		color: var(--brand-primary);
+		font-weight: 600;
+		text-decoration: none;
+		font-size: 0.95rem;
+	}
+	.cta-link:hover {
+		text-decoration: underline;
+	}
+</style>

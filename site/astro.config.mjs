@@ -45,7 +45,7 @@ export default defineConfig({
 		starlight({
 			title: 'momentum',
 			description:
-				'Spec-driven discipline for AI-assisted coding. Works with Claude Code, Codex, Antigravity, and more.',
+				'Spec-driven development for agentic AI. Phases, decisions, history, backlog — first-class state across any AI IDE.',
 			logo: {
 				src: './src/assets/logo/wordmark.svg',
 				replacesTitle: true,

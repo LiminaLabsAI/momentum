@@ -1,9 +1,9 @@
 ---
 title: momentum
-description: Spec-driven discipline for AI-assisted coding. Works with Claude Code, Codex, Antigravity, and more.
+description: Spec-driven development for agentic AI. Phases, decisions, history, backlog — first-class state across any AI IDE.
 template: splash
 hero:
-  tagline: Spec-driven discipline for AI-assisted coding.
+  tagline: Spec-driven development for agentic AI.
   actions:
     - text: Get started
       link: /getting-started/
@@ -15,40 +15,52 @@ hero:
       variant: minimal
 ---
 
-import Hero from '../../components/Hero.astro';
+import PhaseFlow from '../../components/diagrams/PhaseFlow.astro';
+import Topology from '../../components/diagrams/Topology.astro';
 import IDEMatrix from '../../components/IDEMatrix.astro';
 import FeatureGrid from '../../components/FeatureGrid.astro';
 import InstallSnippet from '../../components/InstallSnippet.astro';
 import Personas from '../../components/Personas.astro';
+import OrchestrationShowcase from '../../components/OrchestrationShowcase.astro';
+import RulesCallout from '../../components/RulesCallout.astro';
+import SkillsPreview from '../../components/SkillsPreview.astro';
 
 <div class="lead-block">
 
-momentum is an **open-source toolkit** that gives every project a structured
-workflow: phase planning, backlog tracking, history logging, doc sync, and
-git discipline — all driven by slash commands your AI coding agent runs
-automatically. Every decision recorded. Every phase planned. Every release
-tagged.
+momentum gives every project — and every ecosystem of projects — a **structured
+workflow** your AI coding agent runs automatically. Phases planned. Decisions
+recorded. History append-only. Backlog tracked. Doc sync at completion.
+Git discipline enforced. The state that outlives any single session.
 
 <InstallSnippet />
 
 </div>
 
+<PhaseFlow />
+
 <IDEMatrix />
+
+<section class="scales" aria-labelledby="scales-heading">
+
+## One workflow, many scales
+
+<p class="section-lead">
+Single-project usage is the default. When you have related repos that need
+to coordinate, ecosystem mode lets <strong>one agent session</strong> work
+across all of them — no context switching, full ecosystem awareness, every
+member's per-repo discipline preserved.
+</p>
+
+<Topology />
+
+</section>
+
+<OrchestrationShowcase />
 
 <FeatureGrid />
 
+<RulesCallout />
+
+<SkillsPreview />
+
 <Personas />
-
-<section class="landing-closing">
-
-## One repo or many
-
-Single-project usage is the default. Run `momentum init` in any directory and
-get a complete workflow — no ecosystem files, no cross-repo state. When you
-need to coordinate across multiple related projects, ecosystem mode lets one
-agent session orchestrate them together without losing momentum's per-repo
-tracking discipline.
-
-[Read the ecosystem quickstart →](/ecosystem/)
-
-</section>
