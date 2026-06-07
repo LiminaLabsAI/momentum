@@ -53,7 +53,7 @@
       "topics": ["phase-10", "ecosystem-activation", "dual-mode", "entry-exit", "join", "leave", "doctor", "init-ecosystem", "auto-detect", "single-project-invariant", "phase-9-followup", "session-log-race", "location-agnostic", "max-parent-walk", "sibling-walk", "readme-rewrite", "product-positioning", "decision-tree", "supported-agents-matrix", "adapter-smoke-matrix", "capability-flag-audit", "adapter-capabilities", "realpath-normalization"]
     },
     "phase-11-orchestration-handover": {
-      "status": "planned",
+      "status": "in-progress",
       "topics": ["phase-11", "orchestration", "scout", "dispatch", "handoff", "continue", "context-handover", "sessionstart-hook", "auto-greet", "inbox", "capability-routing", "graceful-degradation", "cli-floor", "natural-language-inference", "three-doors", "live-narration", "event-stream", "tracking-contract", "meaningful-context", "no-orchestration-noise", "synthesis", "parallel-fanout", "sequential-fallback", "enh-023", "enh-024", "capability-flag-unification"]
     }
   }
