@@ -341,6 +341,48 @@ module.exports = {
 
 Root instruction files and config files are adapter-owned. Do not put Claude Code-specific conventions in `core/`, and do not reduce Claude Code behavior to match another agent. Add the other agent's behavior in its adapter.
 
+## Ecosystems — Multi-Repo Coordination (Tier 1, v0.12.0+)
+
+Single-repo momentum gives one project its own phase/backlog/history. When work spans multiple momentum-installed repos in one session — backend + frontend + infra all participating in a launch, say — the **ecosystem layer** threads them into a coherent unit without owning any of them.
+
+```
+<parent>/
+├── cerebrio-ecosystem/         ← its own git repo, holds the manifest
+│   ├── ecosystem.json
+│   ├── initiatives/0001-memory-module.md
+│   └── sessions/2026-06-07.md
+├── cerebrio-sapience/          ← member: backend
+├── cerebrio-frontend/          ← member: client
+└── cerebrio-infra/             ← member: infra
+```
+
+### Quick start
+
+```bash
+# In the parent directory:
+mkdir myproduct-ecosystem && cd myproduct-ecosystem
+momentum ecosystem init myproduct
+momentum ecosystem add ../my-backend  --role platform --id backend
+momentum ecosystem add ../my-frontend --role client   --id frontend
+momentum ecosystem add ../my-infra    --role infra    --id infra
+momentum ecosystem status
+```
+
+### What you get
+
+- **`ecosystem.json`** — single source of truth for who's in the constellation, their roles, and dependency edges. Replaces hand-maintained "Repo Map" tables.
+- **Initiatives** — `initiatives/NNNN-<slug>.md`, one per cross-repo feature. Frontmatter declares status, repos, owner; body has fixed sections (Why / Per-repo contributions / Linked decisions / Deploy chronology / Close).
+- **Daily session log** — `sessions/YYYY-MM-DD.md` auto-appended by each member's PostToolUse hook on `git commit` or `gh pr` events. Reconstructable in one read.
+- **Slash commands** — `/ecosystem` for membership operations, `/initiative` for cross-repo features, `/session log` for narrative entries.
+
+### Strictly additive
+
+- Member repos' `specs/` are never modified.
+- The only touch on a member is one fenced line at the top of its `CLAUDE.md` / `AGENTS.md`.
+- Outside an ecosystem, `momentum` works exactly as before — no behavior change.
+
+See `specs/architecture/ecosystem.md` (in any momentum-installed project after v0.12.0) for the full reference, and the `/ecosystem` command recipe for the agent-facing surface.
+
 ## Contributing
 
 This repo is itself a momentum project. See `specs/status.md` for the current phase and `specs/backlog/backlog.md` for open items.
