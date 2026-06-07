@@ -97,7 +97,7 @@ Scout returns a `ScoutResult`:
 
 ### When to reach for `scout`
 
-- Before you draft a cross-repo PR or initiative — know what the other repo's
+- Before you draft a cross-project PR or initiative — know what the other repo's
   current state is.
 - When the user asks "what's going on with repo-x?" and you don't want to
   invent an answer.
@@ -112,7 +112,7 @@ Scout returns a `ScoutResult`:
 
 ---
 
-## `dispatch` — parallel multi-repo fan-out {#dispatch}
+## `dispatch` — parallel multi-project fan-out {#dispatch}
 
 When the question genuinely spans multiple repos and you need each to answer
 **at the same time**, with the originating agent synthesizing the result.
@@ -186,7 +186,7 @@ explanation.
 
 - When the question genuinely depends on N repos' state and synthesis adds
   value over per-repo scouts.
-- For multi-repo refactors where you need to know which member has the
+- For multi-project refactors where you need to know which member has the
   pattern and which has the gap.
 - When you'd otherwise be tempted to open N parallel agent sessions and
   manually compare notes.
@@ -194,7 +194,7 @@ explanation.
 ### When NOT to reach for `dispatch`
 
 - When you only need ONE repo's state — use `scout`.
-- When the work requires **coordinated writes** across repos — better to
+- When the work requires **coordinated writes** across projects — better to
   scout, then hand off, then write per-repo.
 
 ---
@@ -320,7 +320,7 @@ Findings worth a future reader's time land in the target repo's `backlog.md`
 or `history.md` — but **only when meaningful**. Orchestration metadata never
 pollutes curated docs. This is non-negotiable.
 
-The discipline isn't in the way; it's the point. Without it, multi-repo work
+The discipline isn't in the way; it's the point. Without it, multi-project work
 is just N agent sessions losing track of each other — which is the exact
 failure mode momentum exists to prevent.
 

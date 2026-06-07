@@ -14,7 +14,7 @@ The primitives are deliberately separate:
   current phase.
 - **History** is the append-only record of *why* decisions were made.
 - **ADRs** are the deeper context for structural decisions.
-- **Ecosystem mode** is the optional layer for cross-repo coordination.
+- **Ecosystem mode** is the optional layer for cross-project coordination.
 
 Each is a file (or a small set of files) on disk. The agent reads and writes
 them as part of the standard workflow. Humans read them too — that's the
@@ -229,7 +229,7 @@ later phase's history, promote it to an ADR then.
 
 ## Ecosystem mode
 
-The optional layer for cross-repo coordination. When you have multiple
+The optional layer for cross-project coordination. When you have multiple
 related projects, ecosystem mode adds:
 
 - A shared **ecosystem manifest** (`ecosystem.json`)

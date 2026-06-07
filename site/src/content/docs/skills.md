@@ -211,7 +211,7 @@ defaults.
 
 ### `/initiative`
 
-Manage cross-repo initiatives. A single feature that spans more than one
+Manage cross-project initiatives. A single feature that spans more than one
 member repo gets one initiative file at `<eco-root>/initiatives/NNNN-slug.md`.
 [→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/initiative.md)
 
@@ -230,7 +230,7 @@ summary; writes a scout artifact for later reference.
 
 ### `/dispatch`
 
-Parallel multi-repo fan-out + synthesis. One sub-agent per listed repo with
+Parallel multi-project fan-out + synthesis. One sub-agent per listed repo with
 auto-tailored prompts. Originating agent synthesizes the answer from the
 structured results.
 **[Deep dive →](/orchestration/#dispatch)**

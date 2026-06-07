@@ -257,6 +257,6 @@ Let the workflow remove it.
 - [Rules](/rules/) — the 13 autonomous agent rules with full text + red
   flags + counters.
 - [IDE support](/ide-support/) — per-agent setup details and hook compatibility.
-- [Ecosystem mode](/ecosystem/) — when and how to coordinate across repos.
+- [Ecosystem mode](/ecosystem/) — when and how to coordinate across projects.
 - [Orchestration](/orchestration/) — scout / dispatch / handoff / continue
-  for cross-repo work.
+  for cross-project work.

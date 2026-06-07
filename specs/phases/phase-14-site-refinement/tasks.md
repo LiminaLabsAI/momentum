@@ -51,16 +51,18 @@
 
 ## Group 3 — Terminology shift (Parallel with G1, G2, G4, G5)
 
-- [ ] Sidebar group title in `astro.config.mjs`: "Multi-repo coordination" → "Multi-project coordination"
-- [ ] Landing pillar / `OrchestrationShowcase.astro` heading → "Work across multiple projects"
-- [ ] `concepts.md` — "across repos" → "across projects" in positioning prose
-- [ ] `ecosystem.mdx` — same
-- [ ] `orchestration.md` — same
-- [ ] `about.md` — same
-- [ ] `faq.md` — same
-- [ ] CLI / git contexts left unchanged (audit): `git commit/push/branch`, GitHub URLs, literal `repo-x` placeholders in CLI examples
-- [ ] Audit: `grep -ri "multi-repo\|cross-repo coordination"` in `site/src/content/docs/` + `site/astro.config.mjs` + `site/src/components/` returns 0 hits in non-git contexts
-- [ ] Smoke build green
+- [x] Sidebar group title in `astro.config.mjs`: "Multi-repo coordination" → "Multi-project coordination"
+- [x] Landing pillar / `OrchestrationShowcase.astro` heading eyebrow → "Multi-project coordination"
+- [x] `concepts.md` — multi-repo → multi-project; across repos → across projects (sed batch)
+- [x] `ecosystem.mdx` — same (description + body)
+- [x] `orchestration.md` — same
+- [x] `about.md` — same + "What's next" roadmap table renumbered (15 Reach / 16 Intelligence / 17 Platform)
+- [x] `rules.md` — "Multi-repo projects (cross-repo guard)" → "Multi-project projects (cross-project guard)" (sed batch)
+- [x] `skills.md` — same
+- [x] `getting-started.md` — same
+- [x] CLI / git contexts unchanged: `git commit/push/branch`, GitHub URLs, literal `repo-x` in CLI examples (audit confirms)
+- [x] Audit: `grep -rn "multi-repo\|cross-repo\|across repos\|Multi-repo"` in `site/src/content/docs/` + `site/src/components/` + `astro.config.mjs` returns ZERO non-git hits
+- [x] Smoke build green
 - [ ] Commit Group 3: `refactor(site): repo → project in positioning copy`
 
 ## Group 4 — Ecosystem ↔ Orchestration clarity (Parallel with G1, G2, G3, G5)

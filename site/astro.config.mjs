@@ -134,7 +134,7 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'Multi-repo coordination',
+					label: 'Multi-project coordination',
 					items: [
 						{ label: 'Ecosystem mode', slug: 'ecosystem' },
 						{ label: 'Orchestration', slug: 'orchestration' },

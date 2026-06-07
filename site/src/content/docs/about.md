@@ -119,7 +119,7 @@ Spec-driven development gives the agent context that outlives any single
 session. The agent reads `status.md` at session start (Rule 1). The agent
 records why it chose path A over path B (Rule 8). The agent verifies before
 claiming done (Rule 12). The agent doesn't pollute curated docs with
-orchestration noise (Rule 9). The agent works across repos when the task
+orchestration noise (Rule 9). The agent works across projects when the task
 genuinely spans them, and not when it doesn't (orchestration primitives).
 
 The discipline is the differentiator. The toolkit is the implementation.
@@ -134,9 +134,9 @@ Near-term phases:
 
 | Phase | Theme |
 |---|---|
-| **14** | Reach — Cursor + Gemini CLI adapters; distribution decision |
-| **15** | Intelligence — self-learning hooks; retrospective-driven rule evolution; self-healing |
-| **16** | Platform — MCP server; `/specify` auto-spec; `/decide` ADR creation; skill authoring; ecosystem Tier 2 |
+| **15** | Reach — Cursor + Gemini CLI adapters; distribution decision |
+| **16** | Intelligence — self-learning hooks; retrospective-driven rule evolution; self-healing |
+| **17** | Platform — MCP server; `/specify` auto-spec; `/decide` ADR creation; skill authoring; ecosystem Tier 2 |
 
 The build is incremental on purpose. Every phase ships a release; every
 release is a coherent story; every story builds on what shipped before.
