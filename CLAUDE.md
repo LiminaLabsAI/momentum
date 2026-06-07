@@ -336,15 +336,30 @@ Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that d
 > Add project-specific navigation, rules, cross-repo references, etc. here.
 > Anything above this heading is managed by momentum and may be replaced on upgrade.
 
-### Project-Specific: npm Publish on Every Release
+### Project-Specific: Release Checklist (After `git tag` + `git push <tag>`)
 
-momentum is itself an npm package. After every `/complete-phase` release, run:
-```bash
-npm publish --access public
-```
-This is project-specific — it is NOT part of the global `/complete-phase` command.
+Every release MUST do **all three** of these — missing any one leaves the release incomplete:
 
-Approval required: `npm publish` is a "shared system" action — never run it without an explicit user OK.
+1. **`gh release create <tag>`** — create the GitHub Release with notes drawn from the phase retrospective. Mark the newest as `--latest`. Without this, the tag exists at `/tags` but not at `/releases`, and users browsing the project see stale "Latest release" badges.
+
+   ```bash
+   gh release create v0.X.Y \
+     --title "v0.X.Y — Phase N: <phase name>" \
+     --notes "<retrospective summary with highlights + verification + acceptance>" \
+     --latest --verify-tag
+   ```
+
+2. **`npm publish --access public`** — momentum is an npm package. Skip this and the registry stays on the previous version.
+
+3. **Verify both surfaces are live** —
+   - `gh release list --limit 3` shows the new release as `Latest`.
+   - `npm view @avinash-singh-io/momentum version` returns the new version.
+
+**Approval required**: Both `gh release create` and `npm publish` are "shared system" actions — never run either without explicit user OK.
+
+**Both steps are project-specific** — neither is in the global `/complete-phase` command yet. Filed as ENH-030 to add `gh release create` to the upstream template; until that lands, this checklist is the contract.
+
+**Self-audit (catches missed releases):** at session start in this repo, compare `git tag -l` against `gh release list`. If there's a tag without a matching release, surface it immediately.
 
 ### Project-Specific Constraint
 
