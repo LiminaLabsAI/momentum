@@ -69,7 +69,7 @@
       "topics": ["phase-14", "site-refinement", "positioning-pivot", "agentic-ai", "remark-heading-id", "anchor-syntax", "mermaid-dark-mode", "phaseflow-animation", "ecosystem-mdx", "state-layer", "action-layer", "state-action-layers", "ecosystem-orchestration-clarity", "repo-to-project", "multi-project", "terminology-shift", "two-tone-logo", "concentric-arcs", "velocity-arrow-retired", "readme-rewrite", "github-readme", "release-checklist", "gh-release-create", "v0-17-0"]
     },
     "phase-15-ecosystem-discoverability": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["phase-15", "ecosystem", "agent-discoverability", "orchestration", "managed-claude-md", "pointer-block", "pointer-version", "session-start-hook", "ecosystem-context-banner", "dispatch-cli", "degraded-mode", "mode-notice", "initiative-create-cli", "enh-025", "v0-18-0"]
     }
   }

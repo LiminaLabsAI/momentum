@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-08
-> **Current Phase**: Phase 15 — Ecosystem Agent Discoverability (in progress)
-> **Latest Release**: v0.17.0 — Site Refinement & Positioning Pivot
+> **Current Phase**: (between phases — Phase 16 Reach planning pending)
+> **Latest Release**: v0.18.0 — Ecosystem Agent Discoverability
 > **Health**: On Track
 
 ## Summary
@@ -31,13 +31,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 12 | Public Site | Complete | v0.15.0 (2026-06-08) |
 | 13 | Site Polish & Content Depth | Complete | v0.16.0 (2026-06-08) |
 | 14 | Site Refinement & Positioning Pivot | Complete | v0.17.0 (2026-06-08) |
-| 15 | Ecosystem Agent Discoverability | In Progress | target v0.18.0 |
+| 15 | Ecosystem Agent Discoverability | Complete | v0.18.0 (2026-06-08) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 15 | Ecosystem Agent Discoverability | In Progress | Group 0 scaffolding in flight |
+| _(between phases)_ | Phase 15 released as v0.18.0 on 2026-06-08. Phase 16 (Reach) planning pending. | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -74,12 +74,12 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Execute Phase 15 — Ecosystem Agent Discoverability** (target v0.18.0). G1–G5 in parallel (managed ecosystem CLAUDE.md / action-bearing pointer block / SessionStart ecosystem banner / dispatch CLI upfront notice / `initiative create` CLI), then G6 tests, then G7 release.
-2. **`/brainstorm-phase` Phase 16 — Reach** (target v0.19.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
-3. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
-4. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
-5. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
-6. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
+1. **`/brainstorm-phase` Phase 16 — Reach** (target v0.19.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
+2. **cerebrio dogfood (post-v0.13.0 user action — still pending; now with Phase 15 fixes ready).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. New: this run produces a managed CLAUDE.md / AGENTS.md at the ecosystem root (ENH-025) and v=2 action-bearing pointer blocks in each member (ENH-032).
+3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
+4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
+5. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
+6. Per-adapter explicit Codex / Antigravity validation for the Phase 15 fixes (currently shared core; explicit per-adapter smoke deferred from Phase 15 scope).
 
 ## Key Decisions Made
 
