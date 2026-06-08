@@ -1,22 +1,118 @@
 #!/usr/bin/env bash
-# SessionStart hook — handoff auto-greet.
+# SessionStart hook — momentum context + handoff auto-greet.
 #
-# When a new agent session starts in a momentum-managed repo, this
-# script detects pending handoffs in `.momentum/inbox/handoff-*.md` and
-# prints a one-line banner per pending handoff. Final line prompts the
-# user `Read now? [y/skip]`; on `y` the script exits 10 to signal the
-# adapter that the next agent action should be `/continue` (or
-# `momentum continue`). On any other input or non-TTY runs, exits 0
-# silently — the handoff stays in the inbox until the user runs
-# `/continue` themselves.
+# Two banners, printed in this order to stderr:
+#
+#   1. Ecosystem context (ENH-033, Phase 15) — when CWD is reachable
+#      from an ecosystem.json (parent walk + sibling scan), one or two
+#      lines naming the ecosystem, member count, and active initiative.
+#
+#   2. Handoff inbox — when `.momentum/inbox/handoff-*.md` exists, one
+#      line per pending handoff. Final line prompts the user
+#      `Read now? [y/skip]`; on `y` the script exits 10 to signal the
+#      adapter that the next agent action should be `/continue` (or
+#      `momentum continue`). On any other input or non-TTY runs, exits
+#      0 silently — the handoff stays in the inbox until the user runs
+#      `/continue` themselves.
+#
+# Both banners are silent when not relevant. Total cost target <100ms.
 #
 # Adapter wiring:
 #   - Claude Code:  .claude/settings.json SessionStart entry → this script
 #   - Codex:        .codex/hooks.json SessionStart entry → this script
-#   - Antigravity:  no SessionStart hook surface; banner ships via
+#   - Antigravity:  no SessionStart hook surface; banners ship via
 #                   primary instruction text (see overlay).
 
 set -eu
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Banner 1 — Ecosystem context (ENH-033)
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Mirror the parent-walk + sibling-scan algorithm from
+# core/ecosystem/scripts/session-append.sh so what the session log
+# considers "the reachable ecosystem" is what the SessionStart banner
+# announces.
+
+find_ecosystem_root() {
+  local current="$PWD"
+  local depth=0
+  local max_depth="${MOMENTUM_MAX_PARENT_WALK:-5}"
+  case "$max_depth" in
+    ''|*[!0-9]*) max_depth=5 ;;
+  esac
+  while [ $depth -le $max_depth ]; do
+    # Same-directory check (caller might already be in ecosystem root)
+    if [ -f "$current/ecosystem.json" ]; then
+      echo "$current"
+      return 0
+    fi
+    # Sibling check
+    local parent
+    parent=$(dirname "$current")
+    if [ "$parent" = "$current" ]; then return 1; fi
+    for sibling in "$parent"/*; do
+      if [ -d "$sibling" ] && [ -f "$sibling/ecosystem.json" ]; then
+        echo "$sibling"
+        return 0
+      fi
+    done
+    current="$parent"
+    depth=$((depth + 1))
+  done
+  return 1
+}
+
+# Best-effort: silent on any failure so a broken ecosystem.json never
+# blocks the session.
+ECO_ROOT="$(find_ecosystem_root 2>/dev/null || true)"
+
+if [ -n "${ECO_ROOT:-}" ] && [ -f "$ECO_ROOT/ecosystem.json" ]; then
+  # Extract name + member count. Prefer python3 for JSON parsing; fall
+  # back to grep/sed when python3 isn't available (rare but possible).
+  if command -v python3 >/dev/null 2>&1; then
+    eco_summary=$(python3 - "$ECO_ROOT/ecosystem.json" <<'PY' 2>/dev/null || echo ""
+import sys, json
+try:
+    with open(sys.argv[1]) as f:
+        m = json.load(f)
+    name = m.get("name", "(unnamed)")
+    members = len(m.get("members", []) or [])
+    print(f"{name}\t{members}")
+except Exception:
+    pass
+PY
+)
+  else
+    # Crude fallback — extract `"name": "..."` and count `"id":` entries.
+    eco_name=$(sed -nE 's/.*"name"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/p' "$ECO_ROOT/ecosystem.json" | head -1)
+    eco_members=$(grep -cE '"id"[[:space:]]*:' "$ECO_ROOT/ecosystem.json" || echo 0)
+    eco_summary="${eco_name:-(unnamed)}	${eco_members}"
+  fi
+
+  if [ -n "${eco_summary:-}" ]; then
+    eco_name=$(printf '%s' "$eco_summary" | cut -f1)
+    eco_members=$(printf '%s' "$eco_summary" | cut -f2)
+    if [ "$eco_members" = "1" ]; then
+      plural=""
+    else
+      plural="s"
+    fi
+    printf '▸ Ecosystem: %s (%s member%s)\n' "$eco_name" "$eco_members" "$plural" >&2
+
+    # Active initiative line (only when set).
+    if [ -f "$ECO_ROOT/.state/active-initiative" ]; then
+      active=$(tr -d '\n' < "$ECO_ROOT/.state/active-initiative" 2>/dev/null | head -c 200)
+      if [ -n "$active" ]; then
+        printf '▸ Active initiative: %s\n' "$active" >&2
+      fi
+    fi
+  fi
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Banner 2 — Handoff inbox (existing behaviour)
+# ─────────────────────────────────────────────────────────────────────────────
 
 INBOX_DIR=".momentum/inbox"
 

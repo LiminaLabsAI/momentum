@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-06-08-phase-14-start",
+  "updated": "2026-06-08-phase-15-start",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -67,6 +67,10 @@
     "phase-14-site-refinement": {
       "status": "complete",
       "topics": ["phase-14", "site-refinement", "positioning-pivot", "agentic-ai", "remark-heading-id", "anchor-syntax", "mermaid-dark-mode", "phaseflow-animation", "ecosystem-mdx", "state-layer", "action-layer", "state-action-layers", "ecosystem-orchestration-clarity", "repo-to-project", "multi-project", "terminology-shift", "two-tone-logo", "concentric-arcs", "velocity-arrow-retired", "readme-rewrite", "github-readme", "release-checklist", "gh-release-create", "v0-17-0"]
+    },
+    "phase-15-ecosystem-discoverability": {
+      "status": "in-progress",
+      "topics": ["phase-15", "ecosystem", "agent-discoverability", "orchestration", "managed-claude-md", "pointer-block", "pointer-version", "session-start-hook", "ecosystem-context-banner", "dispatch-cli", "degraded-mode", "mode-notice", "initiative-create-cli", "enh-025", "v0-18-0"]
     }
   }
 }

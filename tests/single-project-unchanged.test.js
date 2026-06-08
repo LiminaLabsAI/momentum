@@ -33,7 +33,7 @@ test('momentum init — single-project use produces no ecosystem artifacts', () 
     // CLAUDE.md must NOT contain a pointer block.
     const claudeMd = fs.readFileSync(path.join(project, 'CLAUDE.md'), 'utf8');
     assert.ok(
-      !claudeMd.includes('<!-- ecosystem:begin -->'),
+      !claudeMd.includes('<!-- ecosystem:begin'),
       'single-project init must NOT inject a pointer block',
     );
 
@@ -68,7 +68,7 @@ test('momentum init --no-ecosystem — bypass with no sibling ecosystem is a no-
     // Behavior identical to the prior test — bypassing a prompt that
     // wouldn't have fired anyway is fine.
     const claudeMd = fs.readFileSync(path.join(project, 'CLAUDE.md'), 'utf8');
-    assert.ok(!claudeMd.includes('<!-- ecosystem:begin -->'));
+    assert.ok(!claudeMd.includes('<!-- ecosystem:begin'));
   } finally {
     rmrf(tmp);
   }
@@ -95,7 +95,7 @@ test('momentum init — adjacent ecosystem present, non-TTY: auto-detect silentl
 
     // No pointer block, no skip file — non-interactive: silent skip.
     const claudeMd = fs.readFileSync(path.join(project, 'CLAUDE.md'), 'utf8');
-    assert.ok(!claudeMd.includes('<!-- ecosystem:begin -->'));
+    assert.ok(!claudeMd.includes('<!-- ecosystem:begin'));
     assert.ok(
       !fs.existsSync(path.join(project, '.momentum', 'skip-ecosystem-prompt')),
       'non-TTY init should NOT write skip file (next interactive run can still prompt)',

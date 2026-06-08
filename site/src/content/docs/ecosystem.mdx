@@ -91,6 +91,12 @@ This creates `../my-eco/` as a sibling git repo, scaffolds the manifest +
 initiatives + sessions dirs, and registers the current project as the
 first member.
 
+The ecosystem root also gets its own managed `CLAUDE.md` + `AGENTS.md`
+(written by `init`) telling agents at session start that they're in a
+**coordination layer**, not a project — so they reach for the orchestration
+primitives instead of accidentally hand-authoring planning files in the
+wrong layer.
+
 ### Add subsequent members
 
 ```bash
@@ -125,10 +131,30 @@ Per-project work continues unchanged.
 
 ## Initiatives — cross-project features
 
-When a feature genuinely spans multiple repos, write an **initiative file** at
+When a feature genuinely spans multiple repos, create an **initiative file** at
 `<eco-root>/initiatives/NNNN-<slug>.md`. The initiative captures cross-project
 context: which members are involved, what each member's role is, dependency
 order, links to per-member phases or PRs.
+
+Create one via CLI (non-interactive — works from any agent context):
+
+```bash
+momentum ecosystem initiative create memory-v1 \
+  --why "ship persistent memory across backend + SDK + CLI" \
+  --repos sapience,sdk,cli \
+  --owner avinash
+```
+
+Or via the slash door (same code path, agent-friendly):
+
+```
+/initiative create memory-v1
+```
+
+The created file scaffolds frontmatter (id, slug, status, started, owner,
+repos) plus the fixed sections below. The new initiative is also set as the
+**active initiative** so the SessionStart hook surfaces it on every new agent
+session in the ecosystem.
 
 ```markdown
 # Initiative 0001 — Memory module v1

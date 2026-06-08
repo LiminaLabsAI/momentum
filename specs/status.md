@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-08
-> **Current Phase**: (between phases — Phase 15 Reach planning pending)
+> **Current Phase**: Phase 15 — Ecosystem Agent Discoverability (in progress)
 > **Latest Release**: v0.17.0 — Site Refinement & Positioning Pivot
 > **Health**: On Track
 
@@ -31,12 +31,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 12 | Public Site | Complete | v0.15.0 (2026-06-08) |
 | 13 | Site Polish & Content Depth | Complete | v0.16.0 (2026-06-08) |
 | 14 | Site Refinement & Positioning Pivot | Complete | v0.17.0 (2026-06-08) |
+| 15 | Ecosystem Agent Discoverability | In Progress | target v0.18.0 |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 14 released as v0.17.0 on 2026-06-08. Phase 15 (Reach) planning pending. | | |
+| 15 | Ecosystem Agent Discoverability | In Progress | Group 0 scaffolding in flight |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -47,9 +48,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 15 | Reach | Not Started (target v0.18.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 16 | Intelligence | Not Started (target v0.19.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 17 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 16 | Reach | Not Started (target v0.19.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 17 | Intelligence | Not Started (target v0.20.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 18 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -73,11 +74,12 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 15 — Reach** (target v0.18.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
-4. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
-5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
-6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
-7. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
+1. **Execute Phase 15 — Ecosystem Agent Discoverability** (target v0.18.0). G1–G5 in parallel (managed ecosystem CLAUDE.md / action-bearing pointer block / SessionStart ecosystem banner / dispatch CLI upfront notice / `initiative create` CLI), then G6 tests, then G7 release.
+2. **`/brainstorm-phase` Phase 16 — Reach** (target v0.19.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
+3. **cerebrio dogfood (post-v0.13.0 user action — still pending).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. Pointer-block updates land via separate per-repo `chore/ecosystem-pointer` PRs.
+4. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
+5. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
+6. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
 
 ## Key Decisions Made
 

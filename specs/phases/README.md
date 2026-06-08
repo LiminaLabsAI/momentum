@@ -17,6 +17,7 @@
 | 12 | Public Site | Complete (v0.15.0) | [phase-12-public-site/](phase-12-public-site/) |
 | 13 | Site Polish & Content Depth | Complete (v0.16.0) | [phase-13-site-polish/](phase-13-site-polish/) |
 | 14 | Site Refinement & Positioning Pivot | Complete (v0.17.0) | [phase-14-site-refinement/](phase-14-site-refinement/) |
+| 15 | Ecosystem Agent Discoverability | In Progress (target v0.18.0) | [phase-15-ecosystem-discoverability/](phase-15-ecosystem-discoverability/) |
 
 ## Phase Structure
 
