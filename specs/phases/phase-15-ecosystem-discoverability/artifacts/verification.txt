@@ -1,0 +1,100 @@
+Phase 15 — Verification Evidence
+================================
+
+Date: 2026-06-08
+Branch: phase-15-ecosystem-discoverability
+
+1. `npm test` — 288/288 PASS
+---------------------------
+
+Captured from final run after all G1–G5 changes landed + test helper updated to
+substring-match the pointer-block sentinel for v=1/v=2 compatibility.
+
+  # tests 288
+  # suites 0
+  # pass 288
+  # fail 0
+  # cancelled 0
+  # skipped 0
+  # todo 0
+  # duration_ms ~22000
+
+New tests added in this phase (+34 over prior baseline 254):
+
+  tests/ecosystem-init-claude-md.test.js          — 8 subtests (G1, ENH-025)
+  tests/pointer-block-content.test.js             — 8 subtests (G2, ENH-032)
+  tests/sessionstart-ecosystem-banner.test.js     — 9 subtests (G3, ENH-033)
+  tests/dispatch-cli-banner.test.js               — 6 subtests (G4, ENH-034)
+  tests/ecosystem-initiative-cli.test.js          — 11 subtests (G5, ENH-035)
+
+Existing tests updated to be v=1/v=2-tolerant (substring-match the
+ecosystem:begin sentinel instead of exact-matching the v=1 form):
+
+  tests/helpers/adapter-smoke.js
+  tests/ecosystem-cli.test.js                    (3 sites)
+  tests/init-ecosystem-flag.test.js              (1 site)
+  tests/init-autodetect-prompt.test.js           (2 sites)
+  tests/single-project-unchanged.test.js         (3 sites)
+
+2. Manual smoke: end-to-end ENH-025 / ENH-032 / ENH-035
+--------------------------------------------------------
+
+  $ momentum ecosystem init eco
+  Initialized ecosystem "eco" at /tmp/.../eco
+    + CLAUDE.md (managed; tells agents this is a coordination layer, not a project)
+    + AGENTS.md (same content, for AGENTS.md-aware agents)
+
+  $ head -3 CLAUDE.md
+  # eco — Ecosystem (Coordination Layer)
+  > **You are in a momentum ecosystem coordination root — NOT a project.**
+
+  $ momentum ecosystem add ../member-a --role other --id a
+  $ head -16 ../member-a/CLAUDE.md
+  # member-a
+  <!-- ecosystem:begin v=2 -->
+  > **Member of `eco` ecosystem** at `../eco`.
+  >
+  > **Cross-repo work?** Write an initiative — never plan cross-repo features in this repo:
+  > `../eco/initiatives/<NNNN-slug>.md` (or `/initiative create <slug>`)
+  >
+  > Orchestration primitives (run from this repo or the ecosystem root):
+  > - `/scout <repo>` — read another member's state
+  > - `/dispatch <r1> <r2> "..."` — parallel multi-repo investigation (slash command — `momentum dispatch` CLI is keyword-only)
+  > - `/handoff <repo>` — transfer context to another member
+  > - `/continue` — resume from an inbox handoff
+  >
+  > See siblings + live state: `momentum ecosystem status`
+  <!-- ecosystem:end -->
+
+  $ momentum ecosystem initiative create memory-end-to-end --why "ship cross-repo memory" --owner test
+  Created initiatives/0001-memory-end-to-end.md (id 1).
+  Set as active initiative.
+
+  $ cat .state/active-initiative
+  memory-end-to-end
+
+3. Manual smoke: ENH-033 SessionStart banner
+---------------------------------------------
+
+  $ cd member-a; bash ../../momentum/core/scripts/sessionstart-handoff.sh
+  ▸ Ecosystem: testeco (2 members)
+  ▸ Active initiative: test-init
+
+4. Tarball shape
+----------------
+
+  $ node --test tests/tarball.test.js
+  # pass 1
+
+  Asserts `core/ecosystem/templates/ecosystem-{claude,agents}.md` ship in the
+  npm pack output.
+
+5. Cross-cutting regression checks (during development)
+--------------------------------------------------------
+
+  - 53/53 ecosystem-related tests passed after G1.
+  - 103/103 ecosystem-related tests passed after G2 (including 8 new).
+  - 12/12 orchestration-handoff/sessionstart tests passed after G3.
+  - 20/20 dispatch tests passed after G4 (including 6 new).
+  - 23/23 initiative tests passed after G5 (including 11 new).
+  - Full 288/288 npm test green after G6.

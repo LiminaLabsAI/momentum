@@ -57,10 +57,12 @@ function runEcosystem(args) {
       return cmdRemove(rest);
     case 'status':
       return cmdStatus(rest);
+    case 'initiative':
+      return cmdInitiative(rest);
     default:
       throw new Error(
         `unknown ecosystem subcommand "${sub}". ` +
-        `Try: init | add | remove | status`,
+        `Try: init | add | remove | status | initiative`,
       );
   }
 }
@@ -74,29 +76,38 @@ Usage:
   momentum ecosystem add <repo-path> [--role <role>] [--id <id>] [--ecosystem <path>]
   momentum ecosystem remove <member-id> [--ecosystem <path>]
   momentum ecosystem status [--no-git] [--ecosystem <path>]
+  momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
 
 Location:
-  add / remove / status auto-locate the ecosystem root by walking up
-  from CWD (bounded by MOMENTUM_MAX_PARENT_WALK, default 5). Use
-  --ecosystem <path> to override explicitly.
+  add / remove / status / initiative auto-locate the ecosystem root by
+  walking up from CWD (bounded by MOMENTUM_MAX_PARENT_WALK, default 5)
+  AND scanning siblings (so member-repo CWDs work). Use --ecosystem <path>
+  to override explicitly.
 
 Subcommands:
-  init       Scaffold a new ecosystem root in the CWD (or under [name]/).
-             Writes ecosystem.json, initiatives/, sessions/, .state/,
-             .gitignore, README.md. Runs \`git init\` and an initial commit.
+  init        Scaffold a new ecosystem root in the CWD (or under [name]/).
+              Writes ecosystem.json, initiatives/, sessions/, .state/,
+              .gitignore, README.md, CLAUDE.md, AGENTS.md. Runs \`git init\`
+              and an initial commit.
 
-  add        Register a momentum-installed repo as a member. Writes the
-             member into ecosystem.json AND injects one fenced line into
-             the target's CLAUDE.md / AGENTS.md pointing back here.
-             Idempotent — re-running is a no-op when the state already
-             matches.
+  add         Register a momentum-installed repo as a member. Writes the
+              member into ecosystem.json AND injects an action-bearing
+              pointer block into the target's CLAUDE.md / AGENTS.md.
+              Idempotent — re-running is a no-op when the state already
+              matches.
 
-  remove     Inverse of \`add\`. Strips the member from ecosystem.json and
-             removes the fenced pointer from the target's primary
-             instruction file.
+  remove      Inverse of \`add\`. Strips the member from ecosystem.json and
+              removes the pointer block from the target's primary
+              instruction file.
 
-  status     Print the manifest summary plus \`git status --short\` and
-             the most recent commit for each member.
+  status      Print the manifest summary plus \`git status --short\` and
+              the most recent commit for each member.
+
+  initiative  Manage cross-repo initiatives. Currently only \`create\` is
+              wired as a CLI subcommand (other operations stay slash-only
+              for now). Non-interactive — takes flags so it works from
+              any agent context. Defaults: --repos all members; --owner
+              git user.name (or \$USER); --why "" (write later).
 
 Roles:
   platform | client | library | infra | bench | other
@@ -421,6 +432,187 @@ function cmdStatus(args) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// initiative
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// ENH-035 — promised "coming with Group 2 of Phase 9" and never shipped
+// until Phase 15. Wires the existing core/ecosystem/lib/initiative.js
+// (nextInitiativeId / writeInitiative / setActive) to a CLI subcommand.
+// Non-interactive (flag-driven) so it works from any agent context.
+
+function cmdInitiative(args) {
+  if (args.length === 0) {
+    throw new Error(
+      'initiative: missing subsubcommand. Try: ' +
+      '`momentum ecosystem initiative create <slug>`',
+    );
+  }
+  const sub = args[0];
+  const rest = args.slice(1);
+  switch (sub) {
+    case 'create':
+      return cmdInitiativeCreate(rest);
+    default:
+      throw new Error(
+        `initiative: unknown subsubcommand "${sub}". ` +
+        `Only \`create\` is currently wired as a CLI; ` +
+        `\`list\` / \`status\` / \`close\` stay as slash-only for now.`,
+      );
+  }
+}
+
+function cmdInitiativeCreate(args) {
+  if (args.length === 0 || args[0].startsWith('--')) {
+    throw new Error(
+      'initiative create: missing <slug> positional argument. ' +
+      'Usage: momentum ecosystem initiative create <slug> ' +
+      '[--why "<text>"] [--repos r1,r2] [--owner <name>]',
+    );
+  }
+  const slug = args[0];
+  if (!/^[a-z][a-z0-9-]*$/.test(slug)) {
+    throw new Error(
+      `initiative create: slug "${slug}" must match /^[a-z][a-z0-9-]*$/ ` +
+      `(lowercase letters, digits, hyphens; start with a letter).`,
+    );
+  }
+  const opts = parseFlags(args.slice(1), {
+    why: 'string',
+    repos: 'string',
+    owner: 'string',
+    ecosystem: 'string',
+  });
+
+  const root = resolveEcosystemRoot(opts.ecosystem, 'initiative create');
+  const manifest = lib.loadManifest(root);
+
+  // Default repos to all member ids; parse the --repos CSV if given.
+  let reposList;
+  if (opts.repos) {
+    reposList = opts.repos
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (reposList.length === 0) {
+      throw new Error(
+        'initiative create: --repos was provided but empty after parsing.',
+      );
+    }
+    // Validate every named repo is a registered member.
+    const known = new Set(manifest.members.map((m) => m.id));
+    const unknown = reposList.filter((r) => !known.has(r));
+    if (unknown.length) {
+      throw new Error(
+        `initiative create: unknown member id(s): ${unknown.join(', ')}. ` +
+        `Known: ${[...known].join(', ') || '(none)'}.`,
+      );
+    }
+  } else {
+    reposList = manifest.members.map((m) => m.id);
+    if (reposList.length === 0) {
+      throw new Error(
+        'initiative create: ecosystem has no registered members yet. ' +
+        '`--repos` defaults to all members but the manifest is empty. ' +
+        'Register members via `momentum ecosystem add <repo>` first, ' +
+        'or pass --repos explicitly.',
+      );
+    }
+  }
+
+  // Default owner: explicit > git user.name > $USER > "(unknown)".
+  let owner = opts.owner;
+  if (!owner) {
+    try {
+      owner = execSync('git config user.name', {
+        cwd: root,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+    } catch (_e) {
+      // git not configured — fall through.
+    }
+  }
+  if (!owner) owner = process.env.USER || '(unknown)';
+
+  const why = (opts.why || '').trim();
+
+  // Allocate next id, render the file from template, write it.
+  const initLib = require('../core/ecosystem/lib/initiative');
+  const id = initLib.nextInitiativeId(root);
+  const filePath = initLib.initiativePath(root, id, slug);
+
+  const templateSrc = path.join(
+    __dirname,
+    '..',
+    'core',
+    'ecosystem',
+    'templates',
+    'initiative-template.md',
+  );
+  const rawTemplate = fs.readFileSync(templateSrc, 'utf8');
+
+  // Discard the template's stub frontmatter; we generate our own. Keep
+  // the body (## Why, ## Per-repo contributions, etc).
+  const { content: bodyTemplate } = initLib.parseFrontmatter(rawTemplate);
+
+  // Substitute the few placeholders the template body carries.
+  const title = slugToTitle(slug);
+  let body = bodyTemplate
+    .replace(/\{\{ID\}\}/g, String(id))
+    .replace(/\{\{TITLE\}\}/g, title)
+    .replace(/\{\{REPOS\}\}/g, reposList.join(', '))
+    .replace(/\{\{STARTED\}\}/g, today())
+    .replace(/\{\{OWNER\}\}/g, owner);
+
+  // Inject the user-provided "Why" if any (replacing the placeholder
+  // paragraph in the template). The template's "Why" section reads
+  // "One short paragraph that captures the motivation…" — when the
+  // user passes --why we replace that placeholder; otherwise we leave
+  // the template's prompt in place so they know what to fill in later.
+  if (why) {
+    body = body.replace(
+      /(## Why\n\n)One short paragraph that captures the motivation for this initiative\.\nWhat problem are we solving\? Why does it span multiple repos\? What\nbecomes possible once it ships\?/,
+      `$1${why}`,
+    );
+  }
+
+  // Expand the per-repo contributions stubs.
+  body = body.replace(
+    /- \*\*\{\{REPO_1\}\}\*\*: …\n- \*\*\{\{REPO_2\}\}\*\*: …/,
+    reposList.map((r) => `- **${r}**: …`).join('\n'),
+  );
+
+  const frontmatter = {
+    id,
+    slug,
+    title,
+    status: 'in-progress',
+    started: today(),
+    owner,
+    repos: reposList,
+  };
+
+  initLib.writeInitiative(filePath, frontmatter, body);
+  initLib.setActive(root, slug);
+
+  console.log(`Created ${path.relative(root, filePath)} (id ${id}).`);
+  console.log(`Set as active initiative.`);
+  if (!why) {
+    console.log(
+      `Note: --why was not provided — the template "Why" section is a ` +
+      `placeholder. Edit ${path.relative(root, filePath)} to fill it in.`,
+    );
+  }
+}
+
+function slugToTitle(slug) {
+  return slug
+    .split('-')
+    .map((s) => (s.length ? s[0].toUpperCase() + s.slice(1) : s))
+    .join(' ');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 //
@@ -573,11 +765,23 @@ Deploy chronology · Close.
 Numbering is monotonically increasing across the ecosystem. The
 filename slug is for human readability; the \`id\` integer is canonical.
 
-Use \`momentum ecosystem initiative create <slug>\` to start a new one
-(coming with Group 2 of Phase 9). Until then, create files by hand
-following the template at
-\`core/ecosystem/templates/initiative-template.md\` in the momentum
-repo.
+## Create a new initiative
+
+\`\`\`
+momentum ecosystem initiative create <slug> \\
+  --why "<one-paragraph motivation>" \\
+  --repos <member-id-1>,<member-id-2> \\
+  --owner <you>
+\`\`\`
+
+Flags are optional:
+- \`--why\` — defaults to a placeholder you can fill in later
+- \`--repos\` — defaults to all registered members
+- \`--owner\` — defaults to \`git config user.name\` (or \`\$USER\`)
+
+The slash-command door \`/initiative create <slug>\` does the same
+work via the same code path; both end up calling
+\`core/ecosystem/lib/initiative.js\`.
 `;
 }
 
@@ -604,6 +808,8 @@ module.exports = {
   cmdAdd,
   cmdRemove,
   cmdStatus,
+  cmdInitiative,
+  cmdInitiativeCreate,
   ensurePointerInjected,
   stripPointer,
   findPrimaryInstructionFile,

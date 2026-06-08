@@ -59,6 +59,10 @@ test('npm tarball shape — includes required runtime adapter files and no repo 
     'adapters/codex/commands/dispatch.md',
     'adapters/codex/commands/handoff.md',
     'adapters/codex/commands/continue.md',
+    // Phase 15 — ecosystem CLAUDE.md / AGENTS.md templates (ENH-025)
+    'core/ecosystem/templates/ecosystem-claude.md',
+    'core/ecosystem/templates/ecosystem-agents.md',
+    'core/ecosystem/templates/initiative-template.md',
     'package.json',
     'README.md',
     'LICENSE',

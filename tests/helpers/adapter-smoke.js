@@ -79,7 +79,7 @@ function runAdapterSmoke(agent, env) {
 
     // Pointer block injected in the adapter's primary instruction file.
     const primary = fs.readFileSync(path.join(eco, env.primary), 'utf8');
-    assert.match(primary, /<!-- ecosystem:begin -->/, `[${agent}] pointer block missing from ${env.primary}`);
+    assert.match(primary, /<!-- ecosystem:begin/, `[${agent}] pointer block missing from ${env.primary}`);
 
     // 4. doctor (member state)
     lib._clearRootCache();

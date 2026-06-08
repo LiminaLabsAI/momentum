@@ -62,26 +62,29 @@
 
 ## Group 5 — `momentum ecosystem initiative create` CLI ships (Parallel)
 
-- [ ] Add `initiative` subcommand to `runEcosystem` dispatch in `bin/ecosystem.js`.
-- [ ] Implement `cmdInitiative(rest)` → `cmdInitiativeCreate(args)`.
-- [ ] `cmdInitiativeCreate`: parse slug + flags (`--why`, `--repos`, `--owner`, `--ecosystem`); resolve root; defaults for missing flags.
-- [ ] Wire to `core/ecosystem/lib/initiative.js` (`nextInitiativeId`, `writeInitiative`, `setActive`).
-- [ ] Substitute frontmatter + Why into template (`core/ecosystem/templates/initiative-template.md`).
-- [ ] Print success message with file path + active flag.
-- [ ] Update `printUsage` in `bin/ecosystem.js` to list `initiative create`.
-- [ ] Update `initiativesReadme()` text — drop "coming with Group 2 of Phase 9"; describe the shipped CLI.
-- [ ] Write `tests/ecosystem-initiative-cli.test.js` (temp ecosystem; assert file content + active marker).
-- [ ] Run `npm test` for G5 changes — green.
+- [x] Added `initiative` subcommand to `runEcosystem` dispatch in `bin/ecosystem.js`; updated unknown-subcommand error message.
+- [x] Implemented `cmdInitiative(rest)` → `cmdInitiativeCreate(args)`; `list` / `status` / `close` left as slash-only per scope.
+- [x] `cmdInitiativeCreate`: parses slug + flags (`--why`, `--repos`, `--owner`, `--ecosystem`); resolves root; defaults `--repos` to all members, `--owner` to `git config user.name` (→ `$USER` → `(unknown)`), `--why` to placeholder; validates unknown member ids.
+- [x] Wired to `core/ecosystem/lib/initiative.js` (`nextInitiativeId`, `writeInitiative`, `setActive`).
+- [x] Substituted `{{ID}} / {{TITLE}} / {{REPOS}} / {{STARTED}} / {{OWNER}}` placeholders; expanded per-repo contribution stubs; replaced template's "Why" paragraph with user input when provided.
+- [x] Success stdout: `Created initiatives/NNNN-<slug>.md (id N).` + `Set as active initiative.` + placeholder warning when `--why` omitted.
+- [x] Updated `printUsage` in `bin/ecosystem.js` to list `initiative create` and the new ecosystem-init CLAUDE.md/AGENTS.md side effects.
+- [x] Updated `initiativesReadme()` — dropped "coming with Group 2 of Phase 9"; described the shipped CLI + slash-command parity.
+- [x] Wrote `tests/ecosystem-initiative-cli.test.js` (11 subtests: success path with file content + active marker, bad slug, unknown --repos, default --repos, empty-manifest error, placeholder warning, monotonic IDs, location-agnostic from member CWD, missing subsubcommand, unknown subsubcommand, --help mentions `initiative create`).
+- [x] Run `npm test` — 288/288 green (initiative + regression).
 - [ ] Commit G5: `feat(ecosystem): ship momentum ecosystem initiative create CLI`
 
 ## Group 6 — Test suite + tarball shape (Sequential, after G1–G5)
 
-- [ ] `npm test` green (all groups combined).
-- [ ] Update `tests/tarball.test.js` to assert new `core/ecosystem/templates/ecosystem-claude.md` + `ecosystem-agents.md` ship in npm pack.
-- [ ] Manual smoke: fresh `momentum ecosystem init` in `/tmp` produces CLAUDE.md + AGENTS.md with correct content.
-- [ ] Manual smoke: `momentum ecosystem initiative create` writes file + sets active.
-- [ ] Capture verification evidence to `specs/phases/phase-15-ecosystem-discoverability/artifacts/verification.txt`.
-- [ ] Commit G6: `chore(tests): verify phase 15 — full suite + tarball shape green`
+- [x] `npm test` green: 288/288 (was 254 before this phase; +34 new tests across the 5 new test files).
+- [x] Updated `tests/tarball.test.js` to assert `core/ecosystem/templates/ecosystem-claude.md` + `ecosystem-agents.md` + `initiative-template.md` ship in npm pack.
+- [x] Updated `tests/helpers/adapter-smoke.js` to substring-match the pointer-block sentinel (was exact-matching v=1 form; would have silently passed even if pointer block was missing from v=2 install path).
+- [x] Manual smoke: `momentum ecosystem init eco` produces CLAUDE.md + AGENTS.md with "NOT a project" guidance.
+- [x] Manual smoke: `momentum ecosystem add ../member-a` injects v=2 pointer block with all 4 primitives + routing rule.
+- [x] Manual smoke: `momentum ecosystem initiative create memory-end-to-end --why "ship ..." --owner test` writes `0001-...md` + sets active.
+- [x] Manual smoke: SessionStart hook from member with sibling ecosystem prints `▸ Ecosystem: testeco (2 members)` + `▸ Active initiative: test-init`.
+- [x] Captured verification evidence to `specs/phases/phase-15-ecosystem-discoverability/artifacts/verification.txt`.
+- [ ] Commit G5 + G6 together (small G6 — just test helper fix + tarball assertion + evidence file).
 
 ## Group 7 — Doc sync + release v0.18.0 (Sequential, after G6)
 
