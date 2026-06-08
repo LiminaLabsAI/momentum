@@ -52,11 +52,12 @@
 
 ## Group 4 — Dispatch CLI degraded-mode notice upfront (Parallel)
 
-- [ ] In `core/orchestration/dispatch.js` `dispatch(opts)`, emit a `note` event with `▸ MODE NOTICE:` prefix BEFORE the `started` event when running in-process.
-- [ ] In `synthesizeInProcess`, replace trailing parenthetical with TOP-of-block admonition block.
-- [ ] In `renderArtifact`, add `> [!NOTE]` admonition immediately below the `**Mode:**` line for in-process runs.
-- [ ] Write `tests/dispatch-cli-banner.test.js` (mock scout; capture emitter events; assert ordering + prefix).
-- [ ] Run `npm test` for G4 changes — green.
+- [x] Added `CLI_MODE_NOTICE` constant in `core/orchestration/dispatch.js` (single string used by all three surfaces).
+- [x] `dispatch(opts)` emits `note { message: CLI_MODE_NOTICE }` event BEFORE the `started` event — surfaces as first stdout line via default renderer.
+- [x] `synthesizeInProcess` rewritten: removed trailing parenthetical; added `> [!NOTE]` admonition at the TOP of the synthesis body.
+- [x] `renderArtifact` adds `> [!NOTE]` admonition between `**Mode:**` header and `## Synthesis`. Skipped via new `isAgentDriven` param (set true by `record()`, false/default for `dispatch()`).
+- [x] Wrote `tests/dispatch-cli-banner.test.js` (6 subtests: CLI_MODE_NOTICE constant; event ordering note < started; CLI stdout banner ordering; synthesis-body top admonition; artifact admonition position; agent-driven record() skips admonition).
+- [x] Regression: 20/20 dispatch tests pass (6 new + 14 existing in orchestration-dispatch-cli + orchestration-dispatch-unit).
 - [ ] Commit G4: `feat(orchestration): dispatch CLI surfaces degraded-mode notice upfront`
 
 ## Group 5 — `momentum ecosystem initiative create` CLI ships (Parallel)

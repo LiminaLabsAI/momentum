@@ -28,6 +28,15 @@ const types = require('./types');
 const routing = require('./capability-routing');
 const scoutLib = require('./scout');
 
+// ENH-034 — CLI / in-process dispatch degraded-mode notice. Emitted as
+// the FIRST event before `started`, and rendered as a `> [!NOTE]`
+// admonition inside the artifact + synthesis body. Three surfaces, one
+// string so the message stays consistent everywhere agents/users see it.
+const CLI_MODE_NOTICE =
+  'MODE NOTICE: CLI mode produces keyword summaries only (no LLM synthesis). ' +
+  'For full synthesis, invoke /dispatch as a slash command from an agent surface ' +
+  '(Claude Code Task tool, Codex sub-agent, etc.).';
+
 /**
  * Run a dispatch in-process across the given repos.
  *
@@ -74,6 +83,16 @@ async function dispatch(opts) {
       memberId: opts.ecosystem.memberId,
     }));
   }
+
+  // ENH-034 — surface the in-process degraded-mode notice UPFRONT
+  // (before the `started` event) so it is the literal first user-visible
+  // output line. Without this, agents and users were silently getting
+  // keyword-grep summaries and concluding "this is the answer."
+  //
+  // The `record()` path (agent-driven dispatch from a slash command)
+  // never reaches dispatch(), so this notice only fires for CLI /
+  // in-process callers — exactly where it's needed.
+  emitter.emit('note', { message: CLI_MODE_NOTICE });
 
   emitter.emit('started', {
     message: `${repos.length} repo(s): ${userIntent}`,
@@ -187,7 +206,7 @@ function record(opts) {
   const { runId, artifactPath } = runArtifact.writeWithAllocatedId({
     repo: originatingRepo,
     primitive: 'dispatch',
-    bodyFor: (id) => renderArtifact({ runId: id, repos, userIntent, mode, modeNotes, perRepoResults, failures, synthesis, duration }),
+    bodyFor: (id) => renderArtifact({ runId: id, repos, userIntent, mode, modeNotes, perRepoResults, failures, synthesis, duration, isAgentDriven: true }),
   });
   if (ecosystem && ecosystem.rootPath && ecosystem.memberId) {
     sessionLog.appendLine({
@@ -238,7 +257,14 @@ function tailorPrompt(userIntent, repo) {
 
 function synthesizeInProcess({ userIntent, perRepoResults, failures }) {
   const successes = perRepoResults.filter((r) => !r.error);
+  // ENH-034 — admonition at the TOP of the synthesis block so anyone
+  // reading the in-process synthesis sees the mode caveat BEFORE the
+  // per-repo summaries (previously buried at the bottom as a paren).
   const lines = [
+    '> [!NOTE]',
+    '> **MODE: CLI / in-process — keyword summaries only.**',
+    '> For LLM synthesis, invoke /dispatch via an agent slash command.',
+    '',
     `Dispatch across ${perRepoResults.length} repo(s) for: ${userIntent}`,
     '',
     `- ${successes.length} succeeded, ${failures.length} failed.`,
@@ -257,7 +283,6 @@ function synthesizeInProcess({ userIntent, perRepoResults, failures }) {
       lines.push(`- **${repoLabel}**: ${f.error && f.error.message ? f.error.message : 'unknown error'}`);
     }
   }
-  lines.push('', '(In-process synthesis — no LLM available. Agent-driven dispatch can produce a true synthesis answering the user intent directly.)');
   return lines.join('\n');
 }
 
@@ -272,7 +297,19 @@ function truncateForSynth(s) {
   return s.slice(0, 200).replace(/\n+/g, ' ') + '…';
 }
 
-function renderArtifact({ runId, repos, userIntent, mode, modeNotes, perRepoResults, failures, synthesis, duration }) {
+function renderArtifact({ runId, repos, userIntent, mode, modeNotes, perRepoResults, failures, synthesis, duration, isAgentDriven = false }) {
+  // ENH-034 — admonition immediately under the Mode header so anyone
+  // opening the artifact sees the CLI-degradation caveat before reading
+  // the synthesis. Skip on agent-driven `record()` runs — those carry
+  // a real LLM synthesis so the caveat would mislead.
+  const modeAdmonition = isAgentDriven
+    ? []
+    : [
+        '> [!NOTE]',
+        '> **CLI / in-process mode — keyword summaries only.**',
+        '> Invoke /dispatch via an agent slash command for true LLM synthesis.',
+        '',
+      ];
   const lines = [
     `# dispatch-${runId}`,
     '',
@@ -282,6 +319,7 @@ function renderArtifact({ runId, repos, userIntent, mode, modeNotes, perRepoResu
     ...repos.map((r) => `  - ${r}`),
     `**Duration:** ${duration}ms`,
     '',
+    ...modeAdmonition,
     '## Synthesis',
     '',
     synthesis || '(no synthesis recorded)',
@@ -321,6 +359,7 @@ function renderArtifact({ runId, repos, userIntent, mode, modeNotes, perRepoResu
 module.exports = {
   dispatch,
   record,
+  CLI_MODE_NOTICE,
   // exported for tests:
   tailorPrompt,
   synthesizeInProcess,
