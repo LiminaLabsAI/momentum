@@ -27,13 +27,14 @@
 
 ## Group 2 — Action-bearing pointer block (Parallel)
 
-- [ ] Add `POINTER_VERSION = 2` constant in `core/ecosystem/lib/pointer.js`.
-- [ ] Rewrite the block content emitted by `ensurePointerInjected` to the action-bearing form (orchestration primitives + cross-repo routing rule).
-- [ ] Update `ensurePointerInjected` to detect version drift (`v=N` in BEGIN sentinel) and rewrite contents when older than current `POINTER_VERSION`.
-- [ ] Update `stripPointer` regex to match any version stamp.
-- [ ] Update `hasPointerBlock` if needed (sentinel check remains substring — unchanged).
-- [ ] Write `tests/pointer-block-content.test.js` (new content shape, v1→v2 upgrade, strip both forms).
-- [ ] Run `npm test` for G2 changes — green.
+- [x] Added `POINTER_VERSION = 2` constant in `core/ecosystem/lib/pointer.js`.
+- [x] Rewrote the block content via new `renderPointerBody(name, rel)` helper — action-bearing 13-line stanza (routing rule + 4 primitives + status hint + dispatch-CLI caveat).
+- [x] `ensurePointerInjected` now detects version drift via `POINTER_BEGIN_RE` (matches both `<!-- ecosystem:begin -->` and `<!-- ecosystem:begin v=N -->`); rewrites the FIRST block in place when existing version < `POINTER_VERSION`; preserves surrounding content.
+- [x] `stripPointer` rewritten with `POINTER_BLOCK_RE` that matches any version stamp.
+- [x] `hasPointerBlock` switched to substring-match on `POINTER_BEGIN_PREFIX` for cross-version detection.
+- [x] Updated existing tests that exact-matched the v1 sentinel to substring-match (ecosystem-cli.test.js × 2; init-ecosystem-flag.test.js × 1; init-autodetect-prompt.test.js × 2; single-project-unchanged.test.js × 3) so they accept both forms.
+- [x] Wrote `tests/pointer-block-content.test.js` (8 subtests: POINTER_VERSION constant; fresh insert content; v1→v2 migration with surrounding content preserved; already-v2 idempotency; stripPointer v2; stripPointer v1; hasPointerBlock cross-version; degenerate `.` rel path).
+- [x] Run full ecosystem-related test suite — 103/103 green (8 new + 95 existing).
 - [ ] Commit G2: `feat(ecosystem): action-bearing pointer block (orchestration primitives + routing rule)`
 
 ## Group 3 — SessionStart hook prints ecosystem context (Parallel)

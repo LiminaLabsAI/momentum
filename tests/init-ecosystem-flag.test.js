@@ -35,7 +35,7 @@ test('init --ecosystem creates sibling ecosystem and registers this repo', () =>
 
     // Pointer block injected into this project's CLAUDE.md.
     const claudeMd = fs.readFileSync(path.join(project, 'CLAUDE.md'), 'utf8');
-    assert.match(claudeMd, /<!-- ecosystem:begin -->/);
+    assert.match(claudeMd, /<!-- ecosystem:begin/);
     assert.match(claudeMd, /demo-eco/);
 
     // State machine confirms membership.

@@ -167,9 +167,9 @@ test('ecosystem add registers a member and injects the pointer', () => {
     assert.equal(m.members[0].id, 'member');
     assert.equal(m.members[0].role, 'platform');
 
-    // Pointer injected.
+    // Pointer injected (v2 form — substring match accepts both v1 and v2).
     const claude = read(path.join(memberDir, 'CLAUDE.md'));
-    assert.match(claude, /<!-- ecosystem:begin -->/);
+    assert.match(claude, /<!-- ecosystem:begin/);
     assert.match(claude, /<!-- ecosystem:end -->/);
     assert.match(claude, /Member of `eco`/);
   } finally {
@@ -310,10 +310,10 @@ test('ensurePointerInjected inserts after H1 and is idempotent', () => {
     fs.mkdirSync(fakeRoot);
     eco.ensurePointerInjected(tmp, 'CLAUDE.md', fakeRoot, 'eco');
     const after = read(claudePath);
-    assert.match(after, /<!-- ecosystem:begin -->/);
+    assert.match(after, /<!-- ecosystem:begin/);
     // Pointer inserted after H1.
     const idxH1 = after.indexOf('# Project');
-    const idxBegin = after.indexOf('<!-- ecosystem:begin -->');
+    const idxBegin = after.indexOf('<!-- ecosystem:begin');
     assert.ok(idxBegin > idxH1, 'pointer must follow the H1');
 
     // Re-running is a no-op.

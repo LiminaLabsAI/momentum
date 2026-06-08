@@ -40,7 +40,7 @@ test('init --no-ecosystem with adjacent ecosystem: bypasses prompt', () => {
 
     // No pointer, no skip file — explicit bypass.
     const claudeMd = fs.readFileSync(path.join(project, 'CLAUDE.md'), 'utf8');
-    assert.ok(!claudeMd.includes('<!-- ecosystem:begin -->'));
+    assert.ok(!claudeMd.includes('<!-- ecosystem:begin'));
     assert.ok(!fs.existsSync(path.join(project, '.momentum', 'skip-ecosystem-prompt')));
   } finally {
     rmrf(tmp);
@@ -65,7 +65,7 @@ test('init pre-existing skip-ecosystem-prompt: prompt does not fire', () => {
     const skipContent = fs.readFileSync(path.join(project, '.momentum', 'skip-ecosystem-prompt'), 'utf8');
     assert.equal(skipContent, 'pre-existing\n', 'pre-existing skip file must not be rewritten');
     const claudeMd = fs.readFileSync(path.join(project, 'CLAUDE.md'), 'utf8');
-    assert.ok(!claudeMd.includes('<!-- ecosystem:begin -->'));
+    assert.ok(!claudeMd.includes('<!-- ecosystem:begin'));
     assert.ok(!/Detected ecosystem/.test(r.stdout));
   } finally {
     rmrf(tmp);
