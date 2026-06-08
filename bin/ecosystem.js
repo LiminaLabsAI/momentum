@@ -174,6 +174,21 @@ function cmdInit(args) {
     'utf8',
   );
 
+  // ENH-025: managed CLAUDE.md + AGENTS.md so any agent opening this
+  // directory immediately learns it is a coordination layer (NOT a
+  // project) and discovers the orchestration primitives. We write
+  // both because at ecosystem-init time we don't know which adapter
+  // the consuming agents will use; both surfaces are cheap. Idempotent:
+  // never overwrite if either file already exists.
+  writeManagedInstructionFile(
+    path.join(root, 'CLAUDE.md'),
+    renderEcosystemInstruction('ecosystem-claude.md', name),
+  );
+  writeManagedInstructionFile(
+    path.join(root, 'AGENTS.md'),
+    renderEcosystemInstruction('ecosystem-agents.md', name),
+  );
+
   // git init + initial commit (best-effort; if git is unavailable the
   // user can do it themselves).
   try {
@@ -194,9 +209,41 @@ function cmdInit(args) {
   }
 
   console.log(`Initialized ecosystem "${name}" at ${root}`);
+  console.log(`  + CLAUDE.md (managed; tells agents this is a coordination layer, not a project)`);
+  console.log(`  + AGENTS.md (same content, for AGENTS.md-aware agents)`);
   console.log(`Next steps:`);
   console.log(`  cd ${cliGaveName ? name : '.'}`);
   console.log(`  momentum ecosystem add ../<repo-name>`);
+}
+
+/**
+ * Render an ecosystem CLAUDE.md / AGENTS.md template by substituting
+ * {{NAME}} for the ecosystem name. Templates live under
+ * `core/ecosystem/templates/`. Substitution is intentionally tiny —
+ * the templates are markdown content, not a programmable surface.
+ */
+function renderEcosystemInstruction(filename, ecosystemName) {
+  const src = path.join(
+    __dirname,
+    '..',
+    'core',
+    'ecosystem',
+    'templates',
+    filename,
+  );
+  const raw = fs.readFileSync(src, 'utf8');
+  return raw.replace(/\{\{NAME\}\}/g, ecosystemName);
+}
+
+/**
+ * Write a managed agent-instruction file. Skip if the file already
+ * exists — agents may have customised it (or another tool may own
+ * the surface). Idempotent: re-running init in a directory that already
+ * has CLAUDE.md / AGENTS.md leaves them untouched.
+ */
+function writeManagedInstructionFile(destPath, content) {
+  if (fs.existsSync(destPath)) return;
+  fs.writeFileSync(destPath, content, 'utf8');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

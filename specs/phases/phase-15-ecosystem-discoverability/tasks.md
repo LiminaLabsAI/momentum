@@ -4,26 +4,25 @@
 
 ## Group 0 — Foundations + tracking (Sequential)
 
-- [ ] Renumber `specs/planning/roadmap.md` — Phase 15 = Ecosystem Agent Discoverability (v0.18.0); Reach → 16 (v0.19.0); Intelligence → 17 (v0.20.0); Platform → 18 (v1.0). Update Timeline + Dependencies + Milestones.
-- [ ] Update `specs/status.md` — Upcoming Phases + Active Phase → Phase 15.
-- [ ] Update `specs/phases/README.md` — append Phase 15 row (status In Progress).
-- [ ] Update `specs/phases/index.json` — add `phase-15-ecosystem-discoverability` entry with topic keywords (`ecosystem`, `orchestration`, `discoverability`, `pointer-block`, `session-start`, `dispatch`, `initiative`).
-- [ ] Bump ENH-025 status `open → in-progress`; phase `unscheduled → phase-15`.
-- [ ] Create `specs/phases/phase-15-ecosystem-discoverability/history.md` (empty append-only log header).
-- [ ] Create `specs/phases/phase-15-ecosystem-discoverability/retrospective.md` (stub for Group 7).
-- [ ] Create `specs/phases/phase-15-ecosystem-discoverability/artifacts/.gitkeep`.
-- [ ] Commit Group 0: `infra(specs): phase 15 scaffolding + roadmap renumber`
+- [x] Renumber `specs/planning/roadmap.md` — Phase 15 = Ecosystem Agent Discoverability (v0.18.0); Reach → 16 (v0.19.0); Intelligence → 17 (v0.20.0); Platform → 18 (v1.0). Updated Timeline + Dependencies + Milestones.
+- [x] Update `specs/status.md` — Upcoming Phases + Active Phase → Phase 15.
+- [x] Update `specs/phases/README.md` — appended Phase 15 row (status In Progress).
+- [x] Update `specs/phases/index.json` — added `phase-15-ecosystem-discoverability` entry with topic keywords.
+- [x] Bump ENH-025 status `open → in-progress`; phase `unscheduled → phase-15`. Also filed ENH-032/033/034/035 for the four sibling discoverability fixes.
+- [x] Create `specs/phases/phase-15-ecosystem-discoverability/history.md` with seed entries (`SCOPE_CHANGE` + 3 `DECISION`s + 1 `FEATURE`).
+- [x] Create `specs/phases/phase-15-ecosystem-discoverability/retrospective.md` stub.
+- [x] Create `specs/phases/phase-15-ecosystem-discoverability/artifacts/.gitkeep`.
+- [x] Commit Group 0: `infra(specs): phase 15 scaffolding + roadmap renumber` (1b07e91)
 
 ## Group 1 — Managed CLAUDE.md/AGENTS.md on `ecosystem init` (Parallel)
 
-- [ ] Create `core/ecosystem/templates/ecosystem-claude.md` (managed prefix + `## Project Extensions` marker).
-- [ ] Create `core/ecosystem/templates/ecosystem-agents.md` (same content, separate file for Codex parity).
-- [ ] Extend `cmdInit` in `bin/ecosystem.js` to write `CLAUDE.md` + `AGENTS.md` from the templates (idempotent — skip if file exists).
-- [ ] Update `cmdInit` "Next steps" stdout to mention `CLAUDE.md` was created.
-- [ ] Update `package.json` `files` glob to ship `core/ecosystem/templates/**`.
-- [ ] Verify `npm pack --dry-run --json` ships new templates.
-- [ ] Write `tests/ecosystem-init-claude-md.test.js` (file existence, content asserts, idempotency).
-- [ ] Run `npm test` for G1 changes — green.
+- [x] Create `core/ecosystem/templates/ecosystem-claude.md` (managed prefix + `## Project Extensions` marker).
+- [x] Create `core/ecosystem/templates/ecosystem-agents.md` (same content, sibling file so both surfaces always ship).
+- [x] Extend `cmdInit` in `bin/ecosystem.js` to write `CLAUDE.md` + `AGENTS.md` from the templates via `writeManagedInstructionFile` + `renderEcosystemInstruction` helpers (idempotent — skip if file exists).
+- [x] Update `cmdInit` "Next steps" stdout to mention `CLAUDE.md` + `AGENTS.md` were created.
+- [x] Verify `package.json` `files` glob already ships `core/ecosystem/templates/` (the existing `core/` entry covers it; no change needed).
+- [x] Write `tests/ecosystem-init-claude-md.test.js` (8 subtests: existence, name substitution, coordination-layer guidance, primitives listed, dispatch-CLI warning, Project Extensions marker, AGENTS.md parity, idempotency).
+- [x] Run `npm test` for G1 + existing ecosystem regression suite — 8/8 G1 green; 53/53 existing ecosystem tests still green.
 - [ ] Commit G1: `feat(ecosystem): write managed CLAUDE.md + AGENTS.md on init (ENH-025)`
 
 ## Group 2 — Action-bearing pointer block (Parallel)
