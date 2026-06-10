@@ -75,6 +75,14 @@ Detail: To wire the brainstorm-gate hook for Codex without duplicating the scrip
 
 ---
 
+### [FEATURE] 2026-06-11 — Group 2 complete — Antigravity realignment + hooks.json + skill/agents overlay
+Topics: phase-16, group-2, antigravity, agy, dot-agents-dir, hooks-json, skill-md, review-code, skills-true-flip
+Affects-phases: phase-16-adapter-parity
+Affects-specs: adapters/antigravity/adapter.js, adapters/antigravity/hooks.json, adapters/antigravity/agents/*, adapters/antigravity/skills/momentum-orient/SKILL.md, adapters/antigravity/commands/review-code.md, adapters/antigravity/instructions/AGENTS.md, core/adapter-capabilities.md, core/adapter-parity-matrix.md, tests/adapter-subagents-antigravity.test.js, tests/tarball.test.js
+Detail: Group 2 delivered Antigravity realignment + overlay parity. (1) Adapter's `configFiles` block declares `hooks.json` → `.agents/hooks.json`; runInstall/runUpgrade wire it idempotently with .bak backup on changed content. The `hooks.json` ships PostToolUse `check-history-reminder.sh` + SessionStart `sessionstart-handoff.sh` (the latter is degraded — `agy` SessionStart event support not yet vendor-confirmed; AGENTS.md text carries the fallback handoff hint). (2) Three momentum reviewer TOML subagents at `adapters/antigravity/agents/` mirror the Codex set (same `name` / `description` / `developer_instructions` schema). (3) `momentum-orient` skill ships at `adapters/antigravity/skills/momentum-orient/SKILL.md` with frontmatter `name` + `description` per the `.agents/skills/` convention — codifies Rule 1 (orient first). (4) Antigravity-flavored `/review-code` overlay at `adapters/antigravity/commands/review-code.md` invokes the three TOML reviewers via Antigravity's native parent → child subagent delegation; surfaces findings into the `task.md` artifact for the user. (5) `AGENTS.md` rewritten: `.antigravity/` references dropped throughout; `.agents/` layout documented with overlay-subdir table; explicit hook event table; skill + subagent sections; SessionStart fallback hint preserved as primary-instruction text. (6) Antigravity `skills: false` → `true` in the capability matrix (was already overlay-shipping; now declared). The `slashCommands` + `sessionStartHook` booleans stay `false` pending vendor confirmation per their roadmap notes. (7) Parity matrix updated: `.agents/skills/` cell on Antigravity is now `shipped`; new footnote 7 added. (8) `tests/adapter-subagents-antigravity.test.js` proves all three TOMLs install, SKILL.md frontmatter is well-formed and references `specs/status.md`, hooks.json wires the history reminder, and `.antigravity/` is absent post-init. tarball test extended with the new overlay paths. Suite: 300/300 (was 297 post-G1) — 3 new assertions; zero regressions.
+
+---
+
 ### [FEATURE] 2026-06-11 — Group 1 complete — Codex parity hardening
 Topics: phase-16, group-1, codex, pretooluse, subagents, review-code, agents-md
 Affects-phases: phase-16-adapter-parity

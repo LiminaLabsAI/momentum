@@ -43,7 +43,7 @@ orchestration code depends on.
 | `subagents` | ✅ | ✅ | ✅ |
 | `parallelSubagents` | ✅ | ❌² | ✅ |
 | `sessionStartHook` | ✅ | ✅ | ❌³ |
-| `skills` | ❌ | ❌⁴ | ❌ |
+| `skills` | ❌ | ❌⁴ | ✅ |
 | `browser` | ❌ | ❌⁵ | ❌ |
 | `computerUse` | ❌ | ❌⁵ | ❌ |
 | `artifacts` (adapter-specific) | — | — | ✅ |

@@ -25,14 +25,14 @@
 
 ## Group 2 — Antigravity Realignment
 
-- [ ] G2.1 Rewire `adapters/antigravity/adapter.js` destinations: `.antigravity/` → `.agents/`
-- [ ] G2.2 Author `adapters/antigravity/hooks.json` (PostToolUse history reminder + SessionStart if supported)
-- [ ] G2.3 Add `configFiles` entry + `runInstall` / `runUpgrade` for `hooks.json` → `.agents/hooks.json`
-- [ ] G2.4 Author `adapters/antigravity/agents/momentum-reviewer-*` mirrors of Codex set (format per vendor docs)
-- [ ] G2.5 Author `adapters/antigravity/skills/momentum-orient/SKILL.md` (first shipped skill)
-- [ ] G2.6 Rewrite `adapters/antigravity/instructions/AGENTS.md` — drop `.antigravity/`; describe `.agents/`; surface skill + agents
-- [ ] G2.7 Update `tests/adapter-smoke-antigravity.test.js` — assert `.agents/` paths, hooks.json, no `.antigravity/`
-- [ ] G2.8 Write `tests/adapter-subagents-antigravity.test.js` — skills + agents overlay assertions
+- [x] G2.1 Rewire `adapters/antigravity/adapter.js` destinations: `.antigravity/` → `.agents/` (landed in G0; confirmed via tests)
+- [x] G2.2 Author `adapters/antigravity/hooks.json` (PostToolUse history reminder + SessionStart fallback)
+- [x] G2.3 Add `configFiles` entry + `runInstall` / `runUpgrade` for `hooks.json` → `.agents/hooks.json`
+- [x] G2.4 Author `adapters/antigravity/agents/momentum-reviewer-*` mirrors of Codex set (TOML format with same required-fields shape)
+- [x] G2.5 Author `adapters/antigravity/skills/momentum-orient/SKILL.md` (first shipped skill)
+- [x] G2.6 Rewrite `adapters/antigravity/instructions/AGENTS.md` — drop `.antigravity/`; describe `.agents/`; surface skill + agents
+- [x] G2.7 Update `tests/adapter-smoke-antigravity.test.js` — assert `.agents/` paths, hooks.json, no `.antigravity/` (paths updated in G0; full assertions covered by G2.8 + existing smoke)
+- [x] G2.8 Write `tests/adapter-subagents-antigravity.test.js` — skills + agents overlay assertions; also flipped `skills: true` on Antigravity capability
 
 ## Group 3 — Hook Execution Smoke Harness
 

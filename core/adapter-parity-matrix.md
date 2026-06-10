@@ -71,7 +71,7 @@ must be one of the three above. The audit test fails on blank cells.
 | `scripts/` overlay | shipped | shipped | shipped |
 | `engines/` overlay | shipped | shipped | shipped |
 | `agents/` overlay (Phase 16) | not-applicable⁵ | shipped (Phase 16 G1.5) | shipped (Phase 16 G2.4) |
-| `skills/` overlay (Phase 16) | not-applicable⁵ | shipped-degraded⁶ | shipped (Phase 16 G2.5) |
+| `skills/` overlay (Phase 16) | not-applicable⁵ | shipped-degraded⁶ | shipped⁷ (Phase 16 G2.5) |
 
 ### Orchestration primitives
 
@@ -129,6 +129,10 @@ must be one of the three above. The audit test fails on blank cells.
    `.agents/skills/`). A first-class Codex-owned `skills/` overlay
    ships in a follow-up phase once Group 4 evidence confirms the
    discovery flow.
+7. **Antigravity skills overlay** — momentum ships `momentum-orient`
+   (codifies Rule 1: orient first). Project-specific skills can be
+   added under `.agents/skills/<name>/SKILL.md` following the same
+   frontmatter convention.
 
 ## Read this if you are…
 
