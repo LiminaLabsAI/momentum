@@ -55,10 +55,10 @@
 
 ## Group 5 — Capability Flips, Matrix Close-Out, Verification
 
-- [ ] G5.1 If G4.3 succeeds: flip Codex `parallelSubagents: true`; drop roadmap entry
-- [ ] G5.2 If G4 confirms Codex skills work: flip `skills: true`; drop roadmap entry
-- [ ] G5.3 Re-run capability + parity matrix tests; both pass post-flip
-- [ ] G5.4 Full regression: `npm test` green
-- [ ] G5.5 Author `retrospective.md` with G4 evidence in "Verification Evidence" section (Rule 12)
-- [ ] G5.6 `/sync-docs` — propagate history entries to specs/status.md, roadmap.md, capability matrix, parity matrix
-- [ ] G5.7 Prompt user for `/complete-phase`
+- [/] G5.1 Codex `parallelSubagents` flip **deferred** — gated on VAL-001 live evidence. Capability stays `false`; matrix cell `shipped-degraded²` documents the gate.
+- [/] G5.2 Codex `skills` flip **deferred** — gated on VAL-001 live evidence. Capability stays `false`; matrix cell `shipped-degraded⁴` documents the gate. (Antigravity `skills` already flipped to `true` in G2 on overlay ship.)
+- [x] G5.3 Capability + parity matrix tests: both pass (`tests/adapter-capabilities-declared.test.js` + `tests/adapter-parity-matrix.test.js`)
+- [x] G5.4 Full regression: `npm test` → **309/309** (was 288 v0.18.0 baseline; +21 new across the phase; zero pre-existing regressions)
+- [x] G5.5 `retrospective.md` authored with Verification Evidence section pointing at `evidence/test-suite.txt` + `evidence/codex-install.txt` + `evidence/antigravity-install.txt`
+- [x] G5.6 Doc sync: `specs/status.md`, `specs/phases/README.md`, `specs/phases/index.json`, `specs/changelog/2026-06.md`, `core/adapter-capabilities.md`, `core/adapter-parity-matrix.md`, `specs/planning/roadmap.md` all reflect Phase 16 Adapter Parity + roadmap renumber
+- [ ] G5.7 Prompt user for `/complete-phase` + merge/release approval (this is the hard stop per autonomous-execution contract)

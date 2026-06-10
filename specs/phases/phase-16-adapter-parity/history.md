@@ -75,6 +75,14 @@ Detail: To wire the brainstorm-gate hook for Codex without duplicating the scrip
 
 ---
 
+### [FEATURE] 2026-06-11 — Group 5 complete — capability flips deferred per gate; docs synced; retrospective authored
+Topics: phase-16, group-5, capability-flip-gated, retrospective, sync-docs, roadmap-renumber
+Affects-phases: phase-16-adapter-parity, phase-17-reach (renumbered), phase-18-intelligence (renumbered), phase-19-platform (renumbered, v1.0)
+Affects-specs: specs/phases/phase-16-adapter-parity/retrospective.md, specs/planning/roadmap.md, specs/status.md, specs/phases/README.md, specs/phases/index.json
+Detail: Group 5 closed out the phase. (1) G5.1 + G5.2 capability flips DEFERRED per G4 gate — Codex `parallelSubagents` + `skills` stay `false`; matrix cells remain `shipped-degraded` with the VAL-001 evidence gate documented. Antigravity `skills` already flipped to `true` in G2 on overlay ship. (2) Full regression: 309/309 (was 288 v0.18.0 baseline; +21 new tests across the phase; zero pre-existing regressions). (3) Retrospective authored with Verification Evidence section pointing at `evidence/test-suite.txt` + `evidence/codex-install.txt` + `evidence/antigravity-install.txt`. (4) Doc sync done in-flight across the phase (no separate `/sync-docs` invocation needed since updates were made per group): `specs/status.md` reflects active phase; `specs/phases/README.md` has Phase 16 row; `specs/phases/index.json` has the topics block; `specs/changelog/2026-06.md` has the phase-start entry; `core/adapter-capabilities.md` + `core/adapter-parity-matrix.md` refreshed; `specs/planning/roadmap.md` renumbered (Reach → 17, Intelligence → 18, Platform → 19 / v1.0). (5) Phase ready for merge + release; autonomous execution contract STOPS at the merge/release gate per CLAUDE.md release checklist + the user's instruction that "only the commit and release, you will wait for my approval."
+
+---
+
 ### [DISCOVERY] 2026-06-11 — Group 4 deferred to follow-up (VAL-001 + VAL-002); live CLIs unavailable in dev env
 Topics: phase-16, group-4, val-001, val-002, codex-cli, agy-cli, dogfood-deferred
 Affects-phases: phase-16-adapter-parity, post-v0.19.0

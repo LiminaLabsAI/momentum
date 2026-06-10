@@ -24,9 +24,10 @@
 | 13 | Site Polish & Content Depth | **Complete (v0.16.0)** | Augment-in-place site revamp: wholesale landing rewrite ("Spec-driven development for agentic AI" positioning) with editorial diagram + animated phase flow; NEW `/orchestration/` page; Concepts / Skills / Rules deepened 3× word count; Ecosystem rewritten with topology SVG + worked example; Mermaid plugin wired into Starlight; end-to-end "Your first phase" tutorial; FAQ expanded. Lighthouse: 96/96/100/100. |
 | 14 | Site Refinement & Positioning Pivot | **Complete (v0.17.0)** | Fix 4 rendering bugs from v0.16.0 (anchor syntax, Mermaid dark mode, PhaseFlow animation, ecosystem MDX leak); complete agentic-AI positioning pivot in body copy; terminology shift "repo" → "project" in positioning; sharpen ecosystem ↔ orchestration framing (state layer + action layer) with NEW `StateActionLayers` diagram; new logo (concentric arcs + arrow, two-tone slate+indigo); README wholesale rewrite. Metadata-only npm bump. |
 | 15 | Ecosystem Agent Discoverability | **Complete (v0.18.0)** | ENH-025 close-out — `momentum ecosystem init` auto-writes managed CLAUDE.md + AGENTS.md; action-bearing pointer block in member repos (v=2 with auto-migration); SessionStart hook prints ecosystem context; `momentum dispatch` CLI surfaces degraded-mode notice upfront; `momentum ecosystem initiative create` CLI ships. Closes ENH-025/032/033/034/035. |
-| 16 | Reach | Not Started (target v0.19.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
-| 17 | Intelligence | Not Started (target v0.20.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
-| 18 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; dependency-aware task ordering; bidirectional spec sync (experimental); ecosystem Tier 2 (federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`). |
+| 16 | Codex & Antigravity Adapter Parity | **In Progress (target v0.19.0)** | Codex full hook surface (PreToolUse brainstorm-gate, PostToolUse, SessionStart); Codex TOML reviewer subagents + `/review-code` overlay; Antigravity `.antigravity/` → `.agents/` realignment + `hooks.json` + `skills/momentum-orient` + reviewer agents overlay; adapter-contract `destinations` extended with `agents` + `skills`; new `core/adapter-parity-matrix.md` audit; hook-execution smoke harness across all three adapters. VAL-001 + VAL-002 file live-runtime dogfood for post-release validation. |
+| 17 | Reach | Not Started (target v0.20.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
+| 18 | Intelligence | Not Started (target v0.21.0) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
+| 19 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; dependency-aware task ordering; bidirectional spec sync (experimental); ecosystem Tier 2 (federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`). |
 
 ## Unscheduled Future Work
 
@@ -59,9 +60,10 @@ Phase 0 (Bootstrap)
                                                                         └── Phase 13 (Site Polish & Content Depth — assumes shipped site)
                                                                              └── Phase 14 (Site Refinement & Positioning Pivot — fixes + completes Phase 13)
                                                                                   └── Phase 15 (Ecosystem Agent Discoverability — closes the gap between primitives existing and agents using them)
-                                                                                       └── Phase 16 (Reach — assumes hardened ecosystem story)
-                                                                                            └── Phase 17 (Intelligence — assumes multi-agent base)
-                                                                                                 └── Phase 18 (Platform — assumes the rest)
+                                                                                       └── Phase 16 (Codex & Antigravity Adapter Parity — hardens declared adapters before adding new ones)
+                                                                                            └── Phase 17 (Reach — assumes hardened multi-agent story)
+                                                                                                 └── Phase 18 (Intelligence — assumes multi-agent base)
+                                                                                                      └── Phase 19 (Platform — assumes the rest)
                                                                                    ‖
                                                                                    Unscheduled: Hardening & Activation can slot in anywhere
                                                                                    before its absence becomes a blocker.
@@ -99,7 +101,8 @@ Phase 0 (Bootstrap)
 | v0.16.0 — Site Polish & Content Depth | 13 | **Released 2026-06-08** — Landing wholesale rewrite; NEW /orchestration/; Concepts/Skills/Rules deepened; Ecosystem rewritten with topology + worked example; Mermaid plugin wired; end-to-end tutorial. Lighthouse 96/96/100/100. |
 | v0.17.0 — Site Refinement & Positioning Pivot | 14 | **Released 2026-06-08** — 4 rendering-bug fixes (anchor syntax, Mermaid dark mode, PhaseFlow animation, ecosystem MDX leak); agentic-AI positioning pivot in body copy; repo→project terminology; ecosystem ↔ orchestration as state+action layers with NEW StateActionLayers diagram; new logo (two-tone concentric arcs + arrow); README wholesale rewrite |
 | v0.18.0 — Ecosystem Agent Discoverability | 15 | **Released 2026-06-08** — ENH-025 close-out + four sibling discoverability fixes: managed ecosystem CLAUDE.md/AGENTS.md on init; action-bearing pointer block (v=2 auto-migration); SessionStart ecosystem-context banner; dispatch CLI upfront degraded-mode notice; `momentum ecosystem initiative create` CLI. 288/288 tests (+34). |
-| v0.19.0 — Reach | 16 | Cursor + Gemini adapters; ENH-009 distribution decision |
-| v0.20.0 — Intelligence | 17 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |
-| v1.0.0 — Platform | 18 | MCP server, /specify, /decide, skill authoring, dependency-aware tasks; ecosystem Tier 2 |
+| v0.19.0 — Codex & Antigravity Adapter Parity | 16 | **In Progress** — Codex full hook surface + TOML reviewer subagents + `/review-code` overlay; Antigravity `.agents/` realignment + hooks.json + skill/agents overlay; adapter-contract `destinations` extended; new parity matrix audit. 309/309 tests. VAL-001 + VAL-002 file live-runtime dogfood. |
+| v0.20.0 — Reach | 17 | Cursor + Gemini adapters; ENH-009 distribution decision |
+| v0.21.0 — Intelligence | 18 | Self-learning, retrospective-driven rule evolution, self-healing, context-aware sizing |
+| v1.0.0 — Platform | 19 | MCP server, /specify, /decide, skill authoring, dependency-aware tasks; ecosystem Tier 2 |
 | Unscheduled | — | Hardening & Activation: systematic-debugging skill (full); SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017 |
