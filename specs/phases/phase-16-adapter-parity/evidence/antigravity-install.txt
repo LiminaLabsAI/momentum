@@ -1,0 +1,132 @@
+Installing momentum into: /tmp/momentum-antigravity-smoke.bDpMV5 [agent: antigravity]
+
+→ Installing slash commands...
+→ Installing hook scripts...
+→ Installing execution engines...
+→ Installing agent rules...
+→ Scaffolding project specs...
+→ Installing AGENTS.md...
+→ Overlaying commands from adapter...
+→ Overlaying agents from adapter...
+→ Overlaying skills from adapter...
+→ Configuring Antigravity hooks...
+
+✓ momentum installed successfully.
+
+Next steps:
+
+  Explore an idea first:
+    Open Antigravity and run: /brainstorm-idea
+
+  Ready to scaffold a project:
+    Open Antigravity and run: /start-project
+
+  Existing project — plan your next phase:
+    Open Antigravity and run: /brainstorm-phase
+
+  See docs: https://github.com/avinash-singh-io/momentum
+
+=== Installed file tree ===
+.agent/engines/subagent-dispatch.md
+.agent/rules/project.md
+.agents/agents/momentum-reviewer-architecture.toml
+.agents/agents/momentum-reviewer-qa.toml
+.agents/agents/momentum-reviewer-security.toml
+.agents/commands/brainstorm-idea.md
+.agents/commands/brainstorm-phase.md
+.agents/commands/complete-phase.md
+.agents/commands/ecosystem.md
+.agents/commands/initiative.md
+.agents/commands/log.md
+.agents/commands/migrate.md
+.agents/commands/review-code.md
+.agents/commands/review.md
+.agents/commands/session.md
+.agents/commands/start-phase.md
+.agents/commands/start-project.md
+.agents/commands/sync-docs.md
+.agents/commands/systematic-debug.md
+.agents/commands/track.md
+.agents/commands/validate.md
+.agents/hooks.json
+.agents/skills/momentum-orient/SKILL.md
+.gitignore
+AGENTS.md
+README.md
+scripts/brainstorm-gate.sh
+scripts/check-history-reminder.sh
+scripts/session-append.sh
+scripts/sessionstart-handoff.sh
+specs/architecture/ecosystem.md
+specs/backlog/backlog.md
+specs/backlog/details/.gitkeep
+specs/changelog/.gitkeep
+specs/decisions/0000-template.md
+specs/decisions/impact-map.json
+specs/decisions/README.md
+specs/phases/index.json
+specs/phases/README.md
+specs/planning/roadmap.md
+specs/README.md
+specs/status.md
+specs/vision/principles.md
+specs/vision/project-charter.md
+specs/vision/success-criteria.md
+
+=== .agents/hooks.json content ===
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/check-history-reminder.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/sessionstart-handoff.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+=== .agents/skills/momentum-orient/SKILL.md ===
+---
+name: momentum-orient
+description: Always read specs/status.md before doing any work in a momentum-managed project. Activates at the start of a new task to ensure the agent has current phase context.
+---
+
+# momentum-orient
+
+When invoked, read these files in order before any other action:
+
+1. `specs/status.md` — current phase, blockers, P0 items, next actions.
+2. `specs/backlog/backlog.md` — P0/P1 items that may block the current task.
+3. `specs/phases/<active-phase>/tasks.md` — what's done, what's in flight, what's blocked.
+4. `CLAUDE.md` or `AGENTS.md` — project rules and constraints.
+
+Then proceed with the user's request, framing any output in terms of:
+- which phase is active
+- whether the requested work belongs in the active phase or is a side track
+- any existing tasks or history entries that already cover the request
+
+This skill is shipped by the momentum toolkit. It codifies Rule 1
+(Orient First) from the project rules. See `.agent/rules/project.md`
+for the full set of 12 rules.
+
+## When NOT to use
+
+- If the user's message is purely conversational ("what is X?") and
+  doesn't require touching the codebase, you don't need to orient.
+- If you've already oriented this session and nothing on disk has
+  changed since, don't re-orient.

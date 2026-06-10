@@ -1,6 +1,6 @@
 # Backlog
 
-> **Last Updated**: 2026-06-08 (ENH-025 → in-progress for Phase 15; ENH-032 / ENH-033 / ENH-034 / ENH-035 filed alongside)
+> **Last Updated**: 2026-06-11 (VAL-001 + VAL-002 filed during Phase 16 Group 4 — live-CLI evidence deferred)
 
 ---
 
@@ -94,3 +94,10 @@
 | FEAT-015 | Adapter Contract v3 — runtime metadata for multi-agent compatibility | P1 | resolved | phase-7b | Delivered in Phase 7b. Adapters declare display name, destinations, primary instruction file, config/hook files, and capability flags. Core remains generic; agent-specific capabilities stay isolated in adapters. |
 | FEAT-016 | Adapter: Codex (`AGENTS.md`, `.codex/hooks.json`, command recipes) | P1 | resolved | phase-7b | Delivered in Phase 7b. First non-Claude adapter. Installs Codex primary instructions, Codex hook config, generic specs/scripts, and Codex-owned command recipes via `momentum init/upgrade --agent codex`. |
 | FEAT-017 | Cross-agent install/upgrade regression coverage | P1 | resolved | phase-7b | Delivered in Phase 7b. Tests prove Claude Code output remains unchanged while Codex install/upgrade works. Includes dynamic available-agent behavior and overlay conflict protection. |
+
+## Validation (post-release follow-ups)
+
+| ID | Title | Priority | Status | Phase | Detail |
+|----|-------|----------|--------|-------|--------|
+| VAL-001 | Live `codex` CLI dogfood for Phase 16 parity | P1 | open | post-v0.19.0 | Phase 16 Group 4 planned a full `/brainstorm-phase → /start-phase → /sync-docs → /complete-phase` exercise on a real `codex` CLI install + a 3-target parallel `momentum dispatch` smoke. Neither CLI was reachable from the Phase 16 dev environment. Installation evidence captured at `specs/phases/phase-16-adapter-parity/evidence/codex-install.txt`. Until live evidence lands, Codex `parallelSubagents` + `skills` capability flips stay `false` (matrix cell `shipped-degraded`). Action: on a machine with a live `codex` CLI, run the four-command end-to-end flow + a 3-target dispatch; capture terminal output; flip both booleans if evidence confirms behavior; close VAL-001. |
+| VAL-002 | Live `agy` CLI dogfood for Phase 16 parity | P1 | open | post-v0.19.0 | Phase 16 Group 4 planned the same end-to-end exercise on a real `agy` CLI install. Particular questions to settle: (a) does `agy` fire SessionStart hooks (capability currently `false` pending evidence)? (b) does the `.agents/skills/momentum-orient/SKILL.md` skill auto-discover? (c) does `.agents/hooks.json` PostToolUse fire on edits to `specs/`? Installation evidence captured at `specs/phases/phase-16-adapter-parity/evidence/antigravity-install.txt`. Action: on a machine with `agy` installed, run the flow + answer (a)/(b)/(c); flip capability booleans accordingly; close VAL-002. |

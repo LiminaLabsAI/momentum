@@ -1,0 +1,194 @@
+Installing momentum into: /tmp/momentum-codex-smoke.u47w3S [agent: codex]
+
+→ Installing slash commands...
+→ Installing hook scripts...
+→ Installing execution engines...
+→ Installing agent rules...
+→ Scaffolding project specs...
+→ Installing AGENTS.md...
+→ Overlaying commands from adapter...
+→ Overlaying agents from adapter...
+→ Configuring Codex hooks...
+
+✓ momentum installed successfully.
+
+Next steps:
+
+  Explore an idea first:
+    Open Codex and run: /brainstorm-idea
+
+  Ready to scaffold a project:
+    Open Codex and run: /start-project
+
+  Existing project — plan your next phase:
+    Open Codex and run: /brainstorm-phase
+
+  See docs: https://github.com/avinash-singh-io/momentum
+
+=== Installed file tree ===
+.agent/engines/subagent-dispatch.md
+.agent/rules/project.md
+.codex/agents/momentum-reviewer-architecture.toml
+.codex/agents/momentum-reviewer-qa.toml
+.codex/agents/momentum-reviewer-security.toml
+.codex/commands/brainstorm-idea.md
+.codex/commands/brainstorm-phase.md
+.codex/commands/complete-phase.md
+.codex/commands/continue.md
+.codex/commands/dispatch.md
+.codex/commands/ecosystem.md
+.codex/commands/handoff.md
+.codex/commands/initiative.md
+.codex/commands/log.md
+.codex/commands/migrate.md
+.codex/commands/review-code.md
+.codex/commands/review.md
+.codex/commands/scout.md
+.codex/commands/session.md
+.codex/commands/start-phase.md
+.codex/commands/start-project.md
+.codex/commands/sync-docs.md
+.codex/commands/systematic-debug.md
+.codex/commands/track.md
+.codex/commands/validate.md
+.codex/hooks.json
+.gitignore
+AGENTS.md
+README.md
+scripts/brainstorm-gate.sh
+scripts/check-history-reminder.sh
+scripts/session-append.sh
+scripts/sessionstart-handoff.sh
+specs/architecture/ecosystem.md
+specs/backlog/backlog.md
+specs/backlog/details/.gitkeep
+specs/changelog/.gitkeep
+specs/decisions/0000-template.md
+specs/decisions/impact-map.json
+specs/decisions/README.md
+specs/phases/index.json
+specs/phases/README.md
+specs/planning/roadmap.md
+specs/README.md
+specs/status.md
+specs/vision/principles.md
+specs/vision/project-charter.md
+specs/vision/success-criteria.md
+
+=== .codex/hooks.json content ===
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/brainstorm-gate.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/check-history-reminder.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/sessionstart-handoff.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+=== .codex/agents/ TOML headers ===
+--- momentum-reviewer-architecture.toml ---
+# momentum reviewer — Architecture lens
+#
+# Installed by momentum into .codex/agents/ during `momentum init/upgrade
+# --agent codex`. Spawned by /review-code alongside the Security and QA
+# reviewers.
+
+name = "momentum-reviewer-architecture"
+
+description = """
+Review a code diff for architectural fit, rule compliance, and pattern
+consistency. Returns Critical/Important/Minor findings ONLY — does not
+modify code, does not refactor. Dispatched by /review-code on the
+current branch's pending changes.
+"""
+
+developer_instructions = """
+You are an architecture-focused code reviewer dispatched by the momentum
+toolkit. You will receive a code diff and the project's full rules
+(CLAUDE.md / AGENTS.md + .agent/rules/project.md).
+
+YOUR LENS: architectural fit, rule compliance, pattern consistency.
+
+For each change, ask:
+- Does it violate any of the 12 autonomous rules (orient first, update
+  tracking, auto-track discoveries, pre-phase bug check, phase boundary
+--- momentum-reviewer-qa.toml ---
+# momentum reviewer — QA lens (test coverage, edge cases, regressions)
+#
+# Installed by momentum into .codex/agents/ during `momentum init/upgrade
+# --agent codex`. Spawned by /review-code alongside the Security and
+# Architecture reviewers.
+
+name = "momentum-reviewer-qa"
+
+description = """
+Review a code diff for test coverage, edge cases, and regression risk.
+Returns Critical/Important/Minor findings ONLY — does not modify code,
+does not write tests. Dispatched by /review-code on the current branch's
+pending changes.
+"""
+
+developer_instructions = """
+You are a QA-focused code reviewer dispatched by the momentum toolkit.
+You will receive a code diff and a project-rules excerpt (especially
+Rule 12 — Verify Before Claim).
+
+YOUR LENS: test coverage, edge cases, regression risk.
+
+For each meaningful behavior change in the diff, ask:
+- Is there a test that exercises it? If yes, does it test the happy
+  path AND at least one edge case?
+--- momentum-reviewer-security.toml ---
+# momentum reviewer — Security lens
+#
+# Installed by momentum into .codex/agents/ during `momentum init/upgrade
+# --agent codex`. Spawned by the Codex-flavored `/review-code` command
+# alongside the QA and Architecture reviewers, fanning out in parallel
+# (or sequentially if `parallelSubagents` is false at runtime).
+#
+# This file follows the Codex subagent TOML schema:
+#   name, description, developer_instructions are required.
+#   max_depth / max_threads inherit from agents.* defaults if omitted.
+
+name = "momentum-reviewer-security"
+
+description = """
+Review a code diff through a security lens (OWASP Top 10, STRIDE threat
+categories). Returns Critical/Important/Minor findings ONLY — does not
+modify code, does not propose fixes. Dispatched by /review-code on the
+current branch's pending changes.
+"""
+
+developer_instructions = """
+You are a security-focused code reviewer dispatched by the momentum
+toolkit. You will receive a code diff and a project-rules excerpt.
+
+YOUR LENS: OWASP Top 10 + STRIDE threat categories.

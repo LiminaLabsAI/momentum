@@ -75,6 +75,14 @@ Detail: To wire the brainstorm-gate hook for Codex without duplicating the scrip
 
 ---
 
+### [DISCOVERY] 2026-06-11 — Group 4 deferred to follow-up (VAL-001 + VAL-002); live CLIs unavailable in dev env
+Topics: phase-16, group-4, val-001, val-002, codex-cli, agy-cli, dogfood-deferred
+Affects-phases: phase-16-adapter-parity, post-v0.19.0
+Affects-specs: specs/backlog/backlog.md, specs/phases/phase-16-adapter-parity/evidence/codex-install.txt, specs/phases/phase-16-adapter-parity/evidence/antigravity-install.txt, specs/phases/phase-16-adapter-parity/evidence/test-suite.txt
+Detail: Group 4 planned a live `momentum init` + four-command flow (`/brainstorm-phase → /start-phase → /sync-docs → /complete-phase`) on real `codex` and `agy` CLIs, plus a 3-target parallel dispatch smoke on Codex. Neither CLI was reachable from the Phase 16 dev environment (`which codex`, `which agy` both empty). Per the plan's external-dependency clause: install-time evidence captured under `evidence/` (file trees, hooks.json content, TOML headers, SKILL.md content, full 309/309 test-suite output). Live-runtime evidence becomes follow-up validation: VAL-001 (Codex) + VAL-002 (Antigravity), both P1, both filed in backlog under a new "Validation" section. Capability flips that depended on G4 evidence (Codex `parallelSubagents`, Codex `skills`) stay `false` for v0.19.0 — the matrix cells already mark them `shipped-degraded` with the live-evidence gate documented. v0.19.0 ships with everything Codex + Antigravity need to be at functional parity at install time; the boolean upgrades follow once the validation lands on a live-runtime machine. This is exactly the graceful-degradation path the plan anticipated; no scope change.
+
+---
+
 ### [FEATURE] 2026-06-11 — Group 3 complete — hook-execution smoke harness across all three adapters
 Topics: phase-16, group-3, hook-execution, fake-tool-event, smoke-harness, claude-code-symmetry
 Affects-phases: phase-16-adapter-parity

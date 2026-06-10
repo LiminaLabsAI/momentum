@@ -43,10 +43,15 @@
 
 ## Group 4 — Live Dogfood + Evidence Capture
 
-- [ ] G4.1 Codex dogfood: init + `/brainstorm-phase` + `/start-phase` + `/sync-docs` + `/complete-phase` on `/tmp/momentum-codex-smoke`; capture to `evidence/codex-dogfood.txt`
-- [ ] G4.2 Antigravity dogfood: same flow on `/tmp/momentum-antigravity-smoke` via `agy`; capture to `evidence/agy-dogfood.txt`
-- [ ] G4.3 Codex 3-target parallel dispatch smoke; capture to `evidence/codex-parallel-dispatch.txt`
-- [ ] G4.4 Log any discoveries as `[DISCOVERY]` history entries; decide fix-in-phase vs file-to-backlog
+> Both `codex` and `agy` CLIs were unavailable in the Phase 16 dev environment.
+> Per the plan's external-dependency clause, this group ships **partial** —
+> installation-level evidence captured under `evidence/`; live-runtime evidence
+> deferred as `VAL-001` (Codex) and `VAL-002` (Antigravity) in the backlog.
+
+- [/] G4.1 Codex dogfood: install evidence captured at `evidence/codex-install.txt` (file tree + hooks.json + agents/ TOML headers). Live `/brainstorm-phase → /complete-phase` flow deferred → VAL-001.
+- [/] G4.2 Antigravity dogfood: install evidence captured at `evidence/antigravity-install.txt` (file tree + hooks.json + SKILL.md). Live `agy` flow deferred → VAL-002.
+- [ ] G4.3 Codex 3-target parallel dispatch smoke — deferred → VAL-001 (gates Group 5.1 capability flip).
+- [x] G4.4 Discoveries logged as `[DISCOVERY]`; VAL-001 + VAL-002 filed in backlog under new "Validation" section.
 
 ## Group 5 — Capability Flips, Matrix Close-Out, Verification
 
