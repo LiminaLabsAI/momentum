@@ -56,3 +56,11 @@ Topics: phase-16, group-4, external-deps
 Affects-phases: phase-16-adapter-parity
 Affects-specs: none
 Detail: Group 4 requires working `codex` and `agy` CLI installations on the dev machine. If either is unavailable at G4 execution time, the missing evidence becomes a `[VALIDATION]` backlog item and Groups 0/1/2/3/5 still ship as v0.19.0. Capability flips in Group 5 are gated on Group 4 evidence — if a flip's evidence is missing, the capability stays `false` and the matrix cell is documented as `shipped-degraded` until follow-up validation lands.
+
+---
+
+### [DECISION] 2026-06-11 — Group 0 complete; antigravity test-path migration folded in
+Topics: phase-16, group-0, adapter-contract, parity-matrix, antigravity-paths
+Affects-phases: phase-16-adapter-parity
+Affects-specs: core/adapter-capabilities.md, core/adapter-parity-matrix.md, adapters/*/adapter.js, tests/_helpers.js, tests/adapter-parity-matrix.test.js, tests/adapter-capabilities-declared.test.js, tests/adapter-smoke-antigravity.test.js, tests/install.test.js, tests/upgrade.test.js
+Detail: Group 0 landed: every adapter now declares `destinations.agents` + `destinations.skills`; `core/adapter-parity-matrix.md` ships as the per-feature audit surface (parsed and validated by `tests/adapter-parity-matrix.test.js`); `core/adapter-capabilities.md` refreshed against 2026-06 vendor docs (Codex hooks/subagents/skills, Antigravity `.agents/` layout); `fakeToolEvent` helper added to `tests/_helpers.js` for Group 3 use. Side decision: the antigravity adapter destination rewire (`.antigravity/` → `.agents/`) broke 3 existing tests with hard-coded `.antigravity/commands/` path expectations (adapter-smoke-antigravity / install / upgrade). Per "keep the suite green between commits," those test paths were updated in this commit rather than left red until Group 2. Group 2's `[adapter-smoke-antigravity test extensions](#group-2)` will still fire — they cover hooks.json wiring + skills/agents overlay, not path expectations. Suite: 293/293 (was 288 pre-phase) — 5 new assertions added; zero regressions.

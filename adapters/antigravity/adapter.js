@@ -13,10 +13,15 @@ module.exports = {
   displayName: 'Antigravity',
 
   destinations: {
-    commands: ['.antigravity', 'commands'],
+    // Phase 16: realigned from `.antigravity/` to `.agents/` to match
+    // the `agy` CLI's documented plugin/project layout. The previous path
+    // was invisible to `agy`.
+    commands: ['.agents', 'commands'],
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
     engines: ['.agent', 'engines'],
+    agents: ['.agents', 'agents'],
+    skills: ['.agents', 'skills'],
   },
 
   primaryInstruction: {

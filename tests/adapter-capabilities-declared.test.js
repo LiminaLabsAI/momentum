@@ -92,6 +92,39 @@ test('every shipped adapter exposes a roadmap block (may be empty)', () => {
   }
 });
 
+// Phase 16 G0.6 — destinations contract extension. Every adapter must
+// declare an `agents` and `skills` destination key (in addition to the
+// pre-existing commands / agent-rules / scripts / engines).
+const REQUIRED_DESTINATION_KEYS = [
+  'commands',
+  'agent-rules',
+  'scripts',
+  'engines',
+  'agents',
+  'skills',
+];
+
+test('every shipped adapter declares the full destinations surface (Phase 16)', () => {
+  for (const name of listShippedAdapters()) {
+    const adapter = loadAdapter(name);
+    assert.ok(
+      adapter.destinations && typeof adapter.destinations === 'object',
+      `${name}/adapter.js must export a 'destinations' object`,
+    );
+    for (const key of REQUIRED_DESTINATION_KEYS) {
+      assert.ok(
+        key in adapter.destinations,
+        `${name}/adapter.js destinations missing required key "${key}" (Phase 16 contract)`,
+      );
+      const value = adapter.destinations[key];
+      assert.ok(
+        Array.isArray(value) && value.every((v) => typeof v === 'string'),
+        `${name}/adapter.js destinations.${key} must be an array of strings; got ${JSON.stringify(value)}`,
+      );
+    }
+  }
+});
+
 test('roadmap entries reference real capability keys', () => {
   for (const name of listShippedAdapters()) {
     const adapter = loadAdapter(name);

@@ -127,7 +127,7 @@ test('upgrade — antigravity AGENTS.md preserves Project Extensions byte-for-by
     assert.ok(upgraded.includes(userExtension),
       'Antigravity user extension should be preserved verbatim');
     assert.match(upgraded, /Antigravity Native Artifacts Integration/);
-    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agents', 'commands', 'brainstorm-phase.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.agent', 'engines', 'subagent-dispatch.md')), true);
   } finally { rmrf(target); }
 });

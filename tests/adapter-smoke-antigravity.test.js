@@ -15,14 +15,14 @@ const { runAdapterSmoke, runOrchestrationSmoke } = require('./helpers/adapter-sm
 test('adapter smoke: antigravity — init / init --ecosystem / join / leave / doctor / ecosystem status', () => {
   runAdapterSmoke('antigravity', {
     primary: 'AGENTS.md',
-    commandsDir: ['.antigravity', 'commands'],
+    commandsDir: ['.agents', 'commands'],
   });
 });
 
 test('orchestration smoke: antigravity — scout / dispatch / handoff / continue (CLI floor)', () => {
   runOrchestrationSmoke('antigravity', {
     primary: 'AGENTS.md',
-    commandsDir: ['.antigravity', 'commands'],
+    commandsDir: ['.agents', 'commands'],
     slashCommandsExpected: false, // chat-driven UI; CLI is the canonical path
   });
 });

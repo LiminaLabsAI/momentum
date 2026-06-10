@@ -104,13 +104,14 @@ test('init — antigravity install produces AGENTS.md and command recipes', () =
 
     assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), false);
-    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'brainstorm-phase.md')), true);
-    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'start-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agents', 'commands', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agents', 'commands', 'start-phase.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
     assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.claude')), false);
     assert.equal(fs.existsSync(path.join(target, '.codex')), false);
+    assert.equal(fs.existsSync(path.join(target, '.antigravity')), false);
 
     const agentsMd = read(path.join(target, 'AGENTS.md'));
     assert.match(agentsMd, /Antigravity Native Artifacts Integration/);

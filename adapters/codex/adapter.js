@@ -17,6 +17,12 @@ module.exports = {
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
     engines: ['.agent', 'engines'],
+    // Phase 16: Codex now ships native subagent (`.codex/agents/`, TOML)
+    // and skill (`.agents/skills/`, SKILL.md) discovery surfaces. Subagents
+    // live under `.codex/agents/`; skills under the repo-shared `.agents/`
+    // root so any adapter that discovers SKILL.md from that path picks them up.
+    agents: ['.codex', 'agents'],
+    skills: ['.agents', 'skills'],
   },
 
   primaryInstruction: {

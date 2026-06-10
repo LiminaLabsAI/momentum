@@ -29,6 +29,11 @@ module.exports = {
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
     engines: ['.agent', 'engines'],
+    // Phase 16: contract extension. Claude Code has no native per-project
+    // subagent/skill discovery surface today, so these destinations are
+    // declared (uniform contract) but no overlay is shipped.
+    agents: ['.claude', 'agents'],
+    skills: ['.claude', 'skills'],
   },
 
   primaryInstruction: {

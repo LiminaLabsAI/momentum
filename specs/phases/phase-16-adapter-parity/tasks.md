@@ -4,12 +4,12 @@
 
 ## Group 0 — Contracts & Matrices
 
-- [ ] G0.1 Add `destinations.agents` + `destinations.skills` to all three `adapters/*/adapter.js`
-- [ ] G0.2 Refresh `core/adapter-capabilities.md` against current vendor docs
-- [ ] G0.3 Create `core/adapter-parity-matrix.md` — feature × adapter status grid
-- [ ] G0.4 Stub `tests/adapter-parity-matrix.test.js` — assert every cell has a declared status
-- [ ] G0.5 Add `fakeToolEvent` helper to `tests/_helpers.js`
-- [ ] G0.6 Extend `tests/adapter-capabilities-declared.test.js` for new destinations keys
+- [x] G0.1 Add `destinations.agents` + `destinations.skills` to all three `adapters/*/adapter.js`
+- [x] G0.2 Refresh `core/adapter-capabilities.md` against current vendor docs
+- [x] G0.3 Create `core/adapter-parity-matrix.md` — feature × adapter status grid
+- [x] G0.4 Stub `tests/adapter-parity-matrix.test.js` — assert every cell has a declared status
+- [x] G0.5 Add `fakeToolEvent` helper to `tests/_helpers.js`
+- [x] G0.6 Extend `tests/adapter-capabilities-declared.test.js` for new destinations keys
 
 ## Group 1 — Codex Hardening
 
