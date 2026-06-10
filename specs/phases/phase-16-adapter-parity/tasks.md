@@ -36,10 +36,10 @@
 
 ## Group 3 — Hook Execution Smoke Harness
 
-- [ ] G3.1 Write `tests/adapter-hook-execution-codex.test.js` — fake Write event, assert brainstorm-gate blocks
-- [ ] G3.2 Write `tests/adapter-hook-execution-antigravity.test.js` — fake Write event, assert history reminder fires
-- [ ] G3.3 Extend Claude-Code execution test to same rigor (close symmetry gap)
-- [ ] G3.4 `npm test` — confirm zero regressions vs 288-test v0.18.0 baseline
+- [x] G3.1 Write `tests/adapter-hook-execution-codex.test.js` — fake Write event, assert brainstorm-gate blocks
+- [x] G3.2 Write `tests/adapter-hook-execution-antigravity.test.js` — fake PostToolUse, assert history reminder fires
+- [x] G3.3 Extend Claude-Code execution test to same rigor (new `tests/adapter-hook-execution-claude-code.test.js`; closes symmetry gap)
+- [x] G3.4 `npm test` — 309/309 (was 300 post-G2; +9 new); zero regressions vs 288-test v0.18.0 baseline
 
 ## Group 4 — Live Dogfood + Evidence Capture
 

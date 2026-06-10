@@ -75,6 +75,14 @@ Detail: To wire the brainstorm-gate hook for Codex without duplicating the scrip
 
 ---
 
+### [FEATURE] 2026-06-11 — Group 3 complete — hook-execution smoke harness across all three adapters
+Topics: phase-16, group-3, hook-execution, fake-tool-event, smoke-harness, claude-code-symmetry
+Affects-phases: phase-16-adapter-parity
+Affects-specs: tests/adapter-hook-execution-codex.test.js, tests/adapter-hook-execution-antigravity.test.js, tests/adapter-hook-execution-claude-code.test.js, tests/_helpers.js
+Detail: Group 3 added an "actually fires" smoke layer that complements the existing install-time tests. Each test installs an adapter into a tmp project, then uses the `fakeToolEvent` helper (G0.5) to dispatch a synthetic tool event against the wired hook config, asserting side effects (exit codes / stdout / stderr markers). Codex coverage: PreToolUse brainstorm-gate blocks Write to specs/ with sentinel; allows when sentinel absent; allows non-Write tools; PostToolUse history reminder fires on specs/status.md. Antigravity coverage: PostToolUse history reminder fires + stays silent on non-significant files; SessionStart wiring asserted at config level (degraded — runtime event may or may not fire). Claude Code coverage: same shape as Codex (PreToolUse block + PostToolUse history reminder) — closes the test-coverage symmetry gap (the prior `brainstorm-gate.test.js` exercised the script directly without going through the adapter install path). Discovery: `fakeToolEvent` originally inherited `CLAUDE_PROJECT_DIR` from the outer Claude Code session, which pointed to the real momentum repo — false negatives on the block test. Fix: pin `CLAUDE_PROJECT_DIR` + `MOMENTUM_PROJECT_DIR` to the simulated project root in the helper so hooks always resolve against the test tmp dir. Suite: 309/309 (was 300 post-G2; +9 new hook-execution assertions; zero regressions).
+
+---
+
 ### [FEATURE] 2026-06-11 — Group 2 complete — Antigravity realignment + hooks.json + skill/agents overlay
 Topics: phase-16, group-2, antigravity, agy, dot-agents-dir, hooks-json, skill-md, review-code, skills-true-flip
 Affects-phases: phase-16-adapter-parity

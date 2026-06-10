@@ -83,13 +83,20 @@ function fakeToolEvent({ hooksFile, event, toolName, payload, cwd }) {
     }
     for (const hook of entry.hooks || []) {
       if (hook.type !== 'command') continue;
+      const projectDir = cwd || process.cwd();
       const result = spawnSync('bash', ['-c', hook.command], {
-        cwd: cwd || process.cwd(),
+        cwd: projectDir,
         input: payloadJson,
         encoding: 'utf8',
         timeout: 10000,
         env: {
           ...process.env,
+          // Pin CLAUDE_PROJECT_DIR + MOMENTUM_PROJECT_DIR to the simulated
+          // project root so hook scripts resolve against the test tmp dir
+          // (not whatever ambient env CLAUDE_PROJECT_DIR inherited from the
+          // outer test runner — Phase 16 G3 caught this).
+          CLAUDE_PROJECT_DIR: projectDir,
+          MOMENTUM_PROJECT_DIR: projectDir,
           CLAUDE_HOOK_EVENT: event,
           CLAUDE_TOOL_NAME: toolName,
         },
