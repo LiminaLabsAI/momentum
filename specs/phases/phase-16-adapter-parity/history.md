@@ -1,0 +1,58 @@
+# Phase 16 History
+
+> Append-only log of decisions, scope changes, and discoveries during Phase 16.
+> See [Rule 8 in CLAUDE.md](../../../CLAUDE.md#rule-8-record-phase-history).
+
+### [SCOPE_CHANGE] 2026-06-11 — Phase 16 redirected from Reach → Adapter Parity
+Topics: phase-16, roadmap, codex, antigravity
+Affects-phases: phase-16-adapter-parity, phase-17-reach (new shift)
+Affects-specs: specs/planning/roadmap.md, specs/status.md
+Detail: Phase 16 was planned as "Reach" (Cursor FEAT-007 + Gemini FEAT-008 adapters + ENH-009 distribution decision). User redirected during brainstorm: Claude Code is dogfooded daily and stable; Codex and Antigravity adapters have not been end-to-end validated since their initial drops (Phase 7b for Codex; Antigravity adapter shipped without a live smoke pass). Decision: bring Codex and Antigravity to genuine parity with Claude Code before adding new adapters. Reach work shifts to Phase 17. Roadmap renumber on completion: Phase 17 = Reach, Phase 18 = Intelligence, Phase 19 = Platform.
+
+---
+
+### [DECISION] 2026-06-11 — Codex PreToolUse hook adopted (brainstorm-gate)
+Topics: codex, hooks, brainstorm-gate
+Affects-phases: phase-16-adapter-parity
+Affects-specs: adapters/codex/hooks.json, adapters/codex/instructions/AGENTS.md
+Detail: Online research during Phase 16 brainstorm confirmed Codex now ships the full Claude-Code hook event set (PreToolUse / PermissionRequest / PostToolUse / PreCompact / PostCompact / UserPromptSubmit / SubagentStart / SubagentStop / Stop / SessionStart) with an identical `hooks.json` schema (matcher + hooks array + command/timeout). The brainstorm-gate.sh script can be reused verbatim. Phase 7b shipped Codex with only PostToolUse + SessionStart because the wider event surface wasn't available then. This entry locks the upgrade plan. Source: https://developers.openai.com/codex/hooks.
+
+---
+
+### [DECISION] 2026-06-11 — Antigravity convention rewire `.antigravity/` → `.agents/`
+Topics: antigravity, adapter-contract, .agents
+Affects-phases: phase-16-adapter-parity
+Affects-specs: adapters/antigravity/adapter.js, adapters/antigravity/instructions/AGENTS.md
+Detail: `agy` CLI documentation (confirmed via Antigravity docs + multiple 2026 walkthroughs) standardizes on `.agents/` as the project-local config root, containing `skills/`, `agents/`, `rules/`, `hooks.json`, `mcp_config.json`. Our adapter currently writes to `.antigravity/commands/` which `agy` never reads. This entry locks the rewire. The change is adapter-internal — momentum CLI behavior is unchanged for Claude Code or Codex users. Sources: https://developers.googleblog.com/build-with-google-antigravity-our-new-agentic-development-platform/, https://antigravitylab.net/en/articles/antigravity/antigravity-cli-agy-setup-and-slash-commands-getting-started.
+
+---
+
+### [ARCH_CHANGE] 2026-06-11 — Adapter contract destinations extended with `agents` + `skills`
+Topics: adapter-contract, destinations
+Affects-phases: phase-16-adapter-parity
+Affects-specs: core/adapter-capabilities.md, adapters/claude-code/adapter.js, adapters/codex/adapter.js, adapters/antigravity/adapter.js
+Detail: Phase 7b's Adapter Contract v3 declared `destinations` for `commands`, `agent-rules`, `scripts`, `engines`. Both Codex and Antigravity now require two more overlay categories: `agents/` (subagent definitions) and `skills/` (skill packages). This is an additive extension per Rule 10 — no ADR required. All three shipped adapters will declare both new keys at Phase 16 Group 0. Claude Code declares them too (with empty overlay) so the contract stays uniform across adapters; the capability boolean tells you whether the surface is actually used.
+
+---
+
+### [DISCOVERY] 2026-06-11 — Codex `parallelSubagents` and `skills` capability declarations are stale
+Topics: codex, capabilities, ENH-023, ENH-024
+Affects-phases: phase-16-adapter-parity
+Affects-specs: core/adapter-capabilities.md, adapters/codex/adapter.js
+Detail: Phase 11 capability matrix declared Codex `parallelSubagents: false` and `skills: false`, with roadmap notes "planned for a future Codex feature drop." Per current vendor docs, both features have shipped: subagents support parallel fan-out (`agents.max_threads` default 6, `agents.max_depth` default 1); skills are `SKILL.md`-based and discovered from `.agents/skills/` repository-level. Phase 16 plan: gate the parallelSubagents flip on live evidence (Group 4.3); flip skills boolean after confirming `.agents/skills/` discovery works in dogfood. Sources: https://developers.openai.com/codex/subagents, https://developers.openai.com/codex/skills.
+
+---
+
+### [FEATURE] 2026-06-11 — Adapter Parity Matrix introduced as separate doc
+Topics: parity-matrix, capability-matrix, audit-test
+Affects-phases: phase-16-adapter-parity
+Affects-specs: core/adapter-parity-matrix.md (new)
+Detail: The capability matrix (`core/adapter-capabilities.md`) tracks adapter PRIMITIVES (hooks: true/false, subagents: true/false). It does not show whether a SPECIFIC momentum FEATURE (e.g. `/review-code`, brainstorm-gate hook wiring, ecosystem SessionStart banner) is actually shipped on each adapter. Phase 16 introduces a second doc — `core/adapter-parity-matrix.md` — that crosses every shipped feature against every adapter and marks each cell `shipped` / `shipped-degraded` / `not-applicable`. An audit test (`tests/adapter-parity-matrix.test.js`) ensures no cell is left blank — silent gaps were the failure mode this phase exists to fix.
+
+---
+
+### [NOTE] 2026-06-11 — Live dogfood (Group 4) gated on external CLI availability
+Topics: phase-16, group-4, external-deps
+Affects-phases: phase-16-adapter-parity
+Affects-specs: none
+Detail: Group 4 requires working `codex` and `agy` CLI installations on the dev machine. If either is unavailable at G4 execution time, the missing evidence becomes a `[VALIDATION]` backlog item and Groups 0/1/2/3/5 still ship as v0.19.0. Capability flips in Group 5 are gated on Group 4 evidence — if a flip's evidence is missing, the capability stays `false` and the matrix cell is documented as `shipped-degraded` until follow-up validation lands.
