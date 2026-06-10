@@ -73,7 +73,7 @@
       "topics": ["phase-15", "ecosystem", "agent-discoverability", "orchestration", "managed-claude-md", "pointer-block", "pointer-version", "session-start-hook", "ecosystem-context-banner", "dispatch-cli", "degraded-mode", "mode-notice", "initiative-create-cli", "enh-025", "v0-18-0"]
     },
     "phase-16-adapter-parity": {
-      "status": "planned",
+      "status": "in-progress",
       "topics": ["phase-16", "adapter-parity", "codex", "antigravity", "claude-code", "hooks", "pre-tool-use", "brainstorm-gate", "subagents", "toml-agents", "parallel-subagents", "skills", "skill-md", "agents-md", "agy", "dot-agents-dir", "adapter-contract", "destinations", "agents-destination", "skills-destination", "parity-matrix", "capability-matrix-refresh", "hook-execution-smoke", "fake-tool-event", "review-code-codex", "history-reminder-antigravity", "dogfood-evidence", "enh-023", "enh-024", "scope-change-from-reach", "v0-19-0"]
     }
   }

@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-06-08
-> **Current Phase**: (between phases — Phase 16 Reach planning pending)
+> **Last Updated**: 2026-06-11
+> **Current Phase**: Phase 16 — Codex & Antigravity Adapter Parity (target v0.19.0)
 > **Latest Release**: v0.18.0 — Ecosystem Agent Discoverability
 > **Health**: On Track
 
@@ -37,7 +37,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 15 released as v0.18.0 on 2026-06-08. Phase 16 (Reach) planning pending. | | |
+| 16 | Codex & Antigravity Adapter Parity | In Progress (started 2026-06-11) | Brainstorm complete; Groups 0–5 implementation underway on branch `phase-16-adapter-parity` |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -48,9 +48,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 16 | Reach | Not Started (target v0.19.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 17 | Intelligence | Not Started (target v0.20.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 18 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 17 | Reach | Not Started (target v0.20.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
+| 18 | Intelligence | Not Started (target v0.21.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 19 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -74,12 +74,12 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 16 — Reach** (target v0.19.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
+1. **Phase 16 — Adapter Parity in progress on branch `phase-16-adapter-parity`** (target v0.19.0). Bring Codex + Antigravity to feature parity with Claude Code; close stale capability declarations (ENH-023/24 follow-up); ship the Adapter Parity Matrix as a new audit surface. Roadmap shifted: Reach → Phase 17.
 2. **cerebrio dogfood (post-v0.13.0 user action — still pending; now with Phase 15 fixes ready).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. New: this run produces a managed CLAUDE.md / AGENTS.md at the ecosystem root (ENH-025) and v=2 action-bearing pointer blocks in each member (ENH-032).
 3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
-5. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
-6. Per-adapter explicit Codex / Antigravity validation for the Phase 15 fixes (currently shared core; explicit per-adapter smoke deferred from Phase 15 scope).
+5. ~~Live Codex parallel-subagent validation~~ — folded into Phase 16 Group 4.3.
+6. ~~Per-adapter explicit Codex / Antigravity validation for the Phase 15 fixes~~ — folded into Phase 16 Group 4 live dogfood.
 
 ## Key Decisions Made
 
