@@ -22,6 +22,18 @@ Momentum command recipes are installed in `.codex/commands/`. When the user name
 
 Codex-specific features should be added under `.codex/` or `adapters/codex/` in momentum itself. Do not copy Claude Code-specific behavior such as `.claude/settings.json` or Claude Task-tool assumptions into core.
 
+## Momentum Subagents in Codex
+
+Momentum ships pre-defined TOML subagents under `.codex/agents/`:
+
+- `momentum-reviewer-security.toml` — OWASP/STRIDE-focused code reviewer
+- `momentum-reviewer-qa.toml` — test coverage / edge case / regression reviewer
+- `momentum-reviewer-architecture.toml` — rule compliance / pattern consistency reviewer
+
+These are dispatched by the Codex-flavored `/review-code` command. When asked to "review", "code review", or "review the diff" — read `.codex/commands/review-code.md` and follow it; it spawns all three subagents in one turn so Codex can fan them out in parallel (subject to `agents.max_threads`).
+
+To add a project-specific Codex subagent, drop another `*.toml` into `.codex/agents/` with the required Codex schema fields (`name`, `description`, `developer_instructions`).
+
 ## Always-On Rules
 
 Read `.agent/rules/project.md` at the start of each session and follow it as the durable project rule source. The most important operating rules are:
@@ -41,7 +53,15 @@ Read `.agent/rules/project.md` at the start of each session and follow it as the
 
 ## Codex Hooks
 
-Codex hook wiring lives in `.codex/hooks.json`. Momentum installs reusable shell scripts to `scripts/` and lets this adapter decide which hook events invoke them.
+Codex hook wiring lives in `.codex/hooks.json`. Momentum installs reusable shell scripts to `scripts/` and lets this adapter decide which hook events invoke them. As of Phase 16, the full Claude-Code-parity hook surface is wired:
+
+| Event | Script | Purpose |
+|---|---|---|
+| `PreToolUse` (matcher `Write\|Edit\|MultiEdit`) | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (the `.momentum/brainstorm-active` sentinel). Exits 2 to block; stderr is shown to Codex. |
+| `PostToolUse` (matcher `Edit\|Write`) | `scripts/check-history-reminder.sh` | Prompts for a `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `SessionStart` (no matcher) | `scripts/sessionstart-handoff.sh` | Auto-greets the user with any pending handoff banner and surfaces ecosystem context if the project is part of a momentum ecosystem. |
+
+The brainstorm-gate script resolves the project root from `CLAUDE_PROJECT_DIR`, `MOMENTUM_PROJECT_DIR`, or `pwd` (in that order) — Codex sets cwd to the session root, so `pwd` resolves correctly and the gate works without env-var configuration.
 
 ## Project Extensions
 

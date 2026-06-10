@@ -27,10 +27,17 @@ test('npm tarball shape — includes required runtime adapter files and no repo 
     'adapters/claude-code/adapter.js',
     'adapters/claude-code/settings.json',
     'adapters/claude-code/commands/review-code.md',
-    'adapters/claude-code/scripts/brainstorm-gate.sh',
+    // Phase 16: brainstorm-gate.sh moved to core/scripts/ (shared across
+    // Claude Code + Codex). It still ships in every install via the
+    // generic scripts/ copy path.
+    'core/scripts/brainstorm-gate.sh',
     'adapters/codex/adapter.js',
     'adapters/codex/hooks.json',
     'adapters/codex/instructions/AGENTS.md',
+    'adapters/codex/commands/review-code.md',
+    'adapters/codex/agents/momentum-reviewer-security.toml',
+    'adapters/codex/agents/momentum-reviewer-qa.toml',
+    'adapters/codex/agents/momentum-reviewer-architecture.toml',
     'adapters/antigravity/adapter.js',
     'adapters/antigravity/instructions/AGENTS.md',
     'core/engines/subagent-dispatch.md',

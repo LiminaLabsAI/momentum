@@ -322,11 +322,19 @@ function init(targetDir, agent) {
 
   // scripts/
   console.log('→ Installing hook scripts...');
-  const hookSrc = path.join(src, 'core', 'scripts', 'check-history-reminder.sh');
-  const hookDest = path.join(target, ...dests.scripts, 'check-history-reminder.sh');
-  copyFile(hookSrc, hookDest);
-  fs.chmodSync(hookDest, 0o755);
-  // Phase 9 — ecosystem session-append helper, sourced by the hook above.
+  // Phase 16: copy the entire core/scripts/ tree (not just check-history-reminder
+  // alone). brainstorm-gate.sh moved into core/scripts/ here as part of bringing
+  // Codex to parity with Claude Code on the PreToolUse hook.
+  copyDir(
+    path.join(src, 'core', 'scripts'),
+    path.join(target, ...dests.scripts)
+  );
+  for (const f of fs.readdirSync(path.join(target, ...dests.scripts))) {
+    if (f.endsWith('.sh')) {
+      fs.chmodSync(path.join(target, ...dests.scripts, f), 0o755);
+    }
+  }
+  // Phase 9 — ecosystem session-append helper, sourced by check-history-reminder.
   const sessionSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
   if (fs.existsSync(sessionSrc)) {
     const sessionDest = path.join(target, ...dests.scripts, 'session-append.sh');

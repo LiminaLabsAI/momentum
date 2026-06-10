@@ -8,13 +8,7 @@ const path = require('node:path');
 
 const { mktmp, rmrf, REPO_ROOT } = require('./_helpers');
 
-const HOOK = path.join(
-  REPO_ROOT,
-  'adapters',
-  'claude-code',
-  'scripts',
-  'brainstorm-gate.sh'
-);
+const HOOK = path.join(REPO_ROOT, 'core', 'scripts', 'brainstorm-gate.sh');
 
 function runHook(input, env = {}) {
   return spawnSync('bash', [HOOK], {

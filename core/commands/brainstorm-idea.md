@@ -19,7 +19,7 @@ When you're ready to turn the result into a project, run `/start-project`. To tu
    ```bash
    mkdir -p .momentum && touch .momentum/brainstorm-active
    ```
-   While this sentinel exists, the PreToolUse hook (`adapters/claude-code/scripts/brainstorm-gate.sh`) blocks any `Write`/`Edit`/`MultiEdit` to `specs/`. This command should not write to disk at all — the sentinel guards against accidental scratch-file leakage (e.g., a stray `specs/decisions/draft.md`).
+   While this sentinel exists, the PreToolUse hook (`core/scripts/brainstorm-gate.sh`, wired by both the Claude Code and Codex adapters as of Phase 16) blocks any `Write`/`Edit`/`MultiEdit` to `specs/`. This command should not write to disk at all — the sentinel guards against accidental scratch-file leakage (e.g., a stray `specs/decisions/draft.md`).
 
 1. Ask one question at a time to understand the idea:
    - What is the core problem or opportunity?

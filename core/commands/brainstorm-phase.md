@@ -15,7 +15,7 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    ```bash
    mkdir -p .momentum && touch .momentum/brainstorm-active
    ```
-   From this point until Step 8, do NOT call `Write`, `Edit`, or `MultiEdit` on any path under `specs/`. The PreToolUse hook (`adapters/claude-code/scripts/brainstorm-gate.sh`) will block such calls; this step makes the intent explicit.
+   From this point until Step 8, do NOT call `Write`, `Edit`, or `MultiEdit` on any path under `specs/`. The PreToolUse hook (`core/scripts/brainstorm-gate.sh`, wired by both the Claude Code and Codex adapters as of Phase 16) will block such calls; this step makes the intent explicit.
 
 1. Review current state:
    - Read `specs/status.md` — what phase just completed?

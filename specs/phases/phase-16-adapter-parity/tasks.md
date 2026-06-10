@@ -13,15 +13,15 @@
 
 ## Group 1 — Codex Hardening
 
-- [ ] G1.1 Add PreToolUse block to `adapters/codex/hooks.json` (brainstorm-gate matcher)
-- [ ] G1.2 Author `adapters/codex/agents/momentum-reviewer-security.toml`
-- [ ] G1.3 Author `adapters/codex/agents/momentum-reviewer-qa.toml`
-- [ ] G1.4 Author `adapters/codex/agents/momentum-reviewer-architecture.toml`
-- [ ] G1.5 Wire `runInstall` / `runUpgrade` in `adapters/codex/adapter.js` to copy `agents/` → `.codex/agents/`
-- [ ] G1.6 Author `adapters/codex/commands/review-code.md` (Codex-flavored, invokes 3 TOML subagents)
-- [ ] G1.7 Update Codex `AGENTS.md` "Codex Hooks" section to document full hook surface
-- [ ] G1.8 Extend `tests/adapter-smoke-codex.test.js` for `.codex/agents/*.toml` + `/review-code` install
-- [ ] G1.9 Write `tests/adapter-subagents-codex.test.js` — TOML parse + required field assertions
+- [x] G1.1 Add PreToolUse block to `adapters/codex/hooks.json` (brainstorm-gate matcher)
+- [x] G1.2 Author `adapters/codex/agents/momentum-reviewer-security.toml`
+- [x] G1.3 Author `adapters/codex/agents/momentum-reviewer-qa.toml`
+- [x] G1.4 Author `adapters/codex/agents/momentum-reviewer-architecture.toml`
+- [x] G1.5 Wire `runInstall` / `runUpgrade` in `adapters/codex/adapter.js` to copy `agents/` → `.codex/agents/` (handled by generic `applyOverlay` walk over `destinations` — no adapter.js changes needed; brainstorm-gate.sh moved to `core/scripts/` for shared install)
+- [x] G1.6 Author `adapters/codex/commands/review-code.md` (Codex-flavored, invokes 3 TOML subagents)
+- [x] G1.7 Update Codex `AGENTS.md` "Codex Hooks" section to document full hook surface
+- [x] G1.8 Extend `tests/adapter-smoke-codex.test.js` for `.codex/agents/*.toml` + `/review-code` install
+- [x] G1.9 Write `tests/adapter-subagents-codex.test.js` — TOML parse + required field assertions
 
 ## Group 2 — Antigravity Realignment
 
