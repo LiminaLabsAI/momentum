@@ -51,6 +51,14 @@ Detail: Codex has no native per-project slash-command surface (custom slash comm
 
 ---
 
+### [FEATURE] 2026-06-11 — Groups 5 + 6 complete — retrospective + doc sync + capability close-out
+Topics: phase-16-rework, group-5, group-6, retrospective, doc-sync, capability-flip-deferred, release-readiness
+Affects-phases: phase-16-adapter-rework
+Affects-specs: specs/phases/phase-16-adapter-rework/retrospective.md, specs/planning/roadmap.md, specs/changelog/2026-06.md
+Detail: Groups 5 + 6 closed out the phase. (1) G5 capability flips DEFERRED per VAL gate — Codex `parallelSubagents` + `skills` stay `false`; Antigravity `sessionStartHook` stays `false`; Antigravity `slashCommands` + `skills` already flipped to `true` in G2 on overlay ship (workflows ARE slash commands; skills overlay actually ships). (2) Full regression 326/326; matrix tests 14/14; Claude Code regression intact. (3) `retrospective.md` authored: conceptual unlock (recipes vs personas vs subagents), per-platform mapping table, per-adapter what-landed sections, verification evidence section (Rule 12), acceptance check (all 7 criteria met), what-surprised-us, followups (VAL-001, VAL-002, phase-16-adapter-parity rename, ENH-009/019/030), release readiness checklist. (4) Doc sync: `specs/planning/roadmap.md` renumbered (Phase 16 Rework target v0.19.0; Reach → 17; Intelligence → 18; Platform → 19); `specs/changelog/2026-06.md` rework summary; status.md + phases/README.md + phases/index.json already current. (5) Phase ready for merge + release; autonomous execution contract STOPS at the merge/release gate per CLAUDE.md release checklist and the user's "Only the commit and release, you will wait for my approval" direction.
+
+---
+
 ### [FEATURE] 2026-06-11 — Group 4 complete — install evidence captured; VAL-001 + VAL-002 filed for live-runtime follow-up
 Topics: phase-16-rework, group-4, install-evidence, val-001, val-002, dev-env-cli-unavailable
 Affects-phases: phase-16-adapter-rework, post-v0.19.0

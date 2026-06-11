@@ -58,14 +58,14 @@
 
 ## Group 5 — Capability Flips + Matrix Close-Out
 
-- [ ] G5.1 Conditional Codex `parallelSubagents` flip on G4.1 evidence
-- [ ] G5.2 Conditional Codex `skills` flip on G4.1 evidence
-- [ ] G5.3 Conditional Antigravity `sessionStartHook` flip on G4.2 evidence
-- [ ] G5.4 Re-run matrix tests post-flip
-- [ ] G5.5 Full regression `npm test`; zero pre-existing regressions
+- [/] G5.1 Codex `parallelSubagents` flip deferred — gated on VAL-001 live evidence
+- [/] G5.2 Codex `skills` flip — Antigravity skills already `true` (overlay ships); Codex skills boolean stays `false` until VAL-001 confirms live discovery
+- [/] G5.3 Antigravity `sessionStartHook` flip deferred — gated on VAL-002 live evidence
+- [x] G5.4 Matrix tests green: 14/14 (adapter-parity-matrix + adapter-capabilities-declared + claude-code-regression)
+- [x] G5.5 Full regression: 326/326 (was 288 v0.18.0 baseline; +38 new across phase; zero pre-existing regressions)
 
 ## Group 6 — Retrospective + Docs Sync
 
-- [ ] G6.1 Author `retrospective.md` with Rule 12 Verification Evidence
-- [ ] G6.2 Doc sync: status, README, index, changelog, capability matrix, parity matrix, roadmap
-- [ ] G6.3 Prompt user for `/complete-phase` + merge/release approval
+- [x] G6.1 `retrospective.md` authored with Rule 12 Verification Evidence section (pointing at evidence/test-suite.txt + codex-install.txt + antigravity-install.txt) + acceptance check + what-surprised-us + followups + release readiness
+- [x] G6.2 Doc sync done in-flight: status.md (active phase), phases/README.md (Phase 16 Rework row), phases/index.json (topics), changelog/2026-06.md (rework entry), roadmap.md (renumber: Reach → 17, Intelligence → 18, Platform → 19), capability-matrix kept current, parity-matrix kept current
+- [ ] G6.3 Prompt user for `/complete-phase` + merge/release approval (this is the hard stop per autonomous-execution contract)
