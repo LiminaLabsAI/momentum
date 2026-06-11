@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-11
-> **Current Phase**: Phase 16 Rework — Codex & Antigravity Native-Idiom Adapters (target v0.19.0)
-> **Latest Release**: v0.18.0 — Ecosystem Agent Discoverability
+> **Current Phase**: (between phases — Phase 17 Reach planning pending)
+> **Latest Release**: v0.19.0 — Codex & Antigravity Adapter Rework (Native-Idiom)
 > **Health**: On Track
 
 ## Summary
@@ -32,12 +32,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 13 | Site Polish & Content Depth | Complete | v0.16.0 (2026-06-08) |
 | 14 | Site Refinement & Positioning Pivot | Complete | v0.17.0 (2026-06-08) |
 | 15 | Ecosystem Agent Discoverability | Complete | v0.18.0 (2026-06-08) |
+| 16 | Codex & Antigravity Adapter Rework (Native-Idiom) | Complete | v0.19.0 (2026-06-11) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 16 | Codex & Antigravity Adapter Rework (native-idiom) | In Progress (started 2026-06-11) | Brainstorm complete; Groups 0–6 implementation underway on branch `phase-16-adapter-rework`. Previous `phase-16-adapter-parity` branch retained as research record. |
+| _(between phases)_ | Phase 16 Rework released as v0.19.0 on 2026-06-11. Phase 17 (Reach) planning pending. | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -48,9 +49,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 16 | Reach | Not Started (target v0.19.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements |
-| 17 | Intelligence | Not Started (target v0.20.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 18 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 17 | Reach | Not Started (target v0.20.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
+| 18 | Intelligence | Not Started (target v0.21.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 19 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -74,12 +75,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Phase 16 Rework in progress on branch `phase-16-adapter-rework`** (target v0.19.0). Native-idiom rebuild: Codex AGENTS.md recipes + TOML subagents + apply_patch hooks; Antigravity workflows + skills + run_command hooks; Claude Code zero-regression guard. Reach (Cursor + Gemini) shifts to Phase 17.
-2. **cerebrio dogfood (post-v0.13.0 user action — still pending; now with Phase 15 fixes ready).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. New: this run produces a managed CLAUDE.md / AGENTS.md at the ecosystem root (ENH-025) and v=2 action-bearing pointer blocks in each member (ENH-032).
-3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
-4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
-5. Live Codex parallel-subagent validation to flip `parallelSubagents: true` and remove the sequential-mode degradation note (per Phase 11 retrospective).
-6. Per-adapter explicit Codex / Antigravity validation for the Phase 15 fixes (currently shared core; explicit per-adapter smoke deferred from Phase 15 scope).
+1. **`/brainstorm-phase` Phase 17 — Reach** (target v0.20.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision. The native-idiom learnings from Phase 16 Rework apply directly: research each new adapter's actual extension surface BEFORE building (Cursor: rules-based, no slash commands; Gemini CLI: single-file GEMINI.md convention).
+2. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
+3. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
+4. **cerebrio dogfood (post-v0.13.0 user action — now with Phase 15 + Phase 16 Rework fixes ready).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench.
+5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
+6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
+7. (Optional housekeeping) Rename `phase-16-adapter-parity` branch on origin to `phase-16-research-record` to make the relationship to the merged rework branch explicit.
 
 ## Key Decisions Made
 
@@ -104,3 +106,4 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - **2026-06-07**: Phase 11 complete — v0.14.0 released. Three orchestration primitives (scout / dispatch / handoff) + continue, with three invocation doors (slash / NL inference / CLI) over one shared `core/orchestration/` library. SessionStart hook auto-greet for pending handoffs. Tracking contract: cheap layer auto, curated layer auto-if-meaningful, no new history entry types. Capability-driven routing with labeled degraded modes. ENH-023 + ENH-024 closed. Per-adapter smoke matrix extended to 9 combinations. 246/246 tests pass (+81 from Phase 10).
 - **2026-06-08**: Phase 12 complete — v0.15.0 released. Public GitHub Pages site at <https://trymomentum.github.io/> — landing page + 8 docs pages built with Astro Starlight. Full identity pass: Velocity Arc logo (single-fill SVG, light/dark via `currentColor`), Indigo + Slate palette, Inter Variable font (self-hosted via `@fontsource-variable/inter`), CSS/SVG illustrated hero, 1200×630 OG card generated at build via `sharp`. Cross-repo deploy from `avinash-singh-io/momentum` (source) → `trymomentum/trymomentum.github.io` (deploy target) via GH Actions + fine-grained PAT. Lighthouse landing: Performance 98 / Accessibility 96 / Best Practices 100 / SEO 100. Linkinator: 0/24 broken links. CLI regression: 246/246 still pass (metadata-only npm bump — no CLI behavior change). Roadmap renumber landed: Site = 12 / Reach → 13 / Intelligence → 14 / Platform → 15. BUG-006 filed for `momentum upgrade` regressing CLAUDE.md project title.
 - **2026-06-08**: Phase 13 complete — v0.16.0 released. Site polish + content depth pass on top of v0.15.0. Positioning shift to "Spec-driven development for agentic AI." Landing wholesale rewrite (7 sections + hero, was 4 + hero): NEW PhaseFlow animated SVG hero diagram, Topology single-vs-ecosystem comparison, OrchestrationShowcase featuring scout/dispatch/handoff/continue, RulesCallout, SkillsPreview with code-block previews. NEW `/orchestration/` page (1,716 words) with full scout/dispatch/handoff/continue documentation + 5 Mermaid sequence diagrams. Ecosystem page rewritten (1,289 words) with multi-repo topology SVG + 5-step worked example. Concepts/Skills/Rules deepened (1,597 / 1,102 / 2,157 words). End-to-end "Your first phase" tutorial on getting-started. Mermaid plugin (`rehype-mermaid` + Playwright/Chromium) wired into Starlight; inline-svg strategy keeps zero client JS for diagrams. Sidebar restructured with "Multi-repo coordination" group. CLI regression: 246/246 still pass (metadata-only npm bump).
+- **2026-06-11**: Phase 16 Rework complete — v0.19.0 released. Codex & Antigravity native-idiom adapters. Replaces the previous force-port attempt (`phase-16-adapter-parity` retained as research record). Conceptual unlock: recipes / personas / parallel workers are three distinct categories; each platform surfaces them differently. Codex: `apply_patch|shell` hook matchers; 3 TOML reviewer subagents with `sandbox_mode=read-only`; momentum-orient skill; AGENTS.md "Recipes Lookup Pattern" + 20-row recipe table; `features.hooks` opt-in documented. Antigravity: 5 overlay workflows + 15 core commands shipping as workflows at `.agent/workflows/` (native `/<name>` slash command registration); 4 skills at `.agents/skills/`; hooks.json with `run_command|view_file|.*write.*|apply_patch` matchers. Antigravity capability flips: `slashCommands false→true`, `skills false→true`. Shared: `brainstorm-gate.sh` promoted to `core/scripts/` and generalized for all three platforms' payload shapes; adapter contract destinations gain `workflows` + `skills` + `agents` keys. Claude Code zero-regression: new `tests/claude-code-regression.test.js` SHA256 install fingerprint (45 files) runs every group commit; install behavior preserved. Side-effect fix: v0.18.0 latent bug where `sessionstart-handoff.sh` was referenced in `.claude/settings.json` but never installed — now ships via the recursive `core/scripts/` copy. Live `codex` + `agy` CLIs unavailable in dev env; live-runtime verification deferred as VAL-001 + VAL-002. Capability flips gated on VAL evidence stay false: Codex `parallelSubagents` + `skills`, Antigravity `sessionStartHook`. Roadmap renumbered: Reach → 17 (v0.20.0); Intelligence → 18 (v0.21.0); Platform → 19 (v1.0). Suite: 326/326 (288 v0.18.0 baseline → +38 new).
