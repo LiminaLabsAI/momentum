@@ -27,16 +27,16 @@
 
 ## Group 2 — Antigravity Native
 
-- [ ] G2.1 Rewire `adapters/antigravity/adapter.js` destinations (remove `commands`, add `workflows` + `skills` + `agents`)
-- [ ] G2.2 Author 8 workflows at `adapters/antigravity/workflows/<name>.md` (brainstorm-phase, start-phase, sync-docs, complete-phase, review-code, dispatch, handoff, continue)
-- [ ] G2.3 Author 3 reviewer SKILL directories at `adapters/antigravity/skills/momentum-reviewer-*/SKILL.md`
-- [ ] G2.4 Author `adapters/antigravity/skills/momentum-orient/SKILL.md`
-- [ ] G2.5 Author `adapters/antigravity/hooks.json` with `run_command|view_file|.*write.*` matchers
-- [ ] G2.6 Rewrite Antigravity `AGENTS.md` documenting `.agent/workflows/`, `.agents/skills/`, `.agents/hooks.json`
-- [ ] G2.7 Write `tests/adapter-workflows-antigravity.test.js` — frontmatter + char limit assertions
-- [ ] G2.8 Write `tests/adapter-skills-antigravity.test.js` — SKILL.md directories + frontmatter
-- [ ] G2.9 Write `tests/adapter-hook-execution-antigravity.test.js` — run_command payload fires hooks
-- [ ] G2.10 Update `tests/adapter-smoke-antigravity.test.js` for new install paths; assert no `.antigravity/`
+- [x] G2.1 `adapters/antigravity/adapter.js` destinations rewired in G0 + capability declarations updated (slashCommands true via workflows; skills true; sessionStartHook false pending VAL-002)
+- [x] G2.2 Authored 5 Antigravity-specific workflows at `adapters/antigravity/workflows/<name>.md` (scout, dispatch, handoff, continue, review-code) with YAML frontmatter + numbered steps. Core/commands/*.md (15 files) auto-ship as workflows via destinations.commands → `.agent/workflows/` rewire.
+- [x] G2.3 Authored 3 reviewer SKILL directories at `adapters/antigravity/skills/momentum-reviewer-{security,qa,architecture}/SKILL.md`
+- [x] G2.4 Authored `adapters/antigravity/skills/momentum-orient/SKILL.md`
+- [x] G2.5 Authored `adapters/antigravity/hooks.json` with platform-correct matchers: PreToolUse `run_command|view_file|.*write.*|apply_patch`, PostToolUse `run_command|apply_patch|.*write.*`, SessionStart unmatched
+- [x] G2.6 Rewrote Antigravity `AGENTS.md` — documents `.agent/workflows/` (recipes), `.agents/skills/` (4 personas), `.agents/hooks.json` (hooks event table)
+- [x] G2.7 `tests/adapter-workflows-antigravity.test.js` — 5 tests: overlay workflows install + core commands ship as workflows + YAML frontmatter + 12K char limit + no .antigravity/ leak
+- [x] G2.8 `tests/adapter-skills-antigravity.test.js` — 3 tests: 4 skills install + frontmatter has name+description + hooks.json install
+- [x] G2.9 `tests/adapter-hook-execution-antigravity.test.js` — 5 tests: PreToolUse fires on run_command + view_file, bypasses non-match, PostToolUse history reminder fires, SessionStart wired
+- [x] G2.10 `tests/adapter-smoke-antigravity.test.js` was already updated in G0 for `.agent/workflows/` path; full smoke covered by new G2.7-9 tests
 
 ## Group 3 — Shared brainstorm-gate generalization
 

@@ -117,8 +117,11 @@ test('supportsSlashCommands reflects the adapter declaration', () => {
     routing.supportsSlashCommands(routing.loadAdapter(MOMENTUM_ROOT, 'codex')),
     true,
   );
+  // Phase 16 Rework: Antigravity HAS slash commands via the workflows
+  // overlay (.agent/workflows/<name>.md → /<name>). Was false in
+  // Phase 11 when we believed Antigravity was chat-only.
   assert.strictEqual(
     routing.supportsSlashCommands(routing.loadAdapter(MOMENTUM_ROOT, 'antigravity')),
-    false,
+    true,
   );
 });

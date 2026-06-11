@@ -51,6 +51,14 @@ Detail: Codex has no native per-project slash-command surface (custom slash comm
 
 ---
 
+### [FEATURE] 2026-06-11 — Group 2 complete — Antigravity workflows + skills + native-tool-name hooks
+Topics: phase-16-rework, group-2, antigravity, workflows, skills, native-idiom, run-command-matcher, slashcommands-flip
+Affects-phases: phase-16-adapter-rework
+Affects-specs: adapters/antigravity/adapter.js, adapters/antigravity/workflows/*.md, adapters/antigravity/skills/*/SKILL.md, adapters/antigravity/hooks.json, adapters/antigravity/instructions/AGENTS.md, tests/adapter-workflows-antigravity.test.js, tests/adapter-skills-antigravity.test.js, tests/adapter-hook-execution-antigravity.test.js, tests/orchestration-capability-routing.test.js
+Detail: Antigravity side of the rework landed using each platform's NATIVE idiom. (1) 5 overlay workflows at `adapters/antigravity/workflows/{scout,dispatch,handoff,continue,review-code}.md` with YAML frontmatter `--- description: ... ---` + numbered step sections (each under 12K chars per vendor limit). These auto-register as `/<name>` slash commands when `agy` reads `.agent/workflows/`. Core commands (`core/commands/*.md`) also ship to `.agent/workflows/` via destinations.commands rewire (15 more workflows). (2) 4 skill directories at `adapters/antigravity/skills/momentum-{orient,reviewer-security,reviewer-qa,reviewer-architecture}/SKILL.md` with YAML frontmatter (name + description). Reviewers are LOADED by the /review-code workflow via native parallel subagent fan-out. (3) `adapters/antigravity/hooks.json` with platform-correct matchers: PreToolUse `run_command|view_file|.*write.*|apply_patch`, PostToolUse `run_command|apply_patch|.*write.*`, SessionStart unmatched. (4) `adapters/antigravity/adapter.js` updated: `configFiles` entry for hooks.json → `.agents/hooks.json`; runInstall/runUpgrade install + idempotently upgrade with .bak backup. Capability flips: `slashCommands: false → true` (workflows ARE slash commands per official docs); `skills: false → true` (overlay ships 4 skills); `sessionStartHook` stays false pending VAL-002 (hook is wired but `agy` event support unconfirmed). (5) `AGENTS.md` fully rewritten: `.agent/` + `.agents/` layout table, workflows section explaining recipe-as-slash-command, skills section listing all 4 with their roles, native artifacts integration, hooks event table, SessionStart fallback hint, always-on rules, Project Extensions marker. (6) 13 new tests across 3 files; 1 capability-routing test updated for slashCommands flip. Suite: 320/320 (was 307 post-G1; +13). Claude Code regression: PASSES — install fingerprint unchanged.
+
+---
+
 ### [DECISION] 2026-06-11 — Codex recipes ship as `.codex/commands/*.md` files referenced from AGENTS.md (NOT inlined)
 Topics: phase-16-rework, group-1, codex, agents-md-strategy, recipe-lookup-pattern, file-size-pragmatism
 Affects-phases: phase-16-adapter-rework
