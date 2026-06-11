@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-06-08
-> **Current Phase**: (between phases — Phase 16 Reach planning pending)
+> **Last Updated**: 2026-06-11
+> **Current Phase**: Phase 16 Rework — Codex & Antigravity Native-Idiom Adapters (target v0.19.0)
 > **Latest Release**: v0.18.0 — Ecosystem Agent Discoverability
 > **Health**: On Track
 
@@ -37,7 +37,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 15 released as v0.18.0 on 2026-06-08. Phase 16 (Reach) planning pending. | | |
+| 16 | Codex & Antigravity Adapter Rework (native-idiom) | In Progress (started 2026-06-11) | Brainstorm complete; Groups 0–6 implementation underway on branch `phase-16-adapter-rework`. Previous `phase-16-adapter-parity` branch retained as research record. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -74,7 +74,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 16 — Reach** (target v0.19.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision.
+1. **Phase 16 Rework in progress on branch `phase-16-adapter-rework`** (target v0.19.0). Native-idiom rebuild: Codex AGENTS.md recipes + TOML subagents + apply_patch hooks; Antigravity workflows + skills + run_command hooks; Claude Code zero-regression guard. Reach (Cursor + Gemini) shifts to Phase 17.
 2. **cerebrio dogfood (post-v0.13.0 user action — still pending; now with Phase 15 fixes ready).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench. New: this run produces a managed CLAUDE.md / AGENTS.md at the ecosystem root (ENH-025) and v=2 action-bearing pointer blocks in each member (ENH-032).
 3. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 4. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
