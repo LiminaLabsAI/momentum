@@ -51,6 +51,22 @@ Detail: Codex has no native per-project slash-command surface (custom slash comm
 
 ---
 
+### [DECISION] 2026-06-11 — Codex recipes ship as `.codex/commands/*.md` files referenced from AGENTS.md (NOT inlined)
+Topics: phase-16-rework, group-1, codex, agents-md-strategy, recipe-lookup-pattern, file-size-pragmatism
+Affects-phases: phase-16-adapter-rework
+Affects-specs: adapters/codex/instructions/AGENTS.md
+Detail: The Group 1 plan called for embedding every recipe as a `### Recipe: <name>` section inside Codex AGENTS.md. Counting actual recipe content (`core/commands/*.md` + adapter overlay): 19 recipes × ~100-200 lines each = ~2,200 lines (~80 KiB), far exceeding the documented 32 KiB AGENTS.md limit. Pivot: AGENTS.md teaches the lookup pattern instead — when user invokes `/<name>` or "run <name>" in natural language, agent reads `.codex/commands/<name>.md` and follows it. The recipe files already ship to `.codex/commands/` via the standard overlay (the existing `destinations.commands` route — left as `.codex/commands/` for this reason). AGENTS.md is now ~150 lines: navigation, recipes lookup pattern + complete file-path table, Codex hooks event table with `features.hooks` opt-in instruction, Codex subagents section (the 3 reviewer TOMLs), Codex skills section (`momentum-orient`), always-on rules, Project Extensions marker. Tradeoff acknowledged: not as "in your face" as inlined recipes — but the lookup table IS auto-loaded so the agent always sees the mapping. The 32 KiB AGENTS.md limit is hard, and the recipe-lookup pattern is the conceptually cleanest fit given the constraint.
+
+---
+
+### [FEATURE] 2026-06-11 — Group 1 complete — Codex native hooks + subagents + orient skill + AGENTS.md recipe pattern
+Topics: phase-16-rework, group-1, codex, native-idiom, apply-patch-matcher, sandbox-read-only, recipe-lookup-pattern
+Affects-phases: phase-16-adapter-rework
+Affects-specs: adapters/codex/hooks.json, adapters/codex/agents/*.toml, adapters/codex/skills/momentum-orient/SKILL.md, adapters/codex/instructions/AGENTS.md, tests/adapter-codex-recipes.test.js, tests/adapter-subagents-codex.test.js, tests/adapter-hook-execution-codex.test.js, tests/adapter-smoke-codex.test.js
+Detail: Codex side of the rework landed. (1) `adapters/codex/hooks.json` matchers rewritten from `Edit|Write` (Claude tool names — never fired on Codex) to `apply_patch|shell` (Codex's actual tool names). PreToolUse + PostToolUse both wired; SessionStart unmatched (fires every session). (2) 3 TOML reviewer subagents at `adapters/codex/agents/` with required schema (`name`, `description`, `developer_instructions`) PLUS new `sandbox_mode = "read-only"` so reviewers cannot modify the codebase. (3) `adapters/codex/skills/momentum-orient/SKILL.md` — the genuine-persona skill that codifies Rule 1 (orient first). Shipped to `.agents/skills/momentum-orient/SKILL.md` via the destinations.skills route. (4) Codex AGENTS.md fully rewritten: new "Momentum Recipes — Lookup Pattern" section with complete 20-row recipe table mapping each recipe to its `.codex/commands/<name>.md` path; Codex hooks event table with explicit `features.hooks` opt-in instruction; Subagents section; Skills section; Rules. (5) 11 new test assertions across 3 new test files: adapter-codex-recipes (4 tests — recipe table coverage + hooks doc + extensions marker), adapter-subagents-codex (2 tests — TOML schema + orient skill), adapter-hook-execution-codex (5 tests — apply_patch + shell fires, non-match bypasses, PostToolUse reminder, SessionStart wired). 1 new test in adapter-smoke-codex for install path coverage. Side fix: 2 existing tests (install + upgrade) updated for renamed AGENTS.md section. Suite: 307/307 (was 295 post-G0; +12 net). Claude Code regression: PASSES — install fingerprint byte-for-byte unchanged.
+
+---
+
 ### [FEATURE] 2026-06-11 — Group 0 complete — contracts extended, parity matrix shipped, Claude Code regression locked
 Topics: phase-16-rework, group-0, adapter-contract, parity-matrix, claude-code-regression, fingerprint
 Affects-phases: phase-16-adapter-rework

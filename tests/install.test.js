@@ -81,7 +81,8 @@ test('init — codex install produces AGENTS.md hooks and command recipes', () =
     assert.equal(fs.existsSync(path.join(target, '.claude')), false);
 
     const agentsMd = read(path.join(target, 'AGENTS.md'));
-    assert.match(agentsMd, /Momentum Commands in Codex/);
+    // Phase 16 Rework: renamed section "Momentum Commands in Codex" → "Momentum Recipes — Lookup Pattern"
+    assert.match(agentsMd, /Momentum Recipes — Lookup Pattern/);
     assert.match(agentsMd, /## Project Extensions/);
 
     const leaked = [];

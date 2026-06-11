@@ -15,15 +15,15 @@
 
 ## Group 1 — Codex Native
 
-- [ ] G1.1 Update `adapters/codex/hooks.json` matchers to `apply_patch|shell` for all three events
-- [ ] G1.2 Update `adapters/codex/adapter.js` destinations: `skills` → `['.agents', 'skills']` (shared)
-- [ ] G1.3 Author 3 TOML subagents at `adapters/codex/agents/` with `sandbox_mode = "read-only"`
-- [ ] G1.4 Author `adapters/codex/skills/momentum-orient/SKILL.md` (orient persona)
-- [ ] G1.5 Rewrite Codex `AGENTS.md` with `## Recipes` block embedding all 19 phase + orchestration recipes
-- [ ] G1.6 Write `tests/adapter-codex-recipes.test.js` — every recipe section present + non-trivial
-- [ ] G1.7 Write `tests/adapter-subagents-codex.test.js` — TOML schema + sandbox_mode assertions
-- [ ] G1.8 Write `tests/adapter-hook-execution-codex.test.js` — apply_patch payload fires brainstorm-gate
-- [ ] G1.9 Extend `tests/adapter-smoke-codex.test.js` for new install paths
+- [x] G1.1 Update `adapters/codex/hooks.json` matchers to `apply_patch|shell` for PreToolUse + PostToolUse; SessionStart unmatched
+- [x] G1.2 `destinations.skills` → `['.agents', 'skills']` (shared with Antigravity) — done in G0.1
+- [x] G1.3 Author 3 TOML subagents at `adapters/codex/agents/` with `sandbox_mode = "read-only"`
+- [x] G1.4 Author `adapters/codex/skills/momentum-orient/SKILL.md` (orient persona)
+- [x] G1.5 Rewrite Codex `AGENTS.md` — **pivoted strategy**: 2,200+ lines of recipe text won't fit in 32 KiB AGENTS.md. New pattern: AGENTS.md teaches the *lookup pattern* (recipes live at `.codex/commands/<name>.md`; user invokes by name; agent finds + follows). Recipe table in AGENTS.md maps every shipped recipe to its file path.
+- [x] G1.6 Write `tests/adapter-codex-recipes.test.js` — 4 tests assert AGENTS.md has lookup-pattern section + recipe table covers every shipped recipe + hooks doc + Project Extensions marker
+- [x] G1.7 Write `tests/adapter-subagents-codex.test.js` — 2 tests: TOML schema + sandbox_mode + orient skill frontmatter
+- [x] G1.8 Write `tests/adapter-hook-execution-codex.test.js` — 5 tests: PreToolUse fires on apply_patch + shell, bypasses non-matching tools, PostToolUse history reminder, SessionStart wired
+- [x] G1.9 Extend `tests/adapter-smoke-codex.test.js` for new install paths (subagents + orient + AGENTS.md recipe table)
 
 ## Group 2 — Antigravity Native
 
