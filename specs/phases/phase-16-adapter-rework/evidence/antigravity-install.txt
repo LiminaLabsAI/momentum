@@ -1,0 +1,143 @@
+Installing momentum into: /tmp/momentum-antigravity-evidence.DCvoaq [agent: antigravity]
+
+→ Installing slash commands...
+→ Installing hook scripts...
+→ Installing execution engines...
+→ Installing agent rules...
+→ Scaffolding project specs...
+→ Installing AGENTS.md...
+→ Overlaying workflows from adapter...
+→ Overlaying skills from adapter...
+→ Configuring Antigravity hooks...
+
+✓ momentum installed successfully.
+
+Next steps:
+
+  Explore an idea first:
+    Open Antigravity and run: /brainstorm-idea
+
+  Ready to scaffold a project:
+    Open Antigravity and run: /start-project
+
+  Existing project — plan your next phase:
+    Open Antigravity and run: /brainstorm-phase
+
+  See docs: https://github.com/avinash-singh-io/momentum
+
+=== Installed file tree ===
+.agent/engines/subagent-dispatch.md
+.agent/rules/project.md
+.agent/workflows/brainstorm-idea.md
+.agent/workflows/brainstorm-phase.md
+.agent/workflows/complete-phase.md
+.agent/workflows/continue.md
+.agent/workflows/dispatch.md
+.agent/workflows/ecosystem.md
+.agent/workflows/handoff.md
+.agent/workflows/initiative.md
+.agent/workflows/log.md
+.agent/workflows/migrate.md
+.agent/workflows/review-code.md
+.agent/workflows/review.md
+.agent/workflows/scout.md
+.agent/workflows/session.md
+.agent/workflows/start-phase.md
+.agent/workflows/start-project.md
+.agent/workflows/sync-docs.md
+.agent/workflows/systematic-debug.md
+.agent/workflows/track.md
+.agent/workflows/validate.md
+.agents/hooks.json
+.agents/skills/momentum-orient/SKILL.md
+.agents/skills/momentum-reviewer-architecture/SKILL.md
+.agents/skills/momentum-reviewer-qa/SKILL.md
+.agents/skills/momentum-reviewer-security/SKILL.md
+.gitignore
+AGENTS.md
+README.md
+scripts/brainstorm-gate.sh
+scripts/check-history-reminder.sh
+scripts/session-append.sh
+scripts/sessionstart-handoff.sh
+specs/architecture/ecosystem.md
+specs/backlog/backlog.md
+specs/backlog/details/.gitkeep
+specs/changelog/.gitkeep
+specs/decisions/0000-template.md
+specs/decisions/impact-map.json
+specs/decisions/README.md
+specs/phases/index.json
+specs/phases/README.md
+specs/planning/roadmap.md
+specs/README.md
+specs/status.md
+specs/vision/principles.md
+specs/vision/project-charter.md
+specs/vision/success-criteria.md
+
+=== .agents/hooks.json content ===
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command|view_file|.*write.*|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/brainstorm-gate.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "run_command|apply_patch|.*write.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/check-history-reminder.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/sessionstart-handoff.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+
+=== Workflow files installed ===
+brainstorm-idea.md
+brainstorm-phase.md
+complete-phase.md
+continue.md
+dispatch.md
+ecosystem.md
+handoff.md
+initiative.md
+log.md
+migrate.md
+review-code.md
+review.md
+scout.md
+session.md
+start-phase.md
+start-project.md
+sync-docs.md
+systematic-debug.md
+track.md
+validate.md
+
+=== Skills installed ===
+momentum-orient
+momentum-reviewer-architecture
+momentum-reviewer-qa
+momentum-reviewer-security

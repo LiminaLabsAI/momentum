@@ -29,6 +29,13 @@ module.exports = {
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
     engines: ['.agent', 'engines'],
+    // Phase 16 Rework: uniform contract — declared but unused on Claude
+    // Code (no overlay content shipped). Claude Code has no per-project
+    // workflows/skills/subagent file-discovery surface today; the
+    // destinations are reserved for cross-adapter contract consistency.
+    workflows: ['.claude', 'workflows'],
+    skills: ['.claude', 'skills'],
+    agents: ['.claude', 'agents'],
   },
 
   primaryInstruction: {

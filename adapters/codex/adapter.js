@@ -17,6 +17,13 @@ module.exports = {
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
     engines: ['.agent', 'engines'],
+    // Phase 16 Rework: native Codex surfaces.
+    // Skills live at .agents/skills/ (shared with Antigravity; NOT .codex/skills/)
+    // Subagents live at .codex/agents/ (TOML files)
+    // workflows declared but unused on Codex (no native workflow surface)
+    workflows: ['.codex', 'workflows'],
+    skills: ['.agents', 'skills'],
+    agents: ['.codex', 'agents'],
   },
 
   primaryInstruction: {

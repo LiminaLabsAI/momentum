@@ -18,6 +18,7 @@
 | 13 | Site Polish & Content Depth | Complete (v0.16.0) | [phase-13-site-polish/](phase-13-site-polish/) |
 | 14 | Site Refinement & Positioning Pivot | Complete (v0.17.0) | [phase-14-site-refinement/](phase-14-site-refinement/) |
 | 15 | Ecosystem Agent Discoverability | Complete (v0.18.0) | [phase-15-ecosystem-discoverability/](phase-15-ecosystem-discoverability/) |
+| 16 | Codex & Antigravity Adapter Rework (native-idiom) | In Progress (target v0.19.0) | [phase-16-adapter-rework/](phase-16-adapter-rework/) |
 
 ## Phase Structure
 

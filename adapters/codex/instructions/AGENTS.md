@@ -16,15 +16,108 @@
 
 > **First file to read: ALWAYS `specs/status.md`.**
 
-## Momentum Commands in Codex
+## Momentum Recipes — Lookup Pattern
 
-Momentum command recipes are installed in `.codex/commands/`. When the user names a command such as `/brainstorm-phase`, `/start-phase`, `/sync-docs`, or `/complete-phase`, read the matching Markdown file from `.codex/commands/` and follow it.
+Codex does not auto-register per-project slash commands. Instead, momentum
+ships its phase + orchestration **recipes** as Markdown files at
+`.codex/commands/<name>.md`. When the user invokes a recipe by name —
+`/<name>`, `momentum <name>`, or "run <name>" in natural language — locate
+the matching file and follow its instructions verbatim.
 
-Codex-specific features should be added under `.codex/` or `adapters/codex/` in momentum itself. Do not copy Claude Code-specific behavior such as `.claude/settings.json` or Claude Task-tool assumptions into core.
+The full recipe set (installed at `.codex/commands/`):
+
+| Recipe | File | What it does |
+|---|---|---|
+| brainstorm-idea | `.codex/commands/brainstorm-idea.md` | Explore an idea before scaffolding anything |
+| brainstorm-phase | `.codex/commands/brainstorm-phase.md` | Plan the next implementation phase (gate-protected) |
+| start-project | `.codex/commands/start-project.md` | Scaffold a new spec-driven project |
+| start-phase | `.codex/commands/start-phase.md` | Begin a planned phase (autonomous execution contract) |
+| complete-phase | `.codex/commands/complete-phase.md` | Verify, retro, release a finished phase |
+| sync-docs | `.codex/commands/sync-docs.md` | Propagate history entries to other spec docs |
+| track | `.codex/commands/track.md` | Track a backlog item (bug / feature / tech debt / enhancement) |
+| review | `.codex/commands/review.md` | Review and groom the backlog between phases |
+| log | `.codex/commands/log.md` | Append a manual narrative entry to the active phase history |
+| migrate | `.codex/commands/migrate.md` | Onboard an existing project into momentum |
+| validate | `.codex/commands/validate.md` | Check spec structure health |
+| ecosystem | `.codex/commands/ecosystem.md` | Cross-repo ecosystem coordination |
+| initiative | `.codex/commands/initiative.md` | Manage cross-repo initiatives |
+| session | `.codex/commands/session.md` | Append a manual narrative entry to today's ecosystem session log |
+| systematic-debug | `.codex/commands/systematic-debug.md` | Systematically isolate, reproduce, and resolve task execution failures |
+| scout | `.codex/commands/scout.md` | Read-only context fetch from one ecosystem member repo |
+| dispatch | `.codex/commands/dispatch.md` | Parallel multi-repo fan-out + synthesis |
+| handoff | `.codex/commands/handoff.md` | Cross-session control transfer with structured context block |
+| continue | `.codex/commands/continue.md` | Pick up a pending handoff in this repo |
+| review-code | `.codex/commands/review-code.md` | Multi-perspective code review (uses momentum-reviewer-* subagents) |
+
+The recipes are platform-independent — they describe what to do, not how
+Codex specifically should do it. When you read a recipe that mentions
+"use the Task tool" (Claude Code terminology), translate to Codex's
+equivalent: spawn the relevant momentum-reviewer-* subagent (see below),
+or use natural-language parallel fan-out.
+
+## Codex Subagents
+
+Momentum ships three role-specific reviewer subagents discoverable at
+`.codex/agents/`:
+
+- `momentum-reviewer-security.toml` — OWASP/STRIDE-focused
+- `momentum-reviewer-qa.toml` — test coverage + edge cases + regression risk
+- `momentum-reviewer-architecture.toml` — rule compliance + pattern consistency
+
+Each declares `sandbox_mode = "read-only"` so reviewers cannot modify the
+codebase. The `review-code` recipe dispatches all three in a single turn so
+Codex can fan them out in parallel (subject to `agents.max_threads`,
+default 6).
+
+To add a project-specific reviewer, drop another `*.toml` into
+`.codex/agents/` with required keys `name`, `description`,
+`developer_instructions`. Optionally set `sandbox_mode = "read-only"` if
+the subagent shouldn't modify files.
+
+## Codex Hooks
+
+Codex hook wiring lives in `.codex/hooks.json`. Momentum installs reusable
+shell scripts to `scripts/` and references them from this file:
+
+| Event | Matcher | Script | Purpose |
+|---|---|---|---|
+| `PreToolUse` | `apply_patch\|shell` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
+| `PostToolUse` | `apply_patch\|shell` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | Auto-greets with any pending handoff banner + ecosystem context. |
+
+### Enabling hooks in Codex
+
+Codex gates hook discovery behind the `features.hooks` config flag. If
+hooks don't appear to fire after `momentum init --agent codex`, add the
+following to your Codex config (`~/.codex/config.toml`):
+
+```toml
+[features]
+hooks = true
+```
+
+Then restart your Codex session. The `brainstorm-gate.sh` script resolves
+the project root from `CLAUDE_PROJECT_DIR` → `MOMENTUM_PROJECT_DIR` → `pwd`,
+so Codex's default cwd-as-session-root behavior works without env-var
+configuration.
+
+## Codex Skills
+
+Momentum installs at least one skill in `.agents/skills/` (the convention
+shared with Antigravity — Codex auto-discovers SKILL.md files at this
+path):
+
+- **`momentum-orient`** — Read `specs/status.md` before starting any work.
+  Codifies Rule 1 (Orient First).
+
+Add additional project-specific skills under
+`.agents/skills/<name>/SKILL.md` following the SKILL.md frontmatter
+convention. Invoke via the `/skills` picker or `$<skill-name>` mention.
 
 ## Always-On Rules
 
-Read `.agent/rules/project.md` at the start of each session and follow it as the durable project rule source. The most important operating rules are:
+Read `.agent/rules/project.md` at the start of each session and follow it
+as the durable project rule source. The most important operating rules:
 
 1. Orient first by reading `specs/status.md`.
 2. Update durable tracking files after meaningful work.
@@ -38,10 +131,6 @@ Read `.agent/rules/project.md` at the start of each session and follow it as the
 10. Treat architecture specs as stable during phase work.
 11. Lock evaluators before optimization loops.
 12. Verify with fresh evidence before marking work complete.
-
-## Codex Hooks
-
-Codex hook wiring lives in `.codex/hooks.json`. Momentum installs reusable shell scripts to `scripts/` and lets this adapter decide which hook events invoke them.
 
 ## Project Extensions
 

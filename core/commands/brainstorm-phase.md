@@ -15,7 +15,7 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    ```bash
    mkdir -p .momentum && touch .momentum/brainstorm-active
    ```
-   From this point until Step 8, do NOT call `Write`, `Edit`, or `MultiEdit` on any path under `specs/`. The PreToolUse hook (`adapters/claude-code/scripts/brainstorm-gate.sh`) will block such calls; this step makes the intent explicit.
+   From this point until Step 8, do NOT call any write-class tool on any path under `specs/`. The PreToolUse hook (`core/scripts/brainstorm-gate.sh`, wired by Claude Code + Codex + Antigravity) will block such calls; this step makes the intent explicit.
 
 1. Review current state:
    - Read `specs/status.md` — what phase just completed?
@@ -74,7 +74,7 @@ This command runs in two phases: **brainstorm** (conversational, no disk writes)
 
 ### Sentinel-driven enforcement
 
-A file `.momentum/brainstorm-active` exists for the lifetime of the brainstorm phase. While it exists, the Claude Code `brainstorm-gate.sh` PreToolUse hook blocks any `Write`/`Edit`/`MultiEdit` call whose target lives under `specs/`. The hook is the safety net; the discipline below is the primary contract.
+A file `.momentum/brainstorm-active` exists for the lifetime of the brainstorm phase. While it exists, the `brainstorm-gate.sh` PreToolUse hook (shared across Claude Code, Codex, and Antigravity) blocks any write-class tool call whose target lives under `specs/`. The hook is the safety net; the discipline below is the primary contract.
 
 ### Sequence
 

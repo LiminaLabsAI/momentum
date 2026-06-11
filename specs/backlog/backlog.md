@@ -1,6 +1,6 @@
 # Backlog
 
-> **Last Updated**: 2026-06-08 (ENH-025 → in-progress for Phase 15; ENH-032 / ENH-033 / ENH-034 / ENH-035 filed alongside)
+> **Last Updated**: 2026-06-11 (VAL-001 + VAL-002 filed during Phase 16 Rework Group 4 — live-CLI runtime evidence deferred to follow-up)
 
 ---
 
@@ -94,3 +94,10 @@
 | FEAT-015 | Adapter Contract v3 — runtime metadata for multi-agent compatibility | P1 | resolved | phase-7b | Delivered in Phase 7b. Adapters declare display name, destinations, primary instruction file, config/hook files, and capability flags. Core remains generic; agent-specific capabilities stay isolated in adapters. |
 | FEAT-016 | Adapter: Codex (`AGENTS.md`, `.codex/hooks.json`, command recipes) | P1 | resolved | phase-7b | Delivered in Phase 7b. First non-Claude adapter. Installs Codex primary instructions, Codex hook config, generic specs/scripts, and Codex-owned command recipes via `momentum init/upgrade --agent codex`. |
 | FEAT-017 | Cross-agent install/upgrade regression coverage | P1 | resolved | phase-7b | Delivered in Phase 7b. Tests prove Claude Code output remains unchanged while Codex install/upgrade works. Includes dynamic available-agent behavior and overlay conflict protection. |
+
+## Validation (post-release follow-ups)
+
+| ID | Title | Priority | Status | Phase | Detail |
+|----|-------|----------|--------|-------|--------|
+| VAL-001 | Live `codex` CLI dogfood for Phase 16 Rework parity | P1 | open | post-v0.19.0 | Phase 16 Rework Group 4 needed a real `codex` CLI dogfood to confirm: (a) `features.hooks = true` opt-in actually makes `.codex/hooks.json` fire; (b) `apply_patch` matcher catches real Codex tool calls; (c) `.codex/agents/*.toml` TOML subagents are discovered; (d) parallel fan-out of 3 reviewers actually runs concurrently; (e) `.agents/skills/momentum-orient/SKILL.md` is auto-discovered; (f) AGENTS.md `## Momentum Recipes — Lookup Pattern` is followed when user invokes `/<name>`. The CLI was not available in the rework dev env. Installation evidence captured at `specs/phases/phase-16-adapter-rework/evidence/codex-install.txt`. Until live evidence lands, Codex `parallelSubagents` + `skills` capability flips stay `false` (matrix cell `shipped` for Codex skills overlay but degraded for parallel subagent fan-out). Action: run the 6 verification questions above on a machine with `codex` installed; flip capability booleans if confirmed; close VAL-001. |
+| VAL-002 | Live `agy` CLI dogfood for Phase 16 Rework parity + path lock | P1 | open | post-v0.19.0 | Phase 16 Rework Group 4 needed a real `agy` CLI dogfood to confirm: (a) `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) — Google's own docs disagree; ship-time pick was singular per the canonical docs page, dual-copy or path-lock pending live confirmation; (b) workflow `.md` files auto-register as `/<name>` slash commands; (c) `.agents/skills/<name>/SKILL.md` is discovered and loadable by name; (d) `.agents/hooks.json` PreToolUse fires on `run_command|view_file` write attempts; (e) PostToolUse history reminder fires; (f) whether SessionStart event is actually surfaced (the wired hook may or may not fire). Installation evidence captured at `specs/phases/phase-16-adapter-rework/evidence/antigravity-install.txt`. Until live evidence lands, Antigravity `sessionStartHook` stays `false`. Action: run all 6 verification questions on a machine with `agy` installed; flip `sessionStartHook` if confirmed; adjust workflow path if plural is correct; close VAL-002. |

@@ -16,13 +16,98 @@
 
 > **First file to read: ALWAYS `specs/status.md`.**
 
-## Antigravity Slash Commands & Recipes
+## Antigravity-native layout under `.agent/` and `.agents/`
 
-Antigravity slash command recipes are installed in `.antigravity/commands/`. When the user requests a command such as `/brainstorm-phase`, `/start-phase`, `/sync-docs`, or `/complete-phase`, read the matching Markdown file from `.antigravity/commands/` and execute its instructions.
+Momentum installs Antigravity-discoverable assets under two directories
+at the project root (this matches the documented `agy` CLI layout — note
+that `.agent/` (singular) hosts workflows and rules; `.agents/` (plural)
+hosts skills and hooks):
+
+| Path | Purpose |
+|---|---|
+| `.agent/workflows/` | Step-by-step workflow recipes — each `<name>.md` auto-registers as `/<name>` slash command in `agy`. Includes all momentum phase + orchestration commands. |
+| `.agent/rules/` | Always-on rules (Rule 1 through Rule 12) — auto-loaded by `agy`. |
+| `.agent/engines/` | Execution engines (subagent dispatch playbook). |
+| `.agents/skills/` | On-demand persona/capability skills — each `<name>/SKILL.md` loads when invoked. Momentum ships `momentum-orient` + three reviewer skills. |
+| `.agents/hooks.json` | Pre/Post tool event hooks + SessionStart. |
+
+## Workflows = momentum recipes (native slash commands)
+
+When the user types `/<name>` (e.g. `/brainstorm-phase`, `/start-phase`,
+`/sync-docs`, `/complete-phase`, `/dispatch`, `/handoff`, `/continue`,
+`/review-code`), `agy` reads the matching workflow file from
+`.agent/workflows/<name>.md` and follows its numbered steps.
+
+Workflows ship in two layers:
+
+1. **Core workflows** — momentum's cross-adapter phase + ecosystem commands. Installed from `core/commands/*.md` to `.agent/workflows/*.md`. Examples: `brainstorm-phase`, `start-phase`, `sync-docs`, `complete-phase`, `track`, `validate`, `ecosystem`, `initiative`, `session`, `systematic-debug`.
+2. **Antigravity-specific workflows** — orchestration primitives with native parallel subagent fan-out. Installed from `adapters/antigravity/workflows/*.md`. Examples: `scout`, `dispatch`, `handoff`, `continue`, `review-code`.
+
+To add a project-specific workflow, drop a Markdown file into
+`.agent/workflows/<name>.md` with YAML frontmatter:
+
+```markdown
+---
+description: One-line summary used for auto-detection
+---
+
+### 1. First step
+...
+
+### 2. Second step
+...
+```
+
+Max 12,000 characters per workflow file. Use `// run workflow: <name>`
+to compose workflows.
+
+## Skills = personas the agent loads to BECOME
+
+Momentum installs four skills at `.agents/skills/`:
+
+- **`momentum-orient`** — Read `specs/status.md` first. Codifies Rule 1.
+- **`momentum-reviewer-security`** — OWASP/STRIDE security review persona.
+- **`momentum-reviewer-qa`** — Test coverage / edge cases / regression risk.
+- **`momentum-reviewer-architecture`** — Rule compliance / pattern consistency.
+
+The three reviewer skills are loaded by the `/review-code` workflow,
+which dispatches them in parallel via Antigravity's native subagent
+fan-out, then consolidates findings.
+
+Add project-specific skills under `.agents/skills/<name>/SKILL.md` with
+YAML frontmatter (`name`, `description`).
+
+## Antigravity Native Artifacts Integration
+
+When in planning mode or executing a phase, keep Antigravity's native artifacts in sync with momentum's spec files:
+
+- **Durable Checklist**: Map `specs/phases/phase-N-*/tasks.md` directly into your native `task.md` artifact. Update both simultaneously as work proceeds.
+- **Implementation Alignment**: Ensure that the `implementation_plan.md` artifact mirrors the scope and groups declared in `specs/phases/phase-N-*/plan.md`.
+- **Walkthrough Evidence**: Append the verification evidence gathered for `/complete-phase` into your native `walkthrough.md` artifact.
+
+## Hooks
+
+Antigravity hook wiring lives in `.agents/hooks.json`. Momentum installs
+reusable shell scripts to `scripts/` and references them:
+
+| Event | Matcher | Script | Purpose |
+|---|---|---|---|
+| `PreToolUse` | `run_command\|view_file\|.*write.*\|apply_patch` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
+| `PostToolUse` | `run_command\|apply_patch\|.*write.*` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | When `agy` fires SessionStart, auto-greets with any pending handoff banner + ecosystem context. (SessionStart vendor support pending VAL-002.) |
+
+### SessionStart fallback
+
+If `agy`'s SessionStart event isn't yet supported, the handoff pickup
+hint also lives in this AGENTS.md primary-instruction text below: if a
+`.momentum/inbox/handoff-NNN.md` file exists at session start, read it
+and acknowledge before continuing.
 
 ## Always-On Rules
 
-Read `.agent/rules/project.md` at the start of each session and follow it as the durable project rule source. The most important operating rules are:
+Read `.agent/rules/project.md` at the start of each session and follow
+it as the durable project rule source. The most important operating
+rules:
 
 1. Orient first by reading `specs/status.md`.
 2. Update durable tracking files after meaningful work.
@@ -36,19 +121,6 @@ Read `.agent/rules/project.md` at the start of each session and follow it as the
 10. Treat architecture specs as stable during phase work.
 11. Lock evaluators before optimization loops.
 12. Verify with fresh evidence before marking work complete.
-
-## Antigravity Native Artifacts Integration
-
-When in planning mode or executing a phase, keep Antigravity's native artifacts in sync with momentum's spec files:
-- **Durable Checklist**: Map `specs/phases/phase-N-*/tasks.md` directly into your native `task.md` artifact. Update both simultaneously as work proceeds.
-- **Implementation Alignment**: Ensure that the `implementation_plan.md` artifact mirrors the scope and groups declared in `specs/phases/phase-N-*/plan.md`.
-- **Walkthrough Evidence**: Append the verification evidence gathered for `/complete-phase` into your native `walkthrough.md` artifact.
-
-## Antigravity Native Subagents Integration
-
-Leverage Antigravity's native `invoke_subagent` and `define_subagent` tools to scale execution:
-- **Parallel Feature Groups**: Spawn specialized subagents to implement separate parallel implementation plan groups.
-- **Deep Codebase Research**: Delegate deep, multi-file codebase research or web search tasks to the background `research` subagent while continuing active implementation.
 
 ## Project Extensions
 

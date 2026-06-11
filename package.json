@@ -15,7 +15,10 @@
     "adapters/**/instructions/**",
     "adapters/**/commands/**",
     "adapters/**/agent-rules/**",
-    "adapters/**/scripts/**"
+    "adapters/**/scripts/**",
+    "adapters/**/workflows/**",
+    "adapters/**/skills/**",
+    "adapters/**/agents/**"
   ],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.js",

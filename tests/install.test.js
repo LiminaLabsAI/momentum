@@ -81,7 +81,8 @@ test('init — codex install produces AGENTS.md hooks and command recipes', () =
     assert.equal(fs.existsSync(path.join(target, '.claude')), false);
 
     const agentsMd = read(path.join(target, 'AGENTS.md'));
-    assert.match(agentsMd, /Momentum Commands in Codex/);
+    // Phase 16 Rework: renamed section "Momentum Commands in Codex" → "Momentum Recipes — Lookup Pattern"
+    assert.match(agentsMd, /Momentum Recipes — Lookup Pattern/);
     assert.match(agentsMd, /## Project Extensions/);
 
     const leaked = [];
@@ -104,8 +105,9 @@ test('init — antigravity install produces AGENTS.md and command recipes', () =
 
     assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), false);
-    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'brainstorm-phase.md')), true);
-    assert.equal(fs.existsSync(path.join(target, '.antigravity', 'commands', 'start-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'workflows', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'workflows', 'start-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.antigravity')), false, '.antigravity/ should not be created — Phase 16 Rework rewires to .agent/workflows/');
     assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
     assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);

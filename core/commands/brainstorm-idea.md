@@ -19,7 +19,7 @@ When you're ready to turn the result into a project, run `/start-project`. To tu
    ```bash
    mkdir -p .momentum && touch .momentum/brainstorm-active
    ```
-   While this sentinel exists, the PreToolUse hook (`adapters/claude-code/scripts/brainstorm-gate.sh`) blocks any `Write`/`Edit`/`MultiEdit` to `specs/`. This command should not write to disk at all — the sentinel guards against accidental scratch-file leakage (e.g., a stray `specs/decisions/draft.md`).
+   While this sentinel exists, the PreToolUse hook (`core/scripts/brainstorm-gate.sh`, wired by Claude Code + Codex + Antigravity) blocks any write-class tool call to `specs/`. This command should not write to disk at all — the sentinel guards against accidental scratch-file leakage (e.g., a stray `specs/decisions/draft.md`).
 
 1. Ask one question at a time to understand the idea:
    - What is the core problem or opportunity?
@@ -62,7 +62,7 @@ This command runs in two phases: **brainstorm** (conversational, no disk writes)
 
 ### Sentinel-driven enforcement
 
-A file `.momentum/brainstorm-active` exists for the lifetime of the brainstorm phase. While it exists, the Claude Code `brainstorm-gate.sh` PreToolUse hook blocks any `Write`/`Edit`/`MultiEdit` call whose target lives under `specs/`. The hook is the safety net; the discipline below is the primary contract.
+A file `.momentum/brainstorm-active` exists for the lifetime of the brainstorm phase. While it exists, the `brainstorm-gate.sh` PreToolUse hook (shared across Claude Code, Codex, and Antigravity) blocks any write-class tool call whose target lives under `specs/`. The hook is the safety net; the discipline below is the primary contract.
 
 For `/brainstorm-idea` specifically, there is no "commit phase" — this command never writes phase or spec files. The gate exists to prevent accidental scratch files from appearing under `specs/` during open-ended exploration. The sentinel is removed when the user picks a direction (or exits the conversation) so the follow-up command (`/start-project`, `/log`, etc.) starts clean.
 
