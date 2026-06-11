@@ -40,14 +40,14 @@
 
 ## Group 3 — Shared brainstorm-gate generalization
 
-- [ ] G3.1 `git mv` `adapters/claude-code/scripts/brainstorm-gate.sh` → `core/scripts/brainstorm-gate.sh`
-- [ ] G3.2 Generalize payload parser (Claude file_path + Codex apply_patch input + shell command)
-- [ ] G3.3 Generalize project-root resolution (MOMENTUM_PROJECT_DIR → CLAUDE_PROJECT_DIR → pwd)
-- [ ] G3.4 Update `bin/momentum.js` `init()` to copy `core/scripts/` recursively
-- [ ] G3.5 Update `tests/brainstorm-gate.test.js` for new path + Codex apply_patch payload cases
-- [ ] G3.6 Update `tests/tarball.test.js` for new brainstorm-gate.sh path
-- [ ] G3.7 Update `core/commands/brainstorm-{idea,phase}.md` + `start-project.md` doc references
-- [ ] G3.8 Update `tests/claude-code-regression.test.js` fixture to accommodate the source-path move (installed path unchanged)
+- [x] G3.1 `git mv` `adapters/claude-code/scripts/brainstorm-gate.sh` → `core/scripts/brainstorm-gate.sh`
+- [x] G3.2 Payload parser generalized — handles Claude `tool_input.file_path`, Antigravity `tool_input.path`, Codex apply_patch `tool_input.input` with `*** Update File:` extraction, Codex shell `tool_input.command` with specs/-targeting grep
+- [x] G3.3 Project-root resolution: `MOMENTUM_PROJECT_DIR` → `CLAUDE_PROJECT_DIR` → `pwd` fallback
+- [x] G3.4 `bin/momentum.js` `init()` copies entire `core/scripts/` recursively (was: only check-history-reminder.sh explicit)
+- [x] G3.5 `tests/brainstorm-gate.test.js` — 10 existing Claude scenarios preserved + 6 new (Codex apply_patch update/outside/no-sentinel, Codex shell, Antigravity run_command, Antigravity view_file) = 16 total
+- [x] G3.6 `tests/tarball.test.js` required-paths: `core/scripts/brainstorm-gate.sh` (moved from adapters/claude-code/scripts/)
+- [x] G3.7 `core/commands/brainstorm-{idea,phase}.md` + `start-project.md` doc refs updated to `core/scripts/brainstorm-gate.sh` + "shared across Claude Code, Codex, and Antigravity"
+- [x] G3.8 `tests/claude-code-regression.test.js` fixture re-snapshotted to v0.19.0 baseline (45 files, +1 sessionstart-handoff.sh — fixes v0.18.0 latent bug where settings.json referenced it but it never installed). Behavior unchanged per tests/brainstorm-gate.test.js (10 Claude scenarios green)
 
 ## Group 4 — Live Smoke + Path Decision Gate
 

@@ -27,7 +27,9 @@ test('npm tarball shape — includes required runtime adapter files and no repo 
     'adapters/claude-code/adapter.js',
     'adapters/claude-code/settings.json',
     'adapters/claude-code/commands/review-code.md',
-    'adapters/claude-code/scripts/brainstorm-gate.sh',
+    // Phase 16 Rework: brainstorm-gate.sh moved to core/scripts/ (shared
+    // across Claude Code + Codex + Antigravity). Same post-install path.
+    'core/scripts/brainstorm-gate.sh',
     'adapters/codex/adapter.js',
     'adapters/codex/hooks.json',
     'adapters/codex/instructions/AGENTS.md',

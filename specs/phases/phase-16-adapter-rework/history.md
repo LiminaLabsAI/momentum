@@ -51,6 +51,22 @@ Detail: Codex has no native per-project slash-command surface (custom slash comm
 
 ---
 
+### [DISCOVERY] 2026-06-11 — v0.18.0 latent bug: sessionstart-handoff.sh referenced but not installed for Claude Code
+Topics: phase-16-rework, group-3, latent-bug, sessionstart-handoff, install-script-gap
+Affects-phases: phase-16-adapter-rework
+Affects-specs: bin/momentum.js, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: While generalizing `bin/momentum.js init()` to copy `core/scripts/` recursively (G3.4), the Claude Code regression test caught that v0.18.0 referenced `bash scripts/sessionstart-handoff.sh` in `.claude/settings.json` SessionStart hook BUT never installed the script (the v0.18.0 init() only explicitly copied check-history-reminder.sh + session-append.sh; sessionstart-handoff.sh wasn't shipping). This means v0.18.0 SessionStart hooks failed silently for Claude Code users. The G3.4 change (recursive copy of core/scripts/) FIXES this — sessionstart-handoff.sh now ships for all three adapters. This is technically a behavior change for Claude Code (SessionStart now actually fires), but it's a bug fix, not a regression. Regression fingerprint re-snapshotted as v0.19.0 baseline with the new file added.
+
+---
+
+### [FEATURE] 2026-06-11 — Group 3 complete — brainstorm-gate.sh promoted to core/scripts/ + generalized for all three adapters
+Topics: phase-16-rework, group-3, brainstorm-gate, shared-script, multi-platform-payload, payload-parser
+Affects-phases: phase-16-adapter-rework
+Affects-specs: core/scripts/brainstorm-gate.sh (new location), bin/momentum.js, tests/brainstorm-gate.test.js, tests/tarball.test.js, tests/fixtures/v0.18.0-claude-code-fingerprint.json, core/commands/brainstorm-idea.md, core/commands/brainstorm-phase.md, core/commands/start-project.md
+Detail: brainstorm-gate.sh promoted via `git mv` from `adapters/claude-code/scripts/` → `core/scripts/`. The script was generalized to handle 3 platforms' tool names AND payload shapes: Claude Code (Write/Edit/MultiEdit + tool_input.file_path), Codex (apply_patch + tool_input.input with `*** Update File:` extraction; shell + tool_input.command with specs/-targeting grep), Antigravity (run_command/view_file/*write*/apply_patch + tool_input.path). Project-root resolution: MOMENTUM_PROJECT_DIR → CLAUDE_PROJECT_DIR → pwd. `bin/momentum.js init()` copies entire `core/scripts/` recursively (was: explicit single-file copy of check-history-reminder.sh) — this side-effect fixes the v0.18.0 latent bug where sessionstart-handoff.sh was referenced in settings.json but never installed. Doc references in core/commands/brainstorm-{idea,phase}.md + start-project.md updated to "shared across Claude Code, Codex, and Antigravity". tests/brainstorm-gate.test.js: 10 existing Claude scenarios preserved byte-equivalent + 6 new scenarios (Codex apply_patch update/outside/no-sentinel, Codex shell, Antigravity run_command block, Antigravity view_file conservative-block). tests/tarball.test.js required-paths block updated. Regression fingerprint re-snapshotted as v0.19.0 baseline. Suite: 326/326 (was 320 post-G2; +6 net new brainstorm-gate scenarios). Claude Code regression: PASSES against re-snapshotted v0.19.0 baseline; behavior preserved (verified via tests/brainstorm-gate.test.js 10/10 Claude scenarios).
+
+---
+
 ### [FEATURE] 2026-06-11 — Group 2 complete — Antigravity workflows + skills + native-tool-name hooks
 Topics: phase-16-rework, group-2, antigravity, workflows, skills, native-idiom, run-command-matcher, slashcommands-flip
 Affects-phases: phase-16-adapter-rework
