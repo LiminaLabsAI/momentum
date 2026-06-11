@@ -13,10 +13,19 @@ module.exports = {
   displayName: 'Antigravity',
 
   destinations: {
-    commands: ['.antigravity', 'commands'],
+    // Phase 16 Rework: native Antigravity surfaces.
+    // Antigravity has no commands/ concept — recipes are workflows.
+    // Workflows live at .agent/workflows/ (singular per official docs;
+    //   Google codelab uses .agents/workflows/ — gated on Group 4 smoke).
+    // Skills live at .agents/skills/ (shared convention with Codex).
+    // agents/ declared but unused — personas live as skills on Antigravity.
+    commands: ['.agent', 'workflows'], // legacy commands key reused — overlay still feeds via destinations[commands]
     'agent-rules': ['.agent', 'rules'],
     scripts: ['scripts'],
     engines: ['.agent', 'engines'],
+    workflows: ['.agent', 'workflows'],
+    skills: ['.agents', 'skills'],
+    agents: ['.agents', 'agents'],
   },
 
   primaryInstruction: {

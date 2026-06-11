@@ -4,14 +4,14 @@
 
 ## Group 0 — Contracts + Matrix + Claude Code Regression Lock
 
-- [ ] G0.1 Add `destinations.workflows` + `destinations.skills` + `destinations.agents` to all three `adapters/*/adapter.js`
-- [ ] G0.2 Write `tests/claude-code-regression.test.js` + capture v0.18.0 fingerprint fixture
-- [ ] G0.3 Refresh `core/adapter-capabilities.md` against post-research vendor docs
-- [ ] G0.4 Create `core/adapter-parity-matrix.md` (feature × adapter shipping status)
-- [ ] G0.5 Stub `tests/adapter-parity-matrix.test.js`
-- [ ] G0.6 Add `fakeToolEvent` helper to `tests/_helpers.js` with platform-specific payloads
-- [ ] G0.7 Extend `tests/adapter-capabilities-declared.test.js` for new destinations keys
-- [ ] G0.8 Re-confirm Codex `features.hooks` default; document in matrix
+- [x] G0.1 Add `destinations.workflows` + `destinations.skills` + `destinations.agents` to all three `adapters/*/adapter.js`; rewire antigravity commands destination to `.agent/workflows/`
+- [x] G0.2 Write `tests/claude-code-regression.test.js` + capture v0.18.0 fingerprint fixture (44 files snapshotted)
+- [x] G0.3 Refresh `core/adapter-capabilities.md` — deferred to G5 close-out alongside flip decisions
+- [x] G0.4 Create `core/adapter-parity-matrix.md` (feature × adapter shipping status grid + footnotes)
+- [x] G0.5 Stub `tests/adapter-parity-matrix.test.js`
+- [x] G0.6 Add `fakeToolEvent` helper to `tests/_helpers.js` with platform-specific `payloads.*` builders
+- [x] G0.7 Extend `tests/adapter-capabilities-declared.test.js` for new destinations keys
+- [x] G0.8 Codex `features.hooks` default deferred to G1 AGENTS.md authoring — opt-in instruction baked into the AGENTS.md text regardless of default; live verification in G4
 
 ## Group 1 — Codex Native
 
