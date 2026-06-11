@@ -51,10 +51,10 @@
 
 ## Group 4 — Live Smoke + Path Decision Gate
 
-- [ ] G4.1 Codex CLI availability check; live PreToolUse smoke OR VAL-001 filed
-- [ ] G4.2 Antigravity CLI availability check; live workflow path lock OR VAL-002 filed
-- [ ] G4.3 Install evidence for both adapters into `evidence/`
-- [ ] G4.4 Discoveries logged; trivial fixed in-phase, non-trivial filed to backlog
+- [/] G4.1 Codex CLI not in dev env → VAL-001 filed in backlog. 6 verification questions enumerated explicitly.
+- [/] G4.2 Antigravity CLI not in dev env → VAL-002 filed in backlog with `.agent/` vs `.agents/` path-lock question explicitly enumerated.
+- [x] G4.3 Install evidence captured: `evidence/codex-install.txt` (115 lines, file tree + hooks.json), `evidence/antigravity-install.txt` (143 lines, file tree + hooks.json + workflows list + skills list), `evidence/test-suite.txt` (326/326 pass).
+- [x] G4.4 Discovery: v0.18.0 latent bug (sessionstart-handoff.sh referenced but not installed) — logged + fixed in G3.4. No other discoveries from install evidence.
 
 ## Group 5 — Capability Flips + Matrix Close-Out
 

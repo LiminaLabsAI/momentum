@@ -61,6 +61,22 @@ test('npm tarball shape — includes required runtime adapter files and no repo 
     'adapters/codex/commands/dispatch.md',
     'adapters/codex/commands/handoff.md',
     'adapters/codex/commands/continue.md',
+    // Phase 16 Rework — Codex native subagents + orient skill
+    'adapters/codex/agents/momentum-reviewer-security.toml',
+    'adapters/codex/agents/momentum-reviewer-qa.toml',
+    'adapters/codex/agents/momentum-reviewer-architecture.toml',
+    'adapters/codex/skills/momentum-orient/SKILL.md',
+    // Phase 16 Rework — Antigravity workflows + skills + hooks
+    'adapters/antigravity/hooks.json',
+    'adapters/antigravity/workflows/scout.md',
+    'adapters/antigravity/workflows/dispatch.md',
+    'adapters/antigravity/workflows/handoff.md',
+    'adapters/antigravity/workflows/continue.md',
+    'adapters/antigravity/workflows/review-code.md',
+    'adapters/antigravity/skills/momentum-orient/SKILL.md',
+    'adapters/antigravity/skills/momentum-reviewer-security/SKILL.md',
+    'adapters/antigravity/skills/momentum-reviewer-qa/SKILL.md',
+    'adapters/antigravity/skills/momentum-reviewer-architecture/SKILL.md',
     // Phase 15 — ecosystem CLAUDE.md / AGENTS.md templates (ENH-025)
     'core/ecosystem/templates/ecosystem-claude.md',
     'core/ecosystem/templates/ecosystem-agents.md',

@@ -51,6 +51,14 @@ Detail: Codex has no native per-project slash-command surface (custom slash comm
 
 ---
 
+### [FEATURE] 2026-06-11 — Group 4 complete — install evidence captured; VAL-001 + VAL-002 filed for live-runtime follow-up
+Topics: phase-16-rework, group-4, install-evidence, val-001, val-002, dev-env-cli-unavailable
+Affects-phases: phase-16-adapter-rework, post-v0.19.0
+Affects-specs: specs/backlog/backlog.md, specs/phases/phase-16-adapter-rework/evidence/codex-install.txt, specs/phases/phase-16-adapter-rework/evidence/antigravity-install.txt, specs/phases/phase-16-adapter-rework/evidence/test-suite.txt, tests/tarball.test.js, package.json
+Detail: Group 4 planned live `codex` and `agy` CLI dogfood. Neither was reachable from the rework dev env. Per the plan's external-dependency clause: (1) Install-time evidence captured under `evidence/` — Codex install (115 lines: file tree + hooks.json + 3 TOMLs + orient skill + AGENTS.md recipe lookup pattern); Antigravity install (143 lines: file tree + hooks.json + 5 overlay workflows + 19 core-command workflows shipping as `.agent/workflows/*.md` + 4 skills); full 326/326 test-suite output. (2) Live-runtime verification becomes follow-up: VAL-001 (Codex — 6 explicit verification questions including parallel fan-out + AGENTS.md recipe pattern + features.hooks opt-in) + VAL-002 (Antigravity — 6 questions including the `.agent/` singular vs `.agents/` plural path lock). (3) `package.json` `files` glob extended with `adapters/**/workflows/**` + `adapters/**/skills/**` + `adapters/**/agents/**` so new overlay surfaces ship in the npm tarball. (4) `tests/tarball.test.js` required-paths block extended with the 14 new files (3 Codex TOMLs + Codex orient skill + Antigravity hooks.json + 5 Antigravity workflows + 4 Antigravity skills). Suite: 326/326 still green. No new discoveries from install evidence beyond the v0.18.0 sessionstart-handoff bug already addressed in G3.
+
+---
+
 ### [DISCOVERY] 2026-06-11 — v0.18.0 latent bug: sessionstart-handoff.sh referenced but not installed for Claude Code
 Topics: phase-16-rework, group-3, latent-bug, sessionstart-handoff, install-script-gap
 Affects-phases: phase-16-adapter-rework
