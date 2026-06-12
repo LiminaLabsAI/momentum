@@ -1,8 +1,8 @@
 {
   "meta": {
-    "captured": "2026-06-11",
-    "capturedFrom": "phase-16-adapter-rework G3 — generalized brainstorm-gate.sh + core/scripts/ recursive install",
-    "note": "Updated baseline for tests/claude-code-regression.test.js. Phase 16 Rework G3 brought brainstorm-gate.sh into core/ for sharing across all three adapters, and changed init() to copy core/scripts/ recursively (so sessionstart-handoff.sh now ships to Claude Code installs too — fixing a latent v0.18.0 bug where settings.json referenced it but it never installed). The Claude Code-facing BEHAVIOR is unchanged (verified by tests/brainstorm-gate.test.js — all 10 Claude scenarios still pass + 6 new Codex/Antigravity scenarios). Content drift is intentional: brainstorm-gate.sh now also parses Codex apply_patch + Antigravity payload shapes; doc references in brainstorm-{idea,phase}.md and start-project.md updated to point to core/scripts/."
+    "captured": "2026-06-12",
+    "capturedFrom": "phase-17-swarm G0 — swarm frontmatter doc in start-phase.md + /validate swarm member integrity check + phases/README.md swarm-member briefs section",
+    "note": "Updated baseline for tests/claude-code-regression.test.js. Phase 17 Group 0 added optional swarm-member brief frontmatter (swarm/wave/initiative/claimed_by_session) — documented in three template files that ship to every Claude Code install. The Claude Code behavior for solo (non-swarm) phases is unchanged: frontmatter is optional, plain markdown briefs remain byte-shape-compatible. Drift is intentional and purely documentation."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -21,12 +21,12 @@
     ".claude/commands/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
     ".claude/commands/scout.md": "d17142b3c0ba2e2b8bb3a061aa0ac890b5734bbaa7a048eba7564fdead2960df",
     ".claude/commands/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
-    ".claude/commands/start-phase.md": "87c59179b0d33bed705112b982e811c485591f10118d0a450c0569ddff5d1082",
+    ".claude/commands/start-phase.md": "ea7da972c841f26ace620531c1fdca567ba9e3f97b04d839afb86a179b843080",
     ".claude/commands/start-project.md": "9a9144898f31d3be8959ddadcfef553856acb14988adf5cc44d3c9e48e684213",
     ".claude/commands/sync-docs.md": "4d03cab1dd5daa2c8cab68f27a9b602cead24ae3947f001e8783b12b472c7387",
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
-    ".claude/commands/validate.md": "a52897c85432499420b151506f728d59a5e410920a49735e128fc6448731b702",
+    ".claude/commands/validate.md": "70d66b97eb1f3aa802c9d0fa00bbb3f9e660f6680ccde1b425288d27cc727d47",
     ".claude/settings.json": "8e547e082fb1c4a3ad4038af974be8471e841823755b3138ceb946177ef3864d",
     ".gitignore": "5b33fc8beb30c61c482fe55efc25e4958398c986e1bc31544c3e37823597af66",
     "CLAUDE.md": "c776df71790fd1bf315dbe60d9fdeab7d1b0d2349826747cf59a17e3876e452c",
@@ -43,7 +43,7 @@
     "specs/decisions/0000-template.md": "4886465ca2dea8aabeb60a03baeb9fa1bdebd6fbdd2584634a023c15e12acc36",
     "specs/decisions/README.md": "d83cbfed8f6f58ba42321643c9e99be38f946db8cf33dca0e183bc724e204d74",
     "specs/decisions/impact-map.json": "ebe6de7b70312bdb4fbdd8864168523a80a6d36f615368d952cfd1b73eda9889",
-    "specs/phases/README.md": "978d217a38b4cddaa6c0613f727a98775fa8fe3ce763e81472164a855ea40ddf",
+    "specs/phases/README.md": "32c96f255eeb0fe9ee172f56fad47a83359a273f3f77cd983ffba0ce9cf0aa10",
     "specs/phases/index.json": "9c2e35d39ed38ff7d5623ce4c01d2654c40478921905b0c54f0abbbd25cb7100",
     "specs/planning/roadmap.md": "37edbdc1e812d72c19031a1a1e44b9d4125d0e7380f3c1b2131dbfa2a4d1dcad",
     "specs/status.md": "38861b1a72c0c8dd6a4df54024eb119fd9cdc9337b2dbb4b32535eaeefb42ef3",

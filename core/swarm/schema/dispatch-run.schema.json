@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-dispatch-run-v1.json",
+  "title": "Momentum Swarm Dispatch-Run (Per-Supervisor Saga Step)",
+  "description": "Extension of the existing Phase 11 dispatch-run-NNN artifact for swarm-aware supervisors. Lives at <repo>/.momentum/runs/dispatch-run-NNN.json (one per supervisor per wave). The conductor never reads this directly — it watches HEAD SHAs + reads materialized board.json. This schema is the durable per-step saga record that makes /swarm resume possible.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "primitive", "swarm_id", "saga_id", "wave", "repo", "phase_slug", "started", "step_n", "done"],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{3,6}$",
+      "description": "Zero-padded counter per repo per primitive. Matches the filename suffix."
+    },
+    "primitive": {
+      "type": "string",
+      "const": "swarm-supervise",
+      "description": "Marks this as a swarm supervisor run (distinct from scout/dispatch/handoff dispatch-runs that share the same .momentum/runs/ directory)."
+    },
+    "swarm_id": {"type": "string", "pattern": "^[0-9]{4}-[a-z][a-z0-9-]*$"},
+    "saga_id": {"type": "string", "pattern": "^sg_[a-z0-9]{4,16}$"},
+    "wave": {"type": "integer", "minimum": 1},
+    "repo": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Ecosystem member id this supervisor is pinned to."
+    },
+    "phase_slug": {
+      "type": "string",
+      "pattern": "^phase-[0-9]+(?:[a-z])?-[a-z][a-z0-9-]*$"
+    },
+    "branch": {"type": "string", "minLength": 1},
+    "started": {"type": "string", "format": "date-time"},
+    "step_n": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonic step counter inside this wave. Each supervisor /start-phase iteration bumps step_n."
+    },
+    "done": {
+      "type": "boolean",
+      "description": "True once /complete-phase succeeded in this supervisor's repo for this wave."
+    },
+    "ended": {"type": "string", "format": "date-time"},
+    "exit_status": {
+      "type": "string",
+      "enum": ["success", "failed", "cancelled", "in-progress"]
+    },
+    "tasks_done": {"type": "integer", "minimum": 0},
+    "tasks_total": {"type": "integer", "minimum": 0},
+    "tokens_used": {"type": "integer", "minimum": 0},
+    "head_sha": {"type": "string", "pattern": "^[0-9a-f]{7,40}$"},
+    "last_commit": {"type": "string", "description": "Last commit subject the supervisor wrote."},
+    "current_file": {"type": "string", "description": "Free-form: what file the supervisor is editing right now."},
+    "inbox_items": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Slugs of inbox items this supervisor has written. Empty when none pending."
+    },
+    "history_tail_offset": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Byte offset into <repo>/specs/phases/<slug>/history.md where the supervisor was last seen. Lets /swarm resume seek to new entries without re-reading the full file."
+    },
+    "claimed_by_session": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Session UUID that wrote this step. Portability hook."
+    }
+  }
+}

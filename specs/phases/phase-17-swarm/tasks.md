@@ -4,18 +4,18 @@
 
 ## Group 0 — Schemas, Contracts, Indexing Foundation
 
-- [ ] G0.1 manifest.schema.json
-- [ ] G0.2 board.schema.json
-- [ ] G0.3 contract.schema.json
-- [ ] G0.4 dispatch-run.schema.json (extend with swarm fields)
-- [ ] G0.5 core/swarm/lib/manifest.js (CRUD + mkdir-lock)
-- [ ] G0.6 core/swarm/lib/board.js (materializer)
-- [ ] G0.7 core/swarm/lib/wave-ordering.js (topo sort + cycle detection)
-- [ ] G0.8 core/swarm/lib/git-sha-cache.js
-- [ ] G0.9 core/swarm/lib/incremental-log.js
-- [ ] G0.10 Brief frontmatter extension + /start-phase recipe update
-- [ ] G0.11 /validate extension for swarm member integrity
-- [ ] G0.12 Tests: schemas + wave-ordering + indexing
+- [x] G0.1 manifest.schema.json
+- [x] G0.2 board.schema.json
+- [x] G0.3 contract.schema.json
+- [x] G0.4 dispatch-run.schema.json (extend with swarm fields)
+- [x] G0.5 core/swarm/lib/manifest.js (CRUD + mkdir-lock)
+- [x] G0.6 core/swarm/lib/board.js (materializer)
+- [x] G0.7 core/swarm/lib/wave-ordering.js (topo sort + cycle detection)
+- [x] G0.8 core/swarm/lib/git-sha-cache.js
+- [x] G0.9 core/swarm/lib/incremental-log.js
+- [x] G0.10 Brief frontmatter extension + /start-phase recipe update
+- [x] G0.11 /validate extension for swarm member integrity
+- [x] G0.12 Tests: schemas + wave-ordering + indexing
 
 ## Group 1 — Conductor Core (Claude Code)
 

@@ -90,6 +90,22 @@ Detail: User direction: do NOT use cerebrio-ecosystem (real project) for Phase 1
 
 ---
 
+### [NOTE] 2026-06-12 — Group 0 landed — schemas + indexing foundation
+Topics: phase-17, swarm, group-0, schemas, manifest, board, contract, dispatch-run, wave-ordering, git-sha, incremental-log, brief-frontmatter
+Affects-phases: phase-17-swarm
+Affects-specs: core/swarm/schema/*, core/swarm/lib/*, core/commands/start-phase.md, core/commands/validate.md, core/specs-templates/specs/phases/README.md, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: G0 shipped four JSON schemas (manifest / board / contract / dispatch-run) and six libraries (manifest CRUD + mkdir-lock, board materializer, wave-ordering topo sort + cycle detection, git-sha cache, incremental log reader, brief frontmatter helper). 55 new tests across `swarm-schemas.test.js`, `swarm-wave-ordering.test.js`, `swarm-indexing.test.js`. Documentation extensions: optional swarm frontmatter (`swarm:` / `wave:` / `initiative:` / `claimed_by_session:`) on phase briefs — solo briefs unchanged — plus `/validate` swarm member integrity rule. Claude Code regression fingerprint refreshed for the three documentation file drifts (start-phase.md + validate.md + phases/README.md). Full suite 326 → 381 (zero pre-existing regressions).
+
+---
+
+### [ARCH_CHANGE] 2026-06-12 — Swarm fingerprint update — Claude Code install gains swarm frontmatter docs (additive)
+Topics: phase-17, swarm, claude-code-fingerprint, brief-frontmatter, validate, additive
+Affects-phases: phase-17-swarm
+Affects-specs: tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: Three Claude Code install files drifted intentionally during G0 — `start-phase.md` (swarm frontmatter note), `validate.md` (swarm member integrity check), `phases/README.md` (swarm-member briefs section). Per Rule 10 this is additive (no design change — extending documentation to cover an optional v0.20.0 feature). Fingerprint baseline regenerated; meta updated to point at Phase 17 G0. Solo-phase behavior unchanged: briefs without frontmatter remain valid and byte-shape-compatible with v0.19.0.
+
+---
+
 ### [DISCOVERY] 2026-06-12 — 7-agent research workflow confirmed conductor + supervisor + files-as-channels is the dominant pattern
 Topics: phase-17, swarm, research, multi-agent, anthropic, devin, cao
 Affects-phases: phase-17-swarm
