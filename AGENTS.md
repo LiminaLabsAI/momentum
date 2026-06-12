@@ -1,9 +1,9 @@
 # Project Rules: momentum
 
 > Codex configuration for developing the momentum toolkit itself.
-> Agent rules live in `.agent/rules/project.md`.
+> Full condensed rules are installed at `.agent/rules/project.md`.
 
-## Navigation (Where to Find Things)
+## Navigation
 
 | Question | File |
 |----------|------|
@@ -16,344 +16,142 @@
 
 > **First file to read: ALWAYS `specs/status.md`.**
 
----
+## Momentum Recipes — Codex Skills
 
-## Autonomous Behaviors (Always-On Rules)
+Each momentum recipe ships as a native Codex skill at
+`.agents/skills/<name>/SKILL.md` ([Codex skills
+docs](https://developers.openai.com/codex/skills)). Codex auto-discovers
+skills under `.agents/skills/` at session start across CLI, IDE, and
+desktop app — so when the user invokes `/brainstorm-phase`, asks "run
+brainstorm-phase", or types `$brainstorm-phase`, Codex routes directly
+to that skill.
 
-### Rule 1: Always Orient First
+The shipped recipe set (one skill per recipe, all under
+`.agents/skills/`):
 
-Before ANY work, read `specs/status.md`. This tells you:
-- What phase is active
-- What's blocking progress
-- What P0 items need attention
-
-### Rule 2: Auto-Update Tracking After Changes
-
-After completing ANY meaningful work, automatically update:
-
-1. **Active phase `tasks.md`** — mark completed `[x]`, in-progress `[/]`
-2. **`specs/status.md`** — if phase progress, blockers, or P0 items changed
-3. **`specs/changelog/YYYY-MM.md`** — log what changed (one line per change)
-
-Use the built-in **TodoWrite** tool to track in-session task progress. Do NOT wait for the user to ask you to update tracking.
-
-#### Why
-Tracking debt compounds invisibly. A task list one day stale is recoverable; one week stale is fiction. Status drift is how phases silently lose direction.
-
-#### Red Flags — STOP and update tracking now
-
-| If you find yourself thinking… | …STOP and update before doing anything else |
+| Recipe | What it does |
 |---|---|
-| "I'll batch the tracking updates at the end" | The end never comes — context fades and details get lost |
-| "This change is too small to log" | Small changes accumulate into invisible drift |
-| "The diff makes it obvious what changed" | The diff shows *what*; the changelog explains *why* |
-| "The user can read git log" | Git log doesn't index by phase or backlog ID |
-| "I'll log this as part of the next bigger update" | Bigger updates conflate decisions and lose per-step reasoning |
-
-#### Anti-Rationalization Counters
-
-- "It's faster to do the work first and track at the end" — wrong: reconstruction takes 2-3× longer than real-time logging.
-- "TodoWrite is enough" — TodoWrite is in-session only; `tasks.md` is the durable record.
-- "Mid-task tracking interrupts flow" — a one-line update costs <30s; reconstructing a day later costs 30 minutes.
-
-### Rule 3: Auto-Track Discoveries
-
-When you discover a bug, tech debt, or enhancement during work:
-- Add it to `specs/backlog/backlog.md` immediately with appropriate priority
-- Mention it to the user: "I found [issue] and added it as [ID] to backlog"
-
-### Rule 4: Pre-Phase Bug Check
-
-Before starting work on a new phase:
-- Scan `specs/backlog/backlog.md` for P0/P1 bugs
-- If any exist, recommend addressing them first
-- Present: "N open bugs (X critical), recommend fixing before proceeding"
-
-### Rule 5: Phase Boundary Awareness
-
-When completing the last task in a phase:
-- Prompt the user: "All tasks in Phase N are complete. Run `/complete-phase` to verify and release?"
-- Do NOT auto-complete a phase without user confirmation
-
-### Rule 6: Git Lifecycle (Automatic)
-
-#### Starting Work
-- **Before ANY code change**, check current branch
-- If on `main` or `staging`, **auto-create a feature branch**:
-  - Phase work: `phase-N-shortname`
-  - Bug fix: `fix/BUG-NNN-short-desc`
-  - Feature: `feat/short-desc`
-  - Tech debt: `refactor/TD-NNN-short-desc`
-
-#### During Work
-- **Auto-commit** after each logical unit with conventional commits:
-  - `feat(scope):` | `fix(scope):` | `docs:` | `refactor(scope):` | `chore:` | `infra:`
-- Keep commits atomic — one logical change per commit
-- Push to remote after significant milestones
-
-#### Completing Work
-- Commit all remaining changes, push branch
-- **ASK the user** before merging to `staging` or `main`
-
-| Action | Auto? | Requires Approval? |
-|--------|-------|--------------------|
-| Create feature branch | Yes | No |
-| Commit to feature branch | Yes | No |
-| Push feature branch | Yes | No |
-| Delete merged feature branch | Yes (after confirmed merge) | No |
-| Merge to `staging` | No | **Yes** |
-| Merge to `main` | No | **Yes** |
-| Tag a release | No | **Yes** |
-
-#### Why
-Direct commits to `main` bypass review, history, and rollback. A single rushed commit on `main` is harder to revert than ten commits on a branch. The branch convention is the cheapest possible insurance against catastrophic mistakes.
-
-#### Red Flags — STOP and check the branch
-
-| If you find yourself thinking… | …STOP and switch to a branch |
-|---|---|
-| "Just one tiny commit to main" | One becomes ten — branch first, decide later |
-| "I'll create the branch after these edits" | The edits are the work; the branch is non-optional |
-| "The hook is in the way, --no-verify just this once" | Hooks exist because the underlying check failed before. Fix the cause. |
-| "Force push is fine, nobody else is on this branch" | Future you is on this branch. `--force-with-lease` at minimum. |
-
-#### Anti-Rationalization Counters
-
-- "It's a one-line typo fix on main" — branches are free; revert is cheap; main is sacred.
-- "The branch protection isn't set up yet" — that's a reason to be more careful, not less.
-- "I'll squash-merge later, so the intermediate commits don't matter" — they matter for `git bisect` and for narrating *why*.
-
-### Rule 7: Plan Before Implementing
-
-For any non-trivial implementation (new feature, architectural change):
-- Use `/brainstorm-phase` to design the approach first
-- Present the plan for user approval before making changes
-
-### Rule 8: Record Phase History
-
-During any active phase, append meaningful changes to `specs/phases/<active-phase>/history.md`.
-
-#### What counts as "meaningful"
-
-Append a history entry when ANY of these occur:
-
-| Trigger | Entry type |
-|---|---|
-| ADR was created or its status/decision changed | `[DECISION]` |
-| Phase scope was added to or reduced | `[SCOPE_CHANGE]` |
-| Bug, tech debt, or enhancement was added to backlog | `[DISCOVERY]` |
-| New feature was added to the phase plan | `[FEATURE]` |
-| Architectural pattern or integration approach changed | `[ARCH_CHANGE]` |
-| Locked evaluator was defined or its evaluation set changed | `[EVALUATOR]` |
-| Anything else worth a future reader's time | `[NOTE]` |
-
-After writing a history entry, check `specs/decisions/impact-map.json` and add any new topics so `/sync-docs` can find affected files.
-
-The hook script `scripts/check-history-reminder.sh` runs after edits as a safety net — heed its prompts.
-
-#### Format (APPEND ONLY)
-
-```
-### [TYPE] YYYY-MM-DD — Short title
-Topics: topic-1, topic-2
-Affects-phases: phase-N-name (or "none")
-Affects-specs: path/to/file.md#section (or "none")
-Detail: One to three sentences describing what changed and why.
-
----
-```
-
-#### Why
-The history log is the only place that preserves *why* a decision was made at the moment it was made. Specs document the current state; commits document mechanical changes; only history captures motivation. Without it, six months later nobody can reconstruct whether a constraint is load-bearing or accidental.
-
-#### Red Flags — STOP and log
-
-| If you find yourself thinking… | …STOP and append the entry now |
-|---|---|
-| "I'll write the history at the end of the phase" | You won't remember the *why*. Log when the decision is fresh. |
-| "This decision isn't important enough to log" | If it's not worth logging, it's not worth deciding — log it or revert it. |
-| "I already mentioned it in the commit message" | Commit messages get buried; history.md is the canonical source. |
-| "The change is obvious from the diff" | Diffs show *what*; history shows *why*. |
-
-#### Anti-Rationalization Counters
-
-- "We didn't decide anything — just discovered an issue" — that's `[DISCOVERY]`, log it.
-- "It's a minor scope tweak, not a real `[SCOPE_CHANGE]`" — every scope change is real, log it.
-- "I'll consolidate entries later" — consolidation loses per-decision context.
-
-### Rule 9: Doc Sync Protocol — Never Mid-Phase, Always at Completion
-
-- **During a phase**: Record to history. Do NOT update other specs.
-- **At phase completion**: Run `/sync-docs` BEFORE `/complete-phase`.
-
-#### Multi-repo projects only
-
-If this project depends on, or is depended on by, other repos in a parent workspace:
-- NEVER modify docs that live in another repo during `/sync-docs`. You only own this repo's docs.
-- If a history entry's `Affects-specs:` path starts with `../` (or otherwise points outside this repo), leave that file alone.
-- Flag the cross-repo impact to the user — give the exact path — so they can sync the other repo manually.
-- Cross-repo doc ownership is a structural choice. Never quietly change docs you don't own.
-
-### Rule 10: Architecture Specs Stability (monorepo only)
-
-Files under `specs/architecture/` are constitutional documents. Treat them as a stable reference *during* phase work. The key distinction is **additive bookkeeping** vs **architectural decisions**.
-
-**During phase implementation (both types — no spec changes):**
-- READ specs as stable reference
-- NEVER modify them based on implementation discoveries
-- Log all gaps and changes as `[ARCH_CHANGE]` in phase history with `Affects-specs:`
-
-**At phase completion (via `/sync-docs`):**
-- **Additive changes** (new fields, new ports, new modes — extending an existing design): update specs directly. No ADR required.
-- **Decisional changes** (approach changes, trade-off choices, design direction shifts): require an ADR amendment **before** any spec update.
-
-#### Why
-The original "all spec changes via ADR" rule worked when the architecture was stabilizing and every change was a decision. By mid-to-late phases, the architecture is proven — most changes are additive extensions, not decisions. Requiring ADRs for bookkeeping creates spec staleness while adding no value. ADRs capture *why* a path was chosen; they're not required when you're just recording *what was added*.
-
-#### Red Flags — STOP and route correctly
-
-| If you find yourself thinking… | …STOP |
-|---|---|
-| "I just need to update one field, not a real change" | Additive — fine at completion; not now. Log `[ARCH_CHANGE]`. |
-| "It's faster to fix the spec than to log the gap" | Faster locally, catastrophic globally — specs out of sync with rationale. |
-| "The implementation diverged because the spec was wrong" | That's a decision — ADR first, spec update second. Don't silently rewrite. |
-| "I'll log it as `[NOTE]` instead of `[ARCH_CHANGE]`" | If it touches `specs/architecture/`, it's `[ARCH_CHANGE]`. |
-
-#### Anti-Rationalization Counters
-
-- "Specs are wrong, code is right, so update specs" — only after an ADR documents *why* the design shifted.
-- "Mid-phase spec edits are fine if I'm careful" — the rule isn't about care; it's about preventing reference instability while you're depending on the reference.
-- "This is just renaming, not redesigning" — renames are decisions when others read the spec.
-
-### Rule 11: Evaluator Discipline — Lock Evaluators Before Loops
-
-Before building any learning, optimization, or self-improvement loop:
-
-1. Define the **evaluation set** — a fixed corpus with known-good outputs
-2. Define the **scalar** — a single number that improves or doesn't
-3. Commit the evaluator to `tests/benchmarks/` with a version tag
-4. Build the loop **AFTER** the evaluator is committed
-5. **NEVER** change the evaluator while the loop is being optimized
-
-#### Why
-Optimization loops with mutable evaluators don't measure progress — they measure motion. Every "small fix" to the eval set silently rewrites the score history and makes A-vs-B comparisons meaningless. Locking the evaluator first costs an hour; not locking it costs the entire experiment.
-
-#### Red Flags — STOP and freeze
-
-| If you find yourself thinking… | …STOP |
-|---|---|
-| "Just one tweak to the eval so this run looks better" | That's exactly the failure mode. Freeze first; tweak in a v2 evaluator. |
-| "We'll lock the evaluator after we know what works" | You can't know what works without a locked evaluator. |
-| "The current eval doesn't measure what we actually care about" | Correct — but freeze it before optimizing, then version-bump to a new locked eval. |
-| "It's just an internal experiment, locking is overkill" | Internal experiments produce internal beliefs that drive external decisions. Lock. |
-
-#### Anti-Rationalization Counters
-
-- "The eval set is too small, I'll just add a few more cases" — version-bump the evaluator (`v1` → `v2`); don't mutate `v1`.
-- "I noticed a bug in the scorer mid-run" — fix it in `v2`; rerun the prior runs against `v2`; don't backfill `v1` scores.
-- "Production data drifted, I should refresh the eval" — that's a `v2` decision, not a `v1` patch.
-
-### Rule 12: Verify Before Claim — No Completion Without Evidence
-
-Before claiming any task, fix, or implementation is "done":
-
-1. Run the actual verification command (test, lint, typecheck, smoke test, build)
-2. Read the output — both exit code and content
-3. If the output isn't fresh from this attempt in this session, treat the task as unverified
-4. Only mark a task `[x]` after a verification command produced passing output in this session
-
-#### Why
-The most common agentic-workflow failure is "should work now" — claiming completion based on intent rather than evidence. Fresh, observable output is the only signal that the change actually achieves what was claimed. Box-checking without verification compounds across phases until shipped releases contain unrun code paths.
-
-#### Red Flags — STOP and run the verification
-
-| If you find yourself thinking… | …STOP and run the verification before marking done |
-|---|---|
-| "I'm confident this works — no need to test" | Confidence is not evidence. Run the test. |
-| "The change is small enough that I can skip verification" | "Small" is the most common predicate of a regression. Run it. |
-| "I already tested something similar earlier" | Earlier ≠ now. Re-run against the current code. |
-| "The unit tests pass — that's enough" | Unit tests don't catch wiring bugs. Run the integration / smoke path too. |
-| "I'll batch verifications at the end of the phase" | At the end you can't tell which change caused which failure. Verify per-task. |
-
-#### Anti-Rationalization Counters
-
-- "The diff is obviously correct" — diffs lie when context is incomplete. Run the test.
-- "The CI will catch any issue" — CI catches it after you claimed done; that's the failure mode this rule prevents.
-- "Type checking passed, so it works" — types catch shape errors, not behavior. Run the runtime check.
-- "I read the code carefully and it looks right" — careful reading misses race conditions, missing imports, off-by-one bugs. Verification commands don't.
-- "The previous task was similar and that worked" — previous ≠ current. Each task gets its own verification.
-
-If a verification command does not exist for the task, write one before marking done. If a command can't run in the current environment, say so explicitly — do not silently downgrade to "looks correct".
-
-### Rule 13: Test-Driven Development (TDD) (Opt-in)
-
-If enabled in the project rules extensions (under `## Project Extensions` in this file), follow a strict test-first development loop:
-
-1. **Red**: Write a unit or integration test that specifies the new behavior *before* writing any application code.
-2. **Verify Failure**: Run the test runner and verify that the newly added test fails. Do not write any implementation code until you have seen the test fail.
-3. **Green**: Write the minimal application code necessary to make the test pass.
-4. **Refactor**: Clean up and optimize the code while keeping all tests green.
-
-#### Why
-TDD ensures that every line of code is motivated by a test case and directly guards against regression. By verifying the test fails first, you prove that the test is actually executing and asserting the correct constraint, preventing "false greens" (tests that pass even when the implementation is missing or incorrect).
-
-#### Red Flags — STOP and write tests first
-
-| If you find yourself thinking… | …STOP and write the test first |
-|---|---|
-| "I will write the tests at the end" | Writing tests post-facto is not TDD and introduces confirmation bias. |
-| "The change is too simple to warrant a test-first approach" | Simple changes are excellent TDD candidates to establish correct wiring. |
-
-#### Anti-Rationalization Counters
-
-- "It's faster to implement first and test later" — wrong: post-facto debugging of unexpected test failures takes 2-3x longer than writing a test first.
-- "The test framework setup is too complex for this task" — if test setup is too complex, your architectural coupling is too high. Refactor.
-- "I'll test it manually in the console" — manual console tests are volatile and don't guard future iterations. Commit an automated test.
-
----
-
-## Naming Conventions
-
-### Backlog IDs
-| Type | Prefix | Example |
-|------|--------|---------|
-| Bug | `BUG-` | `BUG-001` |
-| Feature | `FEAT-` | `FEAT-001` |
-| Tech Debt | `TD-` | `TD-001` |
-| Enhancement | `ENH-` | `ENH-001` |
-
-### Priorities
-| Level | Meaning | SLA |
-|-------|---------|-----|
-| `P0` | Critical — blocks current phase | < 1 day |
-| `P1` | High — current/next phase | < 1 week |
-| `P2` | Medium — within 2 phases | < 1 phase |
-| `P3` | Low — nice to have | best-effort |
-
-### Git Branches
-| Type | Pattern |
-|------|---------|
-| Phase | `phase-N-shortname` |
-| Feature | `feat/description` |
-| Bug fix | `fix/description` |
-| Refactor | `refactor/description` |
-| Infrastructure | `infra/description` |
-| Delete after merge | `git push origin --delete <branch>` once merged |
-
-### Git Commits (Conventional)
-`feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:`
-
-Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that don't ship code.
-
----
-
-## Constraints
-
-1. **No secrets in code** — all credentials via env vars
-2. **Never commit to main** — always use feature/phase branches
-3. **Plan before implementing** — use `/brainstorm-phase` for non-trivial work
-
----
+| brainstorm-idea | Explore an idea before scaffolding anything |
+| brainstorm-phase | Plan the next implementation phase (gate-protected) |
+| start-project | Scaffold a new spec-driven project |
+| start-phase | Begin a planned phase (autonomous execution contract) |
+| complete-phase | Verify, retro, release a finished phase |
+| sync-docs | Propagate history entries to other spec docs |
+| track | Track a backlog item (bug / feature / tech debt / enhancement) |
+| review | Review and groom the backlog between phases |
+| log | Append a manual narrative entry to the active phase history |
+| migrate | Onboard an existing project into momentum |
+| validate | Check spec structure health |
+| ecosystem | Cross-repo ecosystem coordination |
+| initiative | Manage cross-repo initiatives |
+| session | Append a manual narrative entry to today's ecosystem session log |
+| systematic-debug | Systematically isolate, reproduce, and resolve task execution failures |
+| scout | Read-only context fetch from one ecosystem member repo |
+| dispatch | Parallel multi-repo fan-out + synthesis |
+| handoff | Cross-session control transfer with structured context block |
+| continue | Pick up a pending handoff in this repo |
+| review-code | Multi-perspective code review (uses momentum-reviewer-* subagents) |
+| momentum-orient | Read `specs/status.md` before starting any work (Rule 1) |
+
+Each `SKILL.md` declares `name` + `description` frontmatter and includes
+the full recipe body. The recipes are platform-independent — they
+describe what to do, not how Codex specifically should do it. When you
+read a recipe that mentions "use the Task tool" (Claude Code
+terminology), translate to Codex's equivalent: spawn the relevant
+`momentum-reviewer-*` subagent (see below), or use natural-language
+parallel fan-out.
+
+> Legacy installs from momentum ≤ v0.20.0 shipped recipes as Markdown
+> fragments under `.codex/commands/`. `momentum upgrade --agent codex`
+> regenerates skills under `.agents/skills/` and removes the old
+> lookup directory.
+
+## Codex Subagents
+
+Momentum ships three role-specific reviewer subagents discoverable at
+`.codex/agents/`:
+
+- `momentum-reviewer-security.toml` — OWASP/STRIDE-focused
+- `momentum-reviewer-qa.toml` — test coverage + edge cases + regression risk
+- `momentum-reviewer-architecture.toml` — rule compliance + pattern consistency
+
+Each declares `sandbox_mode = "read-only"` so reviewers cannot modify the
+codebase. The `review-code` recipe dispatches all three in a single turn so
+Codex can fan them out in parallel (subject to `agents.max_threads`,
+default 6).
+
+To add a project-specific reviewer, drop another `*.toml` into
+`.codex/agents/` with required keys `name`, `description`,
+`developer_instructions`. Optionally set `sandbox_mode = "read-only"` if
+the subagent shouldn't modify files.
+
+## Codex Hooks
+
+Codex hook wiring lives in `.codex/hooks.json`. Momentum installs reusable
+shell scripts to `scripts/` and references them from this file:
+
+| Event | Matcher | Script | Purpose |
+|---|---|---|---|
+| `PreToolUse` | `apply_patch\|Bash` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
+| `PostToolUse` | `apply_patch\|Bash` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | Auto-greets with any pending handoff banner + ecosystem context. |
+
+> Matcher uses `Bash` (not `shell`) because that's the canonical
+> `tool_name` Codex emits for shell tool calls — see the [Codex hooks
+> reference](https://developers.openai.com/codex/hooks).
+
+### Trust review
+
+Hooks are **enabled by default** in current Codex CLI (`hooks` is `stable`
+in `codex features list`). The first time momentum's hooks run in a fresh
+project, Codex prompts you to review and trust them via `/hooks`. Trust is
+recorded per-hash, so any change to the hook command requires re-approval.
+
+If hooks don't appear to fire:
+
+1. Run `/hooks` inside Codex and confirm `brainstorm-gate.sh`,
+   `check-history-reminder.sh`, and `sessionstart-handoff.sh` are listed
+   and marked trusted.
+2. Run `codex doctor` and confirm `hooks` shows as `stable: true`.
+3. Only as a last resort, force-enable in `~/.codex/config.toml`:
+
+   ```toml
+   [features]
+   hooks = true
+   ```
+
+The `brainstorm-gate.sh` script resolves the project root from
+`CLAUDE_PROJECT_DIR` → `MOMENTUM_PROJECT_DIR` → `pwd`, so Codex's default
+cwd-as-session-root behavior works without env-var configuration.
+
+## Codex Skills
+
+All momentum recipes ship as Codex skills under `.agents/skills/<name>/SKILL.md`
+(see the "Momentum Recipes — Codex Skills" section above for the full
+shipped set). Each `SKILL.md` declares `name` + `description` frontmatter
+per the [Codex skills format](https://developers.openai.com/codex/skills).
+
+Add additional project-specific skills under
+`.agents/skills/<name>/SKILL.md` following the same convention. Invoke
+via the `/skills` picker or `$<skill-name>` mention.
+
+## Always-On Rules
+
+Read `.agent/rules/project.md` at the start of each session and follow it
+as the durable project rule source. The most important operating rules:
+
+1. Orient first by reading `specs/status.md`.
+2. Update durable tracking files after meaningful work.
+3. Add discovered bugs, tech debt, and enhancements to backlog immediately.
+4. Check P0/P1 bugs before starting a new phase.
+5. Stop at phase boundaries and ask before completion/release.
+6. Use feature branches, atomic commits, and user approval before merges.
+7. Plan before non-trivial implementation.
+8. Append meaningful decisions/discoveries to active phase `history.md`.
+9. Sync docs at phase completion, not mid-phase.
+10. Treat architecture specs as stable during phase work.
+11. Lock evaluators before optimization loops.
+12. Verify with fresh evidence before marking work complete.
 
 ## Project Extensions
 
