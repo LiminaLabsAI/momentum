@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-board-v1.json",
+  "title": "Momentum Swarm Board (Materialized Cache)",
+  "description": "Slim conductor-turn view derived from manifest.json + per-supervisor dispatch-run records. Regenerated on any write to manifest or a supervisor's saga step. Conductor reads ONLY this on most turns — naive manifest+briefs+history = ~290KB; this = ~3KB. The materializer lives in core/swarm/lib/board.js.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["swarm_id", "version", "saga_id", "mode", "rendered_at", "status", "repos", "inbox_count"],
+  "properties": {
+    "swarm_id": {"type": "string", "pattern": "^[0-9]{4}-[a-z][a-z0-9-]*$"},
+    "version": {"type": "integer", "const": 1},
+    "saga_id": {"type": "string", "pattern": "^sg_[a-z0-9]{4,16}$"},
+    "mode": {"type": "string", "enum": ["autopilot", "checkpoint", "interactive"]},
+    "rendered_at": {"type": "string", "format": "date-time"},
+    "status": {"type": "string", "enum": ["running", "paused", "complete", "cancelled", "failed"]},
+    "active_wave": {"type": "integer", "minimum": 1},
+    "repos": {
+      "type": "array",
+      "description": "One row per repo. Pre-rendered display strings — conductor doesn't compute anything.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "wave", "status"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "wave": {"type": "integer", "minimum": 1},
+          "status": {"type": "string", "enum": ["queued", "running", "blocked", "complete", "failed", "cancelled"]},
+          "tasks": {"type": "string", "description": "Pre-rendered N/M string, e.g. \"3/9\"."},
+          "tokens": {"type": "string", "description": "Pre-rendered NkB/MkB string, e.g. \"42k/300k\"."},
+          "commits": {"type": "integer", "minimum": 0},
+          "current": {"type": "string"},
+          "inbox_count": {"type": "integer", "minimum": 0},
+          "waiting_on": {"type": "string", "description": "Pre-rendered comma-separated repo list."}
+        }
+      }
+    },
+    "inbox_count": {"type": "integer", "minimum": 0},
+    "recent_activity": {
+      "type": "array",
+      "maxItems": 10,
+      "description": "Last N audit events, newest first. Each is a one-line summary for the board UI.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "msg"],
+        "properties": {
+          "ts": {"type": "string", "description": "Short HH:MM display string, not full timestamp."},
+          "repo": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "msg": {"type": "string"}
+        }
+      }
+    }
+  }
+}

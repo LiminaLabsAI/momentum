@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-06-11-phase-16-rework-brainstorm",
+  "updated": "2026-06-12-phase-17-swarm-brainstorm",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -73,8 +73,12 @@
       "topics": ["phase-15", "ecosystem", "agent-discoverability", "orchestration", "managed-claude-md", "pointer-block", "pointer-version", "session-start-hook", "ecosystem-context-banner", "dispatch-cli", "degraded-mode", "mode-notice", "initiative-create-cli", "enh-025", "v0-18-0"]
     },
     "phase-16-adapter-rework": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["phase-16", "adapter-rework", "native-idiom", "codex", "antigravity", "claude-code-zero-regression", "recipes-vs-personas-vs-subagents", "workflows", "skills", "agents-md-recipes", "apply-patch-matcher", "run-command-matcher", "agent-workflows-directory", "dot-agents-skills-shared", "toml-subagents-codex", "sandbox-mode-read-only", "brainstorm-gate-generalization", "fingerprint-snapshot", "parity-matrix", "val-001", "val-002", "v0-19-0"]
+    },
+    "phase-17-swarm": {
+      "status": "complete",
+      "topics": ["phase-17", "swarm", "single-session-multi-project", "parallel-supervisors", "conductor-supervisor-architecture", "files-as-channels", "stateless-agents", "wave-ordering", "manifest", "board-cache", "indexing-strategies", "git-sha-invalidation", "incremental-log", "supervisor-context-isolation", "intervention-modes", "autopilot-checkpoint", "inbox-protocol", "context-push", "broadcast", "contract-verifier", "saga-records", "portability-schema-hooks", "swarm-brief-frontmatter", "claude-code-only-v0-20-0", "codex-antigravity-deferred", "synthetic-ecosystem-fixtures", "v0-20-0"]
     }
   }
 }

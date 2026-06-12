@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-contract-v1.json",
+  "title": "Momentum Swarm Contract (Pact-Style Shape Declaration)",
+  "description": "Declares a cross-repo surface (REST endpoint, message type, library export). One file per surface at <eco>/swarms/<id>/contracts/<surface>.contract.json. Content-hashed; version-bumped on approval. Wave checkpoint verifies producer↔consumer shape agreement before letting the next wave start.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["surface", "version", "owner", "consumers", "kind", "shape", "content_hash"],
+  "properties": {
+    "surface": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Slug naming this surface (e.g. user-auth-token, billing-events). Used in manifest.contracts[].surface back-reference."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Bumped on every approved breaking shape change. v0.20.0 verifier is structural — semantic compatibility is the user's call."
+    },
+    "owner": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Ecosystem member id that produces this surface."
+    },
+    "consumers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+      "description": "Member ids that depend on this surface. Wave ordering ensures owner is in an earlier wave than every consumer."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["http", "rpc", "event", "library", "schema", "other"],
+      "description": "Coarse category. \"http\": REST/GraphQL endpoint. \"rpc\": gRPC/etc. \"event\": Kafka/queue/etc. \"library\": exported function. \"schema\": JSON/Protobuf type. \"other\": opaque (the user-defined shape is authoritative)."
+    },
+    "shape": {
+      "description": "Free-form shape declaration. The verifier compares producer-declared shape against consumer-expected shape — structural diff only. For JSON-shaped contracts a nested object literal works; for libraries an exported-symbols list; for opaque \"other\" surfaces a content-hashed blob.",
+      "oneOf": [
+        {"type": "object"},
+        {"type": "array"},
+        {"type": "string"}
+      ]
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8,64}$",
+      "description": "SHA256-prefix of the canonical serialization of `shape`. The verifier compares hashes first; mismatches fall through to a structural diff for human review."
+    },
+    "created": {"type": "string", "format": "date-time"},
+    "approved_by_session": {
+      "type": "string",
+      "description": "Session id of the conductor that approved this contract version (checkpoint mode). Null in autopilot."
+    },
+    "note": {"type": "string", "description": "Free-form human note explaining the surface and any non-obvious shape decisions."}
+  }
+}

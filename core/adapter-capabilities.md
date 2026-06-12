@@ -27,7 +27,7 @@ If you add a new adapter, fill in **every** column. The audit test
 asserts every adapter declares the full capability surface that
 orchestration code depends on.
 
-## Matrix (as of 2026-06-07, post-ENH-023 + ENH-024)
+## Matrix (as of 2026-06-12, post-Phase 17 G4)
 
 | Capability | Claude Code | Codex | Antigravity |
 |---|---|---|---|
@@ -41,6 +41,23 @@ orchestration code depends on.
 | `computerUse` | ❌ | ❌⁴ | ❌ |
 | `artifacts` (adapter-specific) | — | — | ✅ |
 | `planningMode` (adapter-specific) | — | — | ✅ |
+
+## Phase 17 (v0.20.0) — `/swarm` Claude Code-only scope
+
+The Phase 17 swarm capability — sustained parallel multi-project
+feature delivery — ships **Claude Code only** in v0.20.0. The
+underlying `core/swarm/` library is platform-agnostic (no capability
+flag added — the swarm primitive is its own subsystem). Adapter
+parity is **Phase 18 (target v0.20.2)**:
+
+| Adapter | What's needed for swarm parity |
+|---|---|
+| Codex | MCP cwd shim to honor the per-supervisor cwd pin + TOML supervisor agent at `.codex/agents/swarm-supervisor.toml` |
+| Antigravity | Agent Manager workflow at `.agent/workflows/swarm-conductor.md` + supervisor skill at `.agents/skills/swarm-supervisor/SKILL.md` |
+
+Neither requires a new capability flag — `parallelSubagents` is the
+relevant existing primitive. Each adapter's own `roadmap` block will
+list the swarm-parity follow-up when Phase 18 starts.
 
 ### Roadmap footnotes
 

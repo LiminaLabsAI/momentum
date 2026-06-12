@@ -1,0 +1,300 @@
+# Phase 17 Swarm — Scenario C-WIDE
+
+Captured: 2026-06-12 (Phase 17 G4)
+Ecosystem: momentum-test-F2hWzU
+Swarm: 0001-feature
+
+## Metrics
+
+- Conductor turns: 6
+- Final board.json size: 1360 bytes
+- p95 board.json size:   1360 bytes
+- Per-turn cost target:  <5120 bytes (5KB) — PASS
+
+## Manifest
+
+```json
+{
+  "swarm_id": "0001-feature",
+  "version": 1,
+  "saga_id": "sg_1osc7d9",
+  "mode": "autopilot",
+  "initiative": "feature",
+  "created": "2026-06-12T17:00:00Z",
+  "ecosystem": "test-c-wide",
+  "repos": {
+    "root": {
+      "wave": 1,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_c",
+      "lease_expires_at": "2026-06-13T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-12T17:00:00Z",
+      "claimed_by_session": "sess_c",
+      "tasks_done": 9,
+      "tasks_total": 9,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "174d454569ef42fc5c4201a5f726a5d47646d409"
+    },
+    "leaf-one": {
+      "wave": 2,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_c",
+      "lease_expires_at": "2026-06-13T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-12T17:00:00Z",
+      "claimed_by_session": "sess_c",
+      "tasks_done": 13,
+      "tasks_total": 13,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "174d454569ef42fc5c4201a5f726a5d47646d409"
+    },
+    "leaf-two": {
+      "wave": 2,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_c",
+      "lease_expires_at": "2026-06-13T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-12T17:00:00Z",
+      "claimed_by_session": "sess_c",
+      "tasks_done": 13,
+      "tasks_total": 13,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "174d454569ef42fc5c4201a5f726a5d47646d409"
+    },
+    "leaf-three": {
+      "wave": 2,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_c",
+      "lease_expires_at": "2026-06-13T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-12T17:00:00Z",
+      "claimed_by_session": "sess_c",
+      "tasks_done": 15,
+      "tasks_total": 15,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "174d454569ef42fc5c4201a5f726a5d47646d409"
+    },
+    "leaf-four": {
+      "wave": 2,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_c",
+      "lease_expires_at": "2026-06-13T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-12T17:00:00Z",
+      "claimed_by_session": "sess_c",
+      "tasks_done": 14,
+      "tasks_total": 14,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "174d454569ef42fc5c4201a5f726a5d47646d409"
+    }
+  },
+  "waves": [
+    {
+      "index": 1,
+      "repos": [
+        "root"
+      ],
+      "status": "complete",
+      "checkpoint_resolved_at": "2026-06-12T17:02:00Z"
+    },
+    {
+      "index": 2,
+      "repos": [
+        "leaf-four",
+        "leaf-one",
+        "leaf-three",
+        "leaf-two"
+      ],
+      "status": "complete",
+      "checkpoint_resolved_at": "2026-06-12T17:06:00Z"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess_c",
+      "first_seen": "2026-06-12T17:00:00Z",
+      "last_seen": "2026-06-12T17:00:00Z"
+    }
+  ],
+  "audit": [
+    {
+      "ts": "2026-06-12T17:00:00Z",
+      "actor": "sess_c",
+      "event": "start",
+      "detail": "Swarm 0001-feature planned (5 repos, 2 waves)"
+    },
+    {
+      "ts": "2026-06-12T17:02:00Z",
+      "actor": "conductor",
+      "event": "wave-transition",
+      "detail": "Wave 1 complete"
+    },
+    {
+      "ts": "2026-06-12T17:06:00Z",
+      "actor": "conductor",
+      "event": "wave-transition",
+      "detail": "Wave 2 complete"
+    },
+    {
+      "ts": "2026-06-12T13:52:38Z",
+      "actor": "conductor",
+      "event": "complete",
+      "detail": "5/5 repos complete"
+    }
+  ],
+  "status": "complete"
+}
+
+```
+
+## Board.json (final)
+
+```json
+{
+  "swarm_id": "0001-feature",
+  "version": 1,
+  "saga_id": "sg_1osc7d9",
+  "mode": "autopilot",
+  "rendered_at": "2026-06-12T13:52:38Z",
+  "status": "complete",
+  "active_wave": 2,
+  "repos": [
+    {
+      "name": "root",
+      "wave": 1,
+      "status": "complete",
+      "tasks": "9/9",
+      "tokens": "0k/300k",
+      "commits": 2,
+      "inbox_count": 0
+    },
+    {
+      "name": "leaf-one",
+      "wave": 2,
+      "status": "complete",
+      "tasks": "13/13",
+      "tokens": "0k/300k",
+      "commits": 2,
+      "inbox_count": 0
+    },
+    {
+      "name": "leaf-two",
+      "wave": 2,
+      "status": "complete",
+      "tasks": "13/13",
+      "tokens": "0k/300k",
+      "commits": 2,
+      "inbox_count": 0
+    },
+    {
+      "name": "leaf-three",
+      "wave": 2,
+      "status": "complete",
+      "tasks": "15/15",
+      "tokens": "0k/300k",
+      "commits": 2,
+      "inbox_count": 0
+    },
+    {
+      "name": "leaf-four",
+      "wave": 2,
+      "status": "complete",
+      "tasks": "14/14",
+      "tokens": "0k/300k",
+      "commits": 2,
+      "inbox_count": 0
+    }
+  ],
+  "inbox_count": 0,
+  "recent_activity": [
+    {
+      "ts": "13:52",
+      "msg": "5/5 repos complete"
+    },
+    {
+      "ts": "17:06",
+      "msg": "Wave 2 complete"
+    },
+    {
+      "ts": "17:02",
+      "msg": "Wave 1 complete"
+    },
+    {
+      "ts": "17:00",
+      "msg": "Swarm 0001-feature planned (5 repos, 2 waves)"
+    }
+  ]
+}
+
+```
+
+## Cross-repo changeset
+
+```markdown
+# Swarm 0001-feature — cross-repo changeset
+
+- Initiative: feature
+- Mode: autopilot
+- Status: complete
+- Repos: 5/5 complete
+- Completed at: 2026-06-12T13:52:38Z
+
+## Per-repo contributions
+
+### root
+- Wave: 1
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 9/9
+- Commits: 2
+
+### leaf-one
+- Wave: 2
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 13/13
+- Commits: 2
+
+### leaf-two
+- Wave: 2
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 13/13
+- Commits: 2
+
+### leaf-three
+- Wave: 2
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 15/15
+- Commits: 2
+
+### leaf-four
+- Wave: 2
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 14/14
+- Commits: 2
+
+```

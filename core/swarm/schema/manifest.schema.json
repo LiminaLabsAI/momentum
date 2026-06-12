@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-manifest-v1.json",
+  "title": "Momentum Swarm Manifest",
+  "description": "Declares a cross-repo work unit driven from one user (conductor) session. Lives at <ecosystem-root>/swarms/<id>/manifest.json. The saga record — repos, waves, owner/lease, contract pins, token budgets, audit. All conductor + supervisor writes go through mkdir-locked CRUD in core/swarm/lib/manifest.js.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["swarm_id", "version", "saga_id", "mode", "initiative", "created", "ecosystem", "repos", "waves"],
+  "properties": {
+    "swarm_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[a-z][a-z0-9-]*$",
+      "description": "Zero-padded NNNN- prefix plus kebab slug, e.g. 0007-user-auth. Matches the on-disk directory name."
+    },
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Manifest schema version. Locked to 1."
+    },
+    "saga_id": {
+      "type": "string",
+      "pattern": "^sg_[a-z0-9]{4,16}$",
+      "description": "Opaque short identifier (sg_<hex>) — used in dispatch-run records to associate per-repo saga steps with this swarm."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["autopilot", "checkpoint", "interactive"],
+      "description": "Conductor intervention mode. v0.20.0 ships autopilot + checkpoint; interactive reserved for v0.20.x."
+    },
+    "initiative": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Slug of the cross-repo initiative this swarm advances. Must reference a real <eco>/initiatives/NNNN-<slug>.md."
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp the swarm was started."
+    },
+    "ecosystem": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Ecosystem name (mirrors ecosystem.json name). Defensive copy — lets a swarm survive an ecosystem rename without losing context."
+    },
+    "repos": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Per-repo swarm state, keyed by ecosystem member id.",
+      "patternProperties": {
+        "^[a-z][a-z0-9-]*$": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["wave", "status", "phase_slug", "branch", "owner"],
+          "properties": {
+            "wave": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Wave index this repo is assigned to. Computed from ecosystem.json dependency edges at start; immutable per swarm."
+            },
+            "status": {
+              "type": "string",
+              "enum": ["queued", "running", "blocked", "complete", "failed", "cancelled"],
+              "description": "Current execution status. Materialized into board.json."
+            },
+            "phase_slug": {
+              "type": "string",
+              "pattern": "^phase-[0-9]+(?:[a-z])?-[a-z][a-z0-9-]*$",
+              "description": "The phase directory slug inside this repo (e.g. phase-3-user-auth). The supervisor's /start-phase loop drives this phase."
+            },
+            "branch": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Git branch the supervisor commits to in this repo. Defaults to phase-N-<slug>."
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Session id (UUID-like) currently authoritative for this repo. Portability hook — Phase 17.5 lights up lease enforcement."
+            },
+            "lease_expires_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the current owner's lease expires. Conductor renews each turn. Phase 17.5 enforces; v0.20.0 audits only."
+            },
+            "lease_renewed_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last time the owner refreshed the lease. Conductor writes each conductor turn for repos it owns."
+            },
+            "claimed_by_session": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Session UUID that holds the active claim. Mirrors brief frontmatter claimed_by_session."
+            },
+            "last_seen_sha": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$",
+              "description": "Last HEAD SHA the conductor observed for this repo. Cheap revalidation: if rev-parse HEAD matches, cache is fresh."
+            },
+            "tasks_done": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of supervisor checklist items completed."
+            },
+            "tasks_total": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Total checklist size at supervisor spawn time."
+            },
+            "tokens_used": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Output tokens spent by this supervisor (approximate, supervisor-reported)."
+            },
+            "tokens_budget": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Hard cap on supervisor output tokens. /swarm budget extends. Default 300000."
+            },
+            "inbox_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Count of unresolved inbox items written by this supervisor."
+            },
+            "commits": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of git commits the supervisor has pushed on its branch."
+            },
+            "current_task": {
+              "type": "string",
+              "description": "Free-form label of what the supervisor is working on right now."
+            },
+            "waiting_on": {
+              "type": "array",
+              "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+              "description": "Member ids this repo's supervisor is blocked on. Used in board.json rendering for queued repos."
+            },
+            "contract_refs": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Contract surfaces this repo produces or consumes — slugs that resolve to contracts/<slug>.contract.json."
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "waves": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered wave plan. Each entry lists the member ids in that wave. Waves execute sequentially; repos within a wave run in parallel.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "repos"],
+        "properties": {
+          "index": {"type": "integer", "minimum": 1},
+          "repos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}
+          },
+          "status": {
+            "type": "string",
+            "enum": ["queued", "running", "complete", "cancelled"]
+          },
+          "checkpoint_resolved_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the user approved the wave checkpoint (checkpoint mode). Null/missing in autopilot."
+          }
+        }
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "description": "Registry of every conductor session that has touched this swarm. Portability hook — Phase 17.5 uses for join/absorb.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["session_id", "first_seen"],
+        "properties": {
+          "session_id": {"type": "string", "minLength": 1},
+          "first_seen": {"type": "string", "format": "date-time"},
+          "last_seen": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "description": "Cross-repo contract surfaces pinned at start. Each references contracts/<surface>.contract.json. Mismatches at wave boundaries block the next wave.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["surface", "owner", "consumers", "version"],
+        "properties": {
+          "surface": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "owner": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "consumers": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}
+          },
+          "version": {"type": "integer", "minimum": 1},
+          "content_hash": {"type": "string", "pattern": "^[0-9a-f]{8,64}$"}
+        }
+      }
+    },
+    "audit": {
+      "type": "array",
+      "description": "Append-only audit log: /swarm tell, /swarm broadcast, /swarm budget, /swarm cancel, /swarm verify events. Materialized into board.json as recent_activity.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "actor", "event"],
+        "properties": {
+          "ts": {"type": "string", "format": "date-time"},
+          "actor": {"type": "string", "minLength": 1},
+          "event": {
+            "type": "string",
+            "enum": ["start", "tell", "broadcast", "budget", "cancel", "verify", "checkpoint", "complete", "resume", "wave-transition", "inbox-resolved", "contract-bump"]
+          },
+          "repo": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+          "detail": {"type": "string"}
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["running", "paused", "complete", "cancelled", "failed"],
+      "description": "Overall swarm state. Derived from per-repo + wave statuses; materialized into board.json."
+    }
+  }
+}

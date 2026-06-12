@@ -575,6 +575,10 @@ Orchestration — work across ecosystem members from one session:
   momentum handoff <repo>             Write a context block for <repo> to pick up
   momentum continue [--handoff <id>]  Pick up a pending handoff in this repo
 
+Swarm — sustained parallel multi-project feature delivery (Phase 17+, Claude Code):
+  momentum swarm <sub> [...]          Subcommands: start | status | tell | broadcast |
+                                       verify | complete | resume | cancel | budget
+
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
@@ -892,6 +896,14 @@ async function main() {
     try {
       const { cmdContinue } = require('./orchestration-commands');
       await cmdContinue(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'swarm') {
+    try {
+      const { runSwarm } = require('./swarm');
+      runSwarm(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
