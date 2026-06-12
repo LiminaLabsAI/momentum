@@ -90,6 +90,14 @@ Detail: User direction: do NOT use cerebrio-ecosystem (real project) for Phase 1
 
 ---
 
+### [NOTE] 2026-06-12 — Group 3 landed — resume + portability hooks + docs/swarm.md
+Topics: phase-17, swarm, group-3, resume, disk-only-state, portability-schema, lease, sessions-registry, phase-17-5, docs-swarm
+Affects-phases: phase-17-swarm, phase-17-5-swarm-portability
+Affects-specs: bin/swarm.js, docs/swarm.md
+Detail: G3 finalized the portability schema hooks already baked into G1 (`owner` / `lease_expires_at` / `lease_renewed_at` / `claimed_by_session` per repo + top-level `sessions[]` + reserved `signals/` and `tokens/` dirs) and surfaced them via the resume + lease-renewal CLI. `cmdResume` now returns the materialized board + a pending-inbox notice; auto-renews owned-repo leases. Comprehensive docs at `docs/swarm.md` (1200+ lines covering when-to-use, modes, eight intervention patterns, architecture + indexing strategies, full subcommand reference, troubleshooting, Phase 17.5 portability sketch, and worked examples). 21 new tests: `swarm-resume.test.js` (9) covers disk-only reconstitution, sessions[] registry, lease renewal, cancel+resume round-trip; `swarm-portability-schema.test.js` (12) covers reserved dirs, schema field validation, forward compatibility (missing optional fields still validate). Full suite 437 → 458.
+
+---
+
 ### [NOTE] 2026-06-12 — Group 2 landed — intervention surface (inbox + pre-merge)
 Topics: phase-17, swarm, group-2, inbox, pre-merge, tell, broadcast, verify, complete, budget, wave-checkpoint
 Affects-phases: phase-17-swarm

@@ -296,6 +296,7 @@ function cmdResume(args) {
   const opts = parseFlags(args, {
     ecosystem: { flag: '--ecosystem', default: null },
     sessionId: { flag: '--session', default: null },
+    json: { flag: '--json', type: 'bool', default: false },
   });
   const [swarmId] = opts.positional;
   if (!swarmId) throw new Error('swarm resume: <swarm-id> required');
@@ -303,10 +304,27 @@ function cmdResume(args) {
   const sessionId = opts.sessionId || generateSessionId();
   const ts = nowIso();
   const manifest = conductor.resumeSwarm(ecosystemRoot, swarmId, sessionId, ts);
+
+  // Disk-only reconstitution: pull the current materialized board so
+  // the recipe can render it without recomputing.
+  const board = boardLib.loadBoard(ecosystemRoot, swarmId);
+
+  // For every owned repo, refresh the lease so audit shows we are live.
+  conductor.renewLeases(ecosystemRoot, swarmId, sessionId, ts);
+
+  if (opts.json) {
+    process.stdout.write(JSON.stringify({
+      swarmId, sessionId, status: manifest.status, board,
+    }, null, 2) + '\n');
+    return;
+  }
   console.log(`▸ Resumed swarm ${swarmId} as session ${sessionId}`);
   console.log(`  Status: ${manifest.status}`);
   for (const w of manifest.waves) {
     console.log(`    Wave ${w.index}: ${w.status || 'queued'} — ${w.repos.join(', ')}`);
+  }
+  if (board && board.inbox_count > 0) {
+    console.log(`  ▸ ${board.inbox_count} pending inbox item(s) — surface with /swarm inbox list ${swarmId}`);
   }
 }
 

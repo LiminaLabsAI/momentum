@@ -45,12 +45,12 @@
 
 ## Group 3 — Resume + Portability Hooks
 
-- [ ] G3.1 /swarm resume (disk-only state reconstitution)
-- [ ] G3.2 Portability schema fields (owner / lease / sessions[])
-- [ ] G3.3 Reserved directories (signals/, tokens/)
-- [ ] G3.4 Lease renewal on conductor turn
-- [ ] G3.5 Future: Swarm Portability doc section
-- [ ] G3.6 Tests: resume + portability schema
+- [x] G3.1 /swarm resume (disk-only state reconstitution)
+- [x] G3.2 Portability schema fields (owner / lease / sessions[])
+- [x] G3.3 Reserved directories (signals/, tokens/)
+- [x] G3.4 Lease renewal on conductor turn
+- [x] G3.5 Future: Swarm Portability doc section (docs/swarm.md)
+- [x] G3.6 Tests: resume + portability schema
 
 ## Group 4 — End-to-End Scenarios + Docs + Retrospective
 
