@@ -4,13 +4,24 @@
  *
  * Grid on desktop; stacks to one column on mobile.
  */
+// Status legend:
+//   available  — Claude Code: shipped + live-runtime verified
+//   preview    — Codex / Antigravity: installs ship, full live-runtime
+//                smoke pending (VAL-001 + VAL-002)
+//   planned    — Cursor / Gemini CLI: adapter not yet built
 const agents = [
-	{ name: 'Claude Code', status: 'shipped', file: 'CLAUDE.md', anchor: 'claude-code' },
-	{ name: 'Codex', status: 'shipped', file: 'AGENTS.md', anchor: 'codex' },
-	{ name: 'Antigravity', status: 'shipped', file: 'AGENTS.md', anchor: 'antigravity' },
+	{ name: 'Claude Code', status: 'available', file: 'CLAUDE.md', anchor: 'claude-code' },
+	{ name: 'Codex', status: 'preview', file: 'AGENTS.md', anchor: 'codex' },
+	{ name: 'Antigravity', status: 'preview', file: 'AGENTS.md', anchor: 'antigravity' },
 	{ name: 'Cursor', status: 'planned', file: '.cursor/rules/', anchor: 'cursor' },
 	{ name: 'Gemini CLI', status: 'planned', file: 'GEMINI.md', anchor: 'gemini-cli' },
 ];
+
+const statusLabel = {
+	available: 'Available',
+	preview: 'Testing pending',
+	planned: 'Planned',
+};
 ---
 
 <section class="ide-matrix" aria-labelledby="ide-matrix-heading">
@@ -28,7 +39,7 @@ const agents = [
 						<span class="agent-meta">
 							<code>{agent.file}</code>
 							<span class={`badge badge--${agent.status}`}>
-								{agent.status === 'shipped' ? 'Shipped' : 'Planned'}
+								{statusLabel[agent.status]}
 							</span>
 						</span>
 					</a>
@@ -105,9 +116,17 @@ const agents = [
 		letter-spacing: 0.02em;
 		text-transform: uppercase;
 	}
-	.badge--shipped {
+	.badge--available {
 		background: var(--brand-primary-soft);
 		color: var(--brand-primary);
+	}
+	.badge--preview {
+		background: rgba(217, 119, 6, 0.14); /* amber-600 @ 14% */
+		color: #b45309; /* amber-700 */
+	}
+	:global([data-theme='dark']) .badge--preview {
+		background: rgba(251, 191, 36, 0.18); /* amber-400 @ 18% */
+		color: #fbbf24; /* amber-400 */
 	}
 	.badge--planned {
 		background: var(--brand-surface-muted);

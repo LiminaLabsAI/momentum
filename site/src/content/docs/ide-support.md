@@ -9,11 +9,13 @@ hooks attach, and which slash-command surface the IDE exposes.
 
 | Agent | Status | Primary instruction file | Hook surface | Slash commands |
 | --- | --- | --- | --- | --- |
-| [Claude Code](#claude-code) | Shipped | `CLAUDE.md` | `.claude/settings.json` — PreToolUse, PostToolUse, SessionStart | Native `.claude/commands/*.md` |
-| [Codex](#codex) | Shipped | `AGENTS.md` | `.codex/hooks.json` | Prompt-fragment recipes in `.codex/commands/` |
-| [Antigravity](#antigravity) | Shipped | `AGENTS.md` | None today | Markdown contract only |
-| [Cursor](#cursor) | Planned (Phase 14) | `.cursor/rules/` | TBD | Rules-based prompt fragments |
-| [Gemini CLI](#gemini-cli) | Planned (Phase 14) | `GEMINI.md` | TBD | Embedded sections |
+| [Claude Code](#claude-code) | Available | `CLAUDE.md` | `.claude/settings.json` — PreToolUse, PostToolUse, SessionStart | Native `.claude/commands/*.md` |
+| [Codex](#codex) | Testing pending | `AGENTS.md` | `.codex/hooks.json` (PreToolUse / PostToolUse / SessionStart, `apply_patch|shell`) | AGENTS.md recipes lookup + `.codex/commands/` fragments |
+| [Antigravity](#antigravity) | Testing pending | `AGENTS.md` | `.agents/hooks.json` (`run_command|view_file|.*write.*|apply_patch`) | `.agent/workflows/*.md` auto-registered as slash commands |
+| [Cursor](#cursor) | Planned (Phase 19 — Reach) | `.cursor/rules/` | TBD | Rules-based prompt fragments |
+| [Gemini CLI](#gemini-cli) | Planned (Phase 19 — Reach) | `GEMINI.md` | TBD | Embedded sections |
+
+> **Status legend.** *Available* = installed adapter + live-runtime verified. *Testing pending* = adapter ships and unit-tests pass, but full live-runtime smoke against the actual CLI is still being validated (tracked as VAL-001 for Codex and VAL-002 for Antigravity). *Planned* = adapter not yet built.
 
 ## Claude Code
 
@@ -117,7 +119,7 @@ trust-based.
 
 ## Cursor
 
-**Planned for Phase 14.** Cursor uses `.cursor/rules/*.mdc` files and
+**Planned for Phase 19 — Reach.** Cursor uses `.cursor/rules/*.mdc` files and
 doesn't support slash commands the way Claude Code does. Commands will ship
 as rules-based prompt fragments — typing the command name will trigger the
 relevant rule.
@@ -131,7 +133,7 @@ Track progress: [FEAT-007 in backlog](https://github.com/avinash-singh-io/moment
 
 ## Gemini CLI
 
-**Planned for Phase 14.** Gemini CLI uses `GEMINI.md` as the primary
+**Planned for Phase 19 — Reach.** Gemini CLI uses `GEMINI.md` as the primary
 instruction file (single-file convention). Workflow prompts will embed as
 sections within `GEMINI.md` rather than as separate command files.
 

@@ -138,7 +138,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Ecosystem mode', slug: 'ecosystem' },
 						{ label: 'Orchestration', slug: 'orchestration' },
-						{ label: 'Swarm', slug: 'swarm', badge: { text: 'New', variant: 'success' } },
+						{ label: 'Swarm', slug: 'swarm' },
 					],
 				},
 				{
