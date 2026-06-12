@@ -60,6 +60,7 @@ overview.md):
 | `/handoff` | shipped¹ | shipped² | shipped³ |
 | `/continue` | shipped¹ | shipped² | shipped³ |
 | `/review-code` | shipped¹ | shipped² | shipped³ |
+| `/swarm` (Phase 17) | shipped¹ | not-applicable¹⁴ | not-applicable¹⁴ |
 
 ### Personas (skills)
 
@@ -128,6 +129,8 @@ overview.md):
 12. **Antigravity `commands` overlay as workflows** — the cross-adapter `core/commands/*.md` content ships to `.agent/workflows/` on Antigravity (recipes become workflows). The destination is shared with the `workflows` overlay key; conflict detection prevents duplicates.
 
 13. **Antigravity `workflows` overlay (gated)** — adapter-specific workflows (`adapters/antigravity/workflows/*.md`) ship to `.agent/workflows/`. Marked `shipped-gated` pending Group 4 live smoke to confirm `.agent/` (singular) vs `.agents/` (plural) — Google's official docs page uses singular, codelab uses plural. If smoke fails, dual-copy and VAL-002 follow-up.
+
+14. **`/swarm` (Phase 17 v0.20.0)** — Single-session multi-project feature delivery shipped Claude Code only. The conductor library at `core/swarm/` is platform-agnostic; only adapter spawn wiring is platform-specific. Codex + Antigravity parity is **Phase 18** (target v0.20.2): Codex requires an MCP cwd shim for the per-supervisor cwd pin; Antigravity requires an Agent Manager workflow + supervisor skill. The cells are marked `not-applicable` for v0.20.0 only — they flip to `shipped` when Phase 18 lands.
 
 ## Read this if you are…
 

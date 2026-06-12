@@ -54,14 +54,14 @@
 
 ## Group 4 — End-to-End Scenarios + Docs + Retrospective
 
-- [ ] G4.1 Scenario A — 3-repo linear synthetic fixture
-- [ ] G4.2 Scenario B — 4-repo branched synthetic fixture
-- [ ] G4.3 Scenario C — 5-repo wide synthetic fixture
-- [ ] G4.4 Token-spend retrospective
-- [ ] G4.5 docs/swarm.md
-- [ ] G4.6 core/adapter-parity-matrix.md extension (Claude Code shipped; Codex + Antigravity deferred)
-- [ ] G4.7 core/adapter-capabilities.md update
-- [ ] G4.8 retrospective.md
-- [ ] G4.9 /sync-docs propagation
-- [ ] G4.10 Full regression npm test
+- [x] G4.1 Scenario A — 3-repo linear synthetic fixture
+- [x] G4.2 Scenario B — 4-repo branched synthetic fixture
+- [x] G4.3 Scenario C — 5-repo wide synthetic fixture
+- [x] G4.4 Token-spend retrospective (p95 board.json size 800–1200B across all 3 — target was <5KB)
+- [x] G4.5 docs/swarm.md (landed in G3)
+- [x] G4.6 core/adapter-parity-matrix.md extension (`/swarm` row + footnote 14)
+- [x] G4.7 core/adapter-capabilities.md update (Phase 17 scope section)
+- [x] G4.8 retrospective.md
+- [x] G4.9 /sync-docs propagation (status, README, index.json, changelog, roadmap, version bump)
+- [x] G4.10 Full regression npm test (462/462)
 - [ ] G4.11 Prompt for /complete-phase + merge/release approval

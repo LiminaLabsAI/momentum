@@ -90,6 +90,14 @@ Detail: User direction: do NOT use cerebrio-ecosystem (real project) for Phase 1
 
 ---
 
+### [NOTE] 2026-06-12 — Group 4 landed — three e2e scenarios + adapter parity update + retrospective + version bump to 0.20.0
+Topics: phase-17, swarm, group-4, e2e-scenarios, synthetic-fixtures, token-cost-evidence, adapter-parity-matrix, adapter-capabilities, retrospective, sync-docs, version-bump
+Affects-phases: phase-17-swarm
+Affects-specs: tests/swarm-e2e-scenarios.test.js, tests/fixtures/swarm-ecosystems/README.md, specs/phases/phase-17-swarm/evidence/scenario-*.txt, core/adapter-parity-matrix.md, core/adapter-capabilities.md, specs/phases/phase-17-swarm/retrospective.md, specs/status.md, specs/phases/README.md, specs/phases/index.json, specs/changelog/2026-06.md, specs/planning/roadmap.md, package.json
+Detail: G4 shipped the three synthetic ecosystem scenarios — A linear (3 repos: shared-types → backend → frontend), B branched (4-repo diamond: root → {mid-a, mid-b} → leaf), C wide fan-out (5 repos: root → 4 leaves). Each scenario plans + drives a swarm to completion, then captures evidence at `evidence/scenario-{a-linear,b-branched,c-wide}.txt` with full manifest + final board.json + cross-repo changeset. Token-cost evidence: p95 board.json size 800–1200 bytes across all three (well within the <5KB conductor-turn target). Adapter parity matrix gets a `/swarm` row with Codex + Antigravity marked `not-applicable` and footnote 14 documenting Phase 18 scope (MCP cwd shim for Codex; Agent Manager workflow + supervisor skill for Antigravity). Adapter capabilities matrix gets a Phase 17 scope section. Retrospective at `retrospective.md` covers what shipped, verification evidence, acceptance criteria, what we deliberately deferred, surprises + lessons, files added/modified, roadmap impact. /sync-docs propagation completed: status.md updated (current phase → complete pending release; recent changes entry); phases/README.md (Phase 17 → Complete); phases/index.json (status → complete); changelog/2026-06.md (full Phase 17 release entry); roadmap.md (Phase 16 → Complete; Phase 17 = Swarm Complete v0.20.0; Phase 17.5 = Swarm Portability v0.20.1; Phase 18 = Swarm Parity v0.20.2; Phase 19 = Reach v0.21.0; Phase 20 = Intelligence v0.22.0; Phase 21 = Platform v1.0). package.json bumped 0.19.0 → 0.20.0. Final suite: **462/462** (326 v0.19.0 baseline + 136 new — 55 G0 + 28 G1 + 28 G2 + 21 G3 + 4 G4). Ready to merge + tag + release.
+
+---
+
 ### [NOTE] 2026-06-12 — Group 3 landed — resume + portability hooks + docs/swarm.md
 Topics: phase-17, swarm, group-3, resume, disk-only-state, portability-schema, lease, sessions-registry, phase-17-5, docs-swarm
 Affects-phases: phase-17-swarm, phase-17-5-swarm-portability
