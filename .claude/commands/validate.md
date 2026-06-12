@@ -57,4 +57,21 @@ Run all default mode checks, then additionally:
     verify at least one changelog file exists under `specs/changelog/`
     - Report completely absent changelog as a warning
 
-11. Append deep-scan results to the report before printing.
+11. Swarm member integrity (Phase 17+, only when ecosystem context exists):
+    - For each `<ecosystem-root>/swarms/<id>/manifest.json`:
+      - Validate against `core/swarm/schema/manifest.schema.json` (load + structural check)
+      - Every `manifest.repos.<id>` must reference a real `ecosystem.json` member
+      - Each repo's `phase_slug` must point at an existing phase directory
+        in that member repo
+    - For every phase brief that carries swarm frontmatter (parsed via
+      `core/swarm/lib/brief.js`):
+      - `swarm:` must resolve to a real swarm manifest at the ecosystem root
+      - `wave:` must match the wave that swarm has assigned this repo
+      - `initiative:` must match the swarm manifest's `initiative` field
+      - Report mismatch as a failure
+    - For every swarm with `status: complete`, verify the initiative's
+      `Per-repo contributions` section lists all swarm members.
+    - Report unresolved swarm references as failures; report orphaned
+      brief frontmatter (swarm: refers to non-existent swarm) as failures.
+
+12. Append deep-scan results to the report before printing.

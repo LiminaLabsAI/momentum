@@ -25,6 +25,21 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
    Note: if running `/start-phase` without `/brainstorm-phase` first, create
    `history.md` now — an empty append-only log with the entry-types header table.
 
+   **Swarm-member briefs (Phase 17+)**: when `/start-phase` is invoked from
+   a swarm conductor (env vars `MOMENTUM_SWARM_ID` + `MOMENTUM_SWARM_WAVE`
+   + `MOMENTUM_SWARM_INITIATIVE` + `MOMENTUM_SWARM_SESSION` are set),
+   prepend a YAML frontmatter block to `overview.md` with these fields:
+   ```yaml
+   ---
+   swarm: <NNNN-slug>
+   wave: <integer>
+   initiative: <slug>
+   claimed_by_session: <uuid>
+   ---
+   ```
+   Solo (non-swarm) briefs omit the block entirely — they remain plain
+   markdown. See `core/swarm/lib/brief.js` for the canonical helper.
+
 4. Build phase topic index:
    - Read the phase's `overview.md` and `tasks.md`
    - Extract key topics: technology names, services, architectural concepts
