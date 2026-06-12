@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-06-11
-> **Current Phase**: (between phases — Phase 17 Reach planning pending)
+> **Last Updated**: 2026-06-12
+> **Current Phase**: Phase 17 — Swarm: Single-Session Multi-Project Feature Delivery (target v0.20.0)
 > **Latest Release**: v0.19.0 — Codex & Antigravity Adapter Rework (Native-Idiom)
 > **Health**: On Track
 
@@ -38,7 +38,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(between phases)_ | Phase 16 Rework released as v0.19.0 on 2026-06-11. Phase 17 (Reach) planning pending. | | |
+| 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | In Progress (started 2026-06-12) | Brainstorm complete on branch `phase-17-swarm`. Groups 0–4 implementation pending. Scope: Claude Code only; Codex + Antigravity parity deferred. ~2.5 weeks. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -49,9 +49,11 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 17 | Reach | Not Started (target v0.20.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision; adapter contract refinements from additional adapters |
-| 18 | Intelligence | Not Started (target v0.21.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 19 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 17.5 | Swarm Portability | Not Started (target v0.20.1) | `/swarm focus`, `/swarm join`, `/swarm absorb` commands; lease enforcement; signal protocol; multi-conductor coordination. Schema hooks already in v0.20.0. |
+| 18 | Swarm Parity (Codex + Antigravity) | Not Started (target v0.20.2) | Codex `swarm-supervisor.toml` + MCP cwd shim; Antigravity Agent Manager workflow + skills. Core/swarm/ is platform-agnostic; this phase wires the two adapters. |
+| 19 | Reach | Not Started (target v0.21.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 20 | Intelligence | Not Started (target v0.22.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 21 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -75,10 +77,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **`/brainstorm-phase` Phase 17 — Reach** (target v0.20.0). Cursor adapter (FEAT-007), Gemini CLI adapter (FEAT-008), ENH-009 distribution decision. The native-idiom learnings from Phase 16 Rework apply directly: research each new adapter's actual extension surface BEFORE building (Cursor: rules-based, no slash commands; Gemini CLI: single-file GEMINI.md convention).
-2. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
-3. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
-4. **cerebrio dogfood (post-v0.13.0 user action — now with Phase 15 + Phase 16 Rework fixes ready).** Bootstrap `../cerebrio-ecosystem/` via `momentum init --ecosystem cerebrio`; join sapience / frontend / py / cli / open-guard / open-shield / bench.
+1. **Phase 17 Swarm implementation on branch `phase-17-swarm`** (target v0.20.0). Brainstorm complete; Groups 0–4 pending. ~2.5 weeks. Claude Code only; Codex + Antigravity parity deferred to Phase 18 (Swarm Parity).
+2. **Cerebrio bootstrap** — post-v0.20.0 release activity. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield / bench). Phase 17 validation uses synthetic fixtures only.
+3. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
+4. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
 7. (Optional housekeeping) Rename `phase-16-adapter-parity` branch on origin to `phase-16-research-record` to make the relationship to the merged rework branch explicit.
