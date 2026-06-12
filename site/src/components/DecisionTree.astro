@@ -71,10 +71,11 @@ const writesLabel = {
 		<p class="eyebrow">Which one do I use?</p>
 		<h2 id="dt-heading">Match your situation to the verb.</h2>
 		<p class="lead">
-			Two tiers, one foundation. <strong>Quick verbs</strong> for
-			single-action moves across projects. <strong>Swarm</strong> for
-			sustained, dependency-ordered, multi-step work. Both read and write
-			the <strong>ecosystem</strong> data layer underneath.
+			Orchestration's three layers, one decision: pick by what you're
+			trying to do. <strong>Cross-project actions</strong> for one-shot
+			moves. <strong>Swarm</strong> for sustained, dependency-ordered,
+			multi-step work. Both read and write the <strong>ecosystem</strong>
+			data layer underneath.
 		</p>
 	</header>
 	<div class="table-wrap">
@@ -84,7 +85,7 @@ const writesLabel = {
 					<th scope="col">Your situation</th>
 					<th scope="col">Use</th>
 					<th scope="col">Reads / writes</th>
-					<th scope="col" class="tier-col">Tier</th>
+					<th scope="col" class="tier-col">Layer</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -102,7 +103,7 @@ const writesLabel = {
 							</span>
 						</td>
 						<td class="tier">
-							{r.tier === 'quick' && 'Quick verb'}
+							{r.tier === 'quick' && 'Action'}
 							{r.tier === 'swarm' && 'Swarm'}
 							{r.tier === 'foundation' && 'Ecosystem'}
 						</td>

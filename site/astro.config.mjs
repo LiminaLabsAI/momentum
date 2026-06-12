@@ -134,11 +134,11 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'Multi-project work',
+					label: 'Orchestration',
 					items: [
-						{ label: 'Ecosystem (foundation)', slug: 'ecosystem' },
-						{ label: 'Quick verbs (Tier 1)', slug: 'orchestration' },
-						{ label: 'Swarm (Tier 2)', slug: 'swarm' },
+						{ label: 'Ecosystem', slug: 'ecosystem' },
+						{ label: 'Cross-project actions', slug: 'orchestration' },
+						{ label: 'Swarm', slug: 'swarm' },
 					],
 				},
 				{

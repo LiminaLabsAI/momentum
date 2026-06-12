@@ -1,11 +1,11 @@
 ---
-title: Quick verbs (Tier 1)
-description: scout, dispatch, handoff, continue — four single-action verbs the agent composes per task across projects. Tier 1 of momentum's multi-project work model.
+title: Cross-project actions
+description: scout, dispatch, handoff, continue — four single-step commands the agent runs per task across projects. The one-shot layer of momentum's orchestration model.
 ---
 
-> **Tier 1 — quick, single-action verbs.** For sustained, dependency-ordered, multi-step work across projects, see **[Swarm (Tier 2)](/swarm/)** instead. Both tiers read and write the same foundation: **[ecosystem state](/ecosystem/)**.
+> **Orchestration** is momentum's umbrella for multi-project work. Three layers: **[Ecosystem](/ecosystem/)** (shared state), **Cross-project actions** (one-shot moves — this page), **[Swarm](/swarm/)** (sustained delivery). Both action tiers read and write the same ecosystem foundation.
 
-Quick verbs are the **single-action layer** for multi-project work. Four verbs the agent composes per task — `scout`, `dispatch`, `handoff`, `continue`. They read and write the durable state that **[Ecosystem mode](/ecosystem/)** provides; together they form the canonical *one-shot* multi-project pattern (each pointless without the other — actions with no record turn into vapor; records with no actions are just bookkeeping).
+Cross-project actions are the **one-shot layer** of orchestration. Four verbs the agent composes per task — `scout`, `dispatch`, `handoff`, `continue`. They read and write the durable state that **[Ecosystem](/ecosystem/)** provides; together they form the canonical *single-move* multi-project pattern (each pointless without the other — actions with no record turn into vapor; records with no actions are just bookkeeping).
 
 When you work across multiple related projects, you don't want N parallel agent sessions losing track of each other. You want **one agent session that can reach into other projects when it needs to** — read state without opening a session there, fan out work in parallel, hand off control with full context. The four primitives are the verbs; your agent picks the sentence. Some tasks need just a single `scout`. Others need a parallel `dispatch` across five projects. Some end in a `handoff` to another machine or session for the implementation.
 
