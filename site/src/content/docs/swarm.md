@@ -1,7 +1,9 @@
 ---
-title: Swarm
-description: One session, many projects, one feature. Conductor + per-project supervisors deliver a cross-project feature end-to-end in a single session. Phase 17 (v0.20.0) — Claude Code.
+title: Swarm (Tier 2)
+description: One session, many projects, one feature. Conductor + per-project supervisors deliver a cross-project feature end-to-end in a single session. Tier 2 of momentum's multi-project work model — sustained, multi-step, dependency-ordered.
 ---
+
+> **Tier 2 — sustained, dependency-ordered, multi-supervisor.** For one-shot moves across projects (audit, fan-out fix, control transfer), the lighter-weight [**Quick verbs**](/orchestration/) (`scout` / `dispatch` / `handoff` / `continue`) are usually what you want. Both tiers read and write the same foundation: **[ecosystem state](/ecosystem/)**.
 
 A **swarm** is a declared cross-project work unit driven from ONE agent
 session. Your session becomes the **conductor**. The conductor spawns

@@ -1,8 +1,8 @@
 {
   "meta": {
     "captured": "2026-06-12",
-    "capturedFrom": "phase-17-swarm G1 — /swarm slash command shipped",
-    "note": "Updated baseline for tests/claude-code-regression.test.js. Phase 17 G1 ships the /swarm Claude Code slash command (additive — single new file at .claude/commands/swarm.md). Per Rule 10 additive at completion. Solo-phase behavior unchanged."
+    "capturedFrom": "post-Phase-17 — dispatch read-only unlock",
+    "note": "Updated baseline for tests/claude-code-regression.test.js. Post-Phase-17 dispatch was unlocked from the hardcoded read-only sub-agent prompt: it now defers to user intent (audit -> read-only, fix -> writes allowed on a feature branch). Drift is intentional and limited to the dispatch.md recipe. Aligns the verb with GitHub Actions + PowerShell conventions surfaced by research."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -11,7 +11,7 @@
     ".claude/commands/brainstorm-phase.md": "e97e5525d4edd4276e91e7d80f18a27b16dc5676795e0a1262c936c89f889dbe",
     ".claude/commands/complete-phase.md": "142aaca9fef9479a338315caba334294b88b4e1ebb6b0f7e85d5ce4830a1d82e",
     ".claude/commands/continue.md": "ca2e18b81dce9c1086b14f57fa7798137a86e6956878bee08b822920869f06c2",
-    ".claude/commands/dispatch.md": "4f45069ea4666d0c8e71d7ef4e81e2e96f14e96081a767f33ab8f453251af68a",
+    ".claude/commands/dispatch.md": "461e6dca4e3bbb45b35862d1434bdc8f888f5151792042c455ae659f9634d673",
     ".claude/commands/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
     ".claude/commands/handoff.md": "c4decc3095a5322402ff637e1dd3f7c29badf5eab71fdb7cf452cd24bcba3a7d",
     ".claude/commands/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",

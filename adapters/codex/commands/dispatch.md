@@ -54,7 +54,7 @@ Surface each note via `▸ note: <text>` BEFORE starting sub-agents.
 
 For EACH target repo, invoke a Codex sub-agent with:
 
-- System prompt: "You are a DISPATCH SUB-AGENT for momentum's orchestration layer. Read-only. Return a JSON result with summary, filesRead, findings (Rule-3 thresholds)."
+- System prompt: "You are a DISPATCH SUB-AGENT for momentum's quick-verb layer. The user intent is authoritative — if it asks to audit / investigate / report, stay read-only. If it asks to fix / refactor / migrate, you may write code, but commit on a feature branch per Rule 6 and surface the branch name. Return a JSON result with summary, filesRead, optional filesWritten + branch, findings (Rule-3 thresholds)."
 - Task prompt: user intent + the specific repo.
 
 Capture failures in `failures[]`; never abort the whole dispatch.

@@ -46,19 +46,23 @@ const primitives = [
 
 <section class="orch-showcase" aria-labelledby="orch-heading">
 	<header class="orch-header">
-		<p class="eyebrow">Multi-project coordination</p>
-		<h2 id="orch-heading">Work across multiple projects.</h2>
+		<p class="eyebrow">Multi-project work — Tier 1</p>
+		<h2 id="orch-heading">Quick verbs across projects.</h2>
 		<p class="lead">
-			One agent session works across all of them — no context switching,
-			full ecosystem awareness, every project's per-project discipline
-			preserved. Two complementary layers make it work:
+			Four single-action verbs the agent composes per task —{' '}
+			<code>scout</code>, <code>dispatch</code>, <code>handoff</code>,{' '}
+			<code>continue</code>. One-shot moves: read a project, fan out work
+			across N projects, transfer control, pick up where someone left off.
+			For sustained multi-step work, see{' '}
+			<a href="/swarm/"><strong>Swarm</strong></a>. Both tiers read and
+			write the same foundation: ecosystem state.
 		</p>
 	</header>
 
-	{/* ── Sub-feature 1: Ecosystem mode (STATE layer) ───────────────── */}
-	<article class="subfeature" aria-labelledby="sf-ecosystem-heading">
+	{/* ── Foundation: Ecosystem mode (state on disk) ───────────────── */}
+	<article class="subfeature subfeature--foundation" aria-labelledby="sf-ecosystem-heading">
 		<header class="subfeature-head">
-			<p class="subfeature-eyebrow">State layer</p>
+			<p class="subfeature-eyebrow">Foundation</p>
 			<h3 id="sf-ecosystem-heading">Ecosystem mode</h3>
 		</header>
 		<p>
@@ -67,6 +71,7 @@ const primitives = [
 			that auto-records commits and PRs across every member. Pointer blocks
 			in each project tell the agent it's part of an ecosystem.
 			Per-project state is unchanged; ecosystem mode is purely additive.
+			Both Quick verbs and Swarm read and write this data layer.
 		</p>
 		<a class="cta-link" href="/ecosystem/">Read the ecosystem deep dive →</a>
 	</article>
@@ -74,17 +79,19 @@ const primitives = [
 	{/* ── The relationship diagram ─────────────────────────────────── */}
 	<StateActionLayers />
 
-	{/* ── Sub-feature 2: Orchestration (ACTION layer) ───────────────── */}
+	{/* ── The Quick-verbs tier ─────────────────────────────────────── */}
 	<article class="subfeature" aria-labelledby="sf-orch-heading">
 		<header class="subfeature-head">
-			<p class="subfeature-eyebrow">Action layer</p>
-			<h3 id="sf-orch-heading">Orchestration primitives</h3>
+			<p class="subfeature-eyebrow">Tier 1 — single-action verbs</p>
+			<h3 id="sf-orch-heading">Quick verbs</h3>
 		</header>
 		<p>
-			Four verbs the agent composes per task — not a pipeline. Each
-			primitive ships three invocation doors (slash command, natural-language
-			inference, CLI) over one shared library, so behavior is identical no
-			matter how you reach for it.
+			Four verbs the agent composes per task — not a pipeline. Each ships
+			three invocation doors (slash command, natural-language inference,
+			CLI) over one shared library, so behavior is identical no matter
+			how you reach for it. <code>dispatch</code> reads OR writes
+			depending on what you ask — audit and it stays read-only; ask it
+			to fix and sub-agents write on a feature branch you review.
 		</p>
 	</article>
 

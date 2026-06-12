@@ -1,12 +1,16 @@
-Parallel multi-repo fan-out + synthesis. One sub-agent per listed repo with auto-tailored prompts; all results synthesised into a single answer to the user's high-level intent. Writes one dispatch-NNN.md artifact and one session log line.
+Parallel multi-project fan-out + synthesis. One sub-agent per listed project, each tailored to the user's intent: audit (read-only) or fix (writes allowed, on a feature branch). All results synthesised into a single answer. Writes one dispatch-NNN.md artifact and one session log line.
 
 > **Three doors, one library.** This is the slash-command door for Claude Code. The CLI door is `momentum dispatch <r1> <r2> ... --prompt "<text>"` and the natural-language inference door fires when the user describes a multi-repo audit / alignment task. All three doors call `core/orchestration/dispatch.js` so the output shape is identical.
 
 ## When to use
 
-- "What breaks if I rename X across all repos?" — multi-repo audit.
-- "Get me the current state of A AND B so I can align a change." — pre-coordination context fetch.
-- "Where does Y come from across the stack?" — cross-cutting investigation.
+- "What breaks if I rename X across all repos?" — multi-project audit (sub-agents stay read-only by intent).
+- "Get me the current state of A AND B so I can align a change." — pre-coordination context fetch (read-only by intent).
+- "Where does Y come from across the stack?" — cross-cutting investigation (read-only by intent).
+- "Fix the same typo in all three repos." — one-shot multi-project change (sub-agents write on feature branches; you review per repo).
+- "Bump the lint config to v2 across the stack." — repeatable code-mod (writes allowed).
+
+Do NOT use `/dispatch` for **sustained multi-step features that need wave ordering, contracts, or a persistent saga** — use [`/swarm`](/swarm/) instead. Do NOT use it when you want to TRANSFER control rather than fan it out — use `/handoff`. Do NOT use it for single-project tasks — use `/scout` or just work in that project directly.
 
 ## Inference guidance (read this in non-slash contexts too)
 
@@ -48,8 +52,9 @@ Claude Code declares `parallelSubagents: true` — `mode='parallel'`, no notes. 
 
 For EACH target repo, in a SINGLE message use the Task tool to spawn a sub-agent with:
 
-- Sub-agent system prompt: "You are a DISPATCH SUB-AGENT for momentum's orchestration layer. You are working in `<repo>`. Your task is to investigate the user intent below and return a structured JSON result. NO writes. Read-only."
+- Sub-agent system prompt: "You are a DISPATCH SUB-AGENT for momentum's quick-verb layer. You are working in `<repo>`. The user intent below is authoritative — if it asks to audit / investigate / report, return a structured JSON result without writing files. If it asks to fix / refactor / migrate, you may write code, but commit on a feature branch per Rule 6 (Git Lifecycle) and surface the branch name in your result so the originating session can review. When in doubt about whether to write, prefer reading and surface the proposed change in `findings` instead."
 - Sub-agent task prompt: user intent + the specific repo.
+- If the originating session is in read-only mode (the user passed `--read-only` to the CLI floor, or the recipe was invoked with the `--read-only` flag), prepend an explicit "READ-ONLY: do not write any files" line to the sub-agent system prompt regardless of intent.
 - Expected return shape (sub-agent renders as a single JSON block):
 
 ```json
@@ -57,13 +62,15 @@ For EACH target repo, in a SINGLE message use the Task tool to spawn a sub-agent
   "repo": "<absolute path>",
   "summary": "...one-paragraph answer focused on this repo...",
   "filesRead": ["..."],
+  "filesWritten": ["..."],
+  "branch": "feat/short-desc",
   "findings": [
     { "kind": "discovery", "title": "...", "detail": "...", "recommendedBacklogPriority": "P2", "recommendedBacklogType": "tech-debt" }
   ]
 }
 ```
 
-`findings` apply Rule 3 thresholds. No orchestration metadata.
+`filesWritten` + `branch` are present only when the sub-agent actually wrote (user intent was a fix/refactor/migrate). For pure audits, omit them. `findings` apply Rule 3 thresholds.
 
 Sub-agents run concurrently because they are dispatched in the same message — Claude Code's Task tool runs each in its own context.
 

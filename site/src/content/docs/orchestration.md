@@ -1,26 +1,25 @@
 ---
-title: Orchestration
-description: scout, dispatch, handoff, continue — the action layer for multi-project work. Four verbs the main agent composes per task.
+title: Quick verbs (Tier 1)
+description: scout, dispatch, handoff, continue — four single-action verbs the agent composes per task across projects. Tier 1 of momentum's multi-project work model.
 ---
 
-Orchestration is the **action layer** for multi-project work. Four verbs
-the agent composes per task — `scout`, `dispatch`, `handoff`, `continue`.
-They read and write the durable state that **[Ecosystem mode](/ecosystem/)**
-provides; together, the two layers form the canonical multi-project
-pattern (each pointless without the other — actions with no record turn
-into vapor; records with no actions are just bookkeeping).
+> **Tier 1 — quick, single-action verbs.** For sustained, dependency-ordered, multi-step work across projects, see **[Swarm (Tier 2)](/swarm/)** instead. Both tiers read and write the same foundation: **[ecosystem state](/ecosystem/)**.
 
-When you work across multiple related projects, you don't want N parallel
-agent sessions losing track of each other. You want **one agent session
-that can reach into other projects when it needs to** — read state without
-opening a session there, fan out work in parallel, hand off control with
-full context. The four primitives are the verbs; your agent picks the
-sentence. Some tasks need just a single `scout`. Others need a parallel
-`dispatch` across five projects. Some end in a `handoff` to another
-machine or session for the implementation.
+Quick verbs are the **single-action layer** for multi-project work. Four verbs the agent composes per task — `scout`, `dispatch`, `handoff`, `continue`. They read and write the durable state that **[Ecosystem mode](/ecosystem/)** provides; together they form the canonical *one-shot* multi-project pattern (each pointless without the other — actions with no record turn into vapor; records with no actions are just bookkeeping).
 
-momentum ships these as **primitives the main agent composes per task —
-not a pipeline.**
+When you work across multiple related projects, you don't want N parallel agent sessions losing track of each other. You want **one agent session that can reach into other projects when it needs to** — read state without opening a session there, fan out work in parallel, hand off control with full context. The four primitives are the verbs; your agent picks the sentence. Some tasks need just a single `scout`. Others need a parallel `dispatch` across five projects. Some end in a `handoff` to another machine or session for the implementation.
+
+momentum ships these as **primitives the main agent composes per task — not a pipeline.**
+
+## `dispatch` defers to your intent
+
+`dispatch` is the one verb that reads OR writes depending on what you ask. Earlier versions locked dispatch sub-agents to read-only by a hardcoded system prompt; the verb said "send the agent to do work" but the implementation refused to do anything but look. Industry conventions (GitHub Actions `workflow_dispatch`, PowerShell's `Send`-verb convention) treat dispatch as a write-capable invocation verb, and momentum now aligns with that.
+
+The contract:
+
+- Ask `dispatch` to **audit / investigate / report** → sub-agents stay read-only and return structured findings.
+- Ask `dispatch` to **fix / refactor / migrate / bump** → sub-agents write code on a feature branch per Rule 6 (Git Lifecycle) and surface the branch name in their result so the originating session can review.
+- Pass `--read-only` (CLI) or the read-only flag (slash form) to force the safety lock regardless of intent.
 
 ```mermaid
 flowchart LR

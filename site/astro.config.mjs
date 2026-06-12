@@ -134,11 +134,11 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'Multi-project coordination',
+					label: 'Multi-project work',
 					items: [
-						{ label: 'Ecosystem mode', slug: 'ecosystem' },
-						{ label: 'Orchestration', slug: 'orchestration' },
-						{ label: 'Swarm', slug: 'swarm' },
+						{ label: 'Ecosystem (foundation)', slug: 'ecosystem' },
+						{ label: 'Quick verbs (Tier 1)', slug: 'orchestration' },
+						{ label: 'Swarm (Tier 2)', slug: 'swarm' },
 					],
 				},
 				{
