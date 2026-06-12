@@ -90,6 +90,14 @@ Detail: User direction: do NOT use cerebrio-ecosystem (real project) for Phase 1
 
 ---
 
+### [NOTE] 2026-06-12 — Group 2 landed — intervention surface (inbox + pre-merge)
+Topics: phase-17, swarm, group-2, inbox, pre-merge, tell, broadcast, verify, complete, budget, wave-checkpoint
+Affects-phases: phase-17-swarm
+Affects-specs: core/swarm/inbox.js, core/swarm/lib/pre-merge.js, bin/swarm.js
+Detail: G2 shipped the inbox protocol at `core/swarm/inbox.js` (write / list pending / resolve with mkdir-lock + auto-regenerated INDEX.md) and the pre-merge preview at `core/swarm/lib/pre-merge.js` (`git merge --no-commit --no-ff` with always-abort, no-write semantics). Wired both into `bin/swarm.js` as `momentum swarm inbox {list,write,resolve}` and `momentum swarm preview-merge`. Most G2 plan items (tell / broadcast / verify / complete / budget / wave checkpoint) had already landed in G1's `bin/swarm.js` so this group focused on the two missing primitives. Fixed `cmdVerify` to call `process.exit(1)` so non-zero status propagates through bin/momentum.js dispatch. 28 new tests across `swarm-inbox.test.js` (8), `swarm-intervention.test.js` (9), `swarm-wave-transition.test.js` (8), `swarm-complete.test.js` (3). Full suite 409 → 437.
+
+---
+
 ### [NOTE] 2026-06-12 — Group 1 landed — conductor core + Claude Code surface
 Topics: phase-17, swarm, group-1, conductor, supervisor-recipe, bin-swarm, /swarm, polling-loop, saga, autopilot, checkpoint
 Affects-phases: phase-17-swarm

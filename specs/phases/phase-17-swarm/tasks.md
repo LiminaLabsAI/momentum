@@ -32,16 +32,16 @@
 
 ## Group 2 — Intervention Surface
 
-- [ ] G2.1 core/swarm/inbox.js (CRUD + locks)
-- [ ] G2.2 inbox/INDEX.md materializer
-- [ ] G2.3 /swarm tell recipe
-- [ ] G2.4 /swarm broadcast recipe
-- [ ] G2.5 /swarm verify recipe
-- [ ] G2.6 Wave checkpoint flow
-- [ ] G2.7 Pre-merge preview at fan-in
-- [ ] G2.8 /swarm complete recipe
-- [ ] G2.9 /swarm budget recipe
-- [ ] G2.10 Tests: inbox + intervention + wave transition + complete
+- [x] G2.1 core/swarm/inbox.js (CRUD + locks)
+- [x] G2.2 inbox/INDEX.md materializer
+- [x] G2.3 /swarm tell recipe
+- [x] G2.4 /swarm broadcast recipe
+- [x] G2.5 /swarm verify recipe
+- [x] G2.6 Wave checkpoint flow
+- [x] G2.7 Pre-merge preview at fan-in
+- [x] G2.8 /swarm complete recipe
+- [x] G2.9 /swarm budget recipe
+- [x] G2.10 Tests: inbox + intervention + wave transition + complete
 
 ## Group 3 — Resume + Portability Hooks
 

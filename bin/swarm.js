@@ -29,6 +29,8 @@ const conductor = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'conductor')
 const manifestLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'manifest'));
 const boardLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'board'));
 const briefLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'brief'));
+const inboxLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'inbox'));
+const preMergeLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'pre-merge'));
 const ecosystemLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
 const { findRegistration } = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'state'));
 
@@ -264,16 +266,16 @@ function cmdVerify(args) {
   const result = verifySwarm(ecosystemRoot, swarmId);
   if (opts.json) {
     process.stdout.write(JSON.stringify(result, null, 2) + '\n');
-    return;
+  } else {
+    console.log(`▸ Verify ${swarmId}: ${result.ok ? 'OK' : 'FAIL'}`);
+    for (const issue of result.issues) {
+      console.log(`  ✗ ${issue}`);
+    }
+    for (const note of result.notes) {
+      console.log(`  · ${note}`);
+    }
   }
-  console.log(`▸ Verify ${swarmId}: ${result.ok ? 'OK' : 'FAIL'}`);
-  for (const issue of result.issues) {
-    console.log(`  ✗ ${issue}`);
-  }
-  for (const note of result.notes) {
-    console.log(`  · ${note}`);
-  }
-  if (!result.ok) process.exitCode = 1;
+  if (!result.ok) process.exit(1);
 }
 
 function cmdComplete(args) {
@@ -574,10 +576,127 @@ Usage:
   momentum swarm resume <swarm-id> [--session <id>]
   momentum swarm cancel <swarm-id> [--reason "<text>"]
   momentum swarm budget <swarm-id> <repo> +N | -N
+  momentum swarm inbox list <swarm-id>
+  momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"
+  momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"
+  momentum swarm preview-merge <swarm-id> [--json]
 
 Global flags:
   --ecosystem <path>   Override ecosystem root resolution
 `);
+}
+
+function cmdInboxList(args) {
+  const opts = parseFlags(args, {
+    ecosystem: { flag: '--ecosystem', default: null },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId] = opts.positional;
+  if (!swarmId) throw new Error('swarm inbox list: <swarm-id> required');
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const items = inboxLib.listPendingInboxItems(ecosystemRoot, swarmId);
+  if (opts.json) {
+    process.stdout.write(JSON.stringify(items, null, 2) + '\n');
+    return;
+  }
+  if (items.length === 0) {
+    console.log(`▸ inbox(${swarmId}): no pending items`);
+    return;
+  }
+  console.log(`▸ inbox(${swarmId}): ${items.length} pending`);
+  for (const it of items) {
+    console.log(`  ${it.id}  ${it.repo}  ${it.slug}  (${it.asked})`);
+  }
+}
+
+function cmdInboxWrite(args) {
+  const opts = parseFlags(args, {
+    repo: { flag: '--repo' },
+    slug: { flag: '--slug' },
+    question: { flag: '--question' },
+    ecosystem: { flag: '--ecosystem', default: null },
+  });
+  const [swarmId] = opts.positional;
+  if (!swarmId || !opts.repo || !opts.slug || !opts.question) {
+    throw new Error('swarm inbox write: usage — momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const r = inboxLib.writeInboxItem({
+    ecosystemRoot, swarmId,
+    repo: opts.repo, slug: opts.slug, question: opts.question,
+    nowIso: nowIso(),
+  });
+  boardLib.refreshBoard(ecosystemRoot, swarmId, nowIso());
+  console.log(`▸ inbox(${swarmId}) ${r.id}-${r.slug}.md written`);
+}
+
+function cmdInboxResolve(args) {
+  const opts = parseFlags(args, {
+    answer: { flag: '--answer' },
+    ecosystem: { flag: '--ecosystem', default: null },
+  });
+  const [swarmId, id] = opts.positional;
+  if (!swarmId || !id || !opts.answer) {
+    throw new Error('swarm inbox resolve: usage — momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const r = inboxLib.resolveInboxItem({
+    ecosystemRoot, swarmId, id, answer: opts.answer, nowIso: nowIso(),
+  });
+  boardLib.refreshBoard(ecosystemRoot, swarmId, nowIso());
+  console.log(`▸ inbox(${swarmId}) ${r.id} resolved → ${path.relative(ecosystemRoot, r.resolvedPath)}`);
+}
+
+function cmdInbox(args) {
+  if (!args || args.length === 0 || args[0] === '--help') {
+    console.log('momentum swarm inbox — supervisor questions to the conductor');
+    console.log('Usage:');
+    console.log('  momentum swarm inbox list <swarm-id>');
+    console.log('  momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"');
+    console.log('  momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"');
+    return;
+  }
+  const sub = args[0];
+  const rest = args.slice(1);
+  switch (sub) {
+    case 'list': return cmdInboxList(rest);
+    case 'write': return cmdInboxWrite(rest);
+    case 'resolve': return cmdInboxResolve(rest);
+    default:
+      throw new Error(`swarm inbox: unknown subcommand "${sub}". Try --help.`);
+  }
+}
+
+function cmdPreviewMerge(args) {
+  const opts = parseFlags(args, {
+    ecosystem: { flag: '--ecosystem', default: null },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId] = opts.positional;
+  if (!swarmId) throw new Error('swarm preview-merge: <swarm-id> required');
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const manifest = manifestLib.loadManifest(ecosystemRoot, swarmId);
+  if (!manifest) throw new Error(`swarm preview-merge: no manifest for ${swarmId}`);
+
+  const entries = [];
+  for (const [repoId, repo] of Object.entries(manifest.repos || {})) {
+    const repoPath = conductor.resolveMemberPath(ecosystemRoot, repoId);
+    if (!repoPath) continue;
+    entries.push({
+      repo: repoId, repoPath,
+      branch: repo.branch,
+      intoBranch: 'main',
+    });
+  }
+  const results = preMergeLib.previewMergeBatch(entries);
+  if (opts.json) {
+    process.stdout.write(JSON.stringify(results, null, 2) + '\n');
+    return;
+  }
+  for (const r of results) {
+    console.log(`  ${r.repo}: ${r.result.ok ? 'CLEAN' : 'CONFLICTS'} — ${r.result.summary}`);
+    for (const f of r.result.conflictedFiles) console.log(`    ✗ ${f}`);
+  }
 }
 
 function runSwarm(args) {
@@ -596,6 +715,8 @@ function runSwarm(args) {
     case 'resume': return cmdResume(rest);
     case 'cancel': return cmdCancel(rest);
     case 'budget': return cmdBudget(rest);
+    case 'inbox': return cmdInbox(rest);
+    case 'preview-merge': return cmdPreviewMerge(rest);
     default:
       throw new Error(`swarm: unknown subcommand "${sub}". Try --help.`);
   }
