@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-12
-> **Current Phase**: Phase 17 — Swarm: Single-Session Multi-Project Feature Delivery (Claude Code) — **Complete (v0.20.0), pending merge + release approval**
-> **Latest Release**: v0.19.0 — Codex & Antigravity Adapter Rework (Native-Idiom)
+> **Current Phase**: _none active — Phase 17 shipped as v0.20.0_
+> **Latest Release**: v0.20.0 — Swarm: Single-Session Multi-Project Feature Delivery (Claude Code)
 > **Health**: On Track
 
 ## Summary
@@ -33,13 +33,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 14 | Site Refinement & Positioning Pivot | Complete | v0.17.0 (2026-06-08) |
 | 15 | Ecosystem Agent Discoverability | Complete | v0.18.0 (2026-06-08) |
 | 16 | Codex & Antigravity Adapter Rework (Native-Idiom) | Complete | v0.19.0 (2026-06-11) |
-| 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete (pending merge + release) | v0.20.0 (2026-06-12) |
+| 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete | v0.20.0 (2026-06-12) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 17 complete on branch `phase-17-swarm`, awaiting merge + tag + npm publish)_ | | | |
+| _(none — Phase 17 shipped 2026-06-12 as v0.20.0; GitHub Release + npm both live)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -78,8 +78,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Merge + release v0.20.0** — Phase 17 Swarm complete on `phase-17-swarm`. Merge to main, tag `v0.20.0`, `gh release create`, `npm publish --access public`. Branch is clean; full regression green at 461/461.
-2. **Cerebrio bootstrap** — post-v0.20.0 release activity. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield / bench). Phase 17 validation used synthetic fixtures only.
+1. **Cerebrio bootstrap** — v0.20.0 is now live on npm. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield / bench). Phase 17 validation used synthetic fixtures only — this is the live dogfood.
+2. **Phase 17.5 — Swarm Portability** (target v0.20.1). Schema hooks already shipped in v0.20.0; needs `/swarm focus|join|absorb` commands + lease enforcement + signal protocol + multi-conductor coordination.
 3. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
 4. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
