@@ -11,7 +11,7 @@
 #
 # Tool names matched per platform:
 #   Claude Code: Write, Edit, MultiEdit
-#   Codex:       apply_patch, shell
+#   Codex:       apply_patch, Bash
 #   Antigravity: run_command, view_file, *write*, apply_patch
 #
 # Project root resolution (in order):
@@ -36,7 +36,7 @@ input=$(cat)
 # Payload shapes we handle:
 #   - Claude Code:  {tool_name, tool_input: {file_path: "..."}}
 #   - Codex apply_patch:  {tool_name: "apply_patch", tool_input: {input: "*** Update File: <path>\n..."}}
-#   - Codex shell:        {tool_name: "shell", tool_input: {command: "..."}}
+#   - Codex Bash:         {tool_name: "Bash", tool_input: {command: "..."}}
 #   - Antigravity:        {tool_name, tool_input: {path: "...", command?: "..."}}
 #
 # Strategy: try jq first (best precision), fall back to grep/sed.
@@ -97,12 +97,12 @@ fi
 
 # ---------------------------------------------------------------------------
 # 3. Allow non-write tool calls
-#    Match Claude Code (Write/Edit/MultiEdit), Codex (apply_patch/shell),
+#    Match Claude Code (Write/Edit/MultiEdit), Codex (apply_patch/Bash),
 #    Antigravity (run_command/view_file/*write*/apply_patch).
 # ---------------------------------------------------------------------------
 case "${tool_name:-}" in
   Write|Edit|MultiEdit) ;;        # Claude Code
-  apply_patch|shell) ;;            # Codex
+  apply_patch|Bash) ;;             # Codex (per docs: canonical tool_name is "Bash" for shell)
   run_command|view_file) ;;        # Antigravity (matcher includes these)
   *write*) ;;                      # Antigravity wildcard
   *) exit 0 ;;

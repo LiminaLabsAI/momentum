@@ -133,10 +133,12 @@ const payloads = {
     };
   },
   /**
-   * Codex shell shape: { tool_name: 'shell', tool_input: { command: "echo > <path>" } }
+   * Codex Bash shape: { tool_name: 'Bash', tool_input: { command: "echo > <path>" } }
+   * Per Codex docs (https://developers.openai.com/codex/hooks) the canonical
+   * tool_name emitted for shell commands is "Bash" — NOT "shell".
    */
-  codexShell(command) {
-    return { tool_name: 'shell', tool_input: { command } };
+  codexBash(command) {
+    return { tool_name: 'Bash', tool_input: { command } };
   },
   /**
    * Antigravity run_command shape: { tool_name: 'run_command', tool_input: { command, path } }

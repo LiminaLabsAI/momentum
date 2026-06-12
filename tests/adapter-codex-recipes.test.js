@@ -81,10 +81,15 @@ test('Codex AGENTS.md documents the Hooks event table with apply_patch matcher',
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
     const agentsMd = fs.readFileSync(path.join(target, 'AGENTS.md'), 'utf8');
     assert.match(agentsMd, /apply_patch/, 'AGENTS.md must mention apply_patch (Codex tool name)');
+    assert.match(agentsMd, /\\\|Bash/, 'AGENTS.md must document Bash as the canonical shell tool_name');
     assert.match(agentsMd, /PreToolUse/);
     assert.match(agentsMd, /PostToolUse/);
     assert.match(agentsMd, /SessionStart/);
-    assert.match(agentsMd, /features\.hooks/, 'AGENTS.md must instruct users on the features.hooks opt-in');
+    assert.match(
+      agentsMd,
+      /\/hooks/,
+      'AGENTS.md must reference the /hooks trust-review flow (project hooks require per-hook trust approval)'
+    );
   } finally {
     rmrf(target);
   }

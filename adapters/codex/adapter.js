@@ -47,9 +47,9 @@ module.exports = {
     subagents: true,
     parallelSubagents: false,
     sessionStartHook: true,
-    skills: false,
-    browser: false,
-    computerUse: false,
+    skills: true,
+    browser: true,
+    computerUse: true,
   },
 
   roadmap: {
@@ -57,10 +57,7 @@ module.exports = {
       'Codex declares a subagent surface; parallel-fanout not yet validated by momentum smoke tests. ' +
       'capability-routing treats this as sequential until proven.',
     parallelSubagents:
-      'Promote to true once dispatch parallel mode is exercised against Codex in CI.',
-    skills: 'Planned for a future Codex feature drop.',
-    browser: 'Planned for a future Codex feature drop.',
-    computerUse: 'Planned for a future Codex feature drop.',
+      'Promote to true once dispatch parallel mode is exercised against Codex in CI (VAL-001).',
   },
 
   runInstall(targetDir, adapterDir, helpers) {

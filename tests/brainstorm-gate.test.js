@@ -15,7 +15,7 @@ const HOOK = path.join(REPO_ROOT, 'core', 'scripts', 'brainstorm-gate.sh');
 // brainstorm-gate.sh now handles 3 platforms' payload shapes:
 //   - Claude Code: tool_name in (Write,Edit,MultiEdit); tool_input.file_path
 //   - Codex apply_patch: tool_input.input has *** Update File: <path>
-//   - Codex shell: tool_input.command has shell text targeting specs/
+//   - Codex Bash: tool_input.command has shell text targeting specs/ (real tool_name is "Bash" per docs)
 //   - Antigravity: tool_input.path (run_command, view_file)
 // Tests below extend the original 10 Claude Code scenarios with the new
 // platforms; the original scenarios must continue to pass byte-equivalent.
@@ -242,12 +242,14 @@ test('Codex apply_patch — sentinel absent → allow', () => {
   } finally { rmrf(dir); }
 });
 
-test('Codex shell — command writes to specs/ with sentinel → block', () => {
+test('Codex Bash — command writes to specs/ with sentinel → block', () => {
+  // Per Codex docs the canonical tool_name for shell commands is "Bash".
+  // BUG-007: prior test used "shell" which never fires in real Codex runtime.
   const dir = setupProject();
   try {
     touchSentinel(dir);
     const res = runHook(
-      { tool_name: 'shell', tool_input: { command: 'echo "x" > specs/status.md' } },
+      { tool_name: 'Bash', tool_input: { command: 'echo "x" > specs/status.md' } },
       { CLAUDE_PROJECT_DIR: dir }
     );
     assert.equal(res.status, 2, `expected 2 (block); stderr=${res.stderr}`);

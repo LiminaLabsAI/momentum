@@ -1,8 +1,8 @@
 {
   "meta": {
-    "captured": "2026-06-12",
-    "capturedFrom": "post-Phase-17 — dispatch read-only unlock",
-    "note": "Updated baseline for tests/claude-code-regression.test.js. Post-Phase-17 dispatch was unlocked from the hardcoded read-only sub-agent prompt: it now defers to user intent (audit -> read-only, fix -> writes allowed on a feature branch). Drift is intentional and limited to the dispatch.md recipe. Aligns the verb with GitHub Actions + PowerShell conventions surfaced by research."
+    "captured": "2026-06-13",
+    "capturedFrom": "post-audit Codex matcher fix (BUG-007)",
+    "note": "Re-snapshotted after fixing core/scripts/brainstorm-gate.sh case-statement allow-list from `apply_patch|shell` to `apply_patch|Bash` (BUG-007 — Codex emits tool_name=Bash, not shell). Drift is intentional and limited to scripts/brainstorm-gate.sh, which Claude Code shares with Codex via the recursive core/scripts/ copy. No Claude Code behavior change."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -31,7 +31,7 @@
     ".gitignore": "5b33fc8beb30c61c482fe55efc25e4958398c986e1bc31544c3e37823597af66",
     "CLAUDE.md": "c776df71790fd1bf315dbe60d9fdeab7d1b0d2349826747cf59a17e3876e452c",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
-    "scripts/brainstorm-gate.sh": "3b0fb1d42f9eab46e478749045d57fd92681e5f5accc450f59187440f32da3d8",
+    "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "ea861338fa6ab089a37cf8ec9a1297a1deae845e334a8b61eb0b60937a1e76f9",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6",

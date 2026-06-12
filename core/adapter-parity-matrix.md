@@ -106,7 +106,7 @@ overview.md):
 
 1. **Claude Code recipes** — installed as Markdown files at `.claude/commands/<name>.md`. User invokes `/<name>` and Claude Code loads the recipe content as the prompt. Native-idiom.
 
-2. **Codex recipes** — embedded as `### Recipe: <name>` sections in `AGENTS.md`. Codex has no per-project custom slash-command surface (deprecated + user-only). AGENTS.md is natively auto-loaded so the recipe text is always in context. User invokes by name in natural language ("run brainstorm-phase" or "/brainstorm-phase") and the agent finds the matching section.
+2. **Codex recipes** — currently installed as Markdown files at `.codex/commands/<name>.md` with a lookup table in `AGENTS.md` ("Recipes Lookup Pattern"). User invokes by name in natural language ("run brainstorm-phase" or "/brainstorm-phase") and the agent finds the matching file. ENH-036 (in-progress) converts each recipe into a native Codex skill at `.agents/skills/<name>/SKILL.md` so they become first-class auto-discovered skills instead of instruction-following text. Custom prompts at `~/.codex/prompts/` are user-scoped only and do not satisfy the repo-shared requirement.
 
 3. **Antigravity recipes** — installed as workflow files at `.agent/workflows/<name>.md` (singular `.agent/` per official docs; gated by Group 4 live smoke — Google's own materials disagree). User types `/<name>` and `agy` auto-registers the workflow as a slash command. YAML frontmatter `--- description: ... ---` optional but recommended for auto-detection.
 
@@ -122,7 +122,7 @@ overview.md):
 
 9. **Claude Code hooks** — wired via `.claude/settings.json` with matchers `Write|Edit|MultiEdit` for PreToolUse/PostToolUse and no matcher for SessionStart. Hook scripts in `scripts/`. Default-on for users with Claude Code installed.
 
-10. **Codex hooks** — wired via `.codex/hooks.json` with matchers `apply_patch|shell` for PreToolUse/PostToolUse and no matcher for SessionStart. CRITICAL: Codex `features.hooks` default is feature-flagged (G0.8 confirmation pending). If feature-flagged off, users must add `[features] hooks = true` to `~/.codex/config.toml`. AGENTS.md surfaces this opt-in.
+10. **Codex hooks** — wired via `.codex/hooks.json` with matchers `apply_patch|Bash` for PreToolUse/PostToolUse and no matcher for SessionStart. Per Codex docs (https://developers.openai.com/codex/hooks) the canonical `tool_name` for shell commands is `Bash` — earlier `shell` matcher was a bug (BUG-007, fixed 2026-06-13). Hooks are **enabled by default** in current Codex CLI (`hooks` is `stable: true` in `codex features list`); the first run prompts users to trust each hook via `/hooks`. The legacy `[features] hooks = true` opt-in remains as a fallback.
 
 11. **Antigravity hooks** — wired via `.agents/hooks.json` with matchers `run_command|view_file|.*write.*` for PreToolUse, `apply_patch|run_command` for PostToolUse. Marked `shipped-degraded` until VAL-002 confirms `agy` actually reads and dispatches the hooks (`agy` desktop-app vs CLI hook support is partially documented). The AGENTS.md text carries fallback instructions for handoff pickup and history reminder.
 

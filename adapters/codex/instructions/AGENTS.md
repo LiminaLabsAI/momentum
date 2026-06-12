@@ -81,25 +81,37 @@ shell scripts to `scripts/` and references them from this file:
 
 | Event | Matcher | Script | Purpose |
 |---|---|---|---|
-| `PreToolUse` | `apply_patch\|shell` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
-| `PostToolUse` | `apply_patch\|shell` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `PreToolUse` | `apply_patch\|Bash` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
+| `PostToolUse` | `apply_patch\|Bash` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
 | `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | Auto-greets with any pending handoff banner + ecosystem context. |
 
-### Enabling hooks in Codex
+> Matcher uses `Bash` (not `shell`) because that's the canonical
+> `tool_name` Codex emits for shell tool calls — see the [Codex hooks
+> reference](https://developers.openai.com/codex/hooks).
 
-Codex gates hook discovery behind the `features.hooks` config flag. If
-hooks don't appear to fire after `momentum init --agent codex`, add the
-following to your Codex config (`~/.codex/config.toml`):
+### Trust review
 
-```toml
-[features]
-hooks = true
-```
+Hooks are **enabled by default** in current Codex CLI (`hooks` is `stable`
+in `codex features list`). The first time momentum's hooks run in a fresh
+project, Codex prompts you to review and trust them via `/hooks`. Trust is
+recorded per-hash, so any change to the hook command requires re-approval.
 
-Then restart your Codex session. The `brainstorm-gate.sh` script resolves
-the project root from `CLAUDE_PROJECT_DIR` → `MOMENTUM_PROJECT_DIR` → `pwd`,
-so Codex's default cwd-as-session-root behavior works without env-var
-configuration.
+If hooks don't appear to fire:
+
+1. Run `/hooks` inside Codex and confirm `brainstorm-gate.sh`,
+   `check-history-reminder.sh`, and `sessionstart-handoff.sh` are listed
+   and marked trusted.
+2. Run `codex doctor` and confirm `hooks` shows as `stable: true`.
+3. Only as a last resort, force-enable in `~/.codex/config.toml`:
+
+   ```toml
+   [features]
+   hooks = true
+   ```
+
+The `brainstorm-gate.sh` script resolves the project root from
+`CLAUDE_PROJECT_DIR` → `MOMENTUM_PROJECT_DIR` → `pwd`, so Codex's default
+cwd-as-session-root behavior works without env-var configuration.
 
 ## Codex Skills
 
