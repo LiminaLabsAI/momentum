@@ -1,8 +1,8 @@
 {
   "meta": {
     "captured": "2026-06-12",
-    "capturedFrom": "phase-17-swarm G0 — swarm frontmatter doc in start-phase.md + /validate swarm member integrity check + phases/README.md swarm-member briefs section",
-    "note": "Updated baseline for tests/claude-code-regression.test.js. Phase 17 Group 0 added optional swarm-member brief frontmatter (swarm/wave/initiative/claimed_by_session) — documented in three template files that ship to every Claude Code install. The Claude Code behavior for solo (non-swarm) phases is unchanged: frontmatter is optional, plain markdown briefs remain byte-shape-compatible. Drift is intentional and purely documentation."
+    "capturedFrom": "phase-17-swarm G1 — /swarm slash command shipped",
+    "note": "Updated baseline for tests/claude-code-regression.test.js. Phase 17 G1 ships the /swarm Claude Code slash command (additive — single new file at .claude/commands/swarm.md). Per Rule 10 additive at completion. Solo-phase behavior unchanged."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -49,6 +49,7 @@
     "specs/status.md": "38861b1a72c0c8dd6a4df54024eb119fd9cdc9337b2dbb4b32535eaeefb42ef3",
     "specs/vision/principles.md": "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f",
     "specs/vision/project-charter.md": "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa",
-    "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271"
+    "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271",
+    ".claude/commands/swarm.md": "23f968a29c73cb8f70d12a6d083c7eef95266859097c1917ac2e08ced79217dc"
   }
 }

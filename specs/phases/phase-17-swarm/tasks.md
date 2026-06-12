@@ -19,16 +19,16 @@
 
 ## Group 1 — Conductor Core (Claude Code)
 
-- [ ] G1.1 core/swarm/conductor.js
-- [ ] G1.2 core/swarm/supervise.md (shared supervisor recipe)
-- [ ] G1.3 Claude Code background-session spawn wrapper + fallback
-- [ ] G1.4 bin/swarm.js (CLI surface)
-- [ ] G1.5 /swarm start recipe
-- [ ] G1.6 /swarm status recipe
-- [ ] G1.7 /swarm cancel recipe
-- [ ] G1.8 Saga record extension (dispatch-run with swarm fields)
-- [ ] G1.9 Conductor polling loop
-- [ ] G1.10 Tests: start + cancel + board render
+- [x] G1.1 core/swarm/conductor.js
+- [x] G1.2 core/swarm/supervise.md (shared supervisor recipe)
+- [x] G1.3 Claude Code background-session spawn wrapper + fallback
+- [x] G1.4 bin/swarm.js (CLI surface)
+- [x] G1.5 /swarm start recipe
+- [x] G1.6 /swarm status recipe
+- [x] G1.7 /swarm cancel recipe
+- [x] G1.8 Saga record extension (dispatch-run with swarm fields)
+- [x] G1.9 Conductor polling loop
+- [x] G1.10 Tests: start + cancel + board render
 
 ## Group 2 — Intervention Surface
 

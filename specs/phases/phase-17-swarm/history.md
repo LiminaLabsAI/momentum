@@ -90,6 +90,22 @@ Detail: User direction: do NOT use cerebrio-ecosystem (real project) for Phase 1
 
 ---
 
+### [NOTE] 2026-06-12 — Group 1 landed — conductor core + Claude Code surface
+Topics: phase-17, swarm, group-1, conductor, supervisor-recipe, bin-swarm, /swarm, polling-loop, saga, autopilot, checkpoint
+Affects-phases: phase-17-swarm
+Affects-specs: core/swarm/conductor.js, core/swarm/supervise.md, core/swarm/lib/saga.js, bin/swarm.js, adapters/claude-code/commands/swarm.md, bin/momentum.js
+Detail: G1 shipped the conductor library (`planSwarm` + `buildSpawnDirectives` + `pollTurn` + `cancelSwarm` + `resumeSwarm` + `renewLeases`), the platform-agnostic supervisor recipe at `core/swarm/supervise.md`, the saga record helper at `core/swarm/lib/saga.js`, the CLI surface at `bin/swarm.js` (subcommands: start | status | tell | broadcast | verify | complete | resume | cancel | budget), and the `/swarm` Claude Code slash command. `bin/momentum.js` dispatches the new verb and surfaces it in `--help`. `pollTurn` implements Strategies A+B+C: cheap board reload, git SHA invalidation, saga record reconciliation; autopilot auto-advances waves, checkpoint marks-complete-but-waits. 28 tests in `swarm-start-claude-code.test.js` + 6 in `swarm-cancel.test.js` + 10 CLI smoke tests in `swarm-board-render.test.js`. Claude Code regression fingerprint updated for the new `swarm.md` overlay file. Full suite 381 → 409.
+
+---
+
+### [ARCH_CHANGE] 2026-06-12 — Swarm CLI verb registered + Claude Code overlay shipped (additive)
+Topics: phase-17, swarm, cli, slash-command, claude-code-fingerprint, additive
+Affects-phases: phase-17-swarm
+Affects-specs: bin/momentum.js, adapters/claude-code/commands/swarm.md, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: Added `momentum swarm` top-level verb (dispatch in `bin/momentum.js`, recipe in `bin/swarm.js`). Added `.claude/commands/swarm.md` overlay for Claude Code (single recipe file handles all subcommands via the same pattern as `/ecosystem`). Per Rule 10 additive at completion — both the CLI verb and the overlay are new and don't change any existing behavior. Fingerprint baseline regenerated; meta updated to point at Phase 17 G1.
+
+---
+
 ### [NOTE] 2026-06-12 — Group 0 landed — schemas + indexing foundation
 Topics: phase-17, swarm, group-0, schemas, manifest, board, contract, dispatch-run, wave-ordering, git-sha, incremental-log, brief-frontmatter
 Affects-phases: phase-17-swarm
