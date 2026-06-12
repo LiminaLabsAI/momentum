@@ -14,17 +14,22 @@ const assert = require('node:assert/strict');
 const { mktmp, rmrf, runCli } = require('./_helpers');
 const { runAdapterSmoke, runOrchestrationSmoke } = require('./helpers/adapter-smoke');
 
+// ENH-036: Codex recipes ship as native skills under .agents/skills/<name>/SKILL.md
+// (not .codex/commands/<name>.md). recipePath maps each recipe name to its
+// skill artifact path.
+const codexRecipePath = (name) => ['.agents', 'skills', name, 'SKILL.md'];
+
 test('adapter smoke: codex — init / init --ecosystem / join / leave / doctor / ecosystem status', () => {
   runAdapterSmoke('codex', {
     primary: 'AGENTS.md',
-    commandsDir: ['.codex', 'commands'],
+    recipePath: codexRecipePath,
   });
 });
 
 test('orchestration smoke: codex — scout / dispatch / handoff / continue', () => {
   runOrchestrationSmoke('codex', {
     primary: 'AGENTS.md',
-    commandsDir: ['.codex', 'commands'],
+    recipePath: codexRecipePath,
     slashCommandsExpected: true,
   });
 });
@@ -46,10 +51,15 @@ test('adapter smoke: codex — .codex/agents/ TOMLs + .agents/skills/momentum-or
       true,
       'expected .agents/skills/momentum-orient/SKILL.md',
     );
-    // AGENTS.md recipe table present
+    // AGENTS.md skills-based recipe section present
     const agentsMd = fs.readFileSync(path.join(target, 'AGENTS.md'), 'utf8');
-    assert.match(agentsMd, /## Momentum Recipes — Lookup Pattern/);
-    assert.match(agentsMd, /\.codex\/commands\/brainstorm-phase\.md/);
+    assert.match(agentsMd, /## Momentum Recipes — Codex Skills/);
+    // And each recipe is materialized as a real SKILL.md (sample one).
+    assert.equal(
+      fs.existsSync(path.join(target, '.agents', 'skills', 'brainstorm-phase', 'SKILL.md')),
+      true,
+      'brainstorm-phase recipe must ship as a skill',
+    );
   } finally {
     rmrf(target);
   }

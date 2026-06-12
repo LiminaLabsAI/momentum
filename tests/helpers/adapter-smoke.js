@@ -21,9 +21,13 @@ const lib = require('../../core/ecosystem/lib');
  * Returns void; throws on any unexpected outcome.
  *
  * @param {string} agent  Adapter name (claude-code | codex | antigravity).
- * @param {{primary: string, commandsDir: string[]}} env  Adapter-specific
- *   expectations: primary instruction filename + relative path components
- *   for the slash-commands directory.
+ * @param {{primary: string, commandsDir?: string[], recipePath?: function}} env
+ *   Adapter-specific expectations:
+ *   - primary: primary instruction filename
+ *   - commandsDir: legacy slash-commands dir (Claude Code, Antigravity workflows)
+ *   - recipePath: optional callback (name => string[]) returning a relative path
+ *     for the recipe artifact. When provided, takes precedence over commandsDir.
+ *     Used by Codex where recipes ship as `.agents/skills/<name>/SKILL.md`.
  */
 function runAdapterSmoke(agent, env) {
   const tmp = mktmp(`momentum-adapter-${agent}-`);
@@ -40,21 +44,23 @@ function runAdapterSmoke(agent, env) {
       fs.existsSync(path.join(solo, env.primary)),
       `[${agent}] expected ${env.primary} after init`,
     );
-    // Slash commands directory present (or skipped for adapters with no
-    // slash commands — Antigravity).
-    if (env.commandsDir) {
-      assert.ok(
-        fs.existsSync(path.join(solo, ...env.commandsDir, 'ecosystem.md')),
-        `[${agent}] expected ${env.commandsDir.join('/')}/ecosystem.md after init`,
-      );
-      assert.ok(
-        fs.existsSync(path.join(solo, ...env.commandsDir, 'initiative.md')),
-        `[${agent}] expected ${env.commandsDir.join('/')}/initiative.md after init`,
-      );
-      assert.ok(
-        fs.existsSync(path.join(solo, ...env.commandsDir, 'session.md')),
-        `[${agent}] expected ${env.commandsDir.join('/')}/session.md after init`,
-      );
+    // Recipe artifacts present in their adapter-native shape. Codex ships
+    // them as `.agents/skills/<name>/SKILL.md`; older adapters as
+    // `<commandsDir>/<name>.md`. Antigravity passes nothing for either and
+    // we skip — there is no per-name recipe artifact to assert.
+    const resolveRecipe = env.recipePath
+      ? (name) => env.recipePath(name)
+      : env.commandsDir
+        ? (name) => [...env.commandsDir, `${name}.md`]
+        : null;
+    if (resolveRecipe) {
+      for (const name of ['ecosystem', 'initiative', 'session']) {
+        const rel = resolveRecipe(name);
+        assert.ok(
+          fs.existsSync(path.join(solo, ...rel)),
+          `[${agent}] expected ${rel.join('/')} after init`,
+        );
+      }
     }
 
     // 2. doctor (standalone state)
@@ -162,12 +168,18 @@ function runOrchestrationSmoke(agent, env) {
       );
     }
 
-    // If the adapter ships slash commands, assert overlay files exist.
+    // If the adapter ships slash commands, assert overlay files exist
+    // (in the adapter's native shape — Codex uses skills, others use the
+    // flat commands dir).
     if (env.slashCommandsExpected) {
+      const resolveRecipe = env.recipePath
+        ? (name) => env.recipePath(name)
+        : (name) => [...env.commandsDir, `${name}.md`];
       for (const cmd of ['scout', 'dispatch', 'handoff', 'continue']) {
+        const rel = resolveRecipe(cmd);
         assert.ok(
-          fs.existsSync(path.join(ecoRoot, 'a', ...env.commandsDir, `${cmd}.md`)),
-          `[${agent}] slash command overlay missing: ${env.commandsDir.join('/')}/${cmd}.md`,
+          fs.existsSync(path.join(ecoRoot, 'a', ...rel)),
+          `[${agent}] slash command overlay missing: ${rel.join('/')}`,
         );
       }
     }

@@ -64,7 +64,7 @@ test('init — claude-code output shape remains Claude-specific', () => {
   } finally { rmrf(target); }
 });
 
-test('init — codex install produces AGENTS.md hooks and command recipes', () => {
+test('init — codex install produces AGENTS.md, hooks, and recipe skills', () => {
   const target = mktmp();
   try {
     const res = runCli(['init', target, '--agent', 'codex']);
@@ -73,16 +73,25 @@ test('init — codex install produces AGENTS.md hooks and command recipes', () =
     assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), false);
     assert.equal(fs.existsSync(path.join(target, '.codex', 'hooks.json')), true);
-    assert.equal(fs.existsSync(path.join(target, '.codex', 'commands', 'brainstorm-phase.md')), true);
-    assert.equal(fs.existsSync(path.join(target, '.codex', 'commands', 'start-phase.md')), true);
+    // ENH-036: recipes ship as native Codex skills, not .codex/commands/ fragments.
+    assert.equal(
+      fs.existsSync(path.join(target, '.agents', 'skills', 'brainstorm-phase', 'SKILL.md')),
+      true,
+    );
+    assert.equal(
+      fs.existsSync(path.join(target, '.agents', 'skills', 'start-phase', 'SKILL.md')),
+      true,
+    );
+    assert.equal(fs.existsSync(path.join(target, '.codex', 'commands')), false,
+      'legacy .codex/commands/ should be removed after the skill transform');
     assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
     assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.claude')), false);
 
     const agentsMd = read(path.join(target, 'AGENTS.md'));
-    // Phase 16 Rework: renamed section "Momentum Commands in Codex" → "Momentum Recipes — Lookup Pattern"
-    assert.match(agentsMd, /Momentum Recipes — Lookup Pattern/);
+    // ENH-036: section renamed from "Momentum Recipes — Lookup Pattern" to skills framing.
+    assert.match(agentsMd, /Momentum Recipes — Codex Skills/);
     assert.match(agentsMd, /## Project Extensions/);
 
     const leaked = [];

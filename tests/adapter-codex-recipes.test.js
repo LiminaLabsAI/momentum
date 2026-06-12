@@ -1,15 +1,13 @@
 'use strict';
 
 /**
- * Phase 16 Rework G1.6 — Codex AGENTS.md recipe lookup pattern.
+ * Codex recipes-as-skills (ENH-036).
  *
- * Verifies that the rewritten AGENTS.md contains:
- *   - The "Momentum Recipes — Lookup Pattern" section
- *   - A row in the recipe table for every shipped recipe (core + overlay)
- *
- * The lookup pattern is Codex's substitute for native per-project slash
- * commands. AGENTS.md teaches the agent to find recipes by name and
- * follow them.
+ * Each momentum recipe ships as a native Codex skill at
+ * `.agents/skills/<name>/SKILL.md` with `name` + `description` frontmatter
+ * (https://developers.openai.com/codex/skills). AGENTS.md documents the
+ * shipped recipe set so users know what's available; the lookup-by-path
+ * pattern from v0.19.0 is gone — Codex auto-discovers skills directly.
  */
 
 const fs = require('node:fs');
@@ -35,7 +33,7 @@ function shippedRecipeNames() {
   return [...names].sort();
 }
 
-test('Codex AGENTS.md contains the Recipes Lookup Pattern section', () => {
+test('Codex AGENTS.md frames recipes as skills (not lookup fragments)', () => {
   const target = mktmp();
   try {
     const res = runCli(['init', target, '--agent', 'codex']);
@@ -43,32 +41,71 @@ test('Codex AGENTS.md contains the Recipes Lookup Pattern section', () => {
     const agentsMd = fs.readFileSync(path.join(target, 'AGENTS.md'), 'utf8');
     assert.match(
       agentsMd,
-      /## Momentum Recipes — Lookup Pattern/,
-      'AGENTS.md must contain the "Momentum Recipes — Lookup Pattern" section',
+      /## Momentum Recipes — Codex Skills/,
+      'AGENTS.md must contain the "Momentum Recipes — Codex Skills" section',
     );
     assert.match(
       agentsMd,
+      /\.agents\/skills\//,
+      'AGENTS.md must reference the .agents/skills/ canonical skill path',
+    );
+    assert.doesNotMatch(
+      agentsMd,
       /\.codex\/commands\/<name>\.md/,
-      'AGENTS.md must reference the .codex/commands/<name>.md lookup path',
+      'AGENTS.md must NOT reference the legacy .codex/commands/<name>.md lookup path',
     );
   } finally {
     rmrf(target);
   }
 });
 
-test('Codex AGENTS.md recipe table mentions every shipped recipe', () => {
+test('Codex install generates one SKILL.md per shipped recipe', () => {
   const target = mktmp();
   try {
     const res = runCli(['init', target, '--agent', 'codex']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
-    const agentsMd = fs.readFileSync(path.join(target, 'AGENTS.md'), 'utf8');
+
+    // Every recipe must materialize as a skill on disk.
     const missing = [];
     for (const name of shippedRecipeNames()) {
-      // Each recipe should be mentioned with its file path in the table.
-      const pattern = new RegExp(`\\.codex/commands/${name}\\.md`);
-      if (!pattern.test(agentsMd)) missing.push(name);
+      const skillPath = path.join(target, '.agents', 'skills', name, 'SKILL.md');
+      if (!fs.existsSync(skillPath)) {
+        missing.push(name);
+        continue;
+      }
+      const content = fs.readFileSync(skillPath, 'utf8');
+      // Each SKILL.md must carry the required frontmatter pair.
+      if (!new RegExp(`^---\\nname: ${name}\\n`, 'm').test(content)) {
+        missing.push(`${name} (missing frontmatter name)`);
+      }
+      if (!/^description: /m.test(content)) {
+        missing.push(`${name} (missing frontmatter description)`);
+      }
     }
-    assert.equal(missing.length, 0, `AGENTS.md missing recipe rows for: ${missing.join(', ')}`);
+    assert.equal(missing.length, 0, `Skill generation gaps: ${missing.join(', ')}`);
+
+    // momentum-orient is shipped via the overlay (not the recipe transform);
+    // it must still be there alongside the generated skills.
+    assert.ok(
+      fs.existsSync(path.join(target, '.agents', 'skills', 'momentum-orient', 'SKILL.md')),
+      'momentum-orient skill (overlay) must coexist with generated recipe skills',
+    );
+  } finally {
+    rmrf(target);
+  }
+});
+
+test('Codex install removes the legacy .codex/commands/ directory', () => {
+  // After the transform, the lookup directory is replaced by skills entirely.
+  const target = mktmp();
+  try {
+    const res = runCli(['init', target, '--agent', 'codex']);
+    assert.equal(res.status, 0, `init failed: ${res.stderr}`);
+    assert.equal(
+      fs.existsSync(path.join(target, '.codex', 'commands')),
+      false,
+      '.codex/commands/ must be removed once recipes ship as skills',
+    );
   } finally {
     rmrf(target);
   }

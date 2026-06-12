@@ -16,44 +16,55 @@
 
 > **First file to read: ALWAYS `specs/status.md`.**
 
-## Momentum Recipes — Lookup Pattern
+## Momentum Recipes — Codex Skills
 
-Codex does not auto-register per-project slash commands. Instead, momentum
-ships its phase + orchestration **recipes** as Markdown files at
-`.codex/commands/<name>.md`. When the user invokes a recipe by name —
-`/<name>`, `momentum <name>`, or "run <name>" in natural language — locate
-the matching file and follow its instructions verbatim.
+Each momentum recipe ships as a native Codex skill at
+`.agents/skills/<name>/SKILL.md` ([Codex skills
+docs](https://developers.openai.com/codex/skills)). Codex auto-discovers
+skills under `.agents/skills/` at session start across CLI, IDE, and
+desktop app — so when the user invokes `/brainstorm-phase`, asks "run
+brainstorm-phase", or types `$brainstorm-phase`, Codex routes directly
+to that skill.
 
-The full recipe set (installed at `.codex/commands/`):
+The shipped recipe set (one skill per recipe, all under
+`.agents/skills/`):
 
-| Recipe | File | What it does |
-|---|---|---|
-| brainstorm-idea | `.codex/commands/brainstorm-idea.md` | Explore an idea before scaffolding anything |
-| brainstorm-phase | `.codex/commands/brainstorm-phase.md` | Plan the next implementation phase (gate-protected) |
-| start-project | `.codex/commands/start-project.md` | Scaffold a new spec-driven project |
-| start-phase | `.codex/commands/start-phase.md` | Begin a planned phase (autonomous execution contract) |
-| complete-phase | `.codex/commands/complete-phase.md` | Verify, retro, release a finished phase |
-| sync-docs | `.codex/commands/sync-docs.md` | Propagate history entries to other spec docs |
-| track | `.codex/commands/track.md` | Track a backlog item (bug / feature / tech debt / enhancement) |
-| review | `.codex/commands/review.md` | Review and groom the backlog between phases |
-| log | `.codex/commands/log.md` | Append a manual narrative entry to the active phase history |
-| migrate | `.codex/commands/migrate.md` | Onboard an existing project into momentum |
-| validate | `.codex/commands/validate.md` | Check spec structure health |
-| ecosystem | `.codex/commands/ecosystem.md` | Cross-repo ecosystem coordination |
-| initiative | `.codex/commands/initiative.md` | Manage cross-repo initiatives |
-| session | `.codex/commands/session.md` | Append a manual narrative entry to today's ecosystem session log |
-| systematic-debug | `.codex/commands/systematic-debug.md` | Systematically isolate, reproduce, and resolve task execution failures |
-| scout | `.codex/commands/scout.md` | Read-only context fetch from one ecosystem member repo |
-| dispatch | `.codex/commands/dispatch.md` | Parallel multi-repo fan-out + synthesis |
-| handoff | `.codex/commands/handoff.md` | Cross-session control transfer with structured context block |
-| continue | `.codex/commands/continue.md` | Pick up a pending handoff in this repo |
-| review-code | `.codex/commands/review-code.md` | Multi-perspective code review (uses momentum-reviewer-* subagents) |
+| Recipe | What it does |
+|---|---|
+| brainstorm-idea | Explore an idea before scaffolding anything |
+| brainstorm-phase | Plan the next implementation phase (gate-protected) |
+| start-project | Scaffold a new spec-driven project |
+| start-phase | Begin a planned phase (autonomous execution contract) |
+| complete-phase | Verify, retro, release a finished phase |
+| sync-docs | Propagate history entries to other spec docs |
+| track | Track a backlog item (bug / feature / tech debt / enhancement) |
+| review | Review and groom the backlog between phases |
+| log | Append a manual narrative entry to the active phase history |
+| migrate | Onboard an existing project into momentum |
+| validate | Check spec structure health |
+| ecosystem | Cross-repo ecosystem coordination |
+| initiative | Manage cross-repo initiatives |
+| session | Append a manual narrative entry to today's ecosystem session log |
+| systematic-debug | Systematically isolate, reproduce, and resolve task execution failures |
+| scout | Read-only context fetch from one ecosystem member repo |
+| dispatch | Parallel multi-repo fan-out + synthesis |
+| handoff | Cross-session control transfer with structured context block |
+| continue | Pick up a pending handoff in this repo |
+| review-code | Multi-perspective code review (uses momentum-reviewer-* subagents) |
+| momentum-orient | Read `specs/status.md` before starting any work (Rule 1) |
 
-The recipes are platform-independent — they describe what to do, not how
-Codex specifically should do it. When you read a recipe that mentions
-"use the Task tool" (Claude Code terminology), translate to Codex's
-equivalent: spawn the relevant momentum-reviewer-* subagent (see below),
-or use natural-language parallel fan-out.
+Each `SKILL.md` declares `name` + `description` frontmatter and includes
+the full recipe body. The recipes are platform-independent — they
+describe what to do, not how Codex specifically should do it. When you
+read a recipe that mentions "use the Task tool" (Claude Code
+terminology), translate to Codex's equivalent: spawn the relevant
+`momentum-reviewer-*` subagent (see below), or use natural-language
+parallel fan-out.
+
+> Legacy installs from momentum ≤ v0.20.0 shipped recipes as Markdown
+> fragments under `.codex/commands/`. `momentum upgrade --agent codex`
+> regenerates skills under `.agents/skills/` and removes the old
+> lookup directory.
 
 ## Codex Subagents
 
@@ -115,16 +126,14 @@ cwd-as-session-root behavior works without env-var configuration.
 
 ## Codex Skills
 
-Momentum installs at least one skill in `.agents/skills/` (the convention
-shared with Antigravity — Codex auto-discovers SKILL.md files at this
-path):
-
-- **`momentum-orient`** — Read `specs/status.md` before starting any work.
-  Codifies Rule 1 (Orient First).
+All momentum recipes ship as Codex skills under `.agents/skills/<name>/SKILL.md`
+(see the "Momentum Recipes — Codex Skills" section above for the full
+shipped set). Each `SKILL.md` declares `name` + `description` frontmatter
+per the [Codex skills format](https://developers.openai.com/codex/skills).
 
 Add additional project-specific skills under
-`.agents/skills/<name>/SKILL.md` following the SKILL.md frontmatter
-convention. Invoke via the `/skills` picker or `$<skill-name>` mention.
+`.agents/skills/<name>/SKILL.md` following the same convention. Invoke
+via the `/skills` picker or `$<skill-name>` mention.
 
 ## Always-On Rules
 

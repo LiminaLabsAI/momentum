@@ -10,7 +10,7 @@ hooks attach, and which slash-command surface the IDE exposes.
 | Agent | Status | Primary instruction file | Hook surface | Slash commands |
 | --- | --- | --- | --- | --- |
 | [Claude Code](#claude-code) | Available | `CLAUDE.md` | `.claude/settings.json` — PreToolUse, PostToolUse, SessionStart | Native `.claude/commands/*.md` |
-| [Codex](#codex) | Testing pending | `AGENTS.md` | `.codex/hooks.json` (PreToolUse / PostToolUse / SessionStart, `apply_patch|shell`) | AGENTS.md recipes lookup + `.codex/commands/` fragments |
+| [Codex](#codex) | Testing pending | `AGENTS.md` | `.codex/hooks.json` (PreToolUse / PostToolUse / SessionStart, `apply_patch\|Bash`) | Native skills at `.agents/skills/<name>/SKILL.md` |
 | [Antigravity](#antigravity) | Testing pending | `AGENTS.md` | `.agents/hooks.json` (`run_command|view_file|.*write.*|apply_patch`) | `.agent/workflows/*.md` auto-registered as slash commands |
 | [Cursor](#cursor) | Planned (Phase 19 — Reach) | `.cursor/rules/` | TBD | Rules-based prompt fragments |
 | [Gemini CLI](#gemini-cli) | Planned (Phase 19 — Reach) | `GEMINI.md` | TBD | Embedded sections |
@@ -70,11 +70,17 @@ npx @avinash-singh-io/momentum init --agent codex
 
 - **`AGENTS.md`** — Codex's primary instruction file (analogous to CLAUDE.md).
 - **`.agent/rules/project.md`** — the 13 rules.
-- **`.codex/commands/*.md`** — commands as prompt-fragment recipes (Codex
-  doesn't natively support slash commands the way Claude Code does; the
-  recipes are prompt fragments the agent runs when you type the trigger).
+- **`.agents/skills/<name>/SKILL.md`** — each momentum recipe ships as a
+  native Codex skill ([skills docs](https://developers.openai.com/codex/skills))
+  with `name` + `description` frontmatter. Codex auto-discovers skills at
+  session start across CLI, IDE, and desktop app, so `/brainstorm-phase`,
+  `$brainstorm-phase`, and natural-language "run brainstorm-phase" all
+  route to the same SKILL.md.
+- **`.codex/agents/*.toml`** — TOML reviewer subagents (security, QA,
+  architecture) with `sandbox_mode = "read-only"`.
 - **`.codex/hooks.json`** — Codex hook config wiring the same three hook
-  scripts as Claude Code.
+  scripts as Claude Code. Hooks are stable + default-on in current Codex CLI;
+  first run prompts you to trust each hook via `/hooks`.
 
 ### Hook compatibility
 

@@ -106,7 +106,7 @@ test('upgrade — codex AGENTS.md preserves Project Extensions byte-for-byte', (
     const upgraded = read(agentsMdPath);
     assert.ok(upgraded.includes(userExtension),
       'Codex user extension should be preserved verbatim');
-    assert.match(upgraded, /Momentum Recipes — Lookup Pattern/);
+    assert.match(upgraded, /Momentum Recipes — Codex Skills/);
     assert.equal(fs.existsSync(path.join(target, '.codex', 'hooks.json')), true);
   } finally { rmrf(target); }
 });
