@@ -50,6 +50,14 @@ Detail: Codex + Antigravity still don't ship `/swarm` at all (Phase 18 wires the
 
 ---
 
+### [NOTE] 2026-06-14 — Group 5 landed — e2e + docs + retrospective + version bump to 0.20.2
+Topics: phase-17-5, swarm-portability, group-5, e2e-scenarios, evidence, docs-swarm, parity-matrix, capabilities-matrix, retrospective, sync-docs, version-bump
+Affects-phases: phase-17-5-swarm-portability
+Affects-specs: tests/swarm-portability-e2e.test.js, specs/phases/phase-17-5-swarm-portability/evidence/scenario-portability-{focus,join,absorb}.txt, docs/swarm.md, core/adapter-parity-matrix.md, core/adapter-capabilities.md, specs/phases/phase-17-5-swarm-portability/retrospective.md, specs/status.md, specs/phases/README.md, specs/phases/index.json, specs/changelog/2026-06.md, specs/planning/roadmap.md, package.json
+Detail: G5 shipped the three synthetic two-session e2e scenarios + signal load test, captured evidence to `specs/phases/phase-17-5-swarm-portability/evidence/`, converted `docs/swarm.md` "Future: Swarm Portability (Phase 17.5)" → "Multi-session portability (Phase 17.5 / v0.20.2)" with full subcommand table + signal protocol description + two worked examples, updated `core/adapter-parity-matrix.md` footnote 14 to cover Phase 17 + Phase 17.5 (Phase 18 retargeted to v0.20.3), refreshed `core/adapter-capabilities.md` matrix date + Phase 17/17.5 scope section, wrote retrospective.md, ran /sync-docs propagation to status.md / phases/README.md / phases/index.json / changelog/2026-06.md / planning/roadmap.md, bumped `package.json` 0.20.1 → 0.20.2. E2E scenarios: P-Focus (linear 3-repo — sess-A focuses backend, sess-B claims via token, lease enforcement blocks sess-A cross-write), P-Join (branched 4-repo — sess-A releases mid-b, sess-B joins as co-conductor and claims mid-b, concurrent waves), P-Absorb-Conflict (wide 5-repo — two swarms with diverging content_hash on root-api; absorb aborts with ECONTRACT; both swarms verified deep-equal to pre-absorb state). Plus signal protocol 20-way concurrent write load test (acceptance #4 evidence). Suite: **550/550** (464 v0.20.1 baseline + 86 new — 31 G0 + 10 G1 + 9 G2 + 13 G3 + 19 G4 + 4 G5). Ready to merge + tag + release.
+
+---
+
 ### [NOTE] 2026-06-14 — Group 4 landed — /swarm absorb
 Topics: phase-17-5, swarm-portability, group-4, absorb, two-swarm-convergence, contract-verify, manifest-merge, wave-recompute, sessions-union, inbox-merge, audit-timeline, archive, fingerprint-refresh
 Affects-phases: phase-17-5-swarm-portability

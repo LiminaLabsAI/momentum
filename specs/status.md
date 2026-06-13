@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-06-13
-> **Current Phase**: Phase 17.5 — Swarm Portability (target v0.20.2)
+> **Last Updated**: 2026-06-14
+> **Current Phase**: _none active — Phase 17.5 Swarm Portability complete pending release_
 > **Latest Release**: v0.20.1 — Codex Runtime Refresh (BUG-007 + ENH-036)
 > **Health**: On Track
 
@@ -35,12 +35,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 16 | Codex & Antigravity Adapter Rework (Native-Idiom) | Complete | v0.19.0 (2026-06-11) |
 | 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete | v0.20.0 (2026-06-12) |
 | — | Codex Runtime Refresh (BUG-007 + ENH-036) | Complete | v0.20.1 (2026-06-13) |
+| 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14 — pending merge + tag + release) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 17.5 | Swarm Portability | In Progress | G0/G1/G2/G3/G4/G5 — 0 of 5 groups complete |
+| _(none — Phase 17.5 Swarm Portability complete pending merge + tag + release as v0.20.2)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -51,8 +52,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 17.5 | Swarm Portability | Not Started (target v0.20.2) | `/swarm focus`, `/swarm join`, `/swarm absorb` commands; lease enforcement; signal protocol; multi-conductor coordination. Schema hooks already in v0.20.0. (Was v0.20.1; displaced by Codex Runtime Refresh.) |
-| 18 | Swarm Parity (Codex + Antigravity) | Not Started (target v0.20.3) | Codex `swarm-supervisor.toml` + MCP cwd shim; Antigravity Agent Manager workflow + skills. `core/swarm/` is platform-agnostic; this phase wires the two adapters. (Was v0.20.2; displaced by Codex Runtime Refresh.) |
+| 18 | Swarm Parity (Codex + Antigravity) | Not Started (target v0.20.3) | Codex `swarm-supervisor.toml` + MCP cwd shim; Antigravity Agent Manager workflow + skills. `core/swarm/` is platform-agnostic; this phase wires the two adapters. (Was v0.20.2; displaced by Phase 17.5.) |
 | 19 | Reach | Not Started (target v0.21.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
 | 20 | Intelligence | Not Started (target v0.22.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 21 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
@@ -79,8 +79,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Cerebrio bootstrap** — v0.20.0 is now live on npm. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield / bench). Phase 17 validation used synthetic fixtures only — this is the live dogfood.
-2. **Phase 17.5 — Swarm Portability** (target v0.20.2 — displaced from v0.20.1 by Codex Runtime Refresh). Schema hooks already shipped in v0.20.0; needs `/swarm focus|join|absorb` commands + lease enforcement + signal protocol + multi-conductor coordination.
+1. **Merge + release v0.20.2** — Phase 17.5 Swarm Portability is complete on `phase-17-5-swarm-portability` branch. 550/550 tests green. Merge to `main`, tag `v0.20.2`, `gh release create`, `npm publish --access public`.
+2. **Cerebrio bootstrap** — v0.20.0 is live on npm; v0.20.2 will be live after the release above. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield / bench). Phase 17 + 17.5 validation used synthetic fixtures only — this is the live dogfood.
 3. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
 4. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
 5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
@@ -100,6 +100,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Recent Changes
 
+- **2026-06-14**: Phase 17.5 Swarm Portability complete on branch `phase-17-5-swarm-portability` (target v0.20.2). Lights up the schema hooks shipped in v0.20.0: five new `/swarm` subcommands (`claim`, `release`, `focus`, `join`, `absorb`), lease enforcement at the `core/swarm/lib/manifest.js` write chokepoint, typed signal protocol in `<eco>/swarms/<id>/signals/`, opaque transfer tokens at `<eco>/swarms/<id>/tokens/`. Five groups: G0 libs (signals + tokens + sessions + lease enforcement, 31 tests) → G1 claim/release (10 tests) → G2 focus (9 tests) → G3 join (13 tests) → G4 absorb (19 tests) → G5 e2e + docs + retrospective + version bump (4 portability e2e scenarios + signal load test). Three synthetic two-session scenarios captured at `evidence/scenario-portability-{focus,join,absorb}.txt`: P-Focus (linear 3-repo, focus + token-handoff), P-Join (branched 4-repo, release + co-conductor), P-Absorb-Conflict (wide 5-repo, content_hash divergence verified to abort with both swarms byte-for-byte unchanged). Lease enforcement at single chokepoint `updateManifestAsOwner` — owner write accepted, non-owner with valid lease rejected with EOWNERSHIP + claim-request signal, takeover after lease expiry accepted with lease-takeover audit. Solo (single-session) swarm behaviour: unchanged — Phase 17 e2e scenarios still pass byte-for-byte. Claude Code zero-regression: fingerprint snapshot caught four intentional `swarm.md` overlay drifts (one per group G1-G4), re-snapshotted with explanatory meta each time. `docs/swarm.md` "Future: Swarm Portability" replaced with "Multi-session portability" + two worked examples. `core/adapter-parity-matrix.md` footnote 14 updated; Phase 18 retargeted to v0.20.3. `core/adapter-capabilities.md` Phase 17/17.5 scope section refreshed. Suite: **550/550** (464 v0.20.1 baseline + 86 new). Ready to merge + tag + release.
 - **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.
 - **2026-04-21**: Phase 2 complete — v0.3.0 released. `@avinash-singh-io/momentum` published to npm. Zero-dependency Node.js CLI ships `momentum init` command.
 - **2026-04-21**: Phase 3 complete — v0.4.0 released. Full specs/ scaffold on init. `--coding-agent` flag. `adapter.js` DIP. Command fixes (ENH-003–007, TD-001–002). `brainstorm-idea` + `start-project` commands. README rewritten.

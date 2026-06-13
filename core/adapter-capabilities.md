@@ -27,7 +27,7 @@ If you add a new adapter, fill in **every** column. The audit test
 asserts every adapter declares the full capability surface that
 orchestration code depends on.
 
-## Matrix (as of 2026-06-12, post-Phase 17 G4)
+## Matrix (as of 2026-06-14, post-Phase 17.5 G5)
 
 | Capability | Claude Code | Codex | Antigravity |
 |---|---|---|---|
@@ -42,13 +42,19 @@ orchestration code depends on.
 | `artifacts` (adapter-specific) | — | — | ✅ |
 | `planningMode` (adapter-specific) | — | — | ✅ |
 
-## Phase 17 (v0.20.0) — `/swarm` Claude Code-only scope
+## Phase 17 (v0.20.0) + Phase 17.5 (v0.20.2) — `/swarm` Claude Code-only scope
 
 The Phase 17 swarm capability — sustained parallel multi-project
-feature delivery — ships **Claude Code only** in v0.20.0. The
+feature delivery — ships **Claude Code only**. Phase 17 (v0.20.0)
+delivered the conductor + supervisor architecture, files-as-channels
+coordination, indexing strategies, and intervention surface. Phase 17.5
+(v0.20.2) layered five portability subcommands (`claim` / `release` /
+`focus` / `join` / `absorb`), lease enforcement at the
+`manifest.js` write chokepoint, and a typed signal protocol. The
 underlying `core/swarm/` library is platform-agnostic (no capability
 flag added — the swarm primitive is its own subsystem). Adapter
-parity is **Phase 18 (target v0.20.2)**:
+parity is **Phase 18 (target v0.20.3 — displaced from v0.20.2 by
+Phase 17.5)**:
 
 | Adapter | What's needed for swarm parity |
 |---|---|

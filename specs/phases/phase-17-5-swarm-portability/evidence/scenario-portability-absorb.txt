@@ -1,0 +1,337 @@
+# Phase 17.5 Swarm Portability — Scenario absorb
+
+Captured: 2026-06-14 (Phase 17.5 G5)
+Ecosystem: momentum-test-6fc8Iw
+Swarms: 0001-portability-a, 0002-portability-b
+
+## Narrative
+
+1. Wide 5-repo ecosystem: root → {l1, l2, l3, l4}.
+2. Two parallel swarms started by separate sessions:
+     - swarm A (sess-A) with [root, l1, l2] + contract root-api/v1/abc12345
+     - swarm B (sess-B) with [root, l3, l4] + contract root-api/v1/def67890
+3. /swarm absorb 0001-portability-a 0002-portability-b attempted by sess-A.
+4. detectContractConflicts catches the content_hash divergence on root-api.
+5. absorb throws ECONTRACT with conflicts[].
+6. Both swarms left exactly as they were on disk — deep-equal verified.
+7. Operator action: bump contract version, reconcile producer hash, then retry.
+
+## Manifest — 0001-portability-a
+
+```json
+{
+  "swarm_id": "0001-portability-a",
+  "version": 1,
+  "saga_id": "sg_1vmu01g",
+  "mode": "checkpoint",
+  "initiative": "portability",
+  "created": "2026-06-14T17:00:00Z",
+  "ecosystem": "p-absorb-conflict",
+  "repos": {
+    "root": {
+      "wave": 1,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-A",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-A",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    },
+    "l1": {
+      "wave": 2,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-A",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-A",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    },
+    "l2": {
+      "wave": 2,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-A",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-A",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    }
+  },
+  "waves": [
+    {
+      "index": 1,
+      "repos": [
+        "root"
+      ],
+      "status": "queued"
+    },
+    {
+      "index": 2,
+      "repos": [
+        "l1",
+        "l2"
+      ],
+      "status": "queued"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess-A",
+      "first_seen": "2026-06-14T17:00:00Z",
+      "last_seen": "2026-06-14T17:00:00Z"
+    }
+  ],
+  "audit": [
+    {
+      "ts": "2026-06-14T17:00:00Z",
+      "actor": "sess-A",
+      "event": "start",
+      "detail": "Swarm 0001-portability-a planned (3 repos, 2 waves)"
+    }
+  ],
+  "status": "running",
+  "contracts": [
+    {
+      "surface": "root-api",
+      "owner": "root",
+      "consumers": [
+        "l1",
+        "l2"
+      ],
+      "version": 1,
+      "content_hash": "abc12345"
+    }
+  ]
+}
+```
+
+## Board.json — 0001-portability-a
+
+```json
+{
+  "swarm_id": "0001-portability-a",
+  "version": 1,
+  "saga_id": "sg_1vmu01g",
+  "mode": "checkpoint",
+  "rendered_at": "2026-06-14T17:00:00Z",
+  "status": "running",
+  "active_wave": 1,
+  "repos": [
+    {
+      "name": "root",
+      "wave": 1,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    },
+    {
+      "name": "l1",
+      "wave": 2,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    },
+    {
+      "name": "l2",
+      "wave": 2,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    }
+  ],
+  "inbox_count": 0,
+  "recent_activity": [
+    {
+      "ts": "17:00",
+      "msg": "Swarm 0001-portability-a planned (3 repos, 2 waves)"
+    }
+  ]
+}
+
+```
+
+## Manifest — 0002-portability-b
+
+```json
+{
+  "swarm_id": "0002-portability-b",
+  "version": 1,
+  "saga_id": "sg_izg392",
+  "mode": "checkpoint",
+  "initiative": "portability",
+  "created": "2026-06-14T17:00:00Z",
+  "ecosystem": "p-absorb-conflict",
+  "repos": {
+    "root": {
+      "wave": 1,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-B",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-B",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    },
+    "l3": {
+      "wave": 2,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-B",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-B",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    },
+    "l4": {
+      "wave": 2,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-B",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-B",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    }
+  },
+  "waves": [
+    {
+      "index": 1,
+      "repos": [
+        "root"
+      ],
+      "status": "queued"
+    },
+    {
+      "index": 2,
+      "repos": [
+        "l3",
+        "l4"
+      ],
+      "status": "queued"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess-B",
+      "first_seen": "2026-06-14T17:00:00Z",
+      "last_seen": "2026-06-14T17:00:00Z"
+    }
+  ],
+  "audit": [
+    {
+      "ts": "2026-06-14T17:00:00Z",
+      "actor": "sess-B",
+      "event": "start",
+      "detail": "Swarm 0002-portability-b planned (3 repos, 2 waves)"
+    }
+  ],
+  "status": "running",
+  "contracts": [
+    {
+      "surface": "root-api",
+      "owner": "root",
+      "consumers": [
+        "l3",
+        "l4"
+      ],
+      "version": 1,
+      "content_hash": "def67890"
+    }
+  ]
+}
+```
+
+## Board.json — 0002-portability-b
+
+```json
+{
+  "swarm_id": "0002-portability-b",
+  "version": 1,
+  "saga_id": "sg_izg392",
+  "mode": "checkpoint",
+  "rendered_at": "2026-06-14T17:00:00Z",
+  "status": "running",
+  "active_wave": 1,
+  "repos": [
+    {
+      "name": "root",
+      "wave": 1,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    },
+    {
+      "name": "l3",
+      "wave": 2,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    },
+    {
+      "name": "l4",
+      "wave": 2,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    }
+  ],
+  "inbox_count": 0,
+  "recent_activity": [
+    {
+      "ts": "17:00",
+      "msg": "Swarm 0002-portability-b planned (3 repos, 2 waves)"
+    }
+  ]
+}
+
+```

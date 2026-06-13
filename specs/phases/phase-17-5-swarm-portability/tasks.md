@@ -44,13 +44,13 @@
 - [x] T4.5 Commit G4
 
 ## Group 5 — e2e + docs + retrospective + release
-- [ ] T5.1 `tests/swarm-portability-e2e.test.js` (P-Focus, P-Join, P-Absorb-Conflict)
-- [ ] T5.2 Evidence files `evidence/scenario-portability-{focus,join,absorb}.txt`
-- [ ] T5.3 `docs/swarm.md` Phase 17.5 section → shipped
-- [ ] T5.4 `core/adapter-parity-matrix.md` footnote update
-- [ ] T5.5 `core/adapter-capabilities.md` Phase 17.5 section
-- [ ] T5.6 `/sync-docs` propagation
-- [ ] T5.7 `package.json` → 0.20.2
-- [ ] T5.8 `retrospective.md`
-- [ ] T5.9 `npm test` final — ~544/544 green
-- [ ] T5.10 Release commit `chore(release): v0.20.2 — Swarm Portability`
+- [x] T5.1 `tests/swarm-portability-e2e.test.js` (P-Focus, P-Join, P-Absorb-Conflict)
+- [x] T5.2 Evidence files `evidence/scenario-portability-{focus,join,absorb}.txt`
+- [x] T5.3 `docs/swarm.md` Phase 17.5 section → shipped
+- [x] T5.4 `core/adapter-parity-matrix.md` footnote update
+- [x] T5.5 `core/adapter-capabilities.md` Phase 17.5 section
+- [x] T5.6 `/sync-docs` propagation
+- [x] T5.7 `package.json` → 0.20.2
+- [x] T5.8 `retrospective.md`
+- [x] T5.9 `npm test` final — 550/550 green
+- [x] T5.10 Release commit `chore(release): v0.20.2 — Swarm Portability`
