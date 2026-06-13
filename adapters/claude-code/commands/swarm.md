@@ -168,6 +168,34 @@ Audit log gets a `join` entry detailing the route — `registration only` / `via
 
 ---
 
+### `/swarm absorb <target-swarm-id> <source-swarm-id> [--yes] [--session <id>]`
+
+> Phase 17.5 / v0.20.2 — converge two swarms back into one.
+
+Merge `<source-swarm-id>` into `<target-swarm-id>` (the caller's swarm). Use to reunite after a `/swarm focus` split, or to absorb work from a peer swarm that's now done.
+
+```bash
+momentum swarm absorb <target-swarm-id> <source-swarm-id> [--yes] [--session <id>]
+```
+
+Behavior:
+1. Loads both manifests. If either is missing → exit 1.
+2. Detects contract conflicts: for every shared `surface` in both swarms' `contracts`, the `owner` must match and the `content_hash` (when present) must match. Mismatches abort cleanly — both swarms left untouched — with a printed diff for each conflict.
+3. Without `--yes`, prints a dry-run plan (repos to add, overlap, contract status) and exits 0 without writing. Re-run with `--yes` to proceed.
+4. On commit:
+   - `repos`: union; target wins on overlap (so a repo already in flight in target is not regressed by source's state)
+   - `waves`: recomputed via the wave-ordering library over the union of repos, against `ecosystem.json` dependencies
+   - `sessions[]`: union by `session_id` (earliest `first_seen`, latest `last_seen`)
+   - `contracts`: union; target's version kept on overlap (we verified compatibility above)
+   - `audit[]`: concat + sort by timestamp; append an `absorb` entry
+   - `inbox/`: source's pending items copied into target with bumped ids
+5. Archives the source swarm directory to `<eco>/swarms/.absorbed/<source-id>/`. Forensics preserved.
+6. Refreshes target's `board.json`.
+
+JSON output (`--json`) returns `{ absorbed, into, reposAdded, reposOverlapped, inboxMoved, archivedTo }`.
+
+---
+
 ### `/swarm release <swarm-id> <repo> [--session <id>]`
 
 > Phase 17.5 / v0.20.2 — multi-session ownership primitive.

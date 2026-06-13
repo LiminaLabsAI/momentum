@@ -50,6 +50,14 @@ Detail: Codex + Antigravity still don't ship `/swarm` at all (Phase 18 wires the
 
 ---
 
+### [NOTE] 2026-06-14 — Group 4 landed — /swarm absorb
+Topics: phase-17-5, swarm-portability, group-4, absorb, two-swarm-convergence, contract-verify, manifest-merge, wave-recompute, sessions-union, inbox-merge, audit-timeline, archive, fingerprint-refresh
+Affects-phases: phase-17-5-swarm-portability
+Affects-specs: core/swarm/absorb.js, bin/swarm.js, bin/momentum.js, adapters/claude-code/commands/swarm.md, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: G4 shipped `/swarm absorb <target> <source>` — two-swarm convergence with contract-verify abort. Library at `core/swarm/absorb.js` (`absorb({ecosystemRoot, targetSwarmId, sourceSwarmId, sessionId, nowIso})`) does the full merge in five phases: (1) `detectContractConflicts` — for every shared `surface`, the `owner` must match and `content_hash` (when present) must match; mismatch returns `{kind: 'owner-divergence' | 'content-hash-divergence'}` and `absorb` throws `ECONTRACT` with both swarms untouched; (2) wave recomputation — collects union of repos and runs `computeWaves` against `ecosystem.json` dependency edges to produce dependency-correct waves; (3) section merges — repos union (target wins on overlap), sessions[] union by `session_id` with earliest `first_seen` + latest `last_seen`, contracts union (target's version on overlap), audit timeline sorted by timestamp + appended `absorb` entry; (4) inbox copy — source pending items rewritten as `absorbed-<slug>` with bumped ids in target via `inboxLib.writeInboxItem`, INDEX regenerated; (5) source dir archived to `<eco>/swarms/.absorbed/<source-id>/` for forensics. CLI `cmdAbsorb` with `--yes` confirmation gate: bare call renders a dry-run plan (repos to add, overlap, contract conflict count) and exits 0; `--yes` commits. `ECONTRACT` exits 1 with a per-surface diff. Exposed helpers (`detectContractConflicts` / `mergeRepos` / `mergeSessions` / `mergeContracts` / `mergeAudit`) are pure and unit-testable. Slash command doc: new `/swarm absorb` section explaining the abort contract + JSON shape. Claude Code regression fingerprint re-snapshotted (G4 meta). 19 new tests (`swarm-absorb.test.js`): 5 pure helpers (no-conflict, matching-hash, owner-divergence, hash-divergence, mergeSessions), 9 end-to-end (clean disjoint, wave recomputation, contract match, contract diverge with both-untouched verify, sessions union, audit interleaving, inbox copy, self-absorb refused, ghost source), 5 CLI surfaces (--yes commits, dry-run plan, contract-conflict exit 1, usage error, --help mentions absorb). Full suite 527 → 546. Zero pre-existing regressions.
+
+---
+
 ### [NOTE] 2026-06-14 — Group 3 landed — /swarm join
 Topics: phase-17-5, swarm-portability, group-3, join, co-conductor, sessions-registry, token-consumption, auto-lease-renewal, fingerprint-refresh
 Affects-phases: phase-17-5-swarm-portability

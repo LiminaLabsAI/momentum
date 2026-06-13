@@ -33,6 +33,7 @@ const inboxLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'inbox'));
 const signalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'signals'));
 const focusLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'focus'));
 const joinLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'join'));
+const absorbLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'absorb'));
 const preMergeLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'pre-merge'));
 const ecosystemLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
 const { findRegistration } = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'state'));
@@ -432,6 +433,78 @@ function cmdClaim(args) {
       });
       console.error(`✗ claim ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
       console.error(`  claim-request signal written (${sig.signal_id}); owner sees it next poll`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+function cmdAbsorb(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    yes: { flag: '--yes', type: 'bool', default: false, aliases: ['-y'] },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [targetSwarmId, sourceSwarmId] = opts.positional;
+  if (!targetSwarmId || !sourceSwarmId) {
+    throw new Error('swarm absorb: usage — momentum swarm absorb <target-swarm-id> <source-swarm-id> [--session <id>] [--yes]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+
+  // Confirmation prompt (skipped with --yes)
+  if (!opts.yes && !opts.json) {
+    const target = manifestLib.loadManifest(ecosystemRoot, targetSwarmId);
+    const source = manifestLib.loadManifest(ecosystemRoot, sourceSwarmId);
+    if (!target || !source) {
+      // Let absorb() surface the canonical error
+    } else {
+      const conflicts = absorbLib.detectContractConflicts(source.contracts, target.contracts);
+      const overlap = Object.keys(source.repos).filter((id) => id in target.repos);
+      const newRepos = Object.keys(source.repos).filter((id) => !(id in target.repos));
+      console.log(`▸ absorb plan: ${sourceSwarmId} → ${targetSwarmId}`);
+      console.log(`  Repos to add:   ${newRepos.length ? newRepos.join(', ') : '(none)'}`);
+      console.log(`  Repos overlap:  ${overlap.length ? overlap.join(', ') : '(none)'}`);
+      console.log(`  Contracts diff: ${conflicts.length ? conflicts.length + ' conflict(s)' : 'clean'}`);
+      if (conflicts.length) {
+        for (const c of conflicts) {
+          console.log(`    ✗ ${c.surface} — ${c.kind}`);
+        }
+        console.error('');
+        console.error('Aborting — resolve contract conflicts first (bump versions on both sides, or use --yes to force).');
+        process.exit(1);
+      }
+      console.log('');
+      console.log('  Pass --yes to skip this confirmation. Re-run with --yes to proceed.');
+      process.exit(0);
+    }
+  }
+
+  try {
+    const r = absorbLib.absorb({
+      ecosystemRoot, targetSwarmId, sourceSwarmId, sessionId, nowIso: ts,
+    });
+    if (opts.json) {
+      process.stdout.write(JSON.stringify(r, null, 2) + '\n');
+      return;
+    }
+    console.log(`▸ absorbed ${r.absorbed} → ${r.into}`);
+    console.log(`  Repos added:    ${r.reposAdded.length ? r.reposAdded.join(', ') : '(none)'}`);
+    console.log(`  Repos overlap:  ${r.reposOverlapped.length ? r.reposOverlapped.join(', ') : '(none)'}`);
+    console.log(`  Inbox moved:    ${r.inboxMoved}`);
+    console.log(`  Archived to:    ${path.relative(ecosystemRoot, r.archivedTo)}`);
+  } catch (err) {
+    if (err.code === 'ECONTRACT') {
+      console.error(`✗ absorb ${sourceSwarmId} → ${targetSwarmId}: contract conflict on ${err.conflicts.length} surface(s)`);
+      for (const c of err.conflicts) {
+        console.error(`  ${c.surface} — ${c.kind}`);
+        console.error(`    source: ${JSON.stringify(c.source)}`);
+        console.error(`    target: ${JSON.stringify(c.target)}`);
+      }
+      console.error('');
+      console.error('Both swarms untouched. Resolve contract divergence then retry.');
       process.exit(1);
     }
     throw err;
@@ -861,6 +934,7 @@ Usage:
   momentum swarm release <swarm-id> <repo> [--session <id>]
   momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]
   momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]
+  momentum swarm absorb <target-swarm-id> <source-swarm-id> [--yes] [--session <id>]
   momentum swarm inbox list <swarm-id>
   momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"
   momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"
@@ -1004,6 +1078,7 @@ function runSwarm(args) {
     case 'release': return cmdRelease(rest);
     case 'focus': return cmdFocus(rest);
     case 'join': return cmdJoin(rest);
+    case 'absorb': return cmdAbsorb(rest);
     case 'inbox': return cmdInbox(rest);
     case 'preview-merge': return cmdPreviewMerge(rest);
     default:

@@ -37,11 +37,11 @@
 - [x] T3.6 Commit G3
 
 ## Group 4 — /swarm absorb <other-id>
-- [ ] T4.1 `core/swarm/absorb.js` — verify + manifest/board/inbox/audit merge + archive
-- [ ] T4.2 `cmdAbsorb` in `bin/swarm.js` with interactive confirm
-- [ ] T4.3 `swarm.md` /swarm absorb section
-- [ ] T4.4 `tests/swarm-absorb.test.js` (clean + contract-match + contract-conflict abort + inbox merge + audit timeline)
-- [ ] T4.5 Commit G4
+- [x] T4.1 `core/swarm/absorb.js` — verify + manifest/board/inbox/audit merge + archive
+- [x] T4.2 `cmdAbsorb` in `bin/swarm.js` with interactive confirm
+- [x] T4.3 `swarm.md` /swarm absorb section
+- [x] T4.4 `tests/swarm-absorb.test.js` (clean + contract-match + contract-conflict abort + inbox merge + audit timeline)
+- [x] T4.5 Commit G4
 
 ## Group 5 — e2e + docs + retrospective + release
 - [ ] T5.1 `tests/swarm-portability-e2e.test.js` (P-Focus, P-Join, P-Absorb-Conflict)
