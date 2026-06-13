@@ -29,12 +29,12 @@
 - [x] T2.6 Commit G2
 
 ## Group 3 — /swarm join <swarm-id>   (parallel with G2)
-- [ ] T3.1 `core/swarm/join.js`
-- [ ] T3.2 `cmdJoin` in `bin/swarm.js` with `--token`/`--claim`/`--co-conductor`
-- [ ] T3.3 Auto-renew owned leases on join
-- [ ] T3.4 `swarm.md` /swarm join section
-- [ ] T3.5 `tests/swarm-join.test.js`
-- [ ] T3.6 Commit G3
+- [x] T3.1 `core/swarm/join.js`
+- [x] T3.2 `cmdJoin` in `bin/swarm.js` with `--token`/`--claim`
+- [x] T3.3 Auto-renew owned leases on join
+- [x] T3.4 `swarm.md` /swarm join section
+- [x] T3.5 `tests/swarm-join.test.js`
+- [x] T3.6 Commit G3
 
 ## Group 4 — /swarm absorb <other-id>
 - [ ] T4.1 `core/swarm/absorb.js` — verify + manifest/board/inbox/audit merge + archive

@@ -1,8 +1,8 @@
 {
   "meta": {
     "captured": "2026-06-14",
-    "capturedFrom": "phase-17-5-swarm-portability G2",
-    "note": "Re-snapshotted after adding /swarm focus section to adapters/claude-code/commands/swarm.md (Phase 17.5 G2 — focus + token-issuing primitive). Drift is intentional and limited to .claude/commands/swarm.md (additive doc — one new subcommand section). No regression in existing Claude Code install behavior."
+    "capturedFrom": "phase-17-5-swarm-portability G3",
+    "note": "Re-snapshotted after adding /swarm join section to adapters/claude-code/commands/swarm.md (Phase 17.5 G3 — co-conductor registration + token consumption primitive). Drift is intentional and limited to .claude/commands/swarm.md (additive doc — one new subcommand section). No regression in existing Claude Code install behavior."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -50,6 +50,6 @@
     "specs/vision/principles.md": "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f",
     "specs/vision/project-charter.md": "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa",
     "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271",
-    ".claude/commands/swarm.md": "779c8063e0593b536e764ab30ab10571b26ad90bb94d3a9dfee236609bbf2e36"
+    ".claude/commands/swarm.md": "ea3628c2a0d5b340ca2f70755cc3f061080200e23f21414cb936ee9cecab1058"
   }
 }

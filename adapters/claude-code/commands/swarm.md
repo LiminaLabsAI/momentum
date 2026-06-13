@@ -142,6 +142,32 @@ The token is single-use: consuming it (via `/swarm join --token`) deletes the fi
 
 ---
 
+### `/swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]`
+
+> Phase 17.5 / v0.20.2 — register a session with an existing swarm.
+
+Attach the current session to `<swarm-id>` as a co-conductor. Adds the session to `sessions[]` (idempotent — touch on re-join), auto-renews any repos the session already owns, and optionally consumes a transfer token or claims a specific repo.
+
+```bash
+momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]
+```
+
+Three shapes:
+
+| Form | Result |
+|---|---|
+| `join <id>` | Registration only. Adds the session; renews any owned leases. |
+| `join <id> --token <token>` | Consumes the token. If `kind=focus`, claims the token's `target_repo` automatically. If `kind=join`, registers only (equivalent to plain join). |
+| `join <id> --claim <repo>` | Explicit claim — bound by the same lease rules as `/swarm claim`. Exits 1 if rejected. |
+
+Exit codes:
+- 0 on success.
+- 1 if the swarm doesn't exist, the token is missing/expired, or the claim is rejected (`EOWNERSHIP`).
+
+Audit log gets a `join` entry detailing the route — `registration only` / `via token kind=…` / `with --claim …`.
+
+---
+
 ### `/swarm release <swarm-id> <repo> [--session <id>]`
 
 > Phase 17.5 / v0.20.2 — multi-session ownership primitive.

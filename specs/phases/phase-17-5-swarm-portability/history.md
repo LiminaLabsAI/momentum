@@ -50,6 +50,14 @@ Detail: Codex + Antigravity still don't ship `/swarm` at all (Phase 18 wires the
 
 ---
 
+### [NOTE] 2026-06-14 — Group 3 landed — /swarm join
+Topics: phase-17-5, swarm-portability, group-3, join, co-conductor, sessions-registry, token-consumption, auto-lease-renewal, fingerprint-refresh
+Affects-phases: phase-17-5-swarm-portability
+Affects-specs: core/swarm/join.js, bin/swarm.js, bin/momentum.js, adapters/claude-code/commands/swarm.md, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: G3 shipped `/swarm join <swarm-id>` — co-conductor registration with optional token consumption / explicit claim. Library at `core/swarm/join.js` (`join({ecosystemRoot, swarmId, sessionId, nowIso, token, claim, leaseMs})`). Three call shapes: (1) bare `join(swarmId)` registers/touches the session via `sessionsLib.touchSession` and auto-renews any owned leases via the existing `conductor.renewLeases`; (2) `join(swarmId, {token})` consumes an opaque token — if `kind=focus`, auto-claims the token's `target_repo`; if `kind=join`, registration-only; (3) `join(swarmId, {claim: <repo>})` does an explicit claim under `updateManifestAsOwner` lease rules. Lazy-require of `./conductor` avoids a cycle. Audit log: `join` entry with detail line noting the route (`registration only` / `via token kind=…` / `with --claim …`). CLI `cmdJoin` exits 1 cleanly on EOWNERSHIP, expired tokens, and missing swarms. Slash command doc: new `/swarm join` section with three-shape table. Claude Code regression fingerprint re-snapshotted (G3 meta). 13 new tests (`swarm-join.test.js`): registration-only, idempotent re-join (no duplicate sessions, last_seen bumps), focus-token consumption + claim, join-token consumption (no implicit claim), explicit `--claim` happy path, claim rejected with EOWNERSHIP, ghost swarm, expired token, auto-renewal on re-join, plus 4 CLI surfaces (registration JSON, focus→join round-trip via CLI, claim rejected exit 1, --help). Full suite 514 → 527. Zero pre-existing regressions.
+
+---
+
 ### [NOTE] 2026-06-14 — Group 2 landed — /swarm focus
 Topics: phase-17-5, swarm-portability, group-2, focus, token-issuance, focusing-sentinel, spawn-directive, fingerprint-refresh
 Affects-phases: phase-17-5-swarm-portability

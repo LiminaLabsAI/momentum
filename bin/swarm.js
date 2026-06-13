@@ -32,6 +32,7 @@ const briefLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'brief
 const inboxLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'inbox'));
 const signalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'signals'));
 const focusLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'focus'));
+const joinLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'join'));
 const preMergeLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'pre-merge'));
 const ecosystemLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
 const { findRegistration } = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'state'));
@@ -437,6 +438,62 @@ function cmdClaim(args) {
   }
 }
 
+function cmdJoin(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    token: { flag: '--token', default: null },
+    claim: { flag: '--claim', default: null },
+    leaseHours: { flag: '--lease-hours', default: '24' },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId] = opts.positional;
+  if (!swarmId) {
+    throw new Error('swarm join: usage — momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  const leaseMs = Number(opts.leaseHours) * 60 * 60 * 1000;
+  try {
+    const r = joinLib.join({
+      ecosystemRoot, swarmId, sessionId, nowIso: ts,
+      token: opts.token, claim: opts.claim,
+      leaseMs,
+    });
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId: r.swarmId,
+        sessionId: r.sessionId,
+        sessions: r.sessions,
+        claimed: r.claimed,
+        token: r.token ? { kind: r.token.kind, target_repo: r.token.target_repo, swarm_id: r.token.swarm_id } : null,
+      }, null, 2) + '\n');
+      return;
+    }
+    console.log(`▸ join ${swarmId} as session ${sessionId}`);
+    console.log(`  Sessions in this swarm: ${r.sessions.length}`);
+    if (r.token) {
+      console.log(`  Token consumed: kind=${r.token.kind}${r.token.target_repo ? ` target=${r.token.target_repo}` : ''}`);
+    }
+    if (r.claimed) {
+      console.log(`  Claimed: ${r.claimed.repo} → ${r.claimed.owner} (lease until ${r.claimed.lease_expires_at})`);
+    } else {
+      console.log(`  (registration only — use --claim <repo> to take ownership)`);
+    }
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      console.error(`✗ join ${swarmId} --claim rejected: ${err.decision.reason}`);
+      process.exit(1);
+    }
+    if (/expired/.test(err.message) || /not found/.test(err.message)) {
+      console.error(`✗ join ${swarmId}: ${err.message}`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
 function cmdFocus(args) {
   const opts = parseFlags(args, {
     sessionId: { flag: '--session', default: null },
@@ -803,6 +860,7 @@ Usage:
   momentum swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]
   momentum swarm release <swarm-id> <repo> [--session <id>]
   momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]
+  momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]
   momentum swarm inbox list <swarm-id>
   momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"
   momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"
@@ -945,6 +1003,7 @@ function runSwarm(args) {
     case 'claim': return cmdClaim(rest);
     case 'release': return cmdRelease(rest);
     case 'focus': return cmdFocus(rest);
+    case 'join': return cmdJoin(rest);
     case 'inbox': return cmdInbox(rest);
     case 'preview-merge': return cmdPreviewMerge(rest);
     default:
