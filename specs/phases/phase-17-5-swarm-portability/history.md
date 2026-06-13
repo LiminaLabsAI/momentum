@@ -49,3 +49,11 @@ Affects-specs: core/adapter-parity-matrix.md
 Detail: Codex + Antigravity still don't ship `/swarm` at all (Phase 18 wires them). Portability across platforms (Claude conductor + Codex co-conductor on the same swarm) is Phase 18.5+ territory. Phase 17.5 keeps the platform surface unchanged.
 
 ---
+
+### [NOTE] 2026-06-14 — Group 0 landed — signals + tokens + sessions + lease enforcement
+Topics: phase-17-5, swarm-portability, group-0, signals, tokens, sessions, lease-enforcement, manifest-write-chokepoint
+Affects-phases: phase-17-5-swarm-portability
+Affects-specs: core/swarm/signals.js, core/swarm/schema/signal.schema.json, core/swarm/lib/tokens.js, core/swarm/lib/sessions.js, core/swarm/lib/manifest.js
+Detail: G0 shipped the four foundation libraries plus lease enforcement at the manifest.js write chokepoint. (1) `core/swarm/signals.js` — typed cross-session messages (`focus-request` / `claim-request` / `absorb-proposed` / `lease-expired`) with mkdir-lock + auto-regenerated INDEX.md, monotonic NNNN ids that survive `processed/` archival, per-type required-field validation. (2) `core/swarm/schema/signal.schema.json` — v1 lock with per-type required fields. (3) `core/swarm/lib/tokens.js` — opaque 16-hex CRUD (`writeToken` / `readToken` / `consumeToken` / `purgeExpired` / `listTokens`) with single-use semantics under mkdir-lock and 1h default expiry. (4) `core/swarm/lib/sessions.js` — sessions[] registry extracted (registerSession / touchSession / findSession / listSessions). (5) Lease enforcement at `core/swarm/lib/manifest.js` — `assertOwnership(manifest, repo, sessionId, nowIso)` pure helper + `updateManifestAsOwner({...})` enforcing wrapper that rejects non-owners with valid leases (EOWNERSHIP error code) and allows takeover after lease expiry or against the new UNCLAIMED / FOCUSING sentinels. Existing `updateManifest` / `appendAudit` stay non-enforcing for audit-only writes (no regression). 31 new tests (`swarm-signals.test.js` 9 + `swarm-tokens-sessions.test.js` 12 + `swarm-lease-enforcement.test.js` 10). Full suite 464 → 495. Zero pre-existing regressions.
+
+---

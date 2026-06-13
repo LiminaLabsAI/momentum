@@ -1,15 +1,15 @@
 # Phase 17.5 — Swarm Portability: Tasks
 
 ## Group 0 — Signal protocol + lease enforcement library
-- [ ] T0.1 `core/swarm/signals.js` — typed writer/reader/poller + INDEX
-- [ ] T0.2 `core/swarm/schema/signal.schema.json` — v1 schema
-- [ ] T0.3 Lease enforcement at `core/swarm/lib/manifest.js` write path
-- [ ] T0.4 `core/swarm/lib/tokens.js` — opaque CRUD
-- [ ] T0.5 `core/swarm/lib/sessions.js` — sessions[] CRUD
-- [ ] T0.6 `tests/swarm-signals.test.js`
-- [ ] T0.7 `tests/swarm-lease-enforcement.test.js`
-- [ ] T0.8 `tests/swarm-tokens-sessions.test.js`
-- [ ] T0.9 Commit G0
+- [x] T0.1 `core/swarm/signals.js` — typed writer/reader/poller + INDEX
+- [x] T0.2 `core/swarm/schema/signal.schema.json` — v1 schema
+- [x] T0.3 Lease enforcement at `core/swarm/lib/manifest.js` write path
+- [x] T0.4 `core/swarm/lib/tokens.js` — opaque CRUD
+- [x] T0.5 `core/swarm/lib/sessions.js` — sessions[] CRUD
+- [x] T0.6 `tests/swarm-signals.test.js`
+- [x] T0.7 `tests/swarm-lease-enforcement.test.js`
+- [x] T0.8 `tests/swarm-tokens-sessions.test.js`
+- [x] T0.9 Commit G0
 
 ## Group 1 — claim + release CLI
 - [ ] T1.1 `cmdClaim` in `bin/swarm.js`
