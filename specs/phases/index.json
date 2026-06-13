@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-06-12-phase-17-swarm-brainstorm",
+  "updated": "2026-06-13-phase-17-5-start",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -79,6 +79,10 @@
     "phase-17-swarm": {
       "status": "complete",
       "topics": ["phase-17", "swarm", "single-session-multi-project", "parallel-supervisors", "conductor-supervisor-architecture", "files-as-channels", "stateless-agents", "wave-ordering", "manifest", "board-cache", "indexing-strategies", "git-sha-invalidation", "incremental-log", "supervisor-context-isolation", "intervention-modes", "autopilot-checkpoint", "inbox-protocol", "context-push", "broadcast", "contract-verifier", "saga-records", "portability-schema-hooks", "swarm-brief-frontmatter", "claude-code-only-v0-20-0", "codex-antigravity-deferred", "synthetic-ecosystem-fixtures", "v0-20-0"]
+    },
+    "phase-17-5-swarm-portability": {
+      "status": "in-progress",
+      "topics": ["phase-17-5", "swarm-portability", "multi-session-coordination", "files-as-channels", "lease-enforcement", "signal-protocol", "tokens", "sessions-registry", "swarm-focus", "swarm-join", "swarm-absorb", "swarm-claim", "swarm-release", "manifest-write-chokepoint", "mkdir-lock", "opaque-tokens", "single-use-tokens", "absorb-merge", "contract-verify", "synthetic-two-session-scenarios", "claude-code-only", "v0-20-2"]
     }
   }
 }

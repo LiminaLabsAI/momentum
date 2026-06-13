@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-13
-> **Current Phase**: _none active — Codex Runtime Refresh shipped as v0.20.1_
+> **Current Phase**: Phase 17.5 — Swarm Portability (target v0.20.2)
 > **Latest Release**: v0.20.1 — Codex Runtime Refresh (BUG-007 + ENH-036)
 > **Health**: On Track
 
@@ -40,7 +40,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Codex Runtime Refresh shipped 2026-06-13 as v0.20.1; GitHub Release + npm both live)_ | | | |
+| 17.5 | Swarm Portability | In Progress | G0/G1/G2/G3/G4/G5 — 0 of 5 groups complete |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
