@@ -120,6 +120,28 @@ On success the manifest sets `owner = <session>`, refreshes `lease_renewed_at`, 
 
 ---
 
+### `/swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]`
+
+> Phase 17.5 / v0.20.2 — split one repo off the swarm into a side-session.
+
+Issue a single-use focus token for `<repo>` and hand control to a second Claude Code session. Use when one repo needs sustained one-on-one attention without halting the rest of the swarm. The original conductor keeps every other repo; the new side-session takes `<repo>` and drives its phase to completion. Reunite via `/swarm absorb`.
+
+```bash
+momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]
+```
+
+Behavior:
+1. Asserts the caller currently owns `<repo>` (rejected with exit 1 if not).
+2. Issues an opaque focus token at `<eco>/swarms/<id>/tokens/<token>.json` (single-use, 1-hour default expiry).
+3. Flips `repos[<repo>].owner` to the `_focusing` sentinel — anyone with the token may claim.
+4. Writes a `focus-request` signal carrying the token + repo.
+5. Audit-logs `focus`.
+6. Prints a spawn directive — run `claude --bg --cwd <eco>` in a second terminal, then inside that session call `momentum swarm join <swarm-id> --token <token>`.
+
+The token is single-use: consuming it (via `/swarm join --token`) deletes the file and atomically flips ownership to the receiver. If the token expires before consumption, run `/swarm claim <repo>` against the FOCUSING sentinel to recover.
+
+---
+
 ### `/swarm release <swarm-id> <repo> [--session <id>]`
 
 > Phase 17.5 / v0.20.2 — multi-session ownership primitive.

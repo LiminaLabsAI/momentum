@@ -50,6 +50,14 @@ Detail: Codex + Antigravity still don't ship `/swarm` at all (Phase 18 wires the
 
 ---
 
+### [NOTE] 2026-06-14 — Group 2 landed — /swarm focus
+Topics: phase-17-5, swarm-portability, group-2, focus, token-issuance, focusing-sentinel, spawn-directive, fingerprint-refresh
+Affects-phases: phase-17-5-swarm-portability
+Affects-specs: core/swarm/focus.js, bin/swarm.js, bin/momentum.js, adapters/claude-code/commands/swarm.md, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: G2 shipped `/swarm focus <repo>` — the side-session split primitive. Library at `core/swarm/focus.js` (`focus({ecosystemRoot, swarmId, repo, sessionId, nowIso, expiresInMs})`) asserts ownership, issues a single-use focus token (kind=focus, target_repo, 1-hour default expiry), flips `repos[<repo>].owner` to the FOCUSING sentinel, writes a `focus-request` signal carrying the token, audit-logs `focus`, refreshes the board cache, and returns a `{token, signal, directive}` triple. Token rollback on EOWNERSHIP keeps the tokens/ directory clean. Directive shape is `{command: 'claude', args: ['--bg', '--cwd', <ecoRoot>], env: {MOMENTUM_SWARM_ID, MOMENTUM_FOCUS_TOKEN, MOMENTUM_FOCUS_REPO}, prompt}` — the CLI renders a `claude --bg --cwd <eco>` line + the `momentum swarm join` seed command for the user to copy into a second terminal. CLI `cmdFocus` in `bin/swarm.js` + `--expires-min` flag override + `--json` machine-readable output. Slash command doc: new `/swarm focus` section explaining the focus → join → absorb round-trip. Claude Code regression fingerprint re-snapshotted (G2 meta). 9 new tests (`swarm-focus.test.js`) covering owner-success, non-owner-rejection, token-expiry-override, single-use, focus→join round-trip in-process, and 4 CLI surfaces. Full suite 505 → 514. Zero pre-existing regressions.
+
+---
+
 ### [NOTE] 2026-06-14 — Group 1 landed — /swarm claim + /swarm release
 Topics: phase-17-5, swarm-portability, group-1, claim, release, ownership-primitives, audit-events, fingerprint-refresh
 Affects-phases: phase-17-5-swarm-portability

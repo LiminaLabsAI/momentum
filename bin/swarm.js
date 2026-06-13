@@ -31,6 +31,7 @@ const boardLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'board
 const briefLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'brief'));
 const inboxLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'inbox'));
 const signalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'signals'));
+const focusLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'focus'));
 const preMergeLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'pre-merge'));
 const ecosystemLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
 const { findRegistration } = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'state'));
@@ -436,6 +437,54 @@ function cmdClaim(args) {
   }
 }
 
+function cmdFocus(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    expiresMin: { flag: '--expires-min', default: '60' },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId, repoId] = opts.positional;
+  if (!swarmId || !repoId) {
+    throw new Error('swarm focus: usage — momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  const expiresInMs = Number(opts.expiresMin) * 60 * 1000;
+  try {
+    const r = focusLib.focus({
+      ecosystemRoot, swarmId, repo: repoId, sessionId, nowIso: ts,
+      expiresInMs,
+    });
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, token: r.token.token,
+        expires_at: r.token.expires_at, signal_id: r.signal.signal_id,
+        directive: r.directive,
+      }, null, 2) + '\n');
+      return;
+    }
+    console.log(`▸ focus ${swarmId}/${repoId} — token issued`);
+    console.log(`  Token:      ${r.token.token}`);
+    console.log(`  Expires:    ${r.token.expires_at}`);
+    console.log(`  Owner:      → ${'_focusing'} (transitional)`);
+    console.log(`  Signal:     ${r.signal.signal_id}`);
+    console.log('');
+    console.log(`▸ Spawn directive — run in a second terminal:`);
+    console.log(`  ${r.directive.command} ${r.directive.args.join(' ')}`);
+    console.log(`  Then issue inside that session:`);
+    console.log(`    momentum swarm join ${swarmId} --token ${r.token.token}`);
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      console.error(`✗ focus ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
+      console.error(`  Only the current owner may focus a repo. Try /swarm claim first.`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
 function cmdRelease(args) {
   const opts = parseFlags(args, {
     sessionId: { flag: '--session', default: null },
@@ -753,6 +802,7 @@ Usage:
   momentum swarm budget <swarm-id> <repo> +N | -N
   momentum swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]
   momentum swarm release <swarm-id> <repo> [--session <id>]
+  momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]
   momentum swarm inbox list <swarm-id>
   momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"
   momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"
@@ -894,6 +944,7 @@ function runSwarm(args) {
     case 'budget': return cmdBudget(rest);
     case 'claim': return cmdClaim(rest);
     case 'release': return cmdRelease(rest);
+    case 'focus': return cmdFocus(rest);
     case 'inbox': return cmdInbox(rest);
     case 'preview-merge': return cmdPreviewMerge(rest);
     default:

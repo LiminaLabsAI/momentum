@@ -21,12 +21,12 @@
 - [x] T1.7 Commit G1
 
 ## Group 2 — /swarm focus <repo>   (parallel with G3)
-- [ ] T2.1 `core/swarm/focus.js`
-- [ ] T2.2 `cmdFocus` in `bin/swarm.js`
-- [ ] T2.3 `--token` consumption hook (provided to G3)
-- [ ] T2.4 `swarm.md` /swarm focus section
-- [ ] T2.5 `tests/swarm-focus.test.js`
-- [ ] T2.6 Commit G2
+- [x] T2.1 `core/swarm/focus.js`
+- [x] T2.2 `cmdFocus` in `bin/swarm.js`
+- [x] T2.3 `--token` consumption hook (provided to G3)
+- [x] T2.4 `swarm.md` /swarm focus section
+- [x] T2.5 `tests/swarm-focus.test.js`
+- [x] T2.6 Commit G2
 
 ## Group 3 — /swarm join <swarm-id>   (parallel with G2)
 - [ ] T3.1 `core/swarm/join.js`
