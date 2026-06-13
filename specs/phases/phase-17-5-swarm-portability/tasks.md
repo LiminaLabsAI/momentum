@@ -12,13 +12,13 @@
 - [x] T0.9 Commit G0
 
 ## Group 1 — claim + release CLI
-- [ ] T1.1 `cmdClaim` in `bin/swarm.js`
-- [ ] T1.2 `cmdRelease` in `bin/swarm.js`
-- [ ] T1.3 `bin/momentum.js` dispatch + `--help`
-- [ ] T1.4 `adapters/claude-code/commands/swarm.md` claim/release sections
-- [ ] T1.5 `tests/swarm-claim-release.test.js`
-- [ ] T1.6 Claude Code fingerprint refresh
-- [ ] T1.7 Commit G1
+- [x] T1.1 `cmdClaim` in `bin/swarm.js`
+- [x] T1.2 `cmdRelease` in `bin/swarm.js`
+- [x] T1.3 `bin/momentum.js` dispatch + `--help`
+- [x] T1.4 `adapters/claude-code/commands/swarm.md` claim/release sections
+- [x] T1.5 `tests/swarm-claim-release.test.js`
+- [x] T1.6 Claude Code fingerprint refresh
+- [x] T1.7 Commit G1
 
 ## Group 2 — /swarm focus <repo>   (parallel with G3)
 - [ ] T2.1 `core/swarm/focus.js`

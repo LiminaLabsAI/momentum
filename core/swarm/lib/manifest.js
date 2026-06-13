@@ -160,6 +160,8 @@ const VALID_AUDIT_EVENTS = [
   'start', 'tell', 'broadcast', 'budget', 'cancel', 'verify',
   'checkpoint', 'complete', 'resume', 'wave-transition',
   'inbox-resolved', 'contract-bump',
+  // Phase 17.5 portability
+  'claim', 'release', 'focus', 'join', 'absorb', 'lease-takeover',
 ];
 
 function validateManifest(obj) {

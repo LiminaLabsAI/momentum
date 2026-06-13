@@ -30,6 +30,7 @@ const manifestLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'ma
 const boardLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'board'));
 const briefLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'brief'));
 const inboxLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'inbox'));
+const signalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'signals'));
 const preMergeLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'pre-merge'));
 const ecosystemLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
 const { findRegistration } = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'state'));
@@ -94,6 +95,33 @@ function nowIso() {
 
 function generateSessionId() {
   return 'sess_' + crypto.randomBytes(8).toString('hex');
+}
+
+/**
+ * Resolve the calling session id. Order:
+ *   1. explicit --session flag
+ *   2. MOMENTUM_SESSION_ID env (set by conductor recipe)
+ *   3. generate a fresh one
+ */
+function resolveSessionId(explicit) {
+  if (explicit) return explicit;
+  if (process.env.MOMENTUM_SESSION_ID) return process.env.MOMENTUM_SESSION_ID;
+  return generateSessionId();
+}
+
+/**
+ * Add `hours` to an ISO timestamp (returns ISO).
+ */
+function plusHours(iso, hours) {
+  const ms = Date.parse(iso) + Number(hours) * 60 * 60 * 1000;
+  return new Date(ms).toISOString().replace(/\.\d+Z$/, 'Z');
+}
+
+/**
+ * Slugify a session id for use in signal slugs (lowercase, kebab-safe).
+ */
+function sessionSlug(sessionId) {
+  return String(sessionId).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'unknown';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -339,6 +367,135 @@ function cmdCancel(args) {
   const ts = nowIso();
   conductor.cancelSwarm(ecosystemRoot, swarmId, opts.reason, ts);
   console.log(`▸ Swarm ${swarmId} cancelled (${opts.reason})`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Phase 17.5 — claim / release
+// ─────────────────────────────────────────────────────────────────────────────
+
+function cmdClaim(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    leaseHours: { flag: '--lease-hours', default: '24' },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId, repoId] = opts.positional;
+  if (!swarmId || !repoId) {
+    throw new Error('swarm claim: usage — momentum swarm claim <swarm-id> <repo> [--session <id>]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  const expiresAt = plusHours(ts, opts.leaseHours);
+  try {
+    manifestLib.updateManifestAsOwner({
+      ecosystemRoot, swarmId, sessionId, repo: repoId, nowIso: ts,
+      mutate: (m, decision) => {
+        const previousOwner = m.repos[repoId].owner;
+        m.repos[repoId].owner = sessionId;
+        m.repos[repoId].claimed_by_session = sessionId;
+        m.repos[repoId].lease_renewed_at = ts;
+        m.repos[repoId].lease_expires_at = expiresAt;
+        if (!Array.isArray(m.audit)) m.audit = [];
+        m.audit.push({
+          ts, actor: sessionId, event: 'claim', repo: repoId,
+          detail: `${previousOwner} → ${sessionId}${decision.expired ? ' (after lease expiry)' : ''}`,
+        });
+        if (decision.expired) {
+          m.audit.push({
+            ts, actor: sessionId, event: 'lease-takeover', repo: repoId,
+            detail: `previous owner ${previousOwner} lease expired`,
+          });
+        }
+      },
+    });
+    boardLib.refreshBoard(ecosystemRoot, swarmId, ts);
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, owner: sessionId, lease_expires_at: expiresAt,
+      }, null, 2) + '\n');
+    } else {
+      console.log(`▸ claim ${swarmId}/${repoId} → ${sessionId}`);
+      console.log(`  lease until ${expiresAt}`);
+    }
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      // Write a claim-request signal so the existing owner sees it next poll.
+      const sig = signalsLib.writeSignal({
+        ecosystemRoot, swarmId,
+        type: 'claim-request', slug: `${repoId}-by-${sessionSlug(sessionId)}`,
+        fromSession: sessionId, repo: repoId,
+        nowIso: ts, detail: `claim rejected: ${err.decision.reason}`,
+      });
+      console.error(`✗ claim ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
+      console.error(`  claim-request signal written (${sig.signal_id}); owner sees it next poll`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+function cmdRelease(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId, repoId] = opts.positional;
+  if (!swarmId || !repoId) {
+    throw new Error('swarm release: usage — momentum swarm release <swarm-id> <repo> [--session <id>]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  // Idempotent fast-path: if already UNCLAIMED, no-op
+  const manifest = manifestLib.loadManifest(ecosystemRoot, swarmId);
+  if (!manifest) throw new Error(`swarm release: no manifest for ${swarmId}`);
+  if (!manifest.repos[repoId]) throw new Error(`swarm release: ${repoId} not in swarm ${swarmId}`);
+  if (manifest.repos[repoId].owner === manifestLib.UNCLAIMED) {
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, owner: manifestLib.UNCLAIMED, noop: true,
+      }, null, 2) + '\n');
+    } else {
+      console.log(`▸ release ${swarmId}/${repoId}: already unclaimed (no-op)`);
+    }
+    return;
+  }
+  try {
+    manifestLib.updateManifestAsOwner({
+      ecosystemRoot, swarmId, sessionId, repo: repoId, nowIso: ts,
+      mutate: (m) => {
+        const previousOwner = m.repos[repoId].owner;
+        m.repos[repoId].owner = manifestLib.UNCLAIMED;
+        // Drop the lease — UNCLAIMED owner means anyone may claim
+        delete m.repos[repoId].lease_expires_at;
+        delete m.repos[repoId].lease_renewed_at;
+        delete m.repos[repoId].claimed_by_session;
+        if (!Array.isArray(m.audit)) m.audit = [];
+        m.audit.push({
+          ts, actor: sessionId, event: 'release', repo: repoId,
+          detail: `${previousOwner} → ${manifestLib.UNCLAIMED}`,
+        });
+      },
+    });
+    boardLib.refreshBoard(ecosystemRoot, swarmId, ts);
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, owner: manifestLib.UNCLAIMED,
+      }, null, 2) + '\n');
+    } else {
+      console.log(`▸ release ${swarmId}/${repoId} → unclaimed`);
+    }
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      console.error(`✗ release ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
+      console.error(`  Only the current owner may release a repo.`);
+      process.exit(1);
+    }
+    throw err;
+  }
 }
 
 function cmdBudget(args) {
@@ -594,6 +751,8 @@ Usage:
   momentum swarm resume <swarm-id> [--session <id>]
   momentum swarm cancel <swarm-id> [--reason "<text>"]
   momentum swarm budget <swarm-id> <repo> +N | -N
+  momentum swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]
+  momentum swarm release <swarm-id> <repo> [--session <id>]
   momentum swarm inbox list <swarm-id>
   momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"
   momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"
@@ -733,6 +892,8 @@ function runSwarm(args) {
     case 'resume': return cmdResume(rest);
     case 'cancel': return cmdCancel(rest);
     case 'budget': return cmdBudget(rest);
+    case 'claim': return cmdClaim(rest);
+    case 'release': return cmdRelease(rest);
     case 'inbox': return cmdInbox(rest);
     case 'preview-merge': return cmdPreviewMerge(rest);
     default:

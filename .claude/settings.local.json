@@ -32,7 +32,11 @@
       "Bash(npm list:*)",
       "WebSearch",
       "Bash(gh api *)",
-      "WebFetch(domain:blog.fsck.com)"
+      "WebFetch(domain:blog.fsck.com)",
+      "WebFetch(domain:trymomentum.github.io)",
+      "WebFetch(domain:sachinshelke.github.io)",
+      "Bash(mkdir -p .momentum)",
+      "Bash(touch .momentum/brainstorm-active)"
     ]
   }
 }

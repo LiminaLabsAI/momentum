@@ -218,7 +218,7 @@
           "actor": {"type": "string", "minLength": 1},
           "event": {
             "type": "string",
-            "enum": ["start", "tell", "broadcast", "budget", "cancel", "verify", "checkpoint", "complete", "resume", "wave-transition", "inbox-resolved", "contract-bump"]
+            "enum": ["start", "tell", "broadcast", "budget", "cancel", "verify", "checkpoint", "complete", "resume", "wave-transition", "inbox-resolved", "contract-bump", "claim", "release", "focus", "join", "absorb", "lease-takeover"]
           },
           "repo": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
           "detail": {"type": "string"}

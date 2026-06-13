@@ -50,6 +50,14 @@ Detail: Codex + Antigravity still don't ship `/swarm` at all (Phase 18 wires the
 
 ---
 
+### [NOTE] 2026-06-14 — Group 1 landed — /swarm claim + /swarm release
+Topics: phase-17-5, swarm-portability, group-1, claim, release, ownership-primitives, audit-events, fingerprint-refresh
+Affects-phases: phase-17-5-swarm-portability
+Affects-specs: bin/swarm.js, bin/momentum.js, core/swarm/lib/manifest.js, core/swarm/schema/manifest.schema.json, adapters/claude-code/commands/swarm.md, tests/fixtures/v0.18.0-claude-code-fingerprint.json
+Detail: G1 shipped the two ownership-flip primitives every higher portability command composes. `/swarm claim <swarm-id> <repo>` succeeds when the repo is `_unclaimed`/`_focusing` or the current lease has expired (logging both `claim` and `lease-takeover` audit events); rejects with exit 1 + a `claim-request` signal when the lease is valid. `/swarm release <swarm-id> <repo>` flips owner back to `_unclaimed` and clears the lease; owner-only; idempotent no-op on already-unclaimed. CLI surface in `bin/swarm.js` (`cmdClaim` / `cmdRelease` + `resolveSessionId` / `plusHours` / `sessionSlug` helpers); routed via the existing switch. `bin/momentum.js --help` lists claim + release. New audit events added to both the manifest validator and JSON schema: `claim`, `release`, `focus`, `join`, `absorb`, `lease-takeover` (forward-providing for G2-G4). Slash command doc: two new `/swarm claim` and `/swarm release` sections. Claude Code regression fingerprint re-snapshotted with meta explaining the additive `swarm.md` drift. 10 new tests (`swarm-claim-release.test.js`). Full suite 495 → 505. Zero pre-existing regressions.
+
+---
+
 ### [NOTE] 2026-06-14 — Group 0 landed — signals + tokens + sessions + lease enforcement
 Topics: phase-17-5, swarm-portability, group-0, signals, tokens, sessions, lease-enforcement, manifest-write-chokepoint
 Affects-phases: phase-17-5-swarm-portability

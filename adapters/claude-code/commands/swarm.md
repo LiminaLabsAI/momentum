@@ -100,6 +100,40 @@ When inboxes are pending, prompt: "Run `/swarm verify <id>` to surface the quest
 
 ---
 
+### `/swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]`
+
+> Phase 17.5 / v0.20.2 — multi-session ownership primitive.
+
+Claim ownership of `<repo>` inside `<swarm-id>` for the current session. The conductor library uses this whenever a session needs authority to write to a repo's manifest entry — `/swarm focus`, `/swarm join`, and a co-conductor taking a wave all compose `claim` under the hood.
+
+```bash
+momentum swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]
+```
+
+Claim succeeds when:
+- the repo is `_unclaimed` or `_focusing` (sentinel — anyone may claim), OR
+- the current owner's `lease_expires_at` is in the past (takeover; audit logs both `claim` and `lease-takeover`).
+
+Claim is rejected when the current owner's lease is still valid; the CLI writes a `claim-request` signal so the existing owner sees the request on their next conductor poll. Exit code 1 on rejection.
+
+On success the manifest sets `owner = <session>`, refreshes `lease_renewed_at`, and sets `lease_expires_at = now + <lease-hours>`. The board cache is refreshed.
+
+---
+
+### `/swarm release <swarm-id> <repo> [--session <id>]`
+
+> Phase 17.5 / v0.20.2 — multi-session ownership primitive.
+
+Release the current session's ownership of `<repo>`. Sets `owner = _unclaimed`, clears the lease, and audit-logs `release`. Idempotent — releasing an already-unclaimed repo is a no-op.
+
+```bash
+momentum swarm release <swarm-id> <repo> [--session <id>]
+```
+
+Only the current owner may release. Attempting to release a repo you don't own exits 1 (you'd need `/swarm claim` against an expired lease, or the owner to release first).
+
+---
+
 ### `/swarm cancel <swarm-id> [--reason "<text>"]`
 
 Graceful halt. Halts every supervisor, marks the swarm `cancelled` in the manifest, preserves all artifacts for forensics.

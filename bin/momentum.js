@@ -577,7 +577,8 @@ Orchestration — work across ecosystem members from one session:
 
 Swarm — sustained parallel multi-project feature delivery (Phase 17+, Claude Code):
   momentum swarm <sub> [...]          Subcommands: start | status | tell | broadcast |
-                                       verify | complete | resume | cancel | budget
+                                       verify | complete | resume | cancel | budget |
+                                       claim | release
 
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
