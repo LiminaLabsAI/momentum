@@ -1,8 +1,8 @@
 {
   "meta": {
-    "captured": "2026-06-14",
-    "capturedFrom": "phase-17-5-swarm-portability G4",
-    "note": "Re-snapshotted after adding /swarm absorb section to adapters/claude-code/commands/swarm.md (Phase 17.5 G4 — two-swarm convergence with contract verify + manifest/inbox/audit merge). Drift is intentional and limited to .claude/commands/swarm.md (additive doc — one new subcommand section). No regression in existing Claude Code install behavior."
+    "captured": "2026-06-15",
+    "capturedFrom": "fix/bug-006-claude-md-project-name",
+    "note": "Re-snapshotted for BUG-006 fix — bin/momentum.js now substitutes <Project Name> in the primary instruction file with the resolved project name (package.json `name` → @scope-stripped, else directory basename, else 'project'). Drift is intentional and limited to CLAUDE.md (first line now `# Project Rules: fixture-project` instead of literal `<Project Name>`). The regression test now pins a fixed-name subdirectory under the random tmp root so the substitution is deterministic. No regression in existing Claude Code install behavior."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -29,7 +29,7 @@
     ".claude/commands/validate.md": "70d66b97eb1f3aa802c9d0fa00bbb3f9e660f6680ccde1b425288d27cc727d47",
     ".claude/settings.json": "8e547e082fb1c4a3ad4038af974be8471e841823755b3138ceb946177ef3864d",
     ".gitignore": "5b33fc8beb30c61c482fe55efc25e4958398c986e1bc31544c3e37823597af66",
-    "CLAUDE.md": "c776df71790fd1bf315dbe60d9fdeab7d1b0d2349826747cf59a17e3876e452c",
+    "CLAUDE.md": "3a6a70ebe52a76ae762f6e62ebf61bf6e5c66e8fc138fb11788540a31d319e16",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "ea861338fa6ab089a37cf8ec9a1297a1deae845e334a8b61eb0b60937a1e76f9",

@@ -67,7 +67,12 @@ test('fixture exists and is well-formed', () => {
 
 test('Claude Code install matches v0.18.0 fingerprint byte-for-byte', () => {
   const fp = JSON.parse(fs.readFileSync(FIXTURE_PATH, 'utf8'));
-  const target = mktmp('momentum-cc-regress-');
+  // BUG-006 fix substitutes the project name into CLAUDE.md, so we pin a
+  // fixed-name subdirectory under the random tmp root. Otherwise the
+  // CLAUDE.md hash would be non-deterministic across runs (random tmp suffix).
+  const tmpRoot = mktmp('momentum-cc-regress-');
+  const target = path.join(tmpRoot, 'fixture-project');
+  fs.mkdirSync(target);
   try {
     const res = runCli(['init', target, '--agent', 'claude-code']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
@@ -106,6 +111,6 @@ test('Claude Code install matches v0.18.0 fingerprint byte-for-byte', () => {
     }
     assert.equal(errors.length, 0, errors.join('\n\n'));
   } finally {
-    rmrf(target);
+    rmrf(tmpRoot);
   }
 });

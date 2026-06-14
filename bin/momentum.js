@@ -64,6 +64,27 @@ function fileExists(filePath) {
   }
 }
 
+// BUG-006 — substitute <Project Name> placeholder in primary-instruction
+// templates (CLAUDE.md / AGENTS.md) with the real project name on init+upgrade.
+function getProjectName(targetDir) {
+  try {
+    const pkg = JSON.parse(
+      fs.readFileSync(path.join(targetDir, 'package.json'), 'utf8')
+    );
+    if (pkg.name && typeof pkg.name === 'string') {
+      const scoped = pkg.name.match(/^@[^/]+\/(.+)$/);
+      return scoped ? scoped[1] : pkg.name;
+    }
+  } catch {
+    // No package.json (or unreadable / unparseable) — fall through to dirname.
+  }
+  return path.basename(path.resolve(targetDir)) || 'project';
+}
+
+function renderProjectName(content, projectName) {
+  return content.replaceAll('<Project Name>', projectName);
+}
+
 function listAvailableAgents(src = path.join(__dirname, '..')) {
   const adaptersDir = path.join(src, 'adapters');
   if (!fs.existsSync(adaptersDir)) return [];
@@ -105,7 +126,12 @@ function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
 
   console.log(`→ Installing ${label}...`);
   if (!fileExists(destPath)) {
-    copyFile(srcPath, destPath);
+    const rendered = renderProjectName(
+      fs.readFileSync(srcPath, 'utf8'),
+      getProjectName(targetDir)
+    );
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.writeFileSync(destPath, rendered);
     return 'added';
   }
 
@@ -118,24 +144,26 @@ function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
   const label = primaryInstruction.label || primaryInstruction.destination.join('/');
+  const projectName = getProjectName(targetDir);
 
   console.log(`→ Upgrading ${label}...`);
   if (primaryInstruction.markerAware) {
-    return upgradeMarkedFile(srcPath, destPath, label, targetDir);
+    return upgradeMarkedFile(srcPath, destPath, label, targetDir, projectName);
   }
 
+  const srcContent = renderProjectName(fs.readFileSync(srcPath, 'utf8'), projectName);
   if (!fileExists(destPath)) {
-    copyFile(srcPath, destPath);
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.writeFileSync(destPath, srcContent);
     console.log(`  + added:    ${path.relative(targetDir, destPath)}`);
     return 'added';
   }
 
-  const srcContent = fs.readFileSync(srcPath, 'utf8');
   const destContent = fs.readFileSync(destPath, 'utf8');
   if (srcContent === destContent) return 'unchanged';
 
   fs.copyFileSync(destPath, destPath + '.bak');
-  copyFile(srcPath, destPath);
+  fs.writeFileSync(destPath, srcContent);
   console.log(`  ↑ upgraded: ${path.relative(targetDir, destPath)} (original saved as .bak)`);
   return 'updated';
 }
@@ -251,17 +279,19 @@ function partitionByMarker(content) {
  *
  * Returns one of: 'added', 'updated', 'unchanged', 'migrated'.
  */
-function upgradeMarkedFile(srcPath, destPath, label, root) {
+function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
   const rel = path.relative(root || process.cwd(), destPath);
+  const render = (content) =>
+    projectName ? renderProjectName(content, projectName) : content;
 
   if (!fileExists(destPath)) {
     fs.mkdirSync(path.dirname(destPath), { recursive: true });
-    fs.copyFileSync(srcPath, destPath);
+    fs.writeFileSync(destPath, render(fs.readFileSync(srcPath, 'utf8')));
     console.log(`  + added:    ${rel}`);
     return 'added';
   }
 
-  const srcContent = fs.readFileSync(srcPath, 'utf8');
+  const srcContent = render(fs.readFileSync(srcPath, 'utf8'));
   const destContent = fs.readFileSync(destPath, 'utf8');
   const destParts = partitionByMarker(destContent);
 
