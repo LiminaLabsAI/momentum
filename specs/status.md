@@ -79,7 +79,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Cerebrio bootstrap** — v0.20.2 is live on npm. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield / bench). Phase 17 + 17.5 validation used synthetic fixtures only — this is the live dogfood.
+1. **Cerebrio bootstrap** — v0.20.2 is live on npm. User installs the released momentum and runs `momentum init --ecosystem cerebrio` on real cerebrio projects (sapience / frontend / py / cli / open-guard / open-shield-python / test-lab — the 7 members already declared in `cerebrio-ecosystem/ecosystem.json`). Phase 17 + 17.5 validation used synthetic fixtures only — this is the live dogfood. **Note (2026-06-14)**: ecosystem was bootstrapped at v0.13 vintage on 2026-06-07; 4 of 7 members already have `.momentum/`; dogfood path is "upgrade existing + bootstrap missing" rather than greenfield init.
 2. **Phase 18 — Swarm Parity (Codex + Antigravity)** — target v0.20.3. `core/swarm/` is platform-agnostic; this phase wires the Codex `swarm-supervisor.toml` + MCP cwd shim, and the Antigravity Agent Manager workflow + skills.
 3. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
 4. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
