@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-15
-> **Current Phase**: _none active — Phase 17.5 Swarm Portability released_
-> **Latest Release**: v0.20.2 — Swarm Portability (Phase 17.5)
+> **Current Phase**: _none active_
+> **Latest Release**: v0.20.3 — BUG-006 fix (CLAUDE.md project-name substitution)
 > **Health**: On Track
 
 ## Summary
@@ -36,12 +36,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete | v0.20.0 (2026-06-12) |
 | — | Codex Runtime Refresh (BUG-007 + ENH-036) | Complete | v0.20.1 (2026-06-13) |
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
+| — | BUG-006 fix (CLAUDE.md project-name substitution) | Complete | v0.20.3 (2026-06-15) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 17.5 Swarm Portability released as v0.20.2)_ | | | |
+| _(none — last release v0.20.3 BUG-006 fix; Phase 18 Swarm Parity is the next planned phase)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -52,7 +53,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 18 | Swarm Parity (Codex + Antigravity) | Not Started (target v0.20.3) | Codex `swarm-supervisor.toml` + MCP cwd shim; Antigravity Agent Manager workflow + skills. `core/swarm/` is platform-agnostic; this phase wires the two adapters. (Was v0.20.2; displaced by Phase 17.5.) |
+| 18 | Swarm Parity (Codex + Antigravity) | Not Started (target v0.20.4) | Codex `swarm-supervisor.toml` + MCP cwd shim; Antigravity Agent Manager workflow + skills. `core/swarm/` is platform-agnostic; this phase wires the two adapters. (Was v0.20.2 → v0.20.3; bumped to v0.20.4 after the unplanned BUG-006 patch release.) |
 | 19 | Reach | Not Started (target v0.21.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
 | 20 | Intelligence | Not Started (target v0.22.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 21 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
@@ -100,6 +101,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Recent Changes
 
+- **2026-06-15**: **v0.20.3 released** — BUG-006 fix (CLAUDE.md/AGENTS.md project-name substitution). Two helpers in `bin/momentum.js` (`getProjectName(targetDir)` resolves from `package.json` `name` → @scope-stripped → directory basename → `'project'`; `renderProjectName(content, name)` substitutes the literal `<Project Name>` placeholder) wired into `installPrimaryInstruction()`, `upgradePrimaryInstruction()`, and `upgradeMarkedFile()` (optional projectName param). All 3 adapters benefit (claude-code CLAUDE.md, codex/antigravity AGENTS.md). 5 new regression tests (`tests/project-name-substitution.test.js`) covering no-pkg / pkg-name / scoped-name / codex / upgrade paths. Claude Code fingerprint snapshot bumped (CLAUDE.md hash `c776df…` → `3a6a70…`) with the regression test pinning a fixed-name subdirectory under the random tmp root for determinism. **Suite: 555/555** (550 v0.20.2 baseline + 5 new). Phase 18 (Swarm Parity) retargeted v0.20.3 → v0.20.4 to accommodate this unplanned patch.
 - **2026-06-15**: Cerebrio dogfood attempt (Phase 17.5 Next Action #1) **partially completed, stopped on workspace cleanup**. Did: global CLI upgrade `0.20.0` → `0.20.2` (`@avinash-singh-io/momentum@0.20.2`); committed v0.20.2 scaffolding bootstrap in cerebrio-ecosystem on `chore/momentum-upgrade-v0.20.2` (PR `avinash-singh-io/cerebrio-ecosystem#2`, 29 files / 3.4K LOC, the FIRST committed momentum scaffolding for that repo — prior v0.13 install was entirely untracked). Did not: upgrade the other 6 member repos (sapience / frontend / py / cli / open-guard / open-shield-python / test-lab) because they collectively carry ~700 modified+untracked files of unrelated in-flight work; not safe to commit on operator's behalf. Did not: run a real cross-repo `/swarm` end-to-end. Backlog impact: **BUG-006 bumped P2 → P1** with the cerebrio dogfood as additional evidence — confirmed that `bin/momentum.js::installPrimaryInstruction()` / `upgradePrimaryInstruction()` (lines 100-141, 370-376, 471-476) do byte-for-byte template copy with zero substitution, so every installed `CLAUDE.md` ships the literal `# Project Rules: <Project Name>` first line; the bug affects `init` too, not just `upgrade`. Status doc Next Action #1 rewritten to reflect findings + resume conditions.
 - **2026-06-14**: Phase 17.5 Swarm Portability complete on branch `phase-17-5-swarm-portability` (target v0.20.2). Lights up the schema hooks shipped in v0.20.0: five new `/swarm` subcommands (`claim`, `release`, `focus`, `join`, `absorb`), lease enforcement at the `core/swarm/lib/manifest.js` write chokepoint, typed signal protocol in `<eco>/swarms/<id>/signals/`, opaque transfer tokens at `<eco>/swarms/<id>/tokens/`. Five groups: G0 libs (signals + tokens + sessions + lease enforcement, 31 tests) → G1 claim/release (10 tests) → G2 focus (9 tests) → G3 join (13 tests) → G4 absorb (19 tests) → G5 e2e + docs + retrospective + version bump (4 portability e2e scenarios + signal load test). Three synthetic two-session scenarios captured at `evidence/scenario-portability-{focus,join,absorb}.txt`: P-Focus (linear 3-repo, focus + token-handoff), P-Join (branched 4-repo, release + co-conductor), P-Absorb-Conflict (wide 5-repo, content_hash divergence verified to abort with both swarms byte-for-byte unchanged). Lease enforcement at single chokepoint `updateManifestAsOwner` — owner write accepted, non-owner with valid lease rejected with EOWNERSHIP + claim-request signal, takeover after lease expiry accepted with lease-takeover audit. Solo (single-session) swarm behaviour: unchanged — Phase 17 e2e scenarios still pass byte-for-byte. Claude Code zero-regression: fingerprint snapshot caught four intentional `swarm.md` overlay drifts (one per group G1-G4), re-snapshotted with explanatory meta each time. `docs/swarm.md` "Future: Swarm Portability" replaced with "Multi-session portability" + two worked examples. `core/adapter-parity-matrix.md` footnote 14 updated; Phase 18 retargeted to v0.20.3. `core/adapter-capabilities.md` Phase 17/17.5 scope section refreshed. Suite: **550/550** (464 v0.20.1 baseline + 86 new). Released: merged to `main` (253cbf4), tagged `v0.20.2`, GitHub Release published as `Latest`, npm `@avinash-singh-io/momentum@0.20.2` live.
 - **2026-04-21**: Phase 0 complete — v0.1.0 released. install.sh smoke test passed. All 8 commands, hook, agent rules, README shipped.
