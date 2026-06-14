@@ -130,7 +130,7 @@ overview.md):
 
 13. **Antigravity `workflows` overlay (gated)** — adapter-specific workflows (`adapters/antigravity/workflows/*.md`) ship to `.agent/workflows/`. Marked `shipped-gated` pending Group 4 live smoke to confirm `.agent/` (singular) vs `.agents/` (plural) — Google's official docs page uses singular, codelab uses plural. If smoke fails, dual-copy and VAL-002 follow-up.
 
-14. **`/swarm` (Phase 17 v0.20.0)** — Single-session multi-project feature delivery shipped Claude Code only. The conductor library at `core/swarm/` is platform-agnostic; only adapter spawn wiring is platform-specific. Codex + Antigravity parity is **Phase 18** (target v0.20.2): Codex requires an MCP cwd shim for the per-supervisor cwd pin; Antigravity requires an Agent Manager workflow + supervisor skill. The cells are marked `not-applicable` for v0.20.0 only — they flip to `shipped` when Phase 18 lands.
+14. **`/swarm` (Phase 17 v0.20.0 + Phase 17.5 v0.20.2)** — Single-session multi-project feature delivery shipped Claude Code only. Phase 17.5 layered five additional portability subcommands (`claim` / `release` / `focus` / `join` / `absorb`) plus lease enforcement on the same conductor library at `core/swarm/` — still platform-agnostic; only adapter spawn wiring is platform-specific. Codex + Antigravity parity is **Phase 18** (target v0.20.3 after Phase 17.5 took v0.20.2): Codex requires an MCP cwd shim for the per-supervisor cwd pin; Antigravity requires an Agent Manager workflow + supervisor skill. The cells stay marked `not-applicable` for v0.20.0–v0.20.2 — they flip to `shipped` when Phase 18 lands.
 
 ## Read this if you are…
 

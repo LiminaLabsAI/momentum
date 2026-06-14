@@ -1,0 +1,208 @@
+# Phase 17.5 Swarm Portability — Scenario focus
+
+Captured: 2026-06-14 (Phase 17.5 G5)
+Ecosystem: momentum-test-n8OjZQ
+Swarms: 0001-portability
+
+## Narrative
+
+1. sess-A starts swarm with [shared-types, backend, frontend].
+2. sess-A claims backend (lease until 2099).
+3. sess-A focuses backend → FOCUSING sentinel + focus token issued.
+4. sess-B joins with --token → consumes focus token, claims backend as sess-B owner.
+5. Lease enforcement verified — sess-A's write to backend rejected (EOWNERSHIP);
+   sess-B writes to backend succeeds; sess-A writes to shared-types succeeds.
+6. Both sessions appear in sessions[] registry.
+
+## Manifest — 0001-portability
+
+```json
+{
+  "swarm_id": "0001-portability",
+  "version": 1,
+  "saga_id": "sg_hfubds",
+  "mode": "checkpoint",
+  "initiative": "portability",
+  "created": "2026-06-14T17:00:00Z",
+  "ecosystem": "p-focus",
+  "repos": {
+    "shared-types": {
+      "wave": 1,
+      "status": "running",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-A",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-A",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    },
+    "backend": {
+      "wave": 2,
+      "status": "running",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-B",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0,
+      "claimed_by_session": "sess-B",
+      "lease_renewed_at": "2026-06-14T17:06:00Z",
+      "lease_expires_at": "2026-06-15T17:06:00.000Z"
+    },
+    "frontend": {
+      "wave": 3,
+      "status": "queued",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess-A",
+      "lease_expires_at": "2026-06-15T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-14T17:00:00Z",
+      "claimed_by_session": "sess-A",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 0
+    }
+  },
+  "waves": [
+    {
+      "index": 1,
+      "repos": [
+        "shared-types"
+      ],
+      "status": "queued"
+    },
+    {
+      "index": 2,
+      "repos": [
+        "backend"
+      ],
+      "status": "queued"
+    },
+    {
+      "index": 3,
+      "repos": [
+        "frontend"
+      ],
+      "status": "queued"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess-A",
+      "first_seen": "2026-06-14T17:00:00Z",
+      "last_seen": "2026-06-14T17:00:00Z"
+    },
+    {
+      "session_id": "sess-B",
+      "first_seen": "2026-06-14T17:06:00Z",
+      "last_seen": "2026-06-14T17:06:00Z"
+    }
+  ],
+  "audit": [
+    {
+      "ts": "2026-06-14T17:00:00Z",
+      "actor": "sess-A",
+      "event": "start",
+      "detail": "Swarm 0001-portability planned (3 repos, 3 waves)"
+    },
+    {
+      "ts": "2026-06-14T17:05:00Z",
+      "actor": "sess-A",
+      "event": "focus",
+      "repo": "backend",
+      "detail": "sess-A → _focusing (token issued)"
+    },
+    {
+      "ts": "2026-06-14T17:06:00Z",
+      "actor": "sess-B",
+      "event": "claim",
+      "repo": "backend",
+      "detail": "_focusing → sess-B (via join --token kind=focus)"
+    },
+    {
+      "ts": "2026-06-14T17:06:00Z",
+      "actor": "sess-B",
+      "event": "join",
+      "detail": "via token kind=focus (claimed backend)"
+    }
+  ],
+  "status": "running"
+}
+```
+
+## Board.json — 0001-portability
+
+```json
+{
+  "swarm_id": "0001-portability",
+  "version": 1,
+  "saga_id": "sg_hfubds",
+  "mode": "checkpoint",
+  "rendered_at": "2026-06-14T17:09:00Z",
+  "status": "running",
+  "active_wave": 1,
+  "repos": [
+    {
+      "name": "shared-types",
+      "wave": 1,
+      "status": "running",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    },
+    {
+      "name": "backend",
+      "wave": 2,
+      "status": "running",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    },
+    {
+      "name": "frontend",
+      "wave": 3,
+      "status": "queued",
+      "tasks": "0/0",
+      "tokens": "0k/300k",
+      "commits": 0,
+      "inbox_count": 0
+    }
+  ],
+  "inbox_count": 0,
+  "recent_activity": [
+    {
+      "ts": "17:06",
+      "msg": "via token kind=focus (claimed backend)"
+    },
+    {
+      "ts": "17:06",
+      "msg": "_focusing → sess-B (via join --token kind=focus)",
+      "repo": "backend"
+    },
+    {
+      "ts": "17:05",
+      "msg": "sess-A → _focusing (token issued)",
+      "repo": "backend"
+    },
+    {
+      "ts": "17:00",
+      "msg": "Swarm 0001-portability planned (3 repos, 3 waves)"
+    }
+  ]
+}
+
+```

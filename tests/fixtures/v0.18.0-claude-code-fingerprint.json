@@ -1,8 +1,8 @@
 {
   "meta": {
-    "captured": "2026-06-13",
-    "capturedFrom": "post-audit Codex matcher fix (BUG-007)",
-    "note": "Re-snapshotted after fixing core/scripts/brainstorm-gate.sh case-statement allow-list from `apply_patch|shell` to `apply_patch|Bash` (BUG-007 — Codex emits tool_name=Bash, not shell). Drift is intentional and limited to scripts/brainstorm-gate.sh, which Claude Code shares with Codex via the recursive core/scripts/ copy. No Claude Code behavior change."
+    "captured": "2026-06-14",
+    "capturedFrom": "phase-17-5-swarm-portability G4",
+    "note": "Re-snapshotted after adding /swarm absorb section to adapters/claude-code/commands/swarm.md (Phase 17.5 G4 — two-swarm convergence with contract verify + manifest/inbox/audit merge). Drift is intentional and limited to .claude/commands/swarm.md (additive doc — one new subcommand section). No regression in existing Claude Code install behavior."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -50,6 +50,6 @@
     "specs/vision/principles.md": "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f",
     "specs/vision/project-charter.md": "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa",
     "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271",
-    ".claude/commands/swarm.md": "23f968a29c73cb8f70d12a6d083c7eef95266859097c1917ac2e08ced79217dc"
+    ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7"
   }
 }

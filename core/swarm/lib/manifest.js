@@ -160,6 +160,8 @@ const VALID_AUDIT_EVENTS = [
   'start', 'tell', 'broadcast', 'budget', 'cancel', 'verify',
   'checkpoint', 'complete', 'resume', 'wave-transition',
   'inbox-resolved', 'contract-bump',
+  // Phase 17.5 portability
+  'claim', 'release', 'focus', 'join', 'absorb', 'lease-takeover',
 ];
 
 function validateManifest(obj) {
@@ -417,6 +419,130 @@ function appendAudit(ecosystemRoot, swarmId, entry) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Lease enforcement (Phase 17.5)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Special owner sentinel meaning "ready to be claimed by the next
+ * caller". Set by `/swarm release` and as the transitional state during
+ * `/swarm focus` before the receiver consumes the transfer token.
+ */
+const UNCLAIMED = '_unclaimed';
+
+/**
+ * Special owner sentinel meaning "the previous owner has issued a
+ * focus token and is waiting for the receiver to claim". Treated the
+ * same as UNCLAIMED for ownership purposes (any session with a valid
+ * token can take it).
+ */
+const FOCUSING = '_focusing';
+
+const TAKEOVER_OWNERS = new Set([UNCLAIMED, FOCUSING]);
+
+/**
+ * Pure helper. Decides whether `sessionId` may write to `repo` per
+ * the lease rules. Returns `{ allowed: bool, reason: string, expired: bool }`.
+ *
+ *   - allowed when:
+ *       (a) sessionId === repos[repo].owner (current owner writing)
+ *       (b) repos[repo].owner is the UNCLAIMED or FOCUSING sentinel
+ *       (c) lease_expires_at is set AND nowIso > lease_expires_at (takeover)
+ *   - rejected otherwise.
+ *
+ * The takeover case sets `expired: true` so callers can decide whether
+ * to emit a `lease-expired` signal.
+ *
+ * @param {object} manifest      a loaded manifest
+ * @param {string} repo          repo key
+ * @param {string} sessionId     caller session id
+ * @param {string} nowIso        current time
+ */
+function assertOwnership(manifest, repo, sessionId, nowIso) {
+  if (!manifest || !manifest.repos || !manifest.repos[repo]) {
+    return { allowed: false, reason: `repo "${repo}" not in manifest`, expired: false };
+  }
+  if (typeof sessionId !== 'string' || sessionId.length === 0) {
+    return { allowed: false, reason: 'sessionId required', expired: false };
+  }
+  const r = manifest.repos[repo];
+  if (r.owner === sessionId) {
+    return { allowed: true, reason: 'owner', expired: false };
+  }
+  if (TAKEOVER_OWNERS.has(r.owner)) {
+    return { allowed: true, reason: `unclaimed (${r.owner})`, expired: false };
+  }
+  if (typeof r.lease_expires_at === 'string') {
+    if (typeof nowIso !== 'string') {
+      return { allowed: false, reason: 'nowIso required to evaluate lease', expired: false };
+    }
+    const now = Date.parse(nowIso);
+    const exp = Date.parse(r.lease_expires_at);
+    if (!Number.isNaN(now) && !Number.isNaN(exp) && now > exp) {
+      return { allowed: true, reason: `lease expired at ${r.lease_expires_at}`, expired: true };
+    }
+  }
+  return {
+    allowed: false,
+    reason: `repo "${repo}" is owned by ${r.owner} (lease valid)`,
+    expired: false,
+  };
+}
+
+/**
+ * Read-modify-write that enforces ownership of a specific repo BEFORE
+ * applying the mutation. Throws on rejection.
+ *
+ * Use this for any mutation that flips `repos[repo].owner`, advances
+ * the repo's status, or renews its lease — i.e. anything where the
+ * caller is claiming authority over the repo.
+ *
+ * The `mutate` callback receives the manifest AFTER the ownership
+ * check passes; it may modify `repos[repo]` freely (the usual move is
+ * to set `owner = sessionId` and refresh the lease).
+ *
+ * Returns the resulting manifest. The mutate function may also return
+ * an object `{ then: fn }` — `then` runs AFTER the locked write
+ * commits, useful for emitting a signal that depends on the new state.
+ */
+function updateManifestAsOwner(args) {
+  const { ecosystemRoot, swarmId, sessionId, repo, nowIso, mutate } = args;
+  const file = manifestPath(ecosystemRoot, swarmId);
+  if (!fs.existsSync(file)) {
+    throw new Error(`swarm/manifest: no manifest at ${file}`);
+  }
+  let postCommit = null;
+  const next = withLock(file, () => {
+    const current = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const decision = assertOwnership(current, repo, sessionId, nowIso);
+    if (!decision.allowed) {
+      const err = new Error(`updateManifestAsOwner: rejected — ${decision.reason}`);
+      err.code = 'EOWNERSHIP';
+      err.decision = decision;
+      throw err;
+    }
+    const result = mutate(current, decision);
+    let mutated = current;
+    if (result && typeof result === 'object' && 'manifest' in result) {
+      mutated = result.manifest;
+      postCommit = result.then || null;
+    } else if (result !== undefined) {
+      mutated = result;
+    }
+    const v = validateManifest(mutated);
+    if (!v.ok) {
+      const summary = v.errors.map((e) => `  ${e.path}: ${e.message}`).join('\n');
+      throw new Error(`swarm/manifest: post-mutate validation failed:\n${summary}`);
+    }
+    fs.writeFileSync(file, JSON.stringify(mutated, null, 2) + '\n', 'utf8');
+    return mutated;
+  });
+  if (typeof postCommit === 'function') {
+    postCommit(next);
+  }
+  return next;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Listing
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -433,6 +559,8 @@ module.exports = {
   SWARMS_DIR,
   MANIFEST_FILENAME,
   RESERVED_DIRS,
+  UNCLAIMED,
+  FOCUSING,
   withLock,
   swarmDir,
   manifestPath,
@@ -443,6 +571,8 @@ module.exports = {
   loadManifest,
   writeManifest,
   updateManifest,
+  updateManifestAsOwner,
+  assertOwnership,
   appendAudit,
   listSwarms,
 };

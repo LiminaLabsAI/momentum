@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-signal-v1.json",
+  "title": "Momentum Swarm Signal",
+  "description": "Typed cross-session message in a swarm's signals/ directory. One file per signal at <eco>/swarms/<id>/signals/NNNN-<type>-<slug>.json. Writes are mkdir-locked. Read once and archived to signals/processed/. Phase 17.5 portability protocol.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["signal_id", "version", "type", "ts", "from_session"],
+  "properties": {
+    "signal_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(focus-request|claim-request|absorb-proposed|lease-expired)-[a-z0-9][a-z0-9-]*$",
+      "description": "Zero-padded NNNN-<type>-<slug>. Matches the on-disk filename minus extension."
+    },
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Schema version. Locked to 1."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["focus-request", "claim-request", "absorb-proposed", "lease-expired"],
+      "description": "Signal kind. Drives conductor poller branching."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp the signal was written."
+    },
+    "from_session": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Session id that wrote the signal."
+    },
+    "to_session": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional target session id. Null/missing = broadcast to all conductors that poll."
+    },
+    "repo": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Ecosystem member id this signal concerns. Required for focus-request / claim-request / lease-expired."
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$",
+      "description": "Transfer token id (16-hex). Set on focus-request when a token has been issued for the receiver to consume."
+    },
+    "source_swarm": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[a-z][a-z0-9-]*$",
+      "description": "Other swarm id being proposed for absorb. Required for absorb-proposed."
+    },
+    "detail": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Optional human-readable note. Surfaced in conductor's poll output."
+    }
+  }
+}

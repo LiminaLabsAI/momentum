@@ -30,6 +30,10 @@ const manifestLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'ma
 const boardLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'board'));
 const briefLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'brief'));
 const inboxLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'inbox'));
+const signalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'signals'));
+const focusLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'focus'));
+const joinLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'join'));
+const absorbLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'absorb'));
 const preMergeLib = require(path.join(MOMENTUM_ROOT, 'core', 'swarm', 'lib', 'pre-merge'));
 const ecosystemLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
 const { findRegistration } = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'state'));
@@ -94,6 +98,33 @@ function nowIso() {
 
 function generateSessionId() {
   return 'sess_' + crypto.randomBytes(8).toString('hex');
+}
+
+/**
+ * Resolve the calling session id. Order:
+ *   1. explicit --session flag
+ *   2. MOMENTUM_SESSION_ID env (set by conductor recipe)
+ *   3. generate a fresh one
+ */
+function resolveSessionId(explicit) {
+  if (explicit) return explicit;
+  if (process.env.MOMENTUM_SESSION_ID) return process.env.MOMENTUM_SESSION_ID;
+  return generateSessionId();
+}
+
+/**
+ * Add `hours` to an ISO timestamp (returns ISO).
+ */
+function plusHours(iso, hours) {
+  const ms = Date.parse(iso) + Number(hours) * 60 * 60 * 1000;
+  return new Date(ms).toISOString().replace(/\.\d+Z$/, 'Z');
+}
+
+/**
+ * Slugify a session id for use in signal slugs (lowercase, kebab-safe).
+ */
+function sessionSlug(sessionId) {
+  return String(sessionId).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32) || 'unknown';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -339,6 +370,311 @@ function cmdCancel(args) {
   const ts = nowIso();
   conductor.cancelSwarm(ecosystemRoot, swarmId, opts.reason, ts);
   console.log(`▸ Swarm ${swarmId} cancelled (${opts.reason})`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Phase 17.5 — claim / release
+// ─────────────────────────────────────────────────────────────────────────────
+
+function cmdClaim(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    leaseHours: { flag: '--lease-hours', default: '24' },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId, repoId] = opts.positional;
+  if (!swarmId || !repoId) {
+    throw new Error('swarm claim: usage — momentum swarm claim <swarm-id> <repo> [--session <id>]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  const expiresAt = plusHours(ts, opts.leaseHours);
+  try {
+    manifestLib.updateManifestAsOwner({
+      ecosystemRoot, swarmId, sessionId, repo: repoId, nowIso: ts,
+      mutate: (m, decision) => {
+        const previousOwner = m.repos[repoId].owner;
+        m.repos[repoId].owner = sessionId;
+        m.repos[repoId].claimed_by_session = sessionId;
+        m.repos[repoId].lease_renewed_at = ts;
+        m.repos[repoId].lease_expires_at = expiresAt;
+        if (!Array.isArray(m.audit)) m.audit = [];
+        m.audit.push({
+          ts, actor: sessionId, event: 'claim', repo: repoId,
+          detail: `${previousOwner} → ${sessionId}${decision.expired ? ' (after lease expiry)' : ''}`,
+        });
+        if (decision.expired) {
+          m.audit.push({
+            ts, actor: sessionId, event: 'lease-takeover', repo: repoId,
+            detail: `previous owner ${previousOwner} lease expired`,
+          });
+        }
+      },
+    });
+    boardLib.refreshBoard(ecosystemRoot, swarmId, ts);
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, owner: sessionId, lease_expires_at: expiresAt,
+      }, null, 2) + '\n');
+    } else {
+      console.log(`▸ claim ${swarmId}/${repoId} → ${sessionId}`);
+      console.log(`  lease until ${expiresAt}`);
+    }
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      // Write a claim-request signal so the existing owner sees it next poll.
+      const sig = signalsLib.writeSignal({
+        ecosystemRoot, swarmId,
+        type: 'claim-request', slug: `${repoId}-by-${sessionSlug(sessionId)}`,
+        fromSession: sessionId, repo: repoId,
+        nowIso: ts, detail: `claim rejected: ${err.decision.reason}`,
+      });
+      console.error(`✗ claim ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
+      console.error(`  claim-request signal written (${sig.signal_id}); owner sees it next poll`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+function cmdAbsorb(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    yes: { flag: '--yes', type: 'bool', default: false, aliases: ['-y'] },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [targetSwarmId, sourceSwarmId] = opts.positional;
+  if (!targetSwarmId || !sourceSwarmId) {
+    throw new Error('swarm absorb: usage — momentum swarm absorb <target-swarm-id> <source-swarm-id> [--session <id>] [--yes]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+
+  // Confirmation prompt (skipped with --yes)
+  if (!opts.yes && !opts.json) {
+    const target = manifestLib.loadManifest(ecosystemRoot, targetSwarmId);
+    const source = manifestLib.loadManifest(ecosystemRoot, sourceSwarmId);
+    if (!target || !source) {
+      // Let absorb() surface the canonical error
+    } else {
+      const conflicts = absorbLib.detectContractConflicts(source.contracts, target.contracts);
+      const overlap = Object.keys(source.repos).filter((id) => id in target.repos);
+      const newRepos = Object.keys(source.repos).filter((id) => !(id in target.repos));
+      console.log(`▸ absorb plan: ${sourceSwarmId} → ${targetSwarmId}`);
+      console.log(`  Repos to add:   ${newRepos.length ? newRepos.join(', ') : '(none)'}`);
+      console.log(`  Repos overlap:  ${overlap.length ? overlap.join(', ') : '(none)'}`);
+      console.log(`  Contracts diff: ${conflicts.length ? conflicts.length + ' conflict(s)' : 'clean'}`);
+      if (conflicts.length) {
+        for (const c of conflicts) {
+          console.log(`    ✗ ${c.surface} — ${c.kind}`);
+        }
+        console.error('');
+        console.error('Aborting — resolve contract conflicts first (bump versions on both sides, or use --yes to force).');
+        process.exit(1);
+      }
+      console.log('');
+      console.log('  Pass --yes to skip this confirmation. Re-run with --yes to proceed.');
+      process.exit(0);
+    }
+  }
+
+  try {
+    const r = absorbLib.absorb({
+      ecosystemRoot, targetSwarmId, sourceSwarmId, sessionId, nowIso: ts,
+    });
+    if (opts.json) {
+      process.stdout.write(JSON.stringify(r, null, 2) + '\n');
+      return;
+    }
+    console.log(`▸ absorbed ${r.absorbed} → ${r.into}`);
+    console.log(`  Repos added:    ${r.reposAdded.length ? r.reposAdded.join(', ') : '(none)'}`);
+    console.log(`  Repos overlap:  ${r.reposOverlapped.length ? r.reposOverlapped.join(', ') : '(none)'}`);
+    console.log(`  Inbox moved:    ${r.inboxMoved}`);
+    console.log(`  Archived to:    ${path.relative(ecosystemRoot, r.archivedTo)}`);
+  } catch (err) {
+    if (err.code === 'ECONTRACT') {
+      console.error(`✗ absorb ${sourceSwarmId} → ${targetSwarmId}: contract conflict on ${err.conflicts.length} surface(s)`);
+      for (const c of err.conflicts) {
+        console.error(`  ${c.surface} — ${c.kind}`);
+        console.error(`    source: ${JSON.stringify(c.source)}`);
+        console.error(`    target: ${JSON.stringify(c.target)}`);
+      }
+      console.error('');
+      console.error('Both swarms untouched. Resolve contract divergence then retry.');
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+function cmdJoin(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    token: { flag: '--token', default: null },
+    claim: { flag: '--claim', default: null },
+    leaseHours: { flag: '--lease-hours', default: '24' },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId] = opts.positional;
+  if (!swarmId) {
+    throw new Error('swarm join: usage — momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  const leaseMs = Number(opts.leaseHours) * 60 * 60 * 1000;
+  try {
+    const r = joinLib.join({
+      ecosystemRoot, swarmId, sessionId, nowIso: ts,
+      token: opts.token, claim: opts.claim,
+      leaseMs,
+    });
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId: r.swarmId,
+        sessionId: r.sessionId,
+        sessions: r.sessions,
+        claimed: r.claimed,
+        token: r.token ? { kind: r.token.kind, target_repo: r.token.target_repo, swarm_id: r.token.swarm_id } : null,
+      }, null, 2) + '\n');
+      return;
+    }
+    console.log(`▸ join ${swarmId} as session ${sessionId}`);
+    console.log(`  Sessions in this swarm: ${r.sessions.length}`);
+    if (r.token) {
+      console.log(`  Token consumed: kind=${r.token.kind}${r.token.target_repo ? ` target=${r.token.target_repo}` : ''}`);
+    }
+    if (r.claimed) {
+      console.log(`  Claimed: ${r.claimed.repo} → ${r.claimed.owner} (lease until ${r.claimed.lease_expires_at})`);
+    } else {
+      console.log(`  (registration only — use --claim <repo> to take ownership)`);
+    }
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      console.error(`✗ join ${swarmId} --claim rejected: ${err.decision.reason}`);
+      process.exit(1);
+    }
+    if (/expired/.test(err.message) || /not found/.test(err.message)) {
+      console.error(`✗ join ${swarmId}: ${err.message}`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+function cmdFocus(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    expiresMin: { flag: '--expires-min', default: '60' },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId, repoId] = opts.positional;
+  if (!swarmId || !repoId) {
+    throw new Error('swarm focus: usage — momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  const expiresInMs = Number(opts.expiresMin) * 60 * 1000;
+  try {
+    const r = focusLib.focus({
+      ecosystemRoot, swarmId, repo: repoId, sessionId, nowIso: ts,
+      expiresInMs,
+    });
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, token: r.token.token,
+        expires_at: r.token.expires_at, signal_id: r.signal.signal_id,
+        directive: r.directive,
+      }, null, 2) + '\n');
+      return;
+    }
+    console.log(`▸ focus ${swarmId}/${repoId} — token issued`);
+    console.log(`  Token:      ${r.token.token}`);
+    console.log(`  Expires:    ${r.token.expires_at}`);
+    console.log(`  Owner:      → ${'_focusing'} (transitional)`);
+    console.log(`  Signal:     ${r.signal.signal_id}`);
+    console.log('');
+    console.log(`▸ Spawn directive — run in a second terminal:`);
+    console.log(`  ${r.directive.command} ${r.directive.args.join(' ')}`);
+    console.log(`  Then issue inside that session:`);
+    console.log(`    momentum swarm join ${swarmId} --token ${r.token.token}`);
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      console.error(`✗ focus ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
+      console.error(`  Only the current owner may focus a repo. Try /swarm claim first.`);
+      process.exit(1);
+    }
+    throw err;
+  }
+}
+
+function cmdRelease(args) {
+  const opts = parseFlags(args, {
+    sessionId: { flag: '--session', default: null },
+    ecosystem: { flag: '--ecosystem', default: null },
+    json: { flag: '--json', type: 'bool', default: false },
+  });
+  const [swarmId, repoId] = opts.positional;
+  if (!swarmId || !repoId) {
+    throw new Error('swarm release: usage — momentum swarm release <swarm-id> <repo> [--session <id>]');
+  }
+  const ecosystemRoot = resolveEcosystemRoot(opts.ecosystem);
+  const sessionId = resolveSessionId(opts.sessionId);
+  const ts = nowIso();
+  // Idempotent fast-path: if already UNCLAIMED, no-op
+  const manifest = manifestLib.loadManifest(ecosystemRoot, swarmId);
+  if (!manifest) throw new Error(`swarm release: no manifest for ${swarmId}`);
+  if (!manifest.repos[repoId]) throw new Error(`swarm release: ${repoId} not in swarm ${swarmId}`);
+  if (manifest.repos[repoId].owner === manifestLib.UNCLAIMED) {
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, owner: manifestLib.UNCLAIMED, noop: true,
+      }, null, 2) + '\n');
+    } else {
+      console.log(`▸ release ${swarmId}/${repoId}: already unclaimed (no-op)`);
+    }
+    return;
+  }
+  try {
+    manifestLib.updateManifestAsOwner({
+      ecosystemRoot, swarmId, sessionId, repo: repoId, nowIso: ts,
+      mutate: (m) => {
+        const previousOwner = m.repos[repoId].owner;
+        m.repos[repoId].owner = manifestLib.UNCLAIMED;
+        // Drop the lease — UNCLAIMED owner means anyone may claim
+        delete m.repos[repoId].lease_expires_at;
+        delete m.repos[repoId].lease_renewed_at;
+        delete m.repos[repoId].claimed_by_session;
+        if (!Array.isArray(m.audit)) m.audit = [];
+        m.audit.push({
+          ts, actor: sessionId, event: 'release', repo: repoId,
+          detail: `${previousOwner} → ${manifestLib.UNCLAIMED}`,
+        });
+      },
+    });
+    boardLib.refreshBoard(ecosystemRoot, swarmId, ts);
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({
+        swarmId, repo: repoId, owner: manifestLib.UNCLAIMED,
+      }, null, 2) + '\n');
+    } else {
+      console.log(`▸ release ${swarmId}/${repoId} → unclaimed`);
+    }
+  } catch (err) {
+    if (err.code === 'EOWNERSHIP') {
+      console.error(`✗ release ${swarmId}/${repoId} rejected: ${err.decision.reason}`);
+      console.error(`  Only the current owner may release a repo.`);
+      process.exit(1);
+    }
+    throw err;
+  }
 }
 
 function cmdBudget(args) {
@@ -594,6 +930,11 @@ Usage:
   momentum swarm resume <swarm-id> [--session <id>]
   momentum swarm cancel <swarm-id> [--reason "<text>"]
   momentum swarm budget <swarm-id> <repo> +N | -N
+  momentum swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]
+  momentum swarm release <swarm-id> <repo> [--session <id>]
+  momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]
+  momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]
+  momentum swarm absorb <target-swarm-id> <source-swarm-id> [--yes] [--session <id>]
   momentum swarm inbox list <swarm-id>
   momentum swarm inbox write <swarm-id> --repo <r> --slug <s> --question "<text>"
   momentum swarm inbox resolve <swarm-id> <id> --answer "<text>"
@@ -733,6 +1074,11 @@ function runSwarm(args) {
     case 'resume': return cmdResume(rest);
     case 'cancel': return cmdCancel(rest);
     case 'budget': return cmdBudget(rest);
+    case 'claim': return cmdClaim(rest);
+    case 'release': return cmdRelease(rest);
+    case 'focus': return cmdFocus(rest);
+    case 'join': return cmdJoin(rest);
+    case 'absorb': return cmdAbsorb(rest);
     case 'inbox': return cmdInbox(rest);
     case 'preview-merge': return cmdPreviewMerge(rest);
     default:

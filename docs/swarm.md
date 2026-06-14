@@ -149,27 +149,109 @@ Graceful halt. Halts every supervisor; preserves all artifacts (branches NOT for
 | Pre-merge surfaced conflicts | Two waves changed overlapping code | Resolve manually before the real merge; rerun verify |
 | Inbox item never closed | Supervisor halted waiting | `/swarm inbox resolve <id> --answer "..."` |
 
-## Future: Swarm Portability (Phase 17.5)
+## Multi-session portability (Phase 17.5 / v0.20.2)
 
-v0.20.0 bakes in the schema hooks for forward-compatible portability. v0.20.1 (Phase 17.5) will light up three commands:
+A swarm can be co-conducted by multiple sessions. v0.20.2 lights up five new subcommands on top of the schema hooks shipped in v0.20.0:
 
-| Command | Scenario |
+| Command | Use it when |
 |---|---|
-| `/swarm focus <repo>` | Split a running swarm into a focused side-session — one supervisor moves to a new conductor; the rest stay with the original |
-| `/swarm join <swarm-id>` | Join an independent session to an existing swarm as a co-conductor |
-| `/swarm absorb <other-id>` | Converge multiple swarms back into one — `/swarm verify` checks contract compatibility before allowing the merge |
+| `/swarm claim <swarm-id> <repo>` | You want to take ownership of `<repo>` — either because nobody owns it yet or the current owner's lease has expired. |
+| `/swarm release <swarm-id> <repo>` | You no longer need `<repo>` — flips owner back to `_unclaimed` so another session can claim. |
+| `/swarm focus <swarm-id> <repo>` | One repo needs sustained one-on-one attention. Issues a single-use token; you hand the token to a second session via `claude --bg`. |
+| `/swarm join <swarm-id> [--token \| --claim]` | Attach the current session to an existing swarm. With `--token`, consume a focus or join token and auto-claim. With `--claim <repo>`, do an explicit claim. |
+| `/swarm absorb <target-id> <source-id>` | Converge two parallel swarms back into one. Aborts cleanly on contract content_hash divergence; both swarms left untouched. |
 
-The schema hooks already present in v0.20.0 (no migration needed):
+### Lease enforcement is on
 
-- `repos[name].owner` — session UUID currently authoritative for this repo (defaults to current session)
-- `repos[name].lease_expires_at` — when the current owner's lease expires (24h default)
-- `repos[name].lease_renewed_at` — last conductor turn that refreshed the lease
-- `repos[name].claimed_by_session` — mirrors brief frontmatter `claimed_by_session:`
-- top-level `sessions[]` — registry of every conductor that has touched this swarm
-- `signals/` directory — reserved for cross-session signals
-- `tokens/` directory — reserved for opaque join/focus/absorb tokens
+Every conductor write that targets `repos[<repo>]` flows through `core/swarm/lib/manifest.js::updateManifestAsOwner`. Writes are accepted when:
+- the caller is the current `owner`, OR
+- the current `owner` is the `_unclaimed` or `_focusing` sentinel, OR
+- the current `owner`'s `lease_expires_at` is in the past (takeover; both `claim` and `lease-takeover` events appear in audit).
 
-v0.20.0 always sets `owner = current session`; never enforces lease semantics. v0.20.1 turns enforcement on.
+Writes are rejected (with `err.code = 'EOWNERSHIP'`) when another session holds a valid lease. The CLI exits 1 and writes a `claim-request` signal for the existing owner to see next poll.
+
+Solo (single-session) swarms are unaffected — there's always exactly one owner per repo, and the owner is always the writer.
+
+### Signal protocol
+
+The `signals/` directory ships typed cross-session messages — one JSON file per signal at `<eco>/swarms/<id>/signals/NNNN-<type>-<slug>.json`. Conductor polls the directory each turn, branches on type, surfaces in the chat, and archives processed items to `signals/processed/`.
+
+| Signal type | Issued by | Read by |
+|---|---|---|
+| `focus-request` | `/swarm focus` (carries the token) | Receiving session — `join --token` consumes |
+| `claim-request` | `/swarm claim` when lease was valid | The current owner — surfaces a request next poll |
+| `absorb-proposed` | `/swarm absorb` (pre-commit) | The other conductor — sees the proposal before merge |
+| `lease-expired` | `updateManifestAsOwner` on takeover | All sessions — audit trail of lease churn |
+
+Writes are mkdir-locked using the same pattern as the inbox protocol. Concurrent writes are race-safe up to the filesystem's mkdir atomicity guarantee.
+
+### Transfer tokens
+
+Opaque 16-hex strings at `<eco>/swarms/<id>/tokens/<token>.json`. Single-use: `consumeToken` deletes on read. 1-hour default expiry (override with `--expires-min` on `focus`). Two kinds:
+
+- `focus` — carries `target_repo`; `join --token` auto-claims that repo
+- `join` — registration-only; `join --token` registers without claiming
+
+Tokens are not secrets in the cryptographic sense — they're single-attempt short-lived strings on the local filesystem, used to avoid embedding session UUIDs in spawn directives the user copy-pastes.
+
+### Worked example — focus split + reunion
+
+```bash
+# sess-A starts swarm with 3 repos
+momentum swarm start payments \
+  --initiative payments \
+  --repos shared-types,backend,frontend \
+  --phase phase-7-payments
+
+# sess-A focuses backend — prints a `claude --bg` directive
+momentum swarm focus 0001-payments backend
+# ▸ focus 0001-payments/backend — token issued
+#   Token:      a1b2c3d4e5f60718
+#   Spawn directive: claude --bg --cwd /path/to/eco
+#   Then: momentum swarm join 0001-payments --token a1b2c3d4e5f60718
+
+# In a second terminal — sess-B runs the join (taking only backend):
+momentum swarm join 0001-payments --token a1b2c3d4e5f60718
+# ▸ join 0001-payments as session sess_xyz
+#   Token consumed: kind=focus target=backend
+#   Claimed: backend → sess_xyz (lease until 2026-06-15T17:30:00Z)
+
+# Both sessions drive their owned repos forward. Lease enforcement blocks
+# sess-A from writing to backend.
+
+# When sess-B is done it can release backend:
+momentum swarm release 0001-payments backend
+# ▸ release 0001-payments/backend → unclaimed
+
+# sess-A picks it back up:
+momentum swarm claim 0001-payments backend
+# ▸ claim 0001-payments/backend → sess-A (lease until ...)
+```
+
+### Worked example — absorb with contract verify
+
+```bash
+# Two parallel swarms running in the same ecosystem.
+# Both touch `auth-api` surface but with different content_hash.
+
+momentum swarm absorb 0001-payments 0002-billing
+# (without --yes — prints the dry-run plan and contract diff)
+# ▸ absorb plan: 0002-billing → 0001-payments
+#   Repos to add:   billing-api
+#   Repos overlap:  shared-types
+#   Contracts diff: 1 conflict(s)
+#     ✗ auth-api — content-hash-divergence
+# Aborting — resolve contract conflicts first
+
+# Bump the contract version + reconcile the producer hash on both sides.
+# Then retry:
+momentum swarm absorb 0001-payments 0002-billing --yes
+# ▸ absorbed 0002-billing → 0001-payments
+#   Repos added:    billing-api
+#   Repos overlap:  shared-types
+#   Inbox moved:    2
+#   Archived to:    swarms/.absorbed/0002-billing
+```
 
 ## Tracking contract
 
