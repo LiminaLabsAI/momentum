@@ -112,6 +112,43 @@ function loadAdapter(src, agent) {
   };
 }
 
+// ── Adapter contract — spawn(directive) (Phase 18) ───────────────────────────
+//
+// Every adapter MUST export a `spawn(directive)` function. The conductor
+// (`core/swarm/conductor.js::buildSpawnDirectives`) produces platform-agnostic
+// directives; the adapter dispatches them to its native runtime (Claude Code
+// `claude --bg --cwd ...`, Codex `codex --cwd ...`, Antigravity `agy`, etc).
+//
+// Directive shape (canonical — produced by buildSpawnDirectives, consumed
+// by adapter.spawn):
+//
+//   {
+//     platform:    string,   // adapter id ("claude-code" | "codex" | "antigravity")
+//     swarmId:     string,   // e.g. "0007-user-auth"
+//     wave:        number,   // 1-indexed
+//     repoId:      string,   // ecosystem member id
+//     repoPath:    string,   // absolute path; supervisor's pinned cwd
+//     phaseSlug:   string,   // e.g. "phase-3-user-auth"
+//     branch:      string,
+//     sessionId:   string,   // session id of the spawning conductor
+//     recipePath:  string,   // absolute path to supervise.md
+//     contextPath: string,   // optional — for tell / broadcast injection
+//     env:         object,   // MOMENTUM_SWARM_* vars to inject
+//   }
+//
+// Return contract: an array element of shape
+//   { repoId, status, detail }
+// where `status` is the child-process exit code (0 = ok, non-zero = failure,
+// -1 = could not launch). adapter.spawn is invoked once PER directive so the
+// per-repo result is the function's own return value.
+//
+// Pure stubs (adapters that do not yet implement a runtime dispatch) MUST
+// return `{ repoId, status: -1, detail: 'not implemented' }` rather than
+// throwing — the conductor stays robust to per-repo dispatch failures.
+function adapterSupportsSpawn(adapter) {
+  return adapter && typeof adapter.spawn === 'function';
+}
+
 function resolveAdapterSource(srcRoot, adapterDir, fileSpec) {
   const sourceBase = fileSpec.sourceBase || 'adapter';
   const base = sourceBase === 'package' ? srcRoot : adapterDir;

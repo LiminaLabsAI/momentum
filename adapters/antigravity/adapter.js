@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 module.exports = {
   displayName: 'Antigravity',
@@ -93,5 +94,40 @@ module.exports = {
       copyFile(src, dest);
       console.log('  + added:    .agents/hooks.json');
     }
+  },
+
+  // Phase 18 G2 — adapter.spawn(directive) for Antigravity.
+  // Shells `agy` via the Agent Manager primitive, passing the
+  // supervisor skill as the persona and the directive's repoPath as
+  // the cwd. Exploits Antigravity's `parallelSubagents: true`
+  // capability — one supervisor per repo can run concurrently.
+  // See `bin/momentum.js` for the directive contract.
+  spawn(directive) {
+    if (!directive || directive.platform !== 'antigravity') {
+      return {
+        repoId: directive && directive.repoId,
+        status: -1,
+        detail: `non-antigravity platform: ${directive && directive.platform}`,
+      };
+    }
+    const agyBin = process.env.AGY_BIN || 'agy';
+    const args = ['--cwd', directive.repoPath, '--skill', 'swarm-supervisor'];
+    const prompt = [
+      `You are a swarm supervisor. Recipe: ${directive.recipePath}`,
+      `Read the recipe and the brief at specs/phases/${directive.phaseSlug}/overview.md.`,
+      `Your repo: ${directive.repoId}. Your swarm: ${directive.swarmId} wave ${directive.wave}.`,
+      `Begin the boot sequence.`,
+    ].join('\n');
+    const r = spawnSync(agyBin, args, {
+      input: prompt,
+      env: Object.assign({}, process.env, directive.env),
+      encoding: 'utf8',
+      timeout: 5000,
+    });
+    return {
+      repoId: directive.repoId,
+      status: r.status == null ? -1 : r.status,
+      detail: (r.error && r.error.message) || (r.stderr || '').slice(0, 200),
+    };
   },
 };

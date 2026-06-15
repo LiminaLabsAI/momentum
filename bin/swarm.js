@@ -21,7 +21,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { spawnSync } = require('child_process');
 const crypto = require('crypto');
 
 const MOMENTUM_ROOT = path.resolve(__dirname, '..');
@@ -175,7 +174,7 @@ function cmdStart(args) {
 
   let spawnResults = null;
   if (opts.spawn) {
-    spawnResults = spawnClaudeCodeSupervisors(directives);
+    spawnResults = spawnSupervisors(directives);
   }
 
   if (opts.json) {
@@ -839,41 +838,49 @@ function completeSwarm(ecosystemRoot, swarmId, ts) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Claude Code spawn wrapper
+// Adapter spawn dispatch (Phase 18)
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Launch one Claude Code background session per directive. Uses
- * `claude --bg --cwd <repoPath>`. If the `claude` binary is not
- * available, returns failures (the recipe path is dry-run safe — the
- * Claude Code recipe layer detects missing binaries and degrades).
+ * Resolve the adapter module for a given platform id. Used by spawn
+ * dispatch so the CLI floor stays platform-agnostic — `bin/swarm.js`
+ * never imports any adapter directly.
  */
-function spawnClaudeCodeSupervisors(directives) {
+function loadAdapterForPlatform(platform) {
+  const adapterPath = path.join(MOMENTUM_ROOT, 'adapters', platform, 'adapter.js');
+  if (!fs.existsSync(adapterPath)) {
+    return null;
+  }
+  // eslint-disable-next-line global-require
+  return require(adapterPath);
+}
+
+/**
+ * Dispatch each directive to `adapter.spawn(directive)`. The directive's
+ * `platform` field selects the adapter; an unknown platform or missing
+ * `spawn` function yields a canonical `status: -1` entry so the wave
+ * stays robust to per-repo dispatch failures. See `bin/momentum.js` for
+ * the directive contract.
+ */
+function spawnSupervisors(directives) {
   const results = [];
   for (const d of directives) {
-    if (d.platform !== 'claude-code') {
-      results.push({ repoId: d.repoId, status: -1, detail: `non-claude-code platform: ${d.platform}` });
+    const adapter = loadAdapterForPlatform(d.platform);
+    if (!adapter) {
+      results.push({
+        repoId: d.repoId, status: -1,
+        detail: `unknown platform: ${d.platform}`,
+      });
       continue;
     }
-    const claudeBin = process.env.CLAUDE_CODE_BIN || 'claude';
-    const args = ['--bg', '--cwd', d.repoPath];
-    // Pipe the recipe path + initial brief via stdin
-    const prompt = [
-      `You are a swarm supervisor. Recipe: ${d.recipePath}`,
-      `Read the recipe and the brief at specs/phases/${d.phaseSlug}/overview.md.`,
-      `Begin the boot sequence.`,
-    ].join('\n');
-    const r = spawnSync(claudeBin, args, {
-      input: prompt,
-      env: Object.assign({}, process.env, d.env),
-      encoding: 'utf8',
-      timeout: 5000,
-    });
-    results.push({
-      repoId: d.repoId,
-      status: r.status == null ? -1 : r.status,
-      detail: (r.error && r.error.message) || (r.stderr || '').slice(0, 200),
-    });
+    if (typeof adapter.spawn !== 'function') {
+      results.push({
+        repoId: d.repoId, status: -1,
+        detail: `adapter ${d.platform} does not export spawn()`,
+      });
+      continue;
+    }
+    results.push(adapter.spawn(d));
   }
   return results;
 }
@@ -1091,6 +1098,7 @@ module.exports = {
   // Exposed for tests
   verifySwarm,
   completeSwarm,
-  spawnClaudeCodeSupervisors,
+  spawnSupervisors,
+  loadAdapterForPlatform,
   resolveEcosystemRoot,
 };

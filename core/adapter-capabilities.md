@@ -42,28 +42,36 @@ orchestration code depends on.
 | `artifacts` (adapter-specific) | — | — | ✅ |
 | `planningMode` (adapter-specific) | — | — | ✅ |
 
-## Phase 17 (v0.20.0) + Phase 17.5 (v0.20.2) — `/swarm` Claude Code-only scope
+## Phase 17 (v0.20.0) + Phase 17.5 (v0.20.2) + Phase 18 (v0.20.4) — `/swarm` cross-adapter
 
-The Phase 17 swarm capability — sustained parallel multi-project
-feature delivery — ships **Claude Code only**. Phase 17 (v0.20.0)
-delivered the conductor + supervisor architecture, files-as-channels
-coordination, indexing strategies, and intervention surface. Phase 17.5
-(v0.20.2) layered five portability subcommands (`claim` / `release` /
-`focus` / `join` / `absorb`), lease enforcement at the
-`manifest.js` write chokepoint, and a typed signal protocol. The
-underlying `core/swarm/` library is platform-agnostic (no capability
-flag added — the swarm primitive is its own subsystem). Adapter
-parity is **Phase 18 (target v0.20.3 — displaced from v0.20.2 by
-Phase 17.5)**:
+Phase 17 (v0.20.0) delivered the conductor + supervisor architecture,
+files-as-channels coordination, indexing strategies, and intervention
+surface — Claude Code only. Phase 17.5 (v0.20.2) layered five
+portability subcommands (`claim` / `release` / `focus` / `join` /
+`absorb`), lease enforcement at the `manifest.js` write chokepoint, and
+a typed signal protocol. The underlying `core/swarm/` library is
+platform-agnostic.
 
-| Adapter | What's needed for swarm parity |
+**Phase 18 (v0.20.4)** brings the full 13-subcommand swarm surface to
+Codex and Antigravity via an `adapter.spawn(directive)` contract added
+to every adapter:
+
+| Adapter | What ships in Phase 18 |
 |---|---|
-| Codex | MCP cwd shim to honor the per-supervisor cwd pin + TOML supervisor agent at `.codex/agents/swarm-supervisor.toml` |
-| Antigravity | Agent Manager workflow at `.agent/workflows/swarm-conductor.md` + supervisor skill at `.agents/skills/swarm-supervisor/SKILL.md` |
+| Codex | `adapter.spawn()` shells `codex --cwd <repoPath> --agent swarm-supervisor`; supervisor TOML at `.codex/agents/swarm-supervisor.toml`; recipe → skill transform produces `.agents/skills/swarm/SKILL.md`; AGENTS.md gains `## Swarm — Lookup Pattern` and `## MCP cwd shim — Codex configuration` sections. |
+| Antigravity | `adapter.spawn()` shells `agy --cwd <repoPath> --skill swarm-supervisor`; workflow at `.agent/workflows/swarm.md` auto-registers as `/swarm`; supervisor skill at `.agents/skills/swarm-supervisor/SKILL.md`; AGENTS.md gains `## Swarm — Lookup Pattern` section. |
 
-Neither requires a new capability flag — `parallelSubagents` is the
-relevant existing primitive. Each adapter's own `roadmap` block will
-list the swarm-parity follow-up when Phase 18 starts.
+### Capability flips — outcome of G4 live VAL evidence
+
+Phase 18 G4 live evidence (`specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`) concluded **neither flip lands**:
+
+- **Codex `parallelSubagents`** stays `false`. `codex features list` shows `enable_fanout: under development: false` at codex-cli 0.133.0. Flipping `parallelSubagents` requires `enable_fanout: stable: true` upstream.
+- **Antigravity `sessionStartHook`** stays `false`. No standalone `agy` CLI exists — Antigravity is an IDE-only product, so live event-firing cannot be confirmed via CLI. Operator-manual validation inside the IDE is the closure path.
+
+The swarm subcommand row in the parity matrix flips to `shipped¹⁴` for
+both Codex + Antigravity — the surface is complete; only the two
+capability flags remain `false` pending the listed upstream / operator
+conditions.
 
 ### Roadmap footnotes
 

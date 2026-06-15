@@ -63,19 +63,64 @@ to compose workflows.
 
 ## Skills = personas the agent loads to BECOME
 
-Momentum installs four skills at `.agents/skills/`:
+Momentum installs five skills at `.agents/skills/`:
 
 - **`momentum-orient`** — Read `specs/status.md` first. Codifies Rule 1.
 - **`momentum-reviewer-security`** — OWASP/STRIDE security review persona.
 - **`momentum-reviewer-qa`** — Test coverage / edge cases / regression risk.
 - **`momentum-reviewer-architecture`** — Rule compliance / pattern consistency.
+- **`swarm-supervisor`** — Phase 18 / v0.20.4. Per-repo supervisor persona spawned by `/swarm start`. Drives one repo's phase to completion under a pinned cwd. See `## Swarm — Lookup Pattern` below.
 
 The three reviewer skills are loaded by the `/review-code` workflow,
 which dispatches them in parallel via Antigravity's native subagent
-fan-out, then consolidates findings.
+fan-out, then consolidates findings. The swarm-supervisor skill is
+loaded by each Wave-N supervisor on spawn; it is not invoked directly
+by the user.
 
 Add project-specific skills under `.agents/skills/<name>/SKILL.md` with
 YAML frontmatter (`name`, `description`).
+
+## Swarm — Lookup Pattern
+
+> Phase 18 / v0.20.4 — Antigravity parity of the Phase 17 + 17.5
+> swarm primitive.
+
+Momentum's swarm primitive — sustained parallel multi-project feature
+delivery — ships on Antigravity as of v0.20.4. The user-facing
+workflow lives at `.agent/workflows/swarm.md`; `agy` auto-registers it
+as `/swarm`. The per-repo supervisor persona lives at
+`.agents/skills/swarm-supervisor/SKILL.md`.
+
+The CLI floor is `momentum swarm <sub> [args]`. The slash command and
+the CLI produce the same on-disk artifacts.
+
+| Subcommand | What it does |
+|---|---|
+| `start` | Plan + spawn Wave 1. Presents wave plan for approval before any spawn. |
+| `status` | Render the materialized board cache. Read-only. |
+| `tell` | Push a one-shot context note to one supervisor (`swarm-context.md`). |
+| `broadcast` | Push context to every supervisor in the swarm. |
+| `verify` | Contract verifier + manifest+brief drift check. |
+| `complete` | Synthesize the cross-repo changeset and finalize the swarm. |
+| `resume` | Re-attach this session to a swarm; renews owned leases. |
+| `cancel` | Graceful halt; preserves all artifacts for forensics. |
+| `budget` | Adjust a per-repo token budget. |
+| `claim` | Multi-session ownership primitive (Phase 17.5). |
+| `release` | Release ownership; idempotent. |
+| `focus` | Issue a single-use focus token to hand a repo to a side session. |
+| `join` | Register a second session as co-conductor; optionally consume a token. |
+| `absorb` | Converge two swarms back into one (forensic-preserving). |
+| `inbox` | Supervisor → conductor questions (`list` / `write` / `resolve`). |
+| `preview-merge` | Dry-run `git merge --no-commit` per supervisor branch. |
+
+**Spawn dispatch**: the conductor (this user session) dispatches spawns
+through `adapters/antigravity/adapter.js::spawn(directive)` — which
+shells `agy` with the supervisor skill as the persona and the
+directive's `repoPath` as the cwd. Each supervisor BECOMES the
+`swarm-supervisor` skill on boot.
+
+**`agy` not on PATH**: `momentum swarm start --spawn` degrades to
+dry-run and prints spawn directives the user can launch manually.
 
 ## Antigravity Native Artifacts Integration
 

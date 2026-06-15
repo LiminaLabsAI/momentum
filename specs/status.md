@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-15
-> **Current Phase**: _none active_
+> **Current Phase**: Phase 18 — Swarm Parity (Codex + Antigravity)
 > **Latest Release**: v0.20.3 — BUG-006 fix (CLAUDE.md project-name substitution)
 > **Health**: On Track
 
@@ -42,7 +42,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — last release v0.20.3 BUG-006 fix; Phase 18 Swarm Parity is the next planned phase)_ | | | |
+| 18 | Swarm Parity (Codex + Antigravity) | In Progress (target v0.20.4) | Brainstormed 2026-06-15; started 2026-06-15. Branch `phase-18-swarm-parity`. 5 groups: G0 (spawn contract + Claude Code refactor) → G1 + G2 in parallel (Codex / Antigravity wiring) → G3 (multi-adapter e2e + fingerprints) → G4 (live VAL-001/002 + capability flips + docs + release). |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -53,7 +53,6 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 18 | Swarm Parity (Codex + Antigravity) | Not Started (target v0.20.4) | Codex `swarm-supervisor.toml` + MCP cwd shim; Antigravity Agent Manager workflow + skills. `core/swarm/` is platform-agnostic; this phase wires the two adapters. (Was v0.20.2 → v0.20.3; bumped to v0.20.4 after the unplanned BUG-006 patch release.) |
 | 19 | Reach | Not Started (target v0.21.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
 | 20 | Intelligence | Not Started (target v0.22.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 21 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
@@ -100,6 +99,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-06-15**: **Phase 18 — Swarm Parity started.** Branch `phase-18-swarm-parity` from `main` (target v0.20.4 after the unplanned v0.20.3 BUG-006 patch). Wires the platform-agnostic `core/swarm/` (Phase 17 + 17.5) into the Codex and Antigravity adapters. Full 13-subcommand surface (Phase 17 baseline + Phase 17.5 portability primitives) for both adapters. Five groups: G0 (spawn contract + Claude Code refactor — pure additive `adapter.spawn(directive)` on the contract; no schema migration) → G1 (Codex: `.codex/agents/swarm-supervisor.toml` + AGENTS.md swarm lookup + MCP cwd shim docs) + G2 (Antigravity: `.agent/workflows/swarm-conductor.md` + `.agents/skills/swarm-supervisor/SKILL.md` + AGENTS.md swarm section) in parallel → G3 (multi-adapter synthetic e2e: 3 scenarios × 2 new adapters = 6 evidence files + Codex/Antigravity fingerprint fixtures) → G4 (live VAL-001 Codex + VAL-002 Antigravity dogfood; capability flips Codex `parallelSubagents` + Antigravity `sessionStartHook` `false→true` gated on live evidence; docs + retrospective + v0.20.4 release). Release blocks on live VAL evidence (synthetic-only Phase 18 would leave both adapter cells degraded indefinitely).
 
 - **2026-06-15**: **v0.20.3 released** — BUG-006 fix (CLAUDE.md/AGENTS.md project-name substitution). Two helpers in `bin/momentum.js` (`getProjectName(targetDir)` resolves from `package.json` `name` → @scope-stripped → directory basename → `'project'`; `renderProjectName(content, name)` substitutes the literal `<Project Name>` placeholder) wired into `installPrimaryInstruction()`, `upgradePrimaryInstruction()`, and `upgradeMarkedFile()` (optional projectName param). All 3 adapters benefit (claude-code CLAUDE.md, codex/antigravity AGENTS.md). 5 new regression tests (`tests/project-name-substitution.test.js`) covering no-pkg / pkg-name / scoped-name / codex / upgrade paths. Claude Code fingerprint snapshot bumped (CLAUDE.md hash `c776df…` → `3a6a70…`) with the regression test pinning a fixed-name subdirectory under the random tmp root for determinism. **Suite: 555/555** (550 v0.20.2 baseline + 5 new). Phase 18 (Swarm Parity) retargeted v0.20.3 → v0.20.4 to accommodate this unplanned patch.
 - **2026-06-15**: Cerebrio dogfood attempt (Phase 17.5 Next Action #1) **partially completed, stopped on workspace cleanup**. Did: global CLI upgrade `0.20.0` → `0.20.2` (`@avinash-singh-io/momentum@0.20.2`); committed v0.20.2 scaffolding bootstrap in cerebrio-ecosystem on `chore/momentum-upgrade-v0.20.2` (PR `avinash-singh-io/cerebrio-ecosystem#2`, 29 files / 3.4K LOC, the FIRST committed momentum scaffolding for that repo — prior v0.13 install was entirely untracked). Did not: upgrade the other 6 member repos (sapience / frontend / py / cli / open-guard / open-shield-python / test-lab) because they collectively carry ~700 modified+untracked files of unrelated in-flight work; not safe to commit on operator's behalf. Did not: run a real cross-repo `/swarm` end-to-end. Backlog impact: **BUG-006 bumped P2 → P1** with the cerebrio dogfood as additional evidence — confirmed that `bin/momentum.js::installPrimaryInstruction()` / `upgradePrimaryInstruction()` (lines 100-141, 370-376, 471-476) do byte-for-byte template copy with zero substitution, so every installed `CLAUDE.md` ships the literal `# Project Rules: <Project Name>` first line; the bug affects `init` too, not just `upgrade`. Status doc Next Action #1 rewritten to reflect findings + resume conditions.

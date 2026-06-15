@@ -1,0 +1,130 @@
+# VAL-001 — Codex live evidence (Phase 18 G4)
+
+Captured: 2026-06-15
+Codex CLI: `/Applications/Codex.app/Contents/Resources/codex` (`codex-cli 0.133.0`)
+Antigravity adapter for momentum: shipped in G1.
+
+## Scope
+
+VAL-001 was opened post-v0.19.0 (Phase 16 Adapter Rework) and reopened
+through Phase 18 G4 as the live-dogfood gate for the Codex swarm
+parity. This evidence file closes what can be closed via the CLI
+surface alone and flags the items that still require interactive
+session validation inside the Codex desktop app.
+
+## What was verified
+
+### 1. Codex binary version + capability surface
+
+```
+$ /Applications/Codex.app/Contents/Resources/codex --version
+codex-cli 0.133.0
+
+$ codex features list (subset relevant to momentum swarm parity)
+apps                                    stable             true
+browser_use                             stable             true
+collaboration_modes                     removed            true
+computer_use                            stable             true
+enable_fanout                           under development  false      <-- KEY SIGNAL
+hooks                                   stable             true
+multi_agent                             stable             true
+skill_mcp_dependency_install            stable             true
+```
+
+Key signals:
+- **`hooks: stable: true`** confirms ENH-037 — hooks default-on; momentum's `.codex/hooks.json` will fire without `[features] hooks = true` opt-in.
+- **`multi_agent: stable: true`** confirms Codex's subagent surface is stable; momentum's `.codex/agents/*.toml` declarations are honored.
+- **`enable_fanout: under development: false`** is the GATING SIGNAL for the `parallelSubagents` capability flip. Parallel-fanout (spawning multiple subagents concurrently) is NOT yet a stable Codex feature at codex-cli 0.133.0. Momentum's `parallelSubagents: false` for the Codex adapter stays correct.
+- **`browser_use` + `computer_use: stable: true`** confirms the v0.20.1 capability flips were correct.
+- **`skill_mcp_dependency_install: stable: true`** confirms Codex's skills surface is stable; momentum's `.agents/skills/<name>/SKILL.md` files are auto-discovered.
+
+### 2. Install layout (`momentum init --agent codex`)
+
+```
+$ node bin/momentum.js init /tmp/momentum-val-001-test/project --agent codex
+→ Installing AGENTS.md...
+→ Overlaying commands from adapter...
+→ Overlaying skills from adapter...
+→ Overlaying agents from adapter...
+→ Configuring Codex hooks...
+→ Transforming recipes into native Codex skills...
+  + 20 skill(s) generated at .agents/skills/ from recipes
+  - .codex/commands/ removed (skills replace lookup fragments)
+✓ momentum installed successfully.
+
+$ ls .codex/agents/
+momentum-reviewer-architecture.toml
+momentum-reviewer-qa.toml
+momentum-reviewer-security.toml
+swarm-supervisor.toml                  <-- Phase 18 G1 deliverable, present
+
+$ ls .agents/skills/
+brainstorm-idea
+brainstorm-phase
+complete-phase
+continue
+dispatch
+ecosystem
+handoff
+initiative
+log
+migrate
+momentum-orient
+review
+scout
+session
+start-phase
+start-project
+swarm                                  <-- Phase 18 G1 deliverable, present
+sync-docs
+systematic-debug
+track
+validate
+
+$ cat .codex/hooks.json
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "apply_patch|Bash", ... }     <-- BUG-007 fix shipping correctly
+    ],
+    "PostToolUse": [
+      { "matcher": "apply_patch|Bash", ... }
+    ],
+    "SessionStart": [ ... ]
+  }
+}
+```
+
+## VAL-001 verification questions — status
+
+The backlog VAL-001 entry lists 6 questions. Phase 18 G4 closure status:
+
+| # | Question                                                                                | Status                                              |
+|---|-----------------------------------------------------------------------------------------|-----------------------------------------------------|
+| a | `features.hooks = true` opt-in actually makes `.codex/hooks.json` fire                  | SUPERSEDED by ENH-037 — `hooks` is `stable: true` in `codex features list`; no opt-in needed. Hooks file structure verified (matchers correct). Live firing requires an interactive Codex session inside the IDE. |
+| b | `apply_patch|Bash` matcher catches real Codex tool calls (BUG-007 fix)                  | File structure correct (`apply_patch|Bash` is what ships). Live firing requires an interactive Codex session. |
+| c | `.codex/agents/*.toml` TOML subagents are discovered                                    | `multi_agent: stable: true`; 4 TOML files (3 reviewers + swarm-supervisor) installed at `.codex/agents/`. Live discovery confirmation requires an interactive Codex session that surfaces the agent picker. |
+| d | Parallel fan-out of 3 reviewers actually runs concurrently                              | **GATED — `enable_fanout: under development: false`.** Parallel fan-out is not a stable Codex feature at 0.133.0. Momentum's `parallelSubagents: false` for Codex STAYS until `enable_fanout` flips to `stable: true`. |
+| e | `.agents/skills/momentum-orient/SKILL.md` is auto-discovered                            | `skill_mcp_dependency_install: stable: true`; momentum-orient SKILL.md installed (+20 other skills, including the new `swarm` skill from G1). Live discovery confirmation requires an interactive Codex session. |
+| f | AGENTS.md `## Momentum Recipes — Lookup Pattern` (now `## Recipes — Codex Skills`) followed | N/A at CLI level; depends on real session behaviour. Skills replace the lookup pattern post-v0.20.1, so this question is effectively obsolete — Codex routes `/<name>` to the skill directly. |
+
+## Capability flip decision
+
+- **Codex `parallelSubagents`**: stays `false`. Gated on `enable_fanout: stable: true` in `codex features list`. Currently `under development`. Will re-flip in a future patch once the feature stabilizes.
+- **All other Codex capabilities** (`hooks`, `subagents`, `browser`, `computerUse`, `skills`) remain `true` per v0.20.1; this audit reconfirms.
+
+## Items deferred to operator-manual VAL
+
+The items that require an interactive Codex desktop session to verify:
+1. `.codex/hooks.json` PreToolUse matcher actually fires `brainstorm-gate.sh` when the agent attempts `apply_patch` or `Bash` tool calls.
+2. `.codex/agents/swarm-supervisor.toml` is discoverable inside the agent picker.
+3. `/swarm` slash command routes to `.agents/skills/swarm/SKILL.md`.
+
+Operator next step (when `enable_fanout` stabilizes OR before, for items 1–3):
+- Open Codex desktop app inside a momentum-installed project.
+- Run `/hooks` to confirm the three momentum hooks are listed + trusted.
+- Run `/swarm start` against a synthetic 3-repo ecosystem; observe whether the agent picker offers `swarm-supervisor`.
+
+## Closure status
+
+VAL-001 — **partially closed**. Three of six questions resolved via CLI evidence; three require operator-manual validation inside the Codex desktop app; one (parallel fan-out flip) is explicitly gated on an upstream Codex feature that is "under development." Backlog entry kept open until full live-session evidence lands.

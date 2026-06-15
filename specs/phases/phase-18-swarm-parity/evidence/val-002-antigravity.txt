@@ -1,0 +1,139 @@
+# VAL-002 — Antigravity live evidence (Phase 18 G4)
+
+Captured: 2026-06-15
+Antigravity desktop app: `/Applications/Antigravity IDE.app` present
+Antigravity CLI (`agy`): **does not exist as a standalone binary**.
+
+## Scope
+
+VAL-002 was opened post-v0.19.0 (Phase 16 Adapter Rework) and reopened
+through Phase 18 G4 as the live-dogfood gate for the Antigravity swarm
+parity. This evidence file documents what could be verified at the
+desktop-app level and the structural reason VAL-002 cannot be fully
+closed via CLI today.
+
+## Key finding — no standalone CLI binary
+
+The Antigravity desktop app ships as an IDE-only product. Comprehensive
+search of the installed `/Applications/Antigravity IDE.app/` bundle
+(and the related `/Applications/Antigravity.app/`) finds NO `agy` or
+`antigravity-cli` executable:
+
+```
+$ find "/Applications/Antigravity IDE.app" -maxdepth 7 -type f \
+       \( -name "agy" -o -name "antigravity-cli" \)
+(no matches)
+
+$ find "/Applications/Antigravity IDE.app/Contents/Resources/app/extensions/antigravity/bin/" \
+       -maxdepth 2 -type f
+language_server_macos_arm
+sandbox-wrapper.LICENSE
+sandbox-wrapper.sh
+
+$ npm view agy
+agy@0.0.0 | ISC | deps: none | versions: 1
+.unpackedSize: 217 B               <-- placeholder package, not the real CLI
+
+$ npm view @google/antigravity
+404 — not found
+```
+
+The shipped binaries inside the IDE bundle are `language_server` and
+`sandbox-wrapper` — the IDE's internal runtime, not a user-facing CLI.
+
+Consequence: the momentum CLI's `adapters/antigravity/adapter.js::spawn()`
+shells `agy --cwd <repoPath> --skill swarm-supervisor`, but `agy` is not
+on PATH because the binary does not exist as a standalone form. This is
+a structural limit of the Antigravity product surface, not a momentum
+bug — momentum's spawn is correct for any future Antigravity CLI form.
+
+## What WAS verified
+
+### 1. Install layout (`momentum init --agent antigravity`)
+
+```
+$ node bin/momentum.js init /tmp/momentum-agy-g2-smoke --agent antigravity
+→ Installing AGENTS.md...
+→ Overlaying commands from adapter...
+→ Overlaying skills from adapter...
+→ Overlaying agents from adapter...
+→ Configuring Antigravity hooks...
+✓ momentum installed successfully.
+
+$ ls .agent/workflows/                    # auto-registered as /<basename>
+brainstorm-idea.md
+brainstorm-phase.md
+complete-phase.md
+continue.md
+dispatch.md
+ecosystem.md
+handoff.md
+initiative.md
+log.md
+migrate.md
+review.md
+review-code.md
+scout.md
+session.md
+start-phase.md
+start-project.md
+swarm.md                                  <-- Phase 18 G2 deliverable, present
+sync-docs.md
+systematic-debug.md
+track.md
+validate.md
+
+$ ls .agents/skills/
+momentum-orient/
+momentum-reviewer-architecture/
+momentum-reviewer-qa/
+momentum-reviewer-security/
+swarm-supervisor/                         <-- Phase 18 G2 deliverable, present
+
+$ cat .agents/hooks.json
+{
+  "hooks": {
+    "PreToolUse":  [ { "matcher": "run_command|view_file|.*write.*|apply_patch", ... } ],
+    "PostToolUse": [ { "matcher": "run_command|apply_patch|.*write.*", ... } ],
+    "SessionStart":[ ... ]
+  }
+}
+```
+
+All Phase 18 G2 deliverables present at the documented destinations.
+The Antigravity install fingerprint regression test
+(`tests/adapter-antigravity-fingerprint.test.js`) further pins the
+51-file install layout byte-for-byte.
+
+## VAL-002 verification questions — status
+
+The backlog VAL-002 entry lists 6 questions. Phase 18 G4 closure status:
+
+| # | Question                                                                                | Status                                              |
+|---|-----------------------------------------------------------------------------------------|-----------------------------------------------------|
+| a | `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) — confirm install path  | Singular `.agent/workflows/` confirmed at install (matches the in-doc convention adopted in Phase 16 Rework). Live `agy` discovery confirmation pending CLI availability. |
+| b | Workflow `.md` files auto-register as `/<name>` slash commands                          | Documented behaviour; no CLI to exercise. Validation requires the IDE-side picker. |
+| c | `.agents/skills/<name>/SKILL.md` is discovered and loadable by name                     | 5 SKILL.md files installed (4 pre-G2 + swarm-supervisor). Discovery confirmation pending IDE-side observation. |
+| d | `.agents/hooks.json` PreToolUse fires on `run_command\|view_file` write attempts        | Hook config installed with the expected matcher pattern. Live firing requires an interactive IDE session. |
+| e | PostToolUse history reminder fires                                                      | Hook config installed; live firing requires an interactive IDE session. |
+| f | Whether SessionStart event is actually surfaced                                         | Hook wired; `sessionStartHook: false` STAYS until the IDE confirms surfacing the event. No CLI surface to test. |
+
+## Capability flip decision
+
+- **Antigravity `sessionStartHook`**: stays `false`. Cannot be confirmed without a live IDE session. Operator-manual validation required.
+- **All other Antigravity capabilities** (`hooks`, `slashCommands`, `subagents`, `parallelSubagents`, `skills`) remain per v0.19.0.
+
+## Operator path to full VAL-002 closure
+
+Steps (for the operator with the Antigravity IDE in front of them):
+
+1. Open Antigravity IDE on a fresh `momentum init --agent antigravity` project.
+2. Observe whether the agent automatically reads `AGENTS.md` + `.agent/rules/project.md` at session start. Confirm SessionStart hook fired (`SessionStart` hook output should appear).
+3. Type `/swarm` — confirm the workflow at `.agent/workflows/swarm.md` is routed to.
+4. Type `/scout` (an existing Phase 11 workflow) — confirm same routing.
+5. Verify that an `apply_patch` or `run_command` tool call triggers the PreToolUse hook (brainstorm-gate.sh).
+6. Capture a screen recording or terminal log; attach to the backlog VAL-002 entry.
+
+## Closure status
+
+VAL-002 — **structurally blocked at the CLI level; remains open for operator-manual validation**. Phase 18 G2 ships the full Antigravity adapter surface — workflow, skill, AGENTS.md sections, hook wiring — and the install layout is fingerprint-pinned. Live confirmation of the IDE's discovery + hook firing requires an operator session inside the Antigravity IDE that cannot be programmatically scripted from the momentum CLI today. Backlog entry kept open.

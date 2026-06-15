@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 module.exports = {
   displayName: 'Codex',
@@ -102,6 +103,40 @@ module.exports = {
 
     console.log('→ Re-generating Codex skills from recipes...');
     transformCommandsIntoSkills(targetDir);
+  },
+
+  // Phase 18 G1 — adapter.spawn(directive) for Codex.
+  // Shells `codex --cwd <repoPath>` with the supervisor TOML as the
+  // subagent declaration. The MCP cwd shim (see AGENTS.md → "## MCP
+  // cwd shim — Codex configuration") keeps file ops inside the
+  // pinned cwd. See `bin/momentum.js` for the directive contract.
+  spawn(directive) {
+    if (!directive || directive.platform !== 'codex') {
+      return {
+        repoId: directive && directive.repoId,
+        status: -1,
+        detail: `non-codex platform: ${directive && directive.platform}`,
+      };
+    }
+    const codexBin = process.env.CODEX_BIN || 'codex';
+    const args = ['--cwd', directive.repoPath, '--agent', 'swarm-supervisor'];
+    const prompt = [
+      `You are a swarm supervisor. Recipe: ${directive.recipePath}`,
+      `Read the recipe and the brief at specs/phases/${directive.phaseSlug}/overview.md.`,
+      `Your repo: ${directive.repoId}. Your swarm: ${directive.swarmId} wave ${directive.wave}.`,
+      `Begin the boot sequence.`,
+    ].join('\n');
+    const r = spawnSync(codexBin, args, {
+      input: prompt,
+      env: Object.assign({}, process.env, directive.env),
+      encoding: 'utf8',
+      timeout: 5000,
+    });
+    return {
+      repoId: directive.repoId,
+      status: r.status == null ? -1 : r.status,
+      detail: (r.error && r.error.message) || (r.stderr || '').slice(0, 200),
+    };
   },
 };
 

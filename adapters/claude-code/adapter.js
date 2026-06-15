@@ -20,6 +20,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 module.exports = {
   displayName: 'Claude Code',
@@ -102,5 +103,38 @@ module.exports = {
       copyFile(src, dest);
       console.log(`  + added:    .claude/settings.json`);
     }
+  },
+
+  // Phase 18 — adapter.spawn(directive) contract.
+  // Launch ONE Claude Code background session for this directive via
+  // `claude --bg --cwd <repoPath>`. Pipes the supervisor recipe + brief
+  // pointer over stdin. Returns the canonical per-repo result shape.
+  // See `bin/momentum.js` for the directive contract.
+  spawn(directive) {
+    if (!directive || directive.platform !== 'claude-code') {
+      return {
+        repoId: directive && directive.repoId,
+        status: -1,
+        detail: `non-claude-code platform: ${directive && directive.platform}`,
+      };
+    }
+    const claudeBin = process.env.CLAUDE_CODE_BIN || 'claude';
+    const args = ['--bg', '--cwd', directive.repoPath];
+    const prompt = [
+      `You are a swarm supervisor. Recipe: ${directive.recipePath}`,
+      `Read the recipe and the brief at specs/phases/${directive.phaseSlug}/overview.md.`,
+      `Begin the boot sequence.`,
+    ].join('\n');
+    const r = spawnSync(claudeBin, args, {
+      input: prompt,
+      env: Object.assign({}, process.env, directive.env),
+      encoding: 'utf8',
+      timeout: 5000,
+    });
+    return {
+      repoId: directive.repoId,
+      status: r.status == null ? -1 : r.status,
+      detail: (r.error && r.error.message) || (r.stderr || '').slice(0, 200),
+    };
   },
 };
