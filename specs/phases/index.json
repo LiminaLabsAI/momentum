@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-06-14-phase-17-5-complete",
+  "updated": "2026-06-15-phase-18-start",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -83,6 +83,10 @@
     "phase-17-5-swarm-portability": {
       "status": "complete",
       "topics": ["phase-17-5", "swarm-portability", "multi-session-coordination", "files-as-channels", "lease-enforcement", "signal-protocol", "tokens", "sessions-registry", "swarm-focus", "swarm-join", "swarm-absorb", "swarm-claim", "swarm-release", "manifest-write-chokepoint", "mkdir-lock", "opaque-tokens", "single-use-tokens", "absorb-merge", "contract-verify", "synthetic-two-session-scenarios", "claude-code-only", "v0-20-2"]
+    },
+    "phase-18-swarm-parity": {
+      "status": "in-progress",
+      "topics": ["phase-18", "swarm-parity", "codex", "antigravity", "adapter-contract", "spawn", "adapter-spawn", "claude-code-refactor", "swarm-supervisor-toml", "mcp-cwd-shim", "swarm-conductor-workflow", "swarm-supervisor-skill", "agent-manager", "parallel-subagents", "session-start-hook", "val-001", "val-002", "live-dogfood", "capability-flips", "multi-adapter-e2e", "fingerprint-snapshot", "adapter-parity-matrix", "v0-20-4"]
     }
   }
 }
