@@ -1,9 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-15
-> **Current Phase**: _none active — Phase 18 merged to main, pending tag + GitHub release + npm publish_
-> **Latest Release**: v0.20.3 — BUG-006 fix (CLAUDE.md project-name substitution)
-> **Pending Release**: v0.20.4 — Phase 18 Swarm Parity (Codex + Antigravity)
+> **Current Phase**: _none active_
+> **Latest Release**: v0.20.4 — Phase 18 Swarm Parity (Codex + Antigravity)
 > **Health**: On Track
 
 ## Summary
@@ -38,13 +37,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | — | Codex Runtime Refresh (BUG-007 + ENH-036) | Complete | v0.20.1 (2026-06-13) |
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
 | — | BUG-006 fix (CLAUDE.md project-name substitution) | Complete | v0.20.3 (2026-06-15) |
-| 18 | Swarm Parity (Codex + Antigravity) | Complete on main | v0.20.4 (pending tag + release) |
+| 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 18 merged to main as commit `327cfcb`; tag + GitHub release + npm publish pending in this session)_ | | | |
+| _(none — Phase 18 released as v0.20.4; tagged + GitHub Release `Latest` + npm `@avinash-singh-io/momentum@0.20.4` live)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
