@@ -48,6 +48,22 @@ Detail: Phase 18 was originally planned for v0.20.3 (per Phase 17.5 retargeting)
 
 ---
 
+### [FEATURE] 2026-06-15 — G2 complete: Antigravity swarm wiring
+Topics: phase-18, g2, antigravity, adapter-spawn, swarm-supervisor-skill, swarm-workflow, agy
+Affects-phases: phase-18-swarm-parity
+Affects-specs: adapters/antigravity/adapter.js, adapters/antigravity/workflows/swarm.md, adapters/antigravity/skills/swarm-supervisor/SKILL.md, adapters/antigravity/instructions/AGENTS.md, tests/adapter-antigravity-swarm.test.js
+Detail: G2 lands the Antigravity parity of the swarm primitive. (1) `adapters/antigravity/adapter.js::spawn(directive)` replaces the G0 stub with a real impl that shells `agy --cwd <repoPath> --skill swarm-supervisor`. Uses `AGY_BIN` env override for tests. Exploits Antigravity's `parallelSubagents: true` capability — one supervisor per repo runs concurrently. (2) New `adapters/antigravity/workflows/swarm.md` — the user-facing workflow that `agy` auto-registers as `/swarm` (per Antigravity's `.agent/workflows/<name>.md` → `/<name>` convention). All 13 subcommands documented. (3) New `adapters/antigravity/skills/swarm-supervisor/SKILL.md` — the per-repo supervisor PERSONA the spawned supervisor BECOMES on boot (per Antigravity's "skills = personas the agent loads to BECOME" model). Boot sequence (read recipe → read brief → orient → start phase) + operating constraints (stay in repoPath, files-as-state, inbox routing, native artifacts sync). (4) `adapters/antigravity/instructions/AGENTS.md` Skills section bumped 4 → 5 skills (adds swarm-supervisor); new `## Swarm — Lookup Pattern` section inserted before `## Antigravity Native Artifacts Integration` with the full subcommand table + spawn dispatch explanation. (5) New `tests/adapter-antigravity-swarm.test.js` (5 tests): spawn dispatch + wrong-platform canonical -1 + install lays down workflow + install lays down supervisor skill + AGENTS.md has Swarm Lookup Pattern. Verification: full suite 570/570 (565 post-G1 + 5 new G2). Smoke install of `--agent antigravity` confirms all three new files plus AGENTS.md sections present. Filename deviation from plan: plan said `swarm-conductor.md` but the slash command needs to stay `/swarm` consistent across all three adapters, so the file is `swarm.md` not `swarm-conductor.md`. The "conductor" role description lives inside the workflow body. Real-CLI verification (whether `agy --skill <name>` is the right invocation form) lands in G4 VAL-002 — current Antigravity capability is `parallelSubagents: true` but the exact CLI form for spawning with a named skill needs live confirmation.
+
+---
+
+### [DECISION] 2026-06-15 — Antigravity swarm workflow filename: swarm.md (not swarm-conductor.md)
+Topics: phase-18, g2, antigravity, naming, slash-command
+Affects-phases: phase-18-swarm-parity
+Affects-specs: adapters/antigravity/workflows/swarm.md, specs/phases/phase-18-swarm-parity/plan.md
+Detail: plan.md G2 task 2 called for `adapters/antigravity/workflows/swarm-conductor.md`. Deviation: the file ships as `swarm.md`. Reason: Antigravity auto-registers `<basename>` as the slash command, and the slash command must stay `/swarm` to keep parity across the three adapters (Claude Code + Codex + Antigravity all expose `/swarm`). Naming the file `swarm-conductor.md` would register `/swarm-conductor` instead — a divergent UX. The "conductor" role lives inside the workflow's body, not the filename. Pure decisional change; plan.md task description was a naming bug, not a logical requirement.
+
+---
+
 ### [FEATURE] 2026-06-15 — G1 complete: Codex swarm wiring
 Topics: phase-18, g1, codex, adapter-spawn, swarm-supervisor-toml, mcp-cwd-shim, transform-commands-into-skills
 Affects-phases: phase-18-swarm-parity

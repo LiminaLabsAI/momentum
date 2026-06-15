@@ -23,13 +23,13 @@
 
 ## Group 2 — Antigravity swarm wiring (parallel with G1)
 
-- [ ] Implement `adapters/antigravity/adapter.js::spawn(directive)`
-- [ ] Create `adapters/antigravity/workflows/swarm-conductor.md` (auto-registers as `/swarm-conductor`)
-- [ ] Create `adapters/antigravity/skills/swarm-supervisor/SKILL.md` with frontmatter
-- [ ] Add swarm section to `adapters/antigravity/instructions/AGENTS.md`
-- [ ] Add `tests/adapter-antigravity-swarm.test.js` (spawn unit + workflow presence + skill presence + AGENTS.md section)
-- [ ] Smoke: `momentum init /tmp/agy-test --agent antigravity` + verify file layout
-- [ ] Commit: `feat(swarm): G2 — Antigravity adapter spawn wiring`
+- [x] Implement `adapters/antigravity/adapter.js::spawn(directive)`
+- [x] Create `adapters/antigravity/workflows/swarm.md` (auto-registers as `/swarm`) — file basename changed from plan's `swarm-conductor.md` to keep `/swarm` consistent across the three adapters
+- [x] Create `adapters/antigravity/skills/swarm-supervisor/SKILL.md` with frontmatter
+- [x] Add swarm section to `adapters/antigravity/instructions/AGENTS.md`
+- [x] Add `tests/adapter-antigravity-swarm.test.js` (spawn unit + workflow presence + skill presence + AGENTS.md section)
+- [x] Smoke: `momentum init /tmp/agy-test --agent antigravity` + verify file layout
+- [x] Commit: `feat(swarm): G2 — Antigravity adapter spawn wiring`
 
 ## Group 3 — Multi-adapter synthetic e2e + fingerprints
 
