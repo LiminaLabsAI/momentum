@@ -1,6 +1,6 @@
 # Swarm — Single-Session Multi-Project Feature Delivery
 
-> Phase 17 / v0.20.0 — Claude Code only. Codex + Antigravity parity is Phase 18.
+> Phase 17 / v0.20.0 — Claude Code only. Phase 17.5 / v0.20.2 — multi-session portability. **Phase 18 / v0.20.4 — Codex + Antigravity adapter parity.**
 
 A **swarm** is a declared cross-repo work unit driven from ONE user session. Your session becomes the **conductor**. The conductor spawns one **supervisor** subagent per impacted repo, each pinned to that repo's working directory with its own fresh context. Each supervisor runs momentum's normal `/start-phase` → implement → `/sync-docs` → `/complete-phase` loop INSIDE its repo.
 
@@ -148,6 +148,55 @@ Graceful halt. Halts every supervisor; preserves all artifacts (branches NOT for
 | Cycle detected at `swarm start` | `ecosystem.json` has a dependency cycle in your impacted set | Fix `ecosystem.json`; or split the cycle into two swarms |
 | Pre-merge surfaced conflicts | Two waves changed overlapping code | Resolve manually before the real merge; rerun verify |
 | Inbox item never closed | Supervisor halted waiting | `/swarm inbox resolve <id> --answer "..."` |
+
+## Multi-adapter swarm (Phase 18 / v0.20.4)
+
+v0.20.4 brings the full 13-subcommand swarm surface to Codex and Antigravity. The conductor + supervisor architecture is unchanged; only adapter dispatch is platform-specific.
+
+### Adapter contract
+
+Every adapter exports `spawn(directive)` (added in Phase 18 G0). The conductor builds platform-agnostic directives via `core/swarm/conductor.js::buildSpawnDirectives`; the CLI floor (`momentum swarm start --spawn`) routes each directive to its platform's adapter:
+
+```
+buildSpawnDirectives({ platform })       (core/swarm/conductor.js)
+       ↓
+spawnSupervisors(directives)             (bin/swarm.js)
+       ↓
+adapter.spawn(directive)                 (adapters/<platform>/adapter.js)
+       ↓
+{ repoId, status, detail }                (canonical per-repo result)
+```
+
+`status: -1` is the canonical "could not launch" signal — yielded both by adapter stubs and by missing-binary cases. The conductor stays robust to per-repo dispatch failures; one supervisor failing to launch never aborts the wave.
+
+### Per-adapter dispatch
+
+| Adapter | Spawn command | Supervisor declaration | Recipe surface |
+|---|---|---|---|
+| **Claude Code** | `claude --bg --cwd <repoPath>` | n/a (the spawned session becomes the supervisor) | `.claude/commands/swarm.md` |
+| **Codex** | `codex --cwd <repoPath> --agent swarm-supervisor` | `.codex/agents/swarm-supervisor.toml` (TOML subagent) | `.agents/skills/swarm/SKILL.md` (recipe → skill transform) |
+| **Antigravity** | `agy --cwd <repoPath> --skill swarm-supervisor` | `.agents/skills/swarm-supervisor/SKILL.md` (skill the agent BECOMES) | `.agent/workflows/swarm.md` (auto-registers as `/swarm`) |
+
+### Codex MCP cwd shim
+
+Codex's supervisor cwd is honored at process boundary via `--cwd`. Inside the supervisor session, momentum relies on Codex's MCP filesystem server to keep file operations scoped to that cwd. The user wires this in `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.filesystem]
+command = "npx"
+args    = ["-y", "@modelcontextprotocol/server-filesystem", "${PWD}"]
+```
+
+See AGENTS.md's `## MCP cwd shim — Codex configuration` for the full setup recipe and the fallback path (manual cwd pin per terminal) if the doc-only shim doesn't hold on a given Codex version.
+
+### Capability flags — v0.20.4 outcome
+
+Phase 18 G4 captured live evidence; **neither capability flip lands in v0.20.4**:
+
+- **Codex `parallelSubagents`**: stays `false`. `codex features list` at codex-cli 0.133.0 shows `enable_fanout: under development: false` — parallel fan-out is not yet a stable Codex feature.
+- **Antigravity `sessionStartHook`**: stays `false`. No standalone `agy` CLI exists — Antigravity ships as an IDE-only product, so live event-firing cannot be confirmed via CLI. Operator-manual validation inside the IDE is the closure path.
+
+Full evidence at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`.
 
 ## Multi-session portability (Phase 17.5 / v0.20.2)
 

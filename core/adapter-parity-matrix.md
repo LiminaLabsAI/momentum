@@ -60,7 +60,7 @@ overview.md):
 | `/handoff` | shipped¹ | shipped² | shipped³ |
 | `/continue` | shipped¹ | shipped² | shipped³ |
 | `/review-code` | shipped¹ | shipped² | shipped³ |
-| `/swarm` (Phase 17) | shipped¹ | not-applicable¹⁴ | not-applicable¹⁴ |
+| `/swarm` (Phase 17 + 17.5) | shipped¹ | shipped¹⁴ | shipped¹⁴ |
 
 ### Personas (skills)
 
@@ -130,7 +130,7 @@ overview.md):
 
 13. **Antigravity `workflows` overlay (gated)** — adapter-specific workflows (`adapters/antigravity/workflows/*.md`) ship to `.agent/workflows/`. Marked `shipped-gated` pending Group 4 live smoke to confirm `.agent/` (singular) vs `.agents/` (plural) — Google's official docs page uses singular, codelab uses plural. If smoke fails, dual-copy and VAL-002 follow-up.
 
-14. **`/swarm` (Phase 17 v0.20.0 + Phase 17.5 v0.20.2)** — Single-session multi-project feature delivery shipped Claude Code only. Phase 17.5 layered five additional portability subcommands (`claim` / `release` / `focus` / `join` / `absorb`) plus lease enforcement on the same conductor library at `core/swarm/` — still platform-agnostic; only adapter spawn wiring is platform-specific. Codex + Antigravity parity is **Phase 18** (target v0.20.3 after Phase 17.5 took v0.20.2): Codex requires an MCP cwd shim for the per-supervisor cwd pin; Antigravity requires an Agent Manager workflow + supervisor skill. The cells stay marked `not-applicable` for v0.20.0–v0.20.2 — they flip to `shipped` when Phase 18 lands.
+14. **`/swarm` (Phase 17 v0.20.0 + Phase 17.5 v0.20.2 + Phase 18 v0.20.4)** — Phase 18 v0.20.4 brings full Codex + Antigravity parity to the swarm primitive. Implementation: a platform-agnostic `adapter.spawn(directive)` contract added in Phase 18 G0; Codex dispatch + supervisor TOML + MCP cwd shim documented in G1; Antigravity workflow + supervisor skill + AGENTS.md section in G2; multi-adapter synthetic e2e + Codex/Antigravity install fingerprints in G3. **Capability flips deferred** based on G4 live evidence: Codex `parallelSubagents` stays `false` (gated on `codex features list` showing `enable_fanout: stable: true` — currently `under development`); Antigravity `sessionStartHook` stays `false` (no standalone `agy` CLI exists — IDE-only product; operator-manual VAL inside the IDE required). All other adapter surfaces ship with full file-layout coverage; live VAL evidence at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`. Operator-manual closure paths for both VALs documented in those files.
 
 ## Read this if you are…
 

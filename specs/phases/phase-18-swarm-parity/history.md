@@ -48,6 +48,22 @@ Detail: Phase 18 was originally planned for v0.20.3 (per Phase 17.5 retargeting)
 
 ---
 
+### [DECISION] 2026-06-15 — G4 capability flips: NEITHER lands in v0.20.4
+Topics: phase-18, g4, capability-flips, val-001, val-002, codex, antigravity, enable-fanout
+Affects-phases: phase-18-swarm-parity
+Affects-specs: adapters/codex/adapter.js, adapters/antigravity/adapter.js, core/adapter-capabilities.md, core/adapter-parity-matrix.md, specs/backlog/backlog.md, specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt, specs/phases/phase-18-swarm-parity/evidence/val-002-antigravity.txt
+Detail: The locked 2026-06-15 [DECISION] said capability flips are gated on live evidence. G4 captured live evidence; **the honest read is that NEITHER flip lands in v0.20.4**. (1) Codex `parallelSubagents`: stays `false`. `codex features list` at codex-cli 0.133.0 shows `enable_fanout: under development: false`. Parallel fan-out is not yet a stable Codex feature; flipping `parallelSubagents` requires `enable_fanout: stable: true` upstream. (2) Antigravity `sessionStartHook`: stays `false`. The Antigravity desktop app ships no standalone `agy` CLI — `find /Applications/Antigravity\ IDE.app -name "agy"` returns nothing; the `agy` npm package is a 217-byte placeholder; `@google/antigravity` 404s on npm. Live event-firing cannot be confirmed via CLI; operator-manual IDE validation is the closure path. (3) Both VAL-001 + VAL-002 bumped P1 → P2 because closure now depends on external structural factors (upstream Codex feature + Antigravity IDE product surface), not momentum-internal work. (4) Adapter parity-matrix `/swarm` row flips both new cells to `shipped¹⁴` — the surface is complete; only the two capability flags remain `false` pending the listed gating conditions. (5) Phase 18 SURFACE deliverable is unconditionally met (full 13-subcommand parity, install layouts fingerprint-pinned). Phase 18 CAPABILITY-FLIP deliverable is conditionally met (decision is honest "no" rather than premature "yes"). Updated docs in `docs/swarm.md` Phase 18 section, `core/adapter-parity-matrix.md` footnote 14, `core/adapter-capabilities.md` Phase 17 / 17.5 / 18 scope section all reflect this outcome.
+
+---
+
+### [FEATURE] 2026-06-15 — G4 docs + backlog + retrospective + version bump
+Topics: phase-18, g4, docs, swarm-md, parity-matrix, adapter-capabilities, retrospective, backlog, version, val-001, val-002
+Affects-phases: phase-18-swarm-parity
+Affects-specs: docs/swarm.md, core/adapter-parity-matrix.md, core/adapter-capabilities.md, specs/backlog/backlog.md, specs/phases/phase-18-swarm-parity/retrospective.md, specs/status.md, specs/changelog/2026-06.md, package.json
+Detail: G4 lands the closure surface: (1) `docs/swarm.md` gains `## Multi-adapter swarm (Phase 18 / v0.20.4)` with per-adapter dispatch table + MCP cwd shim note + capability-flag outcome. (2) `core/adapter-parity-matrix.md` `/swarm` row Codex + Antigravity cells flip `not-applicable¹⁴ → shipped¹⁴`; footnote 14 rewritten to cover the Phase 18 outcome including capability-flag deferrals. (3) `core/adapter-capabilities.md` Phase 17 / 17.5 section rewritten as Phase 17 / 17.5 / 18 with adapter parity table + capability-flip-outcome subsection. (4) `specs/backlog/backlog.md` VAL-001 → `partial` (3/6 questions closed via CLI; 3/6 deferred), VAL-002 → `blocked` (structurally IDE-only); both priority-bumped P1 → P2; status legend extended to include `partial` + `blocked`. (5) Retrospective written at `specs/phases/phase-18-swarm-parity/retrospective.md` covering all 5 groups, what shipped, what deferred + why, stats (580/580 suite, +25 new), discoveries (TD-006 filed), acceptance-criteria final status (mostly ✓, two ⚠ honest "deferred"). (6) `specs/status.md` Phase 18 row moved from Active → Completed; Latest Branch Complete field added; Recent Changes prepended with the full Phase 18 summary. (7) `specs/changelog/2026-06.md` Phase 18 complete entry prepended; "started" entry kept. (8) `package.json` bumped 0.20.3 → 0.20.4. Suite stays 580 / 580 across version bump.
+
+---
+
 ### [FEATURE] 2026-06-15 — G3 complete: multi-adapter e2e + fingerprints
 Topics: phase-18, g3, multi-adapter-e2e, fingerprints, evidence, td-006-mitigated
 Affects-phases: phase-18-swarm-parity
