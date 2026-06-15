@@ -94,4 +94,17 @@ module.exports = {
       console.log('  + added:    .agents/hooks.json');
     }
   },
+
+  // Phase 18 G0 — adapter.spawn(directive) contract stub.
+  // Real Antigravity implementation lands in G2; until then return the
+  // canonical "not implemented" per-repo result so the conductor
+  // stays robust and a single dispatch failure does not abort the
+  // wave. See `bin/momentum.js` for the directive contract.
+  spawn(directive) {
+    return {
+      repoId: directive && directive.repoId,
+      status: -1,
+      detail: 'antigravity adapter.spawn() not yet implemented (Phase 18 G2)',
+    };
+  },
 };

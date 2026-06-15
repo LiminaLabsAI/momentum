@@ -48,6 +48,22 @@ Detail: Phase 18 was originally planned for v0.20.3 (per Phase 17.5 retargeting)
 
 ---
 
+### [DISCOVERY] 2026-06-15 — Swarm e2e scenario evidence files rewritten on every test run
+Topics: phase-18, g0, e2e, evidence, test-hygiene, td-006
+Affects-phases: phase-18-swarm-parity
+Affects-specs: specs/backlog/backlog.md
+Detail: During G0 verification, `npm test` produced unstaged changes to 6 committed scenario evidence files (`phase-17-swarm/evidence/scenario-{a,b,c}-*.txt` + `phase-17-5-swarm-portability/evidence/scenario-portability-{focus,join,absorb}.txt`). The tests at `tests/swarm-e2e-scenarios.test.js:156` and `tests/swarm-portability-e2e.test.js:90` rewrite the committed evidence with each run; the body contains the random tmp dir name so every test run produces a one-character diff. Pre-existing — not caused by Phase 18. Filed as TD-006 (P3) with three fix candidates; resolution is out of Phase 18 scope but G3 needs to be aware so its new multi-adapter evidence harness doesn't reproduce the same pattern. G0 commit excludes the regenerated files via `git checkout --`; phase branch stays clean.
+
+---
+
+### [ARCH_CHANGE] 2026-06-15 — G0 complete: spawn contract + Claude Code refactor
+Topics: phase-18, g0, adapter-contract, spawn, claude-code-refactor
+Affects-phases: phase-18-swarm-parity
+Affects-specs: bin/momentum.js, bin/swarm.js, adapters/claude-code/adapter.js, adapters/codex/adapter.js, adapters/antigravity/adapter.js, tests/adapter-contract-spawn.test.js
+Detail: G0 lands the `adapter.spawn(directive)` contract addition. (1) `bin/momentum.js` gains a JSDoc block above `loadAdapter()` documenting the canonical directive shape (`platform`, `swarmId`, `wave`, `repoId`, `repoPath`, `phaseSlug`, `branch`, `sessionId`, `recipePath`, `contextPath`, `env`) and the canonical per-repo result shape (`{ repoId, status, detail }`). (2) Claude Code's existing spawn logic — previously hardcoded inside `bin/swarm.js::spawnClaudeCodeSupervisors` — is moved to `adapters/claude-code/adapter.js::spawn(directive)` byte-for-byte. (3) Codex and Antigravity each gain a `spawn()` stub returning the canonical `status: -1` "not implemented" entry (real impl lands in G1 + G2). (4) `bin/swarm.js` replaces the hardcoded helper with `spawnSupervisors(directives)`, which looks up the adapter for each directive's `platform` via `loadAdapterForPlatform` and dispatches. Unknown platforms and missing `spawn` exports yield canonical `-1` entries — the wave stays robust to per-repo dispatch failures rather than throwing. (5) New `tests/adapter-contract-spawn.test.js` (5 tests) asserts: every adapter exports `spawn`; every spawn returns the canonical shape without throwing on a non-matching platform; `spawnSupervisors` dispatches via the platform lookup; unknown platforms degrade cleanly; `loadAdapterForPlatform` resolves known platforms and returns null for unknown. Verification: full suite 560/560 (555 baseline + 5 new). Claude Code install fingerprint test passed → zero-regression (neither `bin/swarm.js` nor `adapters/claude-code/adapter.js` is an installed file, so the refactor leaves the installed surface byte-for-byte identical). Pure additive contract change — no schema migration.
+
+---
+
 ### [DISCOVERY] 2026-06-15 — Cerebrio dogfood blocked on workspace cleanup
 Topics: phase-18, cerebrio, dogfood, workspace-state
 Affects-phases: phase-18-swarm-parity

@@ -103,6 +103,19 @@ module.exports = {
     console.log('→ Re-generating Codex skills from recipes...');
     transformCommandsIntoSkills(targetDir);
   },
+
+  // Phase 18 G0 — adapter.spawn(directive) contract stub.
+  // Real Codex implementation lands in G1; until then return the
+  // canonical "not implemented" per-repo result so the conductor
+  // stays robust and a single dispatch failure does not abort the
+  // wave. See `bin/momentum.js` for the directive contract.
+  spawn(directive) {
+    return {
+      repoId: directive && directive.repoId,
+      status: -1,
+      detail: 'codex adapter.spawn() not yet implemented (Phase 18 G1)',
+    };
+  },
 };
 
 // ─── Recipes → Skills transform (ENH-036) ────────────────────────────────────

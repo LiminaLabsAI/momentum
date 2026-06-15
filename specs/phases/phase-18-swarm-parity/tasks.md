@@ -2,13 +2,13 @@
 
 ## Group 0 — Spawn contract + Claude Code refactor
 
-- [ ] Define `spawn(directive)` interface (JSDoc in `bin/momentum.js` or `core/adapter-contract.md`)
-- [ ] Move Claude Code spawn from `bin/swarm.js` into `adapters/claude-code/adapter.js::spawn()`
-- [ ] Update `bin/swarm.js` to call `adapter.spawn(directive)` instead of hardcoded `claude --bg ...`
-- [ ] Add `tests/adapter-contract-spawn.test.js` (all adapters export `spawn`)
-- [ ] Run existing swarm tests; confirm Claude Code behavior is byte-for-byte identical
-- [ ] Confirm Claude Code install fingerprint still matches v0.20.3 baseline (or update fixture meta if G0 leaked into install)
-- [ ] Commit: `feat(swarm): G0 — adapter.spawn() contract + Claude Code refactor`
+- [x] Define `spawn(directive)` interface (JSDoc in `bin/momentum.js` or `core/adapter-contract.md`)
+- [x] Move Claude Code spawn from `bin/swarm.js` into `adapters/claude-code/adapter.js::spawn()`
+- [x] Update `bin/swarm.js` to call `adapter.spawn(directive)` instead of hardcoded `claude --bg ...`
+- [x] Add `tests/adapter-contract-spawn.test.js` (all adapters export `spawn`)
+- [x] Run existing swarm tests; confirm Claude Code behavior is byte-for-byte identical
+- [x] Confirm Claude Code install fingerprint still matches v0.20.3 baseline (or update fixture meta if G0 leaked into install)
+- [x] Commit: `feat(swarm): G0 — adapter.spawn() contract + Claude Code refactor`
 
 ## Group 1 — Codex swarm wiring (parallel with G2)
 
