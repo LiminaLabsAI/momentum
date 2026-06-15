@@ -79,23 +79,35 @@ test('adapter.spawn returns canonical per-repo shape (does not throw)', () => {
 });
 
 test('spawnSupervisors — dispatches via adapter.spawn for known platforms', () => {
-  // Codex + Antigravity stubs return -1; Claude Code recognizes its own
-  // platform but the directive's repoPath does not exist, so the spawn
-  // child process attempt returns a non-success status. Either way, the
-  // result shape is the per-repo object — we verify the dispatch surface,
-  // not the runtime success.
-  const directives = [
-    fakeDirective('codex', 'repo-codex'),
-    fakeDirective('antigravity', 'repo-antigravity'),
-  ];
-  const results = spawnSupervisors(directives);
-  assert.equal(results.length, 2);
-  assert.equal(results[0].repoId, 'repo-codex');
-  assert.equal(results[0].status, -1);
-  assert.match(results[0].detail, /not yet implemented/);
-  assert.equal(results[1].repoId, 'repo-antigravity');
-  assert.equal(results[1].status, -1);
-  assert.match(results[1].detail, /not yet implemented/);
+  // Each adapter's spawn() must return the canonical per-repo shape
+  // ({ repoId, status, detail }). status == -1 is the canonical
+  // "could not launch" code, which fires whether the adapter is still
+  // a stub OR the adapter shells out to a CLI that isn't on PATH.
+  // This test verifies the DISPATCH surface (each directive routes to
+  // its platform's adapter and yields the canonical shape) without
+  // pinning the implementation status of any specific adapter.
+  // Real launch coverage lives in G3 e2e + G4 live VAL evidence.
+  process.env.CODEX_BIN = '/this/does/not/exist/codex';
+  process.env.AGY_BIN = '/this/does/not/exist/agy';
+  try {
+    const directives = [
+      fakeDirective('codex', 'repo-codex'),
+      fakeDirective('antigravity', 'repo-antigravity'),
+    ];
+    const results = spawnSupervisors(directives);
+    assert.equal(results.length, 2);
+    assert.equal(results[0].repoId, 'repo-codex');
+    assert.equal(typeof results[0].status, 'number');
+    assert.equal(results[0].status, -1);
+    assert.ok(results[0].detail.length > 0, 'detail should be populated');
+    assert.equal(results[1].repoId, 'repo-antigravity');
+    assert.equal(typeof results[1].status, 'number');
+    assert.equal(results[1].status, -1);
+    assert.ok(results[1].detail.length > 0, 'detail should be populated');
+  } finally {
+    delete process.env.CODEX_BIN;
+    delete process.env.AGY_BIN;
+  }
 });
 
 test('spawnSupervisors — unknown platform yields canonical -1 entry', () => {

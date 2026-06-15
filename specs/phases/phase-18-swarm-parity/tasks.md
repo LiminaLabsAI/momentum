@@ -12,14 +12,14 @@
 
 ## Group 1 — Codex swarm wiring (parallel with G2)
 
-- [ ] Implement `adapters/codex/adapter.js::spawn(directive)`
-- [ ] Create `adapters/codex/agents/swarm-supervisor.toml`
-- [ ] Add `## Swarm — Lookup Pattern` section to `adapters/codex/instructions/AGENTS.md`
-- [ ] Add `## MCP cwd shim — Codex configuration` block to AGENTS.md
-- [ ] Verify `transformCommandsIntoSkills` produces a usable `swarm` skill from the existing recipe
-- [ ] Add `tests/adapter-codex-swarm.test.js` (spawn unit + TOML presence + AGENTS.md sections)
-- [ ] Smoke: `momentum init /tmp/codex-test --agent codex` + verify file layout
-- [ ] Commit: `feat(swarm): G1 — Codex adapter spawn wiring`
+- [x] Implement `adapters/codex/adapter.js::spawn(directive)`
+- [x] Create `adapters/codex/agents/swarm-supervisor.toml`
+- [x] Add `## Swarm — Lookup Pattern` section to `adapters/codex/instructions/AGENTS.md`
+- [x] Add `## MCP cwd shim — Codex configuration` block to AGENTS.md
+- [x] Verify `transformCommandsIntoSkills` produces a usable `swarm` skill from the existing recipe
+- [x] Add `tests/adapter-codex-swarm.test.js` (spawn unit + TOML presence + AGENTS.md sections)
+- [x] Smoke: `momentum init /tmp/codex-test --agent codex` + verify file layout
+- [x] Commit: `feat(swarm): G1 — Codex adapter spawn wiring`
 
 ## Group 2 — Antigravity swarm wiring (parallel with G1)
 
