@@ -1,8 +1,9 @@
 # Project Status
 
 > **Last Updated**: 2026-06-15
-> **Current Phase**: Phase 18 — Swarm Parity (Codex + Antigravity)
+> **Current Phase**: _none active — Phase 18 merged to main, pending tag + GitHub release + npm publish_
 > **Latest Release**: v0.20.3 — BUG-006 fix (CLAUDE.md project-name substitution)
+> **Pending Release**: v0.20.4 — Phase 18 Swarm Parity (Codex + Antigravity)
 > **Health**: On Track
 
 ## Summary
@@ -37,12 +38,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | — | Codex Runtime Refresh (BUG-007 + ENH-036) | Complete | v0.20.1 (2026-06-13) |
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
 | — | BUG-006 fix (CLAUDE.md project-name substitution) | Complete | v0.20.3 (2026-06-15) |
+| 18 | Swarm Parity (Codex + Antigravity) | Complete on main | v0.20.4 (pending tag + release) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 18 | Swarm Parity (Codex + Antigravity) | In Progress (target v0.20.4) | Brainstormed 2026-06-15; started 2026-06-15. Branch `phase-18-swarm-parity`. 5 groups: G0 (spawn contract + Claude Code refactor) → G1 + G2 in parallel (Codex / Antigravity wiring) → G3 (multi-adapter e2e + fingerprints) → G4 (live VAL-001/002 + capability flips + docs + release). |
+| _(none — Phase 18 merged to main as commit `327cfcb`; tag + GitHub release + npm publish pending in this session)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
