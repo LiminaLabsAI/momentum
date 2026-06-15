@@ -33,19 +33,19 @@
 
 ## Group 3 — Multi-adapter synthetic e2e + fingerprints
 
-- [ ] Add `--adapter` switch to the swarm e2e test harness
-- [ ] Run scenario-a (linear) × Codex; capture `evidence/scenario-a-codex.txt`
-- [ ] Run scenario-b (branched) × Codex; capture `evidence/scenario-b-codex.txt`
-- [ ] Run scenario-c (wide) × Codex; capture `evidence/scenario-c-codex.txt`
-- [ ] Run scenario-a (linear) × Antigravity; capture `evidence/scenario-a-antigravity.txt`
-- [ ] Run scenario-b (branched) × Antigravity; capture `evidence/scenario-b-antigravity.txt`
-- [ ] Run scenario-c (wide) × Antigravity; capture `evidence/scenario-c-antigravity.txt`
-- [ ] Generate `tests/fixtures/v0.20.4-codex-fingerprint.json`
-- [ ] Generate `tests/fixtures/v0.20.4-antigravity-fingerprint.json`
-- [ ] Add `tests/adapter-codex-fingerprint.test.js`
-- [ ] Add `tests/adapter-antigravity-fingerprint.test.js`
-- [ ] Refresh `tests/fixtures/v0.18.0-claude-code-fingerprint.json` IF G0 drift detected (with meta)
-- [ ] Commit: `test(swarm): G3 — multi-adapter e2e + fingerprints`
+- [x] Add `--adapter` switch to the swarm e2e test harness (single parameterized `tests/swarm-e2e-multi-adapter.test.js` covering both new adapters)
+- [x] Run scenario-a (linear) × Codex; capture `evidence/scenario-a-linear-codex.txt`
+- [x] Run scenario-b (branched) × Codex; capture `evidence/scenario-b-branched-codex.txt`
+- [x] Run scenario-c (wide) × Codex; capture `evidence/scenario-c-wide-codex.txt`
+- [x] Run scenario-a (linear) × Antigravity; capture `evidence/scenario-a-linear-antigravity.txt`
+- [x] Run scenario-b (branched) × Antigravity; capture `evidence/scenario-b-branched-antigravity.txt`
+- [x] Run scenario-c (wide) × Antigravity; capture `evidence/scenario-c-wide-antigravity.txt`
+- [x] Generate `tests/fixtures/v0.20.4-codex-fingerprint.json` (50 files)
+- [x] Generate `tests/fixtures/v0.20.4-antigravity-fingerprint.json` (51 files)
+- [x] Add `tests/adapter-codex-fingerprint.test.js`
+- [x] Add `tests/adapter-antigravity-fingerprint.test.js`
+- [x] Refresh `tests/fixtures/v0.18.0-claude-code-fingerprint.json` IF G0 drift detected (with meta) — not needed; G0+G1+G2 left the Claude Code install fingerprint byte-for-byte identical (test still green at every group commit).
+- [x] Commit: `test(swarm): G3 — multi-adapter e2e + fingerprints`
 
 ## Group 4 — Live VAL + capability flips + docs + retrospective + release
 

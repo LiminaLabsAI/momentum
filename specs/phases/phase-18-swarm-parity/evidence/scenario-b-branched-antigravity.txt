@@ -1,0 +1,218 @@
+# Phase 18 Swarm Parity — Scenario B-BRANCHED × antigravity
+
+Captured: 2026-06-15 (Phase 18 G3)
+Adapter:  antigravity
+Swarm:    0001-feature
+Status:   complete
+Waves:    3
+Turns:    5
+
+## Spawn dispatch (Wave 1)
+
+Each directive routed to the adapter's spawn() — canonical per-repo
+shape returned. In dev env neither `codex` nor `agy` is on PATH, so
+status: -1 is expected. Live spawn evidence lands in G4 VAL.
+
+```json
+[
+  {
+    "repoId": "root",
+    "status": -1,
+    "detail": "spawnSync /this/does/not/exist/agy ENOENT"
+  }
+]
+```
+
+## Manifest (final)
+
+```json
+{
+  "swarm_id": "0001-feature",
+  "version": 1,
+  "saga_id": "sg_1osc7d9",
+  "mode": "autopilot",
+  "initiative": "feature",
+  "created": "2026-06-15T17:00:00Z",
+  "ecosystem": "phase18-b-branched-antigravity",
+  "repos": {
+    "root": {
+      "wave": 1,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_phase18",
+      "lease_expires_at": "2026-06-16T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-15T17:00:00Z",
+      "claimed_by_session": "sess_phase18",
+      "tasks_done": 9,
+      "tasks_total": 9,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "<deterministic-omitted>"
+    },
+    "left": {
+      "wave": 2,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_phase18",
+      "lease_expires_at": "2026-06-16T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-15T17:00:00Z",
+      "claimed_by_session": "sess_phase18",
+      "tasks_done": 9,
+      "tasks_total": 9,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "<deterministic-omitted>"
+    },
+    "right": {
+      "wave": 2,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_phase18",
+      "lease_expires_at": "2026-06-16T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-15T17:00:00Z",
+      "claimed_by_session": "sess_phase18",
+      "tasks_done": 10,
+      "tasks_total": 10,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "<deterministic-omitted>"
+    },
+    "merge": {
+      "wave": 3,
+      "status": "complete",
+      "phase_slug": "phase-1-feature",
+      "branch": "phase-1-feature",
+      "owner": "sess_phase18",
+      "lease_expires_at": "2026-06-16T17:00:00.000Z",
+      "lease_renewed_at": "2026-06-15T17:00:00Z",
+      "claimed_by_session": "sess_phase18",
+      "tasks_done": 10,
+      "tasks_total": 10,
+      "tokens_used": 0,
+      "tokens_budget": 300000,
+      "inbox_count": 0,
+      "commits": 2,
+      "last_seen_sha": "<deterministic-omitted>"
+    }
+  },
+  "waves": [
+    {
+      "index": 1,
+      "repos": [
+        "root"
+      ],
+      "status": "complete",
+      "checkpoint_resolved_at": "2026-06-15T17:02:00Z"
+    },
+    {
+      "index": 2,
+      "repos": [
+        "left",
+        "right"
+      ],
+      "status": "complete",
+      "checkpoint_resolved_at": "2026-06-15T17:04:00Z"
+    },
+    {
+      "index": 3,
+      "repos": [
+        "merge"
+      ],
+      "status": "complete",
+      "checkpoint_resolved_at": "2026-06-15T17:05:00Z"
+    }
+  ],
+  "sessions": [
+    {
+      "session_id": "sess_phase18",
+      "first_seen": "2026-06-15T17:00:00Z",
+      "last_seen": "2026-06-15T17:00:00Z"
+    }
+  ],
+  "audit": [
+    {
+      "ts": "<deterministic-omitted>",
+      "actor": "sess_phase18",
+      "event": "start",
+      "detail": "Swarm 0001-feature planned (4 repos, 3 waves)"
+    },
+    {
+      "ts": "<deterministic-omitted>",
+      "actor": "conductor",
+      "event": "wave-transition",
+      "detail": "Wave 1 complete"
+    },
+    {
+      "ts": "<deterministic-omitted>",
+      "actor": "conductor",
+      "event": "wave-transition",
+      "detail": "Wave 2 complete"
+    },
+    {
+      "ts": "<deterministic-omitted>",
+      "actor": "conductor",
+      "event": "wave-transition",
+      "detail": "Wave 3 complete"
+    },
+    {
+      "ts": "<deterministic-omitted>",
+      "actor": "conductor",
+      "event": "complete",
+      "detail": "4/4 repos complete"
+    }
+  ],
+  "status": "complete"
+}
+```
+
+## Cross-repo changeset
+
+```markdown
+# Swarm 0001-feature — cross-repo changeset
+
+- Initiative: feature
+- Mode: autopilot
+- Status: complete
+- Repos: 4/4 complete
+- Completed at: <deterministic-omitted>
+
+## Per-repo contributions
+
+### root
+- Wave: 1
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 9/9
+- Commits: 2
+
+### left
+- Wave: 2
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 9/9
+- Commits: 2
+
+### right
+- Wave: 2
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 10/10
+- Commits: 2
+
+### merge
+- Wave: 3
+- Branch: `phase-1-feature`
+- Phase: `phase-1-feature`
+- Tasks: 10/10
+- Commits: 2
+
+```
