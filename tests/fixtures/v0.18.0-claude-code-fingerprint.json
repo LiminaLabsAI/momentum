@@ -1,8 +1,8 @@
 {
   "meta": {
-    "captured": "2026-06-15",
-    "capturedFrom": "fix/bug-006-claude-md-project-name",
-    "note": "Re-snapshotted for BUG-006 fix — bin/momentum.js now substitutes <Project Name> in the primary instruction file with the resolved project name (package.json `name` → @scope-stripped, else directory basename, else 'project'). Drift is intentional and limited to CLAUDE.md (first line now `# Project Rules: fixture-project` instead of literal `<Project Name>`). The regression test now pins a fixed-name subdirectory under the random tmp root so the substitution is deterministic. No regression in existing Claude Code install behavior."
+    "captured": "2026-06-19",
+    "capturedFrom": "phase-19-lifecycle-hardening",
+    "note": "Phase 19 G0 (Lifecycle Hardening) — added the ad-hoc work-record template scaffold (specs/adhoc/README.md + _TEMPLATE.md), installed by all three adapters via core/specs-templates. Drift is intentional and limited to these 2 additive files; no existing install content changed. The git-hook scripts (core/git-hooks/) are NOT yet installed — Group 1 wires the dedicated .githooks copy + core.hooksPath."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -23,6 +23,7 @@
     ".claude/commands/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
     ".claude/commands/start-phase.md": "ea7da972c841f26ace620531c1fdca567ba9e3f97b04d839afb86a179b843080",
     ".claude/commands/start-project.md": "9a9144898f31d3be8959ddadcfef553856acb14988adf5cc44d3c9e48e684213",
+    ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7",
     ".claude/commands/sync-docs.md": "4d03cab1dd5daa2c8cab68f27a9b602cead24ae3947f001e8783b12b472c7387",
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
@@ -36,6 +37,8 @@
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6",
     "specs/README.md": "88df4820bc11f62ac9e16f1ff62b6faea8f6691de5eaf4eb39ead84156f87703",
+    "specs/adhoc/README.md": "07d760574997bcfc1937c5cac154ea48aba39f0543e9ad6f906f4ada7c0b0426",
+    "specs/adhoc/_TEMPLATE.md": "5222410f9da8b48f875a114ba8d7888a25665765617ac03122e96f01f73ed810",
     "specs/architecture/ecosystem.md": "7986e672bbe412cac287fb5e8d022ee66d7ced7dd005ba34632ab0c162813cc6",
     "specs/backlog/backlog.md": "adf774d4d02bf58649cfacedfbdd3262b5106577544a8c4a648c2853edc05fc1",
     "specs/backlog/details/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -49,7 +52,6 @@
     "specs/status.md": "38861b1a72c0c8dd6a4df54024eb119fd9cdc9337b2dbb4b32535eaeefb42ef3",
     "specs/vision/principles.md": "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f",
     "specs/vision/project-charter.md": "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa",
-    "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271",
-    ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7"
+    "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271"
   }
 }

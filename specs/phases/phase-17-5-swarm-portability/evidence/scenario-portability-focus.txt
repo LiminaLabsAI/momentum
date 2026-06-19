@@ -1,7 +1,7 @@
 # Phase 17.5 Swarm Portability — Scenario focus
 
 Captured: 2026-06-14 (Phase 17.5 G5)
-Ecosystem: momentum-test-n8OjZQ
+Ecosystem: momentum-test-2X3SVy
 Swarms: 0001-portability
 
 ## Narrative

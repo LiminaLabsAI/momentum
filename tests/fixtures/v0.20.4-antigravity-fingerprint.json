@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-06-15",
-    "capturedFrom": "phase-18-swarm-parity",
+    "captured": "2026-06-19",
+    "capturedFrom": "phase-19-lifecycle-hardening",
     "adapter": "antigravity",
-    "note": "Phase 18 G3 — initial antigravity install fingerprint. Captured against the Phase 18 G0+G1+G2 surface. Determinism: the regression test pins a fixed-name subdirectory under the random tmp root so BUG-006 project-name substitution (in AGENTS.md) hashes consistently. Re-snapshot intentionally when a deliberate behavior change ships."
+    "note": "Phase 19 G0 (Lifecycle Hardening) — added the ad-hoc work-record template scaffold (specs/adhoc/README.md + _TEMPLATE.md), installed by all three adapters via core/specs-templates. Drift is intentional and limited to these 2 additive files; no existing install content changed. The git-hook scripts (core/git-hooks/) are NOT yet installed — Group 1 wires the dedicated .githooks copy + core.hooksPath."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -43,6 +43,8 @@
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6",
     "specs/README.md": "88df4820bc11f62ac9e16f1ff62b6faea8f6691de5eaf4eb39ead84156f87703",
+    "specs/adhoc/README.md": "07d760574997bcfc1937c5cac154ea48aba39f0543e9ad6f906f4ada7c0b0426",
+    "specs/adhoc/_TEMPLATE.md": "5222410f9da8b48f875a114ba8d7888a25665765617ac03122e96f01f73ed810",
     "specs/architecture/ecosystem.md": "7986e672bbe412cac287fb5e8d022ee66d7ced7dd005ba34632ab0c162813cc6",
     "specs/backlog/backlog.md": "adf774d4d02bf58649cfacedfbdd3262b5106577544a8c4a648c2853edc05fc1",
     "specs/backlog/details/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",

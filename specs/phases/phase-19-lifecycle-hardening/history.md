@@ -42,6 +42,30 @@ Detail: Resolve phase-8 limbo by closing it won't-do: native Claude Code `--work
 
 ---
 
+### [NOTE] 2026-06-19 — Group 0 complete: lifecycle contract + ad-hoc schema
+Topics: git-enforcement, ad-hoc-work, contracts
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/git-hooks/contract.js, core/lifecycle-contract.md, core/specs-templates/specs/adhoc/, specs/adhoc/
+Detail: Landed the canonical contract `core/git-hooks/contract.js` (pure constants + functions: commit-msg validation, branch/tag/ref parsing, protected-branch + verify-evidence detection, skip-env) as the single source of truth shared by the hooks (G1), installer, and `/hotfix` (G2). Added the ad-hoc record template + README (work-type taxonomy) under `core/specs-templates/specs/adhoc/` + the live `specs/adhoc/`, the `core/lifecycle-contract.md` reference, and `tests/lifecycle-contract.test.js` (11 tests). Suite 580→591 (+11). Re-baselined all 3 install fingerprints (+2 ad-hoc files each, no content drift).
+
+---
+
+### [DECISION] 2026-06-19 — Conventional-commit types expanded beyond momentum's stated 6
+Topics: git-enforcement, conventional-commits
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/git-hooks/contract.js
+Detail: `commit-msg` will accept `feat fix docs refactor chore infra` (momentum's stated set) PLUS `test perf build ci style revert`. Rationale: the project itself uses `test(scope):` commits (e.g. the Group 5 commit), so rejecting them would block legitimate work; the extras are standard Conventional-Commits types and keep downstream installs flexible. CLAUDE.md naming conventions get updated to match in Group 3.
+
+---
+
+### [DECISION] 2026-06-19 — Hook scripts live in core/git-hooks/, install to .githooks/
+Topics: git-enforcement, install
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/git-hooks/, bin/momentum.js
+Detail: Hook scripts live in `core/git-hooks/` (NOT `core/scripts/`, which auto-copies to the target's `scripts/`). Group 1 adds a dedicated install step copying `core/git-hooks/*` → target `.githooks/` + `git config core.hooksPath .githooks`. This keeps the shared `contract.js` installed exactly once and `.githooks/` clean, and prevents the contract from leaking into targets before the hooks are actually wired.
+
+---
+
 ### [SCOPE_CHANGE] 2026-06-19 — Phase 19 inserted; roadmap renumbered
 Topics: roadmap
 Affects-phases: phase-19-lifecycle-hardening

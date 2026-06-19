@@ -2,13 +2,13 @@
 
 > Mirrors `plan.md`. Mark `[x]` complete, `[/]` in-progress. Verify before marking done (Rule 12).
 
-## Group 0 — Contracts & Foundations (Sequential, blocks all)
-- [ ] Hook-install contract: tracked `.githooks/` + `core.hooksPath`; warn-not-clobber on existing config/husky
-- [ ] Escape-hatch contract: `MOMENTUM_SKIP_HOOKS=1` + single-use `.momentum/merge-approved` sentinel
-- [ ] Verification-evidence marker: canonical `## Verification Evidence` + "non-empty" definition
-- [ ] Ad-hoc record schema: `specs/adhoc/<id>/record.md` (Current/Expected/Unchanged + Evidence) + `<id>` scheme
-- [ ] Work-type taxonomy: `phase` / `quick-task` / `spike` + gates each must pass
-- [ ] Tests for contract surfaces
+## Group 0 — Contracts & Foundations (Sequential, blocks all) ✅
+- [x] Hook-install contract: tracked `.githooks/` + `core.hooksPath`; warn-not-clobber — defined in `core/git-hooks/contract.js` (`CONTRACT.hooksPath`) + `core/lifecycle-contract.md` (install code is Group 1)
+- [x] Escape-hatch contract: `MOMENTUM_SKIP_HOOKS=1` (`skipRequested`) + single-use `.momentum/merge-approved` sentinel (`CONTRACT.mergeApprovedSentinel`)
+- [x] Verification-evidence marker: `## Verification Evidence` + non-empty definition (`retroHasEvidence`)
+- [x] Ad-hoc record schema: `specs/adhoc/_TEMPLATE.md` + README (Current/Expected/Unchanged + Evidence); `<id>` = backlog id or `YYYY-MM-DD-<slug>`
+- [x] Work-type taxonomy: `phase` / `quick-task` / `spike` (`CONTRACT.workTypes`) + ceremony table in `specs/adhoc/README.md`
+- [x] Tests for contract surfaces — `tests/lifecycle-contract.test.js` (11 tests); also added dev helper `scripts/capture-fingerprints.js` (resolves the fingerprint tests' dangling "capture helper" reference)
 
 ## Group 1 — Git Lifecycle Enforcement (∥ G2)
 - [ ] FEAT-018 `commit-msg` hook — conventional-commit validation, exit≠0, honors escape hatch
