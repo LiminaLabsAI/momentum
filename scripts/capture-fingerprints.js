@@ -42,6 +42,9 @@ function fingerprintInstall(targetDir) {
   const walk = (dir, prefix) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
+      // Match the regression tests: exclude generated `.momentum/` runtime
+      // state (lock file carries a date + version) so fixtures stay deterministic.
+      if (entry.name === '.momentum') continue;
       const abs = path.join(dir, entry.name);
       const rel = prefix ? path.join(prefix, entry.name) : entry.name;
       if (entry.isDirectory()) walk(abs, rel);

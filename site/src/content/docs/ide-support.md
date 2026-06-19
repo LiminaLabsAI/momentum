@@ -23,7 +23,7 @@ Default adapter — `--agent claude-code` is implicit. The richest hook
 surface today.
 
 ```bash
-npx @avinash-singh-io/momentum init
+npx @avinash-singh-io/momentum@latest init
 ```
 
 ### What you get
@@ -63,7 +63,7 @@ contractual.
 ## Codex
 
 ```bash
-npx @avinash-singh-io/momentum init --agent codex
+npx @avinash-singh-io/momentum@latest init --agent codex
 ```
 
 ### What you get
@@ -96,7 +96,7 @@ switching IDEs. Hook coverage matches Claude Code.
 ## Antigravity
 
 ```bash
-npx @avinash-singh-io/momentum init --agent antigravity
+npx @avinash-singh-io/momentum@latest init --agent antigravity
 ```
 
 ### What you get

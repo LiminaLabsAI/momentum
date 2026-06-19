@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-06-19
-> **Current Phase**: _none active_
+> **Current Phase**: Phase 20 — Upgrade Hardening (active, target v0.22.0)
 > **Latest Release**: v0.21.0 — Phase 19 Lifecycle Hardening
 > **Health**: On Track
 
@@ -53,7 +53,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 19 released as v0.21.0; next: Phase 20 — Reach)_ | | | |
+| 20 | Upgrade Hardening | Implementation complete — awaiting release approval | G0–G4 done, 629/629 tests; merge/tag/publish gated on user OK — see `specs/phases/phase-20-upgrade-hardening/tasks.md` |
+
+> Phase 20 — Upgrade Hardening brings momentum's own upgrade mechanism up to
+> standard practice (Copier/Cruft template-sync model: per-repo lock file +
+> orphan cleanup; PULL-model `ecosystem upgrade` sweep; npx/global staleness
+> fixes; folds in BUG-008 + ENH-040). Grounded in a verified deep-research pass.
+> Inserted ahead of Reach, which moves to Phase 21.
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -64,9 +70,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 20 | Reach | Not Started (target v0.22.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
-| 21 | Intelligence | Not Started (target v0.23.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 22 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 21 | Reach | Not Started (target v0.23.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 22 | Intelligence | Not Started (target v0.24.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 23 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 

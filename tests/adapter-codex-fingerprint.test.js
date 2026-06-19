@@ -40,6 +40,10 @@ function fingerprintInstall(targetDir) {
   const walk = (dir, prefix) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue;
+      // `.momentum/` is generated runtime state (lock file, sentinels), not a
+      // shipped template — exclude it so the fingerprint stays deterministic
+      // (installed.json carries a date + version). Phase 20.
+      if (entry.name === '.momentum') continue;
       const abs = path.join(dir, entry.name);
       const rel = prefix ? path.join(prefix, entry.name) : entry.name;
       if (entry.isDirectory()) walk(abs, rel);

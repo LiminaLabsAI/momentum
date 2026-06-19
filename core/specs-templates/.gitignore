@@ -2,8 +2,12 @@
 ._*
 .DS_Store
 
-# momentum brainstorm-gate sentinel directory
-.momentum/
+# momentum runtime state — ignore sentinels/runs/inbox, but COMMIT the lock
+# file (.momentum/installed.json is the version-of-record; it must travel with
+# the repo). Git can't re-include a file under a fully-excluded dir, so ignore
+# the contents (.momentum/*) rather than the dir, then negate the lock file.
+.momentum/*
+!.momentum/installed.json
 
 # Ephemeral agent worktrees (momentum does not manage these — your coding
 # agent creates them; they must never pollute tracked state)

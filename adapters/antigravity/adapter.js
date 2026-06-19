@@ -63,10 +63,11 @@ module.exports = {
   },
 
   runInstall(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     console.log('→ Configuring Antigravity hooks...');
     const hooksDest = path.join(targetDir, '.agents', 'hooks.json');
+    if (recordManaged) recordManaged(hooksDest); // managed regardless of write
     if (!fileExists(hooksDest)) {
       copyFile(path.join(adapterDir, 'hooks.json'), hooksDest);
     } else {
@@ -76,19 +77,24 @@ module.exports = {
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged, dryRun } = helpers;
 
     console.log('→ Upgrading Antigravity hooks...');
     const src = path.join(adapterDir, 'hooks.json');
     const dest = path.join(targetDir, '.agents', 'hooks.json');
+    if (recordManaged) recordManaged(dest); // managed even when identical-skip
 
     if (fileExists(dest)) {
       const srcContent = fs.readFileSync(src, 'utf8');
       const destContent = fs.readFileSync(dest, 'utf8');
       if (srcContent !== destContent) {
-        fs.copyFileSync(dest, dest + '.bak');
-        copyFile(src, dest);
-        console.log('  ↑ upgraded: .agents/hooks.json (original saved as .bak)');
+        if (dryRun) {
+          console.log('  ✋ would upgrade: .agents/hooks.json');
+        } else {
+          fs.copyFileSync(dest, dest + '.bak');
+          copyFile(src, dest);
+          console.log('  ↑ upgraded: .agents/hooks.json (original saved as .bak)');
+        }
       }
     } else {
       copyFile(src, dest);

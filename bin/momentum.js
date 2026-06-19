@@ -17,6 +17,8 @@ const pkg = JSON.parse(
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function copyFile(src, dest) {
+  recordManaged(dest);
+  if (_dryRun) return;
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.copyFileSync(src, dest);
 }
@@ -31,29 +33,59 @@ function copyDir(srcDir, destDir, opts = {}) {
     if (opts.skipRelPaths && opts.skipRelPaths.has(rel)) continue;
     if (entry.isDirectory()) {
       copyDir(src, dest, opts);
-    } else if (opts.upgradeMode) {
+      continue;
+    }
+    // Leaf file. Record it in the managed set (for the lock file + orphan
+    // cleanup) whether it is written, identical, or skip-existing — its
+    // presence in momentum's managed set is what matters, not whether this
+    // run rewrote it. Install-once/user-owned trees opt out via record:false.
+    if (opts.record !== false) recordManaged(dest);
+    const destRel = path.relative(opts.root || process.cwd(), dest);
+    if (opts.upgradeMode) {
       if (fileExists(dest)) {
         const srcContent = fs.readFileSync(src, 'utf8');
         const destContent = fs.readFileSync(dest, 'utf8');
         if (srcContent !== destContent) {
-          fs.copyFileSync(dest, dest + '.bak');
-          fs.copyFileSync(src, dest);
-          const rel = path.relative(opts.root || process.cwd(), dest);
-          console.log(`  ↑ upgraded: ${rel} (original saved as .bak)`);
+          if (_dryRun) {
+            console.log(`  ✋ would upgrade: ${destRel}`);
+          } else {
+            fs.copyFileSync(dest, dest + '.bak');
+            fs.copyFileSync(src, dest);
+            console.log(`  ↑ upgraded: ${destRel} (original saved as .bak)`);
+          }
         }
         // identical — silent skip
+      } else if (_dryRun) {
+        console.log(`  ✋ would add:     ${destRel}`);
       } else {
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.copyFileSync(src, dest);
-        const rel = path.relative(opts.root || process.cwd(), dest);
-        console.log(`  + added:    ${rel}`);
+        console.log(`  + added:    ${destRel}`);
       }
     } else {
       if (opts.skipIfExists && fileExists(dest)) {
         console.log(`  ⚠️  ${dest} already exists — skipping.`);
       } else {
-        fs.mkdirSync(path.dirname(dest), { recursive: true });
-        fs.copyFileSync(src, dest);
+        // BUG-008: on init, momentum-owned files must not be silently
+        // clobbered. With `backup`, an existing file that differs is saved as
+        // .bak before overwrite — making re-init idempotent and safe. Fresh
+        // adds stay quiet.
+        if (opts.backup && fileExists(dest)) {
+          const srcBuf = fs.readFileSync(src);
+          const destBuf = fs.readFileSync(dest);
+          if (!srcBuf.equals(destBuf)) {
+            if (_dryRun) {
+              console.log(`  ✋ would update: ${destRel}`);
+            } else {
+              fs.copyFileSync(dest, dest + '.bak');
+              console.log(`  ↑ updated:  ${destRel} (original saved as .bak)`);
+            }
+          }
+        }
+        if (!_dryRun) {
+          fs.mkdirSync(path.dirname(dest), { recursive: true });
+          fs.copyFileSync(src, dest);
+        }
       }
     }
   }
@@ -87,6 +119,119 @@ function getProjectName(targetDir) {
 
 function renderProjectName(content, projectName) {
   return content.replaceAll('<Project Name>', projectName);
+}
+
+// ── Installed-files lock file (Phase 20 — Upgrade Hardening) ──────────────────
+//
+// `.momentum/installed.json` is momentum's per-repo version-of-record, modelled
+// on Copier's `_commit` / Cruft's `.cruft.json`. It records the momentum
+// version that last wrote the repo, the adapter, and the exact set of
+// tool-managed files (with sha256). It is COMMITTED to the repo (D1) so the
+// version travels and survives fresh clones.
+//
+// The managed-file set powers three things: per-repo version reporting, the
+// ecosystem sweep's agent detection, and orphan cleanup on upgrade
+// (`old.managedFiles − new.managedFiles` = files a newer momentum dropped).
+// We only ever delete files we previously installed — user files are never in
+// the set, so they are never touched.
+//
+// Collection: a module-level Set is active only during init()/upgrade(). The
+// plain-copy helpers (copyFile/copyDir) and the marker writers append the
+// destination they manage. The specs/ skeleton is install-once and user-owned,
+// so it opts out via `record: false`.
+
+const MANIFEST_REL = ['.momentum', 'installed.json'];
+const MANIFEST_SCHEMA = 1;
+
+let _managedCollector = null;
+
+// When true, init()/upgrade() compute and print the planned action set but
+// perform NO filesystem writes (ENH-040). Every fs-mutation in the install
+// path is gated on this; post-copy chmod/readdir loops are skipped too (they
+// would crash on a dry run because nothing was written).
+let _dryRun = false;
+
+function recordManaged(destPath) {
+  if (_managedCollector) _managedCollector.add(path.resolve(destPath));
+}
+
+function sha256File(filePath) {
+  const crypto = require('crypto');
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
+function readInstalledManifest(targetDir) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(targetDir, ...MANIFEST_REL), 'utf8'));
+  } catch {
+    return null; // absent, unreadable, or pre-Phase-20 install
+  }
+}
+
+/**
+ * Serialize the managed-file set into `.momentum/installed.json`.
+ * `files` is the collector Set of absolute paths. Returns the manifest object.
+ * In dry-run mode the manifest is computed and returned but not written.
+ */
+function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
+  const prev = readInstalledManifest(targetDir);
+  const today = new Date().toISOString().slice(0, 10);
+  const managedFiles = [...files]
+    .filter((abs) => fileExists(abs))
+    .map((abs) => ({
+      path: path.relative(targetDir, abs).split(path.sep).join('/'),
+      sha256: sha256File(abs),
+    }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+
+  const manifest = {
+    schema: MANIFEST_SCHEMA,
+    momentumVersion: version,
+    agent,
+    installedAt: prev && prev.installedAt ? prev.installedAt : today,
+    updatedAt: today,
+    managedFiles,
+  };
+
+  if (!dryRun) {
+    const dest = path.join(targetDir, ...MANIFEST_REL);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
+  }
+  return manifest;
+}
+
+/**
+ * Remove orphans: files a previous momentum version installed but the current
+ * one no longer ships (`prev.managedFiles − currentSet`). This is the piece a
+ * copy-only upgrade can never do (Cruft #67). Safety: we only ever consider
+ * files that WE previously recorded as managed — user files are never in the
+ * manifest, so they are never eligible. Each removal is backed up to `.bak`.
+ * Returns the list of removed relative paths.
+ */
+function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
+  if (!prevManifest || !Array.isArray(prevManifest.managedFiles)) return [];
+  const currentRel = new Set(
+    [...currentSet].map((abs) =>
+      path.relative(targetDir, abs).split(path.sep).join('/')
+    )
+  );
+  const removed = [];
+  for (const entry of prevManifest.managedFiles) {
+    if (currentRel.has(entry.path)) continue; // still managed → keep
+    const abs = path.join(targetDir, entry.path);
+    if (!fileExists(abs)) continue; // already gone
+    removed.push(entry.path);
+    if (!opts.dryRun) {
+      fs.copyFileSync(abs, abs + '.bak');
+      fs.rmSync(abs);
+    }
+    console.log(
+      `  ${opts.dryRun ? '✋ would remove' : '🗑  removed'}: ${entry.path}` +
+      `${opts.dryRun ? '' : ' (original saved as .bak)'}`
+    );
+  }
+  return removed;
 }
 
 function listAvailableAgents(src = path.join(__dirname, '..')) {
@@ -164,9 +309,14 @@ function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
   const label = primaryInstruction.label || primaryInstruction.destination.join('/');
+  recordManaged(destPath); // managed (marker-owned) whether added or skipped
 
   console.log(`→ Installing ${label}...`);
   if (!fileExists(destPath)) {
+    if (_dryRun) {
+      console.log(`  ✋ would add:     ${label}`);
+      return 'added';
+    }
     const rendered = renderProjectName(
       fs.readFileSync(srcPath, 'utf8'),
       getProjectName(targetDir)
@@ -186,6 +336,7 @@ function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
   const label = primaryInstruction.label || primaryInstruction.destination.join('/');
   const projectName = getProjectName(targetDir);
+  recordManaged(destPath); // managed (marker-owned)
 
   console.log(`→ Upgrading ${label}...`);
   if (primaryInstruction.markerAware) {
@@ -193,19 +344,28 @@ function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   }
 
   const srcContent = renderProjectName(fs.readFileSync(srcPath, 'utf8'), projectName);
+  const relDest = path.relative(targetDir, destPath);
   if (!fileExists(destPath)) {
+    if (_dryRun) {
+      console.log(`  ✋ would add:     ${relDest}`);
+      return 'added';
+    }
     fs.mkdirSync(path.dirname(destPath), { recursive: true });
     fs.writeFileSync(destPath, srcContent);
-    console.log(`  + added:    ${path.relative(targetDir, destPath)}`);
+    console.log(`  + added:    ${relDest}`);
     return 'added';
   }
 
   const destContent = fs.readFileSync(destPath, 'utf8');
   if (srcContent === destContent) return 'unchanged';
 
+  if (_dryRun) {
+    console.log(`  ✋ would upgrade: ${relDest}`);
+    return 'updated';
+  }
   fs.copyFileSync(destPath, destPath + '.bak');
   fs.writeFileSync(destPath, srcContent);
-  console.log(`  ↑ upgraded: ${path.relative(targetDir, destPath)} (original saved as .bak)`);
+  console.log(`  ↑ upgraded: ${relDest} (original saved as .bak)`);
   return 'updated';
 }
 
@@ -322,10 +482,15 @@ function partitionByMarker(content) {
  */
 function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
   const rel = path.relative(root || process.cwd(), destPath);
+  recordManaged(destPath); // managed (marker-owned) in all branches
   const render = (content) =>
     projectName ? renderProjectName(content, projectName) : content;
 
   if (!fileExists(destPath)) {
+    if (_dryRun) {
+      console.log(`  ✋ would add:     ${rel}`);
+      return 'added';
+    }
     fs.mkdirSync(path.dirname(destPath), { recursive: true });
     fs.writeFileSync(destPath, render(fs.readFileSync(srcPath, 'utf8')));
     console.log(`  + added:    ${rel}`);
@@ -339,6 +504,10 @@ function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
   if (destParts.extensions === null) {
     // Pre-marker file — back up, write fresh template, append old content
     // under the marker so nothing is lost. The user can manually de-dupe.
+    if (_dryRun) {
+      console.log(`  ✋ would migrate: ${rel} (no marker — original would be saved as .bak)`);
+      return 'migrated';
+    }
     fs.copyFileSync(destPath, destPath + '.bak');
     const today = new Date().toISOString().slice(0, 10);
     const migrated =
@@ -359,6 +528,10 @@ function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
     return 'unchanged';
   }
 
+  if (_dryRun) {
+    console.log(`  ✋ would upgrade: ${rel} (managed section replaced; extensions preserved)`);
+    return 'updated';
+  }
   fs.copyFileSync(destPath, destPath + '.bak');
   fs.writeFileSync(destPath, newContent);
   console.log(
@@ -403,6 +576,10 @@ function installGitHooks(src, target, opts = {}) {
   // Copy hook files into <target>/.githooks/ (upgrade-aware via copyDir opts).
   const hooksDest = path.join(target, ourPath);
   copyDir(hooksSrc, hooksDest, opts.upgradeMode ? { upgradeMode: true, root: target } : {});
+  if (_dryRun) {
+    console.log(`  ✋ would set core.hooksPath → ${ourPath}/`);
+    return;
+  }
   // Executable bit on every shipped hook file except the .md/.js libs (only
   // git-named hooks run, but +x is harmless and keeps the dispatcher runnable).
   for (const f of fs.readdirSync(hooksDest)) {
@@ -419,7 +596,7 @@ function installGitHooks(src, target, opts = {}) {
   }
 }
 
-function init(targetDir, agent) {
+function init(targetDir, agent, opts = {}) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
@@ -432,13 +609,18 @@ function init(targetDir, agent) {
   failOnOverlayConflicts(coreRoot, adapterDir, agent, dests);
 
   console.log(`Installing momentum into: ${target} [agent: ${agent}]`);
+  if (opts.dryRun) console.log('(dry run — no files will be written)');
   console.log('');
 
+  _dryRun = !!opts.dryRun;
+  _managedCollector = new Set();
+  try {
   // .claude/commands/
   console.log('→ Installing slash commands...');
   copyDir(
     path.join(src, 'core', 'commands'),
-    path.join(target, ...dests.commands)
+    path.join(target, ...dests.commands),
+    { backup: true, root: target }
   );
 
   // scripts/
@@ -450,11 +632,14 @@ function init(targetDir, agent) {
   // Antigravity also pick it up via the same scripts/ destination.
   copyDir(
     path.join(src, 'core', 'scripts'),
-    path.join(target, ...dests.scripts)
+    path.join(target, ...dests.scripts),
+    { backup: true, root: target }
   );
-  for (const f of fs.readdirSync(path.join(target, ...dests.scripts))) {
-    if (f.endsWith('.sh')) {
-      fs.chmodSync(path.join(target, ...dests.scripts, f), 0o755);
+  if (!_dryRun) {
+    for (const f of fs.readdirSync(path.join(target, ...dests.scripts))) {
+      if (f.endsWith('.sh')) {
+        fs.chmodSync(path.join(target, ...dests.scripts, f), 0o755);
+      }
     }
   }
   // Phase 9 — ecosystem session-append helper, sourced by check-history-reminder.
@@ -462,7 +647,7 @@ function init(targetDir, agent) {
   if (fs.existsSync(sessionSrc)) {
     const sessionDest = path.join(target, ...dests.scripts, 'session-append.sh');
     copyFile(sessionSrc, sessionDest);
-    fs.chmodSync(sessionDest, 0o755);
+    if (!_dryRun) fs.chmodSync(sessionDest, 0o755);
   }
 
   // .githooks/ — git-lifecycle enforcement hooks (Phase 19)
@@ -474,7 +659,8 @@ function init(targetDir, agent) {
   if (fs.existsSync(path.join(src, 'core', 'engines'))) {
     copyDir(
       path.join(src, 'core', 'engines'),
-      path.join(target, ...(dests.engines || ['.agent', 'engines']))
+      path.join(target, ...(dests.engines || ['.agent', 'engines'])),
+      { backup: true, root: target }
     );
   }
 
@@ -496,15 +682,30 @@ function init(targetDir, agent) {
   copyDir(specsSrc, target, {
     skipIfExists: true,
     skipRelPaths: new Set(['CLAUDE.md']),
+    record: false, // specs are install-once / user-owned — never orphan them
   });
 
   installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
 
   // Adapter overlay — per-agent commands/agent-rules/scripts (additive)
-  applyOverlay(adapterDir, target, dests);
+  applyOverlay(adapterDir, target, dests, { backup: true, root: target });
 
   // Coding-agent-specific steps
-  adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists });
+  adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists, recordManaged, dryRun: _dryRun });
+
+  // Lock file — record the version-of-record + managed-file set (Phase 20)
+  writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector, dryRun: _dryRun });
+  } finally {
+    _managedCollector = null;
+    _dryRun = false;
+  }
+
+  if (opts.dryRun) {
+    console.log('');
+    console.log('✓ Dry run complete — no files were written.');
+    console.log('  Re-run without --dry-run to apply.');
+    return;
+  }
 
   console.log('');
   console.log('✓ momentum installed successfully.');
@@ -526,7 +727,7 @@ function init(targetDir, agent) {
 
 // ── Upgrade command ───────────────────────────────────────────────────────────
 
-function upgrade(targetDir, agent) {
+function upgrade(targetDir, agent, opts = {}) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
 
@@ -539,10 +740,19 @@ function upgrade(targetDir, agent) {
   failOnOverlayConflicts(coreRoot, adapterDir, agent, dests);
 
   console.log(`Upgrading momentum in: ${target} [agent: ${agent}]`);
+  if (opts.dryRun) console.log('(dry run — no files will be written)');
   console.log('');
 
   const upgradeOpts = { upgradeMode: true, root: target };
 
+  // Snapshot the prior managed set BEFORE any writes, so orphan cleanup can
+  // diff it against what this version installs (Phase 20 G1).
+  const prevManifest = readInstalledManifest(target);
+
+  _dryRun = !!opts.dryRun;
+  _managedCollector = new Set();
+  let agentRulesResult, primaryInstructionResult, orphans = [];
+  try {
   // Upgrade slash commands
   console.log('→ Upgrading slash commands...');
   copyDir(
@@ -567,7 +777,7 @@ function upgrade(targetDir, agent) {
   }
   // Re-apply executable bit to all .sh scripts
   const scriptsDir = path.join(target, ...dests.scripts);
-  if (fs.existsSync(scriptsDir)) {
+  if (!_dryRun && fs.existsSync(scriptsDir)) {
     for (const f of fs.readdirSync(scriptsDir)) {
       if (f.endsWith('.sh')) fs.chmodSync(path.join(scriptsDir, f), 0o755);
     }
@@ -589,7 +799,7 @@ function upgrade(targetDir, agent) {
 
   // Upgrade agent rules — marker-aware (preserves Project Extensions block)
   console.log('→ Upgrading agent rules...');
-  const agentRulesResult = upgradeMarkedFile(
+  agentRulesResult = upgradeMarkedFile(
     path.join(src, 'core', 'agent-rules', 'project.md'),
     path.join(target, ...dests['agent-rules'], 'project.md'),
     'agent-rules',
@@ -597,7 +807,7 @@ function upgrade(targetDir, agent) {
   );
 
   // Upgrade adapter-owned root instruction file
-  const primaryInstructionResult = upgradePrimaryInstruction(
+  primaryInstructionResult = upgradePrimaryInstruction(
     src,
     target,
     adapterDir,
@@ -608,9 +818,30 @@ function upgrade(targetDir, agent) {
   applyOverlay(adapterDir, target, dests, upgradeOpts);
 
   // Delegate adapter-specific upgrade
-  adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists });
+  adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists, recordManaged, dryRun: _dryRun });
+
+  // Orphan cleanup — remove files a prior version installed but this one
+  // no longer ships (uses the snapshot taken before writes). Only ever
+  // touches files we previously recorded as managed.
+  orphans = removeOrphans(target, prevManifest, _managedCollector, { dryRun: _dryRun });
+
+  // Lock file — rewrite the version-of-record + managed-file set (Phase 20)
+  writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector, dryRun: _dryRun });
+  } finally {
+    _managedCollector = null;
+    _dryRun = false;
+  }
 
   console.log('');
+  if (opts.dryRun) {
+    console.log('✓ Dry run complete — no files were written.');
+    if (orphans.length) {
+      console.log(`  ${orphans.length} file(s) would be removed as orphaned (see ✋ lines above).`);
+    }
+    console.log('  Re-run without --dry-run to apply.');
+    console.log('');
+    return;
+  }
   console.log('✓ Upgrade complete.');
   if (adapter.primaryInstruction) {
     const label = adapter.primaryInstruction.label ||
@@ -618,6 +849,9 @@ function upgrade(targetDir, agent) {
     console.log(`  ${label}:           ${primaryInstructionResult}`);
   }
   console.log(`  agent-rules:         ${agentRulesResult}`);
+  if (orphans.length) {
+    console.log(`  removed (orphaned):  ${orphans.length} file(s) — see 🗑 lines above`);
+  }
   console.log('');
 }
 
@@ -631,6 +865,29 @@ function isNewerVersion(a, b) {
   if (aMaj !== bMaj) return aMaj > bMaj;
   if (aMin !== bMin) return aMin > bMin;
   return aPatch > bPatch;
+}
+
+/**
+ * Stale-CLI warning for `upgrade` (Phase 20 G2 / D2 — warn, never block).
+ * `momentum upgrade` copies files from the INSTALLED CLI, not from npm — so a
+ * stale global/npx CLI can only ever install stale files. When the published
+ * `latest` is newer than the running CLI, return a prominent warning telling
+ * the user to update the CLI first. Returns null when the CLI is current
+ * (or the version check was unavailable). Pure + unit-testable.
+ */
+function formatStaleCliWarning(current, latest) {
+  if (!latest || !isNewerVersion(latest, current)) return null;
+  return [
+    '',
+    '  ┌────────────────────────────────────────────────────────────────┐',
+    `  │  ⚠  Installed momentum CLI is ${current}, but ${latest} is published.`,
+    '  │     `upgrade` copies files from the INSTALLED CLI — your project',
+    '  │     files will only ever be as new as the CLI itself.',
+    '  │     Update the CLI first, then re-run upgrade:',
+    '  │        npm i -g @avinash-singh-io/momentum@latest',
+    '  └────────────────────────────────────────────────────────────────┘',
+    '',
+  ].join('\n');
 }
 
 function checkForUpdates() {
@@ -712,6 +969,7 @@ Swarm — sustained parallel multi-project feature delivery (Phase 17+, Claude C
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
+  --dry-run                           init/upgrade: preview the action set; write nothing
   --no-ecosystem                      Skip the post-init auto-detect prompt
   -h, --help                          Show this help message
   -v, --version                       Show version number
@@ -938,6 +1196,10 @@ async function main() {
     args.splice(agentFlagIdx, 2);
   }
 
+  // --dry-run is parsed per-command (init/upgrade here; `ecosystem upgrade`
+  // parses its own) — NOT stripped globally, or the ecosystem sweep would
+  // never see it.
+
   // Start update check concurrently — runs while command executes
   const updateCheckPromise = checkForUpdates();
 
@@ -949,19 +1211,26 @@ async function main() {
   } else if (args[0] === '--version' || args[0] === '-v') {
     console.log(pkg.version);
   } else if (args[0] === 'init') {
-    const initOpts = extractInitFlags(args);
+    const dryRun = args.includes('--dry-run');
+    const initOpts = extractInitFlags(args.filter((a) => a !== '--dry-run'));
     const targetDir = initOpts.target || process.cwd();
     try {
-      init(targetDir, agent);
-      await postInitEcosystem(targetDir, initOpts);
+      init(targetDir, agent, { dryRun });
+      // Ecosystem auto-detect/scaffold mutates state — skip it on a dry run.
+      if (!dryRun) await postInitEcosystem(targetDir, initOpts);
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
     }
   } else if (args[0] === 'upgrade') {
-    const targetDir = args[1] || process.cwd();
+    const dryRun = args.includes('--dry-run');
+    const targetDir = args.slice(1).find((a) => !a.startsWith('--')) || process.cwd();
     try {
-      upgrade(targetDir, agent);
+      // Warn (don't block) if the installed CLI is behind the published latest —
+      // upgrade can only ever install files as new as the CLI itself.
+      const staleWarning = formatStaleCliWarning(pkg.version, await updateCheckPromise);
+      if (staleWarning) console.log(staleWarning);
+      upgrade(targetDir, agent, { dryRun });
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
@@ -1060,17 +1329,13 @@ async function main() {
   process.exit(exitCode);
 }
 
-// Run only when invoked as a CLI, not when required by tests.
-if (require.main === module) {
-  main();
-}
-
 module.exports = {
   // Pure helpers (unit-testable)
   partitionByMarker,
   listFilesRecursive,
   detectOverlayConflicts,
   isNewerVersion,
+  formatStaleCliWarning,
   MARKER,
   DEFAULT_OVERLAY_DESTS,
   listAvailableAgents,
@@ -1083,3 +1348,11 @@ module.exports = {
   init,
   upgrade,
 };
+
+// Run only when invoked as a CLI, not when required by tests.
+// NOTE: exports MUST be assigned above this line — main() dispatches the
+// `ecosystem upgrade` sweep synchronously, which require()s this module back;
+// if exports weren't set yet, `upgrade` would be undefined (circular require).
+if (require.main === module) {
+  main();
+}

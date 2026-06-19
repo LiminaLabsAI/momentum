@@ -57,12 +57,14 @@ function runEcosystem(args) {
       return cmdRemove(rest);
     case 'status':
       return cmdStatus(rest);
+    case 'upgrade':
+      return cmdUpgrade(rest);
     case 'initiative':
       return cmdInitiative(rest);
     default:
       throw new Error(
         `unknown ecosystem subcommand "${sub}". ` +
-        `Try: init | add | remove | status | initiative`,
+        `Try: init | add | remove | status | upgrade | initiative`,
       );
   }
 }
@@ -76,6 +78,7 @@ Usage:
   momentum ecosystem add <repo-path> [--role <role>] [--id <id>] [--ecosystem <path>]
   momentum ecosystem remove <member-id> [--ecosystem <path>]
   momentum ecosystem status [--no-git] [--ecosystem <path>]
+  momentum ecosystem upgrade [--dry-run] [--force] [--agent <name>] [--ecosystem <path>]
   momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
 
 Location:
@@ -102,6 +105,15 @@ Subcommands:
 
   status      Print the manifest summary plus \`git status --short\` and
               the most recent commit for each member.
+
+  upgrade     Sweep \`momentum upgrade\` across every member (PULL model).
+              Per repo: skips a dirty working tree (use --force to override),
+              detects the adapter from its lock file, runs the upgrade, and
+              reports the momentum version before → after. Tolerates
+              partial failure — one bad repo never aborts the fleet. Use
+              --dry-run to preview the whole sweep without writing anything.
+              Note: the CLI's OWN version bounds the result — update the CLI
+              first (\`npm i -g @avinash-singh-io/momentum@latest\`).
 
   initiative  Manage cross-repo initiatives. Currently only \`create\` is
               wired as a CLI subcommand (other operations stay slash-only
@@ -429,6 +441,146 @@ function cmdStatus(args) {
       console.log(`Active initiative: ${slug}`);
     }
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// upgrade — PULL-model fleet sweep (Phase 20)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Runs `momentum upgrade` across every ecosystem member in one pass. Chosen
+// over a PUSH-model bot (Renovate/Dependabot) because momentum is forge-neutral
+// (DIP) and operates on local git checkouts. Fleet-safety: clean-tree gate per
+// repo, partial-failure tolerance, per-repo version reporting, dry-run.
+
+/** True when the repo has uncommitted changes. Non-git repos count as clean. */
+function isWorkingTreeDirty(repoPath) {
+  try {
+    const out = execSync('git status --porcelain', {
+      cwd: repoPath,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return out.length > 0;
+  } catch (_e) {
+    return false; // not a git repo — nothing to protect, let the upgrade proceed
+  }
+}
+
+/** Read the recorded momentum version from a member's lock file. */
+function readMemberVersion(repoPath) {
+  try {
+    const m = JSON.parse(
+      fs.readFileSync(path.join(repoPath, '.momentum', 'installed.json'), 'utf8'),
+    );
+    return (m && m.momentumVersion) || 'unknown';
+  } catch (_e) {
+    return 'none'; // pre-Phase-20 install (no lock file)
+  }
+}
+
+/** Detect which adapter a member uses. Lock file is authoritative; else heuristic. */
+function detectMemberAgent(repoPath) {
+  try {
+    const m = JSON.parse(
+      fs.readFileSync(path.join(repoPath, '.momentum', 'installed.json'), 'utf8'),
+    );
+    if (m && m.agent) return m.agent;
+  } catch (_e) { /* fall through to heuristic */ }
+  if (fs.existsSync(path.join(repoPath, '.codex'))) return 'codex';
+  if (fs.existsSync(path.join(repoPath, '.claude'))) return 'claude-code';
+  if (
+    fs.existsSync(path.join(repoPath, '.agents', 'hooks.json')) ||
+    fs.existsSync(path.join(repoPath, '.agent', 'workflows'))
+  ) {
+    return 'antigravity';
+  }
+  if (fs.existsSync(path.join(repoPath, 'CLAUDE.md'))) return 'claude-code';
+  if (fs.existsSync(path.join(repoPath, 'AGENTS.md'))) return 'codex';
+  return null;
+}
+
+function cmdUpgrade(args) {
+  const opts = parseFlags(args, {
+    ecosystem: 'string',
+    'dry-run': 'boolean',
+    force: 'boolean',
+    agent: 'string',
+  });
+  const dryRun = !!opts['dry-run'];
+  const root = resolveEcosystemRoot(opts.ecosystem, 'upgrade');
+  const manifest = lib.loadManifest(root);
+
+  console.log(`Ecosystem: ${manifest.name} (root: ${root})`);
+  console.log(`Sweeping \`momentum upgrade\` across ${manifest.members.length} member(s)${dryRun ? '  [dry run — no writes]' : ''}`);
+  if (manifest.members.length === 0) {
+    console.log('  (none registered yet — try `momentum ecosystem add ../<repo>`)');
+    return;
+  }
+
+  // Lazy require avoids a load-time cycle (momentum.js requires this module).
+  const { upgrade } = require('./momentum');
+  const results = [];
+
+  for (const m of manifest.members) {
+    const absRepo = path.resolve(root, m.path);
+    console.log('');
+    console.log(`── ${m.id}  [${m.role}]  ${m.path} ─────────────────────`);
+
+    if (!fs.existsSync(absRepo)) {
+      console.log('  ⚠️  missing on disk — skipped.');
+      results.push({ id: m.id, status: 'missing' });
+      continue;
+    }
+    if (isWorkingTreeDirty(absRepo) && !opts.force) {
+      console.log('  ⚠️  working tree not clean — skipped. Commit/stash, or re-run with --force.');
+      results.push({ id: m.id, status: 'dirty-skip' });
+      continue;
+    }
+    const agent = opts.agent || detectMemberAgent(absRepo);
+    if (!agent) {
+      console.log('  ⚠️  could not detect adapter — skipped. Re-run with --agent <name>.');
+      results.push({ id: m.id, status: 'no-agent' });
+      continue;
+    }
+
+    const before = readMemberVersion(absRepo);
+    try {
+      upgrade(absRepo, agent, { dryRun });
+      const after = dryRun ? before : readMemberVersion(absRepo);
+      results.push({
+        id: m.id,
+        status: dryRun ? 'would-upgrade' : 'upgraded',
+        agent,
+        before,
+        after,
+      });
+    } catch (err) {
+      // Partial-failure tolerance — one bad repo never aborts the fleet.
+      console.log(`  ❌ upgrade failed: ${err.message}`);
+      results.push({ id: m.id, status: 'failed', error: err.message });
+    }
+  }
+
+  printSweepSummary(results, dryRun);
+}
+
+function printSweepSummary(results, dryRun) {
+  const icon = {
+    upgraded: '✓', 'would-upgrade': '✋', 'dirty-skip': '⊘', missing: '∅',
+    'no-agent': '?', failed: '✗',
+  };
+  console.log('');
+  console.log('── Sweep summary ───────────────────────────────');
+  for (const r of results) {
+    const ver = r.before ? `  ${r.before} → ${r.after}` : '';
+    const ag = r.agent ? `  [${r.agent}]` : '';
+    console.log(`  ${icon[r.status] || '•'} ${r.id}: ${r.status}${ver}${ag}`);
+  }
+  const counts = {};
+  for (const r of results) counts[r.status] = (counts[r.status] || 0) + 1;
+  console.log('');
+  console.log('  ' + Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(', '));
+  if (dryRun) console.log('  (dry run — no files were written)');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
