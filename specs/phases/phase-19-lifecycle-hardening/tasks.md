@@ -39,9 +39,9 @@
 - [x] TD-008 — phase-8 closed won't-do: planning doc records the closure + corrects the false "shipped v0.11.0" claim; branch deleted (local + origin)
 - [x] TD-007 — deleted **14** stale origin branches (user-approved). Merge analysis corrected the naive "16": only 11 were ancestry-merged; added phase-8 (won't-do), phase-18 (squash-merged, content in main), audit/codex-runtime-gaps (superseded by v2). KEPT phase-16-adapter-parity (research record) + phase-7-subagent-engine (unreleased WIP). Local stale refs also pruned.
 
-## Group 5 — Verification (Sequential, last)
-- [ ] `npm test` green
-- [ ] Re-baseline Claude Code install fingerprint (with meta)
-- [ ] Smoke test temp install: hooks fire, escape hatch, tag gate, `/hotfix`, `validate` no-phase
-- [ ] 3-adapter parity check; update parity + capability matrices
-- [ ] `retrospective.md` with captured Verification Evidence
+## Group 5 — Verification (Sequential, last) ✅
+- [x] `npm test` green — **604/604** (580 baseline + 24 new)
+- [x] Re-baselined all 3 install fingerprints per-group with explanatory meta
+- [x] E2E smoke (temp git repo): install sets `core.hooksPath`; commit-msg bad blocked / good ok / `--no-verify` bypass; pre-push to main blocked then allowed via sentinel (consumed); `/hotfix` + adhoc template present
+- [x] 3-adapter parity: parity matrix audit 4/4; added `/hotfix` row + Git-lifecycle-hooks subsection + footnote 15. No capability-boolean change (hooks are agent-agnostic), so `adapter-capabilities.md` unchanged.
+- [x] `retrospective.md` written with captured Verification Evidence (gates the v0.21.0 release tag — FEAT-019 dogfood)

@@ -122,6 +122,14 @@ Detail: The bulk `git push origin --delete` command mistakenly included `phase-7
 
 ---
 
+### [NOTE] 2026-06-19 — Group 5 complete: verified; all acceptance criteria met
+Topics: verification, fingerprint, parity, retrospective
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/adapter-parity-matrix.md, specs/phases/phase-19-lifecycle-hardening/retrospective.md
+Detail: Full suite 604/604 (580 baseline + 24 new). E2E smoke in a temp git repo confirms every enforcement path fires (commit-msg, pre-push merge gate + sentinel consume, escape hatch) and the ad-hoc surface installs. Parity matrix gains `/hotfix` + a git-lifecycle-hooks subsection (footnote 15); audit 4/4. Retrospective written with captured evidence — which gates the v0.21.0 release tag via FEAT-019 (the feature guards its own release). All six acceptance criteria met. Awaiting merge/release approval.
+
+---
+
 ### [SCOPE_CHANGE] 2026-06-19 — Phase 19 inserted; roadmap renumbered
 Topics: roadmap
 Affects-phases: phase-19-lifecycle-hardening
