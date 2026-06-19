@@ -19,6 +19,7 @@ const pkg = JSON.parse(
 function copyFile(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.copyFileSync(src, dest);
+  recordManaged(dest);
 }
 
 function copyDir(srcDir, destDir, opts = {}) {
@@ -31,7 +32,14 @@ function copyDir(srcDir, destDir, opts = {}) {
     if (opts.skipRelPaths && opts.skipRelPaths.has(rel)) continue;
     if (entry.isDirectory()) {
       copyDir(src, dest, opts);
-    } else if (opts.upgradeMode) {
+      continue;
+    }
+    // Leaf file. Record it in the managed set (for the lock file + orphan
+    // cleanup) whether it is written, identical, or skip-existing — its
+    // presence in momentum's managed set is what matters, not whether this
+    // run rewrote it. Install-once/user-owned trees opt out via record:false.
+    if (opts.record !== false) recordManaged(dest);
+    if (opts.upgradeMode) {
       if (fileExists(dest)) {
         const srcContent = fs.readFileSync(src, 'utf8');
         const destContent = fs.readFileSync(dest, 'utf8');
@@ -87,6 +95,80 @@ function getProjectName(targetDir) {
 
 function renderProjectName(content, projectName) {
   return content.replaceAll('<Project Name>', projectName);
+}
+
+// ── Installed-files lock file (Phase 20 — Upgrade Hardening) ──────────────────
+//
+// `.momentum/installed.json` is momentum's per-repo version-of-record, modelled
+// on Copier's `_commit` / Cruft's `.cruft.json`. It records the momentum
+// version that last wrote the repo, the adapter, and the exact set of
+// tool-managed files (with sha256). It is COMMITTED to the repo (D1) so the
+// version travels and survives fresh clones.
+//
+// The managed-file set powers three things: per-repo version reporting, the
+// ecosystem sweep's agent detection, and orphan cleanup on upgrade
+// (`old.managedFiles − new.managedFiles` = files a newer momentum dropped).
+// We only ever delete files we previously installed — user files are never in
+// the set, so they are never touched.
+//
+// Collection: a module-level Set is active only during init()/upgrade(). The
+// plain-copy helpers (copyFile/copyDir) and the marker writers append the
+// destination they manage. The specs/ skeleton is install-once and user-owned,
+// so it opts out via `record: false`.
+
+const MANIFEST_REL = ['.momentum', 'installed.json'];
+const MANIFEST_SCHEMA = 1;
+
+let _managedCollector = null;
+
+function recordManaged(destPath) {
+  if (_managedCollector) _managedCollector.add(path.resolve(destPath));
+}
+
+function sha256File(filePath) {
+  const crypto = require('crypto');
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
+function readInstalledManifest(targetDir) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(targetDir, ...MANIFEST_REL), 'utf8'));
+  } catch {
+    return null; // absent, unreadable, or pre-Phase-20 install
+  }
+}
+
+/**
+ * Serialize the managed-file set into `.momentum/installed.json`.
+ * `files` is the collector Set of absolute paths. Returns the manifest object.
+ * In dry-run mode the manifest is computed and returned but not written.
+ */
+function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
+  const prev = readInstalledManifest(targetDir);
+  const today = new Date().toISOString().slice(0, 10);
+  const managedFiles = [...files]
+    .filter((abs) => fileExists(abs))
+    .map((abs) => ({
+      path: path.relative(targetDir, abs).split(path.sep).join('/'),
+      sha256: sha256File(abs),
+    }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+
+  const manifest = {
+    schema: MANIFEST_SCHEMA,
+    momentumVersion: version,
+    agent,
+    installedAt: prev && prev.installedAt ? prev.installedAt : today,
+    updatedAt: today,
+    managedFiles,
+  };
+
+  if (!dryRun) {
+    const dest = path.join(targetDir, ...MANIFEST_REL);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
+  }
+  return manifest;
 }
 
 function listAvailableAgents(src = path.join(__dirname, '..')) {
@@ -164,6 +246,7 @@ function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
   const label = primaryInstruction.label || primaryInstruction.destination.join('/');
+  recordManaged(destPath); // managed (marker-owned) whether added or skipped
 
   console.log(`→ Installing ${label}...`);
   if (!fileExists(destPath)) {
@@ -186,6 +269,7 @@ function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
   const label = primaryInstruction.label || primaryInstruction.destination.join('/');
   const projectName = getProjectName(targetDir);
+  recordManaged(destPath); // managed (marker-owned)
 
   console.log(`→ Upgrading ${label}...`);
   if (primaryInstruction.markerAware) {
@@ -322,6 +406,7 @@ function partitionByMarker(content) {
  */
 function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
   const rel = path.relative(root || process.cwd(), destPath);
+  recordManaged(destPath); // managed (marker-owned) in all branches
   const render = (content) =>
     projectName ? renderProjectName(content, projectName) : content;
 
@@ -434,6 +519,8 @@ function init(targetDir, agent) {
   console.log(`Installing momentum into: ${target} [agent: ${agent}]`);
   console.log('');
 
+  _managedCollector = new Set();
+  try {
   // .claude/commands/
   console.log('→ Installing slash commands...');
   copyDir(
@@ -496,6 +583,7 @@ function init(targetDir, agent) {
   copyDir(specsSrc, target, {
     skipIfExists: true,
     skipRelPaths: new Set(['CLAUDE.md']),
+    record: false, // specs are install-once / user-owned — never orphan them
   });
 
   installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
@@ -505,6 +593,12 @@ function init(targetDir, agent) {
 
   // Coding-agent-specific steps
   adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists });
+
+  // Lock file — record the version-of-record + managed-file set (Phase 20)
+  writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector });
+  } finally {
+    _managedCollector = null;
+  }
 
   console.log('');
   console.log('✓ momentum installed successfully.');
@@ -543,6 +637,9 @@ function upgrade(targetDir, agent) {
 
   const upgradeOpts = { upgradeMode: true, root: target };
 
+  _managedCollector = new Set();
+  let agentRulesResult, primaryInstructionResult;
+  try {
   // Upgrade slash commands
   console.log('→ Upgrading slash commands...');
   copyDir(
@@ -589,7 +686,7 @@ function upgrade(targetDir, agent) {
 
   // Upgrade agent rules — marker-aware (preserves Project Extensions block)
   console.log('→ Upgrading agent rules...');
-  const agentRulesResult = upgradeMarkedFile(
+  agentRulesResult = upgradeMarkedFile(
     path.join(src, 'core', 'agent-rules', 'project.md'),
     path.join(target, ...dests['agent-rules'], 'project.md'),
     'agent-rules',
@@ -597,7 +694,7 @@ function upgrade(targetDir, agent) {
   );
 
   // Upgrade adapter-owned root instruction file
-  const primaryInstructionResult = upgradePrimaryInstruction(
+  primaryInstructionResult = upgradePrimaryInstruction(
     src,
     target,
     adapterDir,
@@ -609,6 +706,12 @@ function upgrade(targetDir, agent) {
 
   // Delegate adapter-specific upgrade
   adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists });
+
+  // Lock file — rewrite the version-of-record + managed-file set (Phase 20)
+  writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector });
+  } finally {
+    _managedCollector = null;
+  }
 
   console.log('');
   console.log('✓ Upgrade complete.');
