@@ -71,9 +71,18 @@ never touched. Preview anything with `momentum upgrade --dry-run`.
 Running an **ecosystem**? Sweep every member in one pass:
 
 ```bash
-momentum ecosystem upgrade            # skips dirty repos; reports each version
-momentum ecosystem upgrade --dry-run  # preview the whole fleet, write nothing
+momentum ecosystem upgrade              # skips dirty repos; reports each version
+momentum ecosystem upgrade --dry-run    # preview the whole fleet, write nothing
+momentum ecosystem upgrade --autostash  # stash dirty repos, upgrade, restore them
 ```
+
+`--autostash` lets a repo with uncommitted work upgrade anyway: it stashes the
+in-flight changes, runs the upgrade on a clean tree, then restores your work
+exactly as it was — so you don't have to commit or stash by hand first. If the
+upgrade ever touches a file you'd also changed, your work is kept safe in
+`git stash` rather than overwritten. (`--force` is the blunt alternative:
+upgrade in place without stashing.) Same flags work on single-repo
+`momentum upgrade`.
 
 A momentum-managed project records its version-of-record in
 `.momentum/installed.json` (committed) — that's what powers orphan cleanup and

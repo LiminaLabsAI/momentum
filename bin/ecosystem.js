@@ -78,7 +78,7 @@ Usage:
   momentum ecosystem add <repo-path> [--role <role>] [--id <id>] [--ecosystem <path>]
   momentum ecosystem remove <member-id> [--ecosystem <path>]
   momentum ecosystem status [--no-git] [--ecosystem <path>]
-  momentum ecosystem upgrade [--dry-run] [--force] [--agent <name>] [--ecosystem <path>]
+  momentum ecosystem upgrade [--dry-run] [--force|--autostash] [--agent <name>] [--ecosystem <path>]
   momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
 
 Location:
@@ -107,11 +107,14 @@ Subcommands:
               the most recent commit for each member.
 
   upgrade     Sweep \`momentum upgrade\` across every member (PULL model).
-              Per repo: skips a dirty working tree (use --force to override),
-              detects the adapter from its lock file, runs the upgrade, and
-              reports the momentum version before → after. Tolerates
-              partial failure — one bad repo never aborts the fleet. Use
-              --dry-run to preview the whole sweep without writing anything.
+              Per repo: skips a dirty working tree, detects the adapter from
+              its lock file, runs the upgrade, and reports the momentum version
+              before → after. Tolerates partial failure — one bad repo never
+              aborts the fleet. Dirty repos:
+                --autostash  stash the in-flight work, upgrade, restore it
+                             (your work comes back exactly as it was)
+                --force      upgrade in place without stashing
+              Use --dry-run to preview the whole sweep without writing anything.
               Note: the CLI's OWN version bounds the result — update the CLI
               first (\`npm i -g @avinash-singh-io/momentum@latest\`).
 
@@ -504,6 +507,7 @@ function cmdUpgrade(args) {
     ecosystem: 'string',
     'dry-run': 'boolean',
     force: 'boolean',
+    autostash: 'boolean',
     agent: 'string',
   });
   const dryRun = !!opts['dry-run'];
@@ -518,7 +522,7 @@ function cmdUpgrade(args) {
   }
 
   // Lazy require avoids a load-time cycle (momentum.js requires this module).
-  const { upgrade } = require('./momentum');
+  const { upgrade, withAutostash } = require('./momentum');
   const results = [];
 
   for (const m of manifest.members) {
@@ -531,8 +535,11 @@ function cmdUpgrade(args) {
       results.push({ id: m.id, status: 'missing' });
       continue;
     }
-    if (isWorkingTreeDirty(absRepo) && !opts.force) {
-      console.log('  ⚠️  working tree not clean — skipped. Commit/stash, or re-run with --force.');
+    const dirty = isWorkingTreeDirty(absRepo);
+    // Dirty repos are skipped UNLESS --force (plow through) or --autostash
+    // (stash → upgrade → restore). Both are explicit opt-ins.
+    if (dirty && !opts.force && !opts.autostash) {
+      console.log('  ⚠️  working tree not clean — skipped. Commit/stash, --force, or --autostash.');
       results.push({ id: m.id, status: 'dirty-skip' });
       continue;
     }
@@ -544,8 +551,15 @@ function cmdUpgrade(args) {
     }
 
     const before = readMemberVersion(absRepo);
+    const useAutostash = opts.autostash && dirty && !dryRun;
     try {
-      upgrade(absRepo, agent, { dryRun });
+      let conflict = false;
+      if (useAutostash) {
+        const r = withAutostash(absRepo, () => upgrade(absRepo, agent, { dryRun }));
+        conflict = r.conflict;
+      } else {
+        upgrade(absRepo, agent, { dryRun });
+      }
       const after = dryRun ? before : readMemberVersion(absRepo);
       results.push({
         id: m.id,
@@ -553,6 +567,8 @@ function cmdUpgrade(args) {
         agent,
         before,
         after,
+        autostashed: useAutostash,
+        conflict,
       });
     } catch (err) {
       // Partial-failure tolerance — one bad repo never aborts the fleet.
@@ -574,13 +590,21 @@ function printSweepSummary(results, dryRun) {
   for (const r of results) {
     const ver = r.before ? `  ${r.before} → ${r.after}` : '';
     const ag = r.agent ? `  [${r.agent}]` : '';
-    console.log(`  ${icon[r.status] || '•'} ${r.id}: ${r.status}${ver}${ag}`);
+    const tag = r.conflict ? '  (autostash CONFLICT — work safe in stash)'
+      : r.autostashed ? '  (autostashed)' : '';
+    console.log(`  ${icon[r.status] || '•'} ${r.id}: ${r.status}${ver}${ag}${tag}`);
   }
   const counts = {};
   for (const r of results) counts[r.status] = (counts[r.status] || 0) + 1;
   console.log('');
   console.log('  ' + Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(', '));
   if (dryRun) console.log('  (dry run — no files were written)');
+  const conflicts = results.filter((r) => r.conflict);
+  if (conflicts.length) {
+    console.log('');
+    console.log(`  ⚠️  ${conflicts.length} repo(s) had an autostash conflict — your work is`);
+    console.log('     preserved in each repo\'s `git stash list`; resolve with `git stash pop`.');
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

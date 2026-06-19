@@ -131,18 +131,34 @@ Sweeps `momentum upgrade` across every member in one pass — no more `cd`-ing
 into each repo. It's a **pull** sweep over your local checkouts (no bot, no
 forge integration), so it stays vendor-neutral. Per member it:
 
-- **skips a dirty working tree** (commit/stash first, or pass `--force`) so an
-  upgrade never lands on top of unrelated uncommitted work;
+- **skips a dirty working tree** by default, so an upgrade never lands on top of
+  unrelated uncommitted work;
 - **detects the adapter** from that repo's `.momentum/installed.json` lock file
   (override with `--agent <name>`);
 - runs the upgrade and reports the momentum version **before → after**;
 - **tolerates partial failure** — one bad repo never aborts the fleet.
 
-Preview the whole sweep without writing anything:
+Got members with uncommitted work in flight? Don't clean them by hand —
+`--autostash` does it for you:
 
 ```bash
-momentum ecosystem upgrade --dry-run
+momentum ecosystem upgrade --autostash   # stash → upgrade → restore, per repo
+momentum ecosystem upgrade --dry-run     # or preview the whole sweep first
 ```
+
+`--autostash` stashes each dirty repo's changes, upgrades the now-clean tree,
+then restores your work **exactly as it was**. Because `momentum upgrade` only
+writes momentum-owned paths (`.claude/`, `.agent/`, `scripts/`, the managed top
+of your instruction file), your application changes and the upgrade don't
+collide — and on the rare occasion they would, your work is kept safe in
+`git stash` rather than overwritten. `--force` is the blunt alternative
+(upgrade in place, no stashing).
+
+:::tip[You don't need the whole fleet clean]
+The sweep is per-repo: it upgrades the clean ones and skips (or, with
+`--autostash`, handles) the dirty ones independently. You can also just clean
+one repo and re-run — each sweep picks up whatever's ready.
+:::
 
 :::note[The CLI version bounds the result]
 `momentum upgrade` copies files from the *installed* CLI, not from npm — so a
