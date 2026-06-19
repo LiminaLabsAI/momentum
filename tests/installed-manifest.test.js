@@ -11,6 +11,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const { execSync } = require('node:child_process');
 
 const { mktmp, rmrf, runCli } = require('./_helpers');
 
@@ -102,6 +103,34 @@ test('upgrade — rewrites the lock file and preserves installedAt', () => {
     assert.equal(m.momentumVersion, PKG.version);
     assert.ok(m.managedFiles.length > 0);
     assert.ok(m.managedFiles.some((f) => f.path === 'CLAUDE.md'));
+  } finally {
+    rmrf(target);
+  }
+});
+
+test('init — lock file is git-trackable (D1) while sentinels stay ignored', () => {
+  const target = mktmp();
+  try {
+    execSync('git init -q', { cwd: target });
+    runCli(['init', target]);
+    fs.writeFileSync(path.join(target, '.momentum', 'merge-approved'), '');
+
+    const ignored = (rel) => {
+      // git check-ignore exits 0 when ignored, 1 when NOT ignored.
+      try {
+        execSync(`git check-ignore -q ${rel}`, { cwd: target });
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    assert.equal(ignored('.momentum/installed.json'), false, 'lock file must be committable');
+    assert.equal(ignored('.momentum/merge-approved'), true, 'sentinels must stay ignored');
+    // And git actually stages it.
+    execSync('git add .momentum/installed.json', { cwd: target });
+    const staged = execSync('git diff --cached --name-only', { cwd: target, encoding: 'utf8' });
+    assert.match(staged, /\.momentum\/installed\.json/);
   } finally {
     rmrf(target);
   }

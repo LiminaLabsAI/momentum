@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-06-19",
-    "capturedFrom": "phase-19-lifecycle-hardening",
+    "capturedFrom": "phase-20-upgrade-hardening",
     "adapter": "codex",
-    "note": "Phase 19 G4 (Lifecycle Hardening) — ENH-043: gitignore .claude/worktrees/ (agent worktrees) in the template. Single-line additive change to the scaffolded .gitignore."
+    "note": "Phase 20: .gitignore template now commits .momentum/installed.json (D1 lock file); .momentum/ runtime state excluded from fingerprint"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -39,7 +39,7 @@
     ".githooks/contract.js": "e4fcdd241c3be85ac53135c1c093c7066391898c211e4be28c3cb9cdd50f2c88",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
-    ".gitignore": "66855f69f8055dd7f7f8a792c9b8f148736492dd5e7ab33b7563bda365aec2ad",
+    ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
     "AGENTS.md": "913081fb46e95ecd2c0fc3689eea4025c247b7d33ba0d75798417034d676340f",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
