@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-06-19
-> **Current Phase**: Phase 19 — Lifecycle Hardening (in progress)
-> **Latest Release**: v0.20.4 — Phase 18 Swarm Parity (Codex + Antigravity)
+> **Current Phase**: _none active_
+> **Latest Release**: v0.21.0 — Phase 19 Lifecycle Hardening
 > **Health**: On Track
 
 ## Summary
@@ -36,6 +36,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete | v0.20.0 (2026-06-12) |
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
+| 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
 
 ## Ad-hoc / Patch Releases
 
@@ -52,7 +53,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 19 | Lifecycle Hardening | All groups complete + verified — awaiting merge/release | Branch `phase-19-lifecycle-hardening`. G0–G5 done; suite 604/604; 11 backlog items closed. Target v0.21.0. Run `/complete-phase` after merge approval. |
+| _(none — Phase 19 released as v0.21.0; next: Phase 20 — Reach)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
