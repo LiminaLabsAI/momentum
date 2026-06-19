@@ -14,11 +14,9 @@
 
 ## What is momentum?
 
-momentum is the **state layer for agentic AI**.
+**Your AI coding agent forgets.** Hit the context limit or open a fresh session and it loses the roadmap, the architecture decisions, the bug it fixed an hour ago. The chat window is the wrong place to keep your project's source of truth — the file system is.
 
-Agentic AI raised the floor on individual productivity — anyone can spawn an agent to write code, manage infrastructure, run research, or operate a data pipeline now. **What didn't scale was coherent project state**: phases that drift, decisions that vanish into chat transcripts, backlogs that exist only in someone's head.
-
-momentum makes that state durable. Specs, decisions, history, backlog — all as first-class files your agent reads and writes automatically. The project itself becomes durable, not just whatever the agent shipped this session.
+momentum makes your project's memory durable. Phases, decisions, history, and backlog live as plain files your agent reads at the start of every session and updates as it works — so the *project* persists, not just whatever the agent shipped this session. Whether your agent writes code, manages infrastructure, runs research, or operates pipelines, the same discipline applies: every phase planned, every decision recorded, every release tagged.
 
 ## Quick install
 
@@ -39,6 +37,16 @@ npx @avinash-singh-io/momentum@latest init --agent antigravity  # Antigravity
 # Coordinating multiple related projects?
 npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
 ```
+
+## How it works — no daemon, no lock-in
+
+momentum isn't a framework or a background service. It's plain files and conventions your agent already knows how to read:
+
+1. **`init` writes files into your repo** — your agent's instruction file (`CLAUDE.md` / `AGENTS.md`), a `specs/` folder, rule and slash-command definitions, and git hooks.
+2. **Your AI IDE already reads that instruction file every session** — momentum just fills it with a structured workflow and a map of where project state lives.
+3. **Your agent maintains the state as it works** — it reads `status.md` to orient, logs decisions to `history.md`, and tracks work in `backlog.md`. Automatically.
+
+Nothing runs in the background. No service to manage, no lock-in: **uninstall = delete the files.**
 
 ## Works with any AI IDE
 

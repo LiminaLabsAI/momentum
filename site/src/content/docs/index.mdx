@@ -28,30 +28,62 @@ import SkillsPreview from '../../components/SkillsPreview.astro';
 
 <div class="lead-block">
 
-momentum is **the state layer for agentic AI** — phases, decisions, history,
-backlog as first-class files your agent reads and writes automatically.
-Whether your agent ships code, manages infrastructure, runs research, or
-operates pipelines, the same discipline applies: every phase planned, every
-decision recorded, every release tagged. State that outlives any single
-session.
+Your AI coding agent forgets. Hit the context limit or start a fresh session
+and it loses the roadmap, the architecture decisions, the bug it fixed an hour
+ago. **momentum makes your project's memory durable** — phases, decisions,
+history, and backlog live as plain files your agent reads at the start of every
+session and updates as it works. Whether your agent ships code, manages
+infrastructure, runs research, or operates pipelines, the same discipline
+applies: every phase planned, every decision recorded, every release tagged.
+State that outlives any single session.
 
 <InstallSnippet />
 
 </div>
 
+<section class="how-it-works section-anchor" id="how-it-works" aria-labelledby="how-heading">
+
+## How it works — no daemon, no lock-in {#how-heading}
+
+<p class="section-lead">
+momentum isn't a framework or a background service. It's plain files and
+conventions your agent already knows how to read.
+</p>
+
+1. **`init` writes files into your repo** — your agent's instruction file
+   (`CLAUDE.md` / `AGENTS.md`), a `specs/` folder, rule and slash-command
+   definitions, and git hooks.
+2. **Your AI IDE already reads that instruction file every session** — momentum
+   just fills it with a structured workflow and a map of where project state lives.
+3. **Your agent maintains the state as it works** — it reads `status.md` to
+   orient, logs decisions to `history.md`, and tracks work in `backlog.md`.
+   Automatically.
+
+Nothing runs in the background. **Uninstall = delete the files.**
+
+</section>
+
 <PhaseFlow />
 
 <IDEMatrix />
 
-<section class="scales" aria-labelledby="scales-heading">
+<FeatureGrid />
 
-## One workflow, many scales
+<RulesCallout />
+
+<SkillsPreview />
+
+<Personas />
+
+<section class="scales section-anchor" id="scale-up" aria-labelledby="scales-heading">
+
+## When one repo isn't enough {#scales-heading}
 
 <p class="section-lead">
-Single-project usage is the default. When you have related repos that need
-to coordinate, ecosystem mode lets <strong>one agent session</strong> work
-across all of them — no context switching, full ecosystem awareness, every
-member's per-repo discipline preserved.
+Single-project usage is the default — everything above works in one repo with
+zero extra setup. When you have related repos that need to coordinate, ecosystem
+mode lets <strong>one agent session</strong> work across all of them — no context
+switching, full ecosystem awareness, every member's per-repo discipline preserved.
 </p>
 
 <Topology />
@@ -61,11 +93,3 @@ member's per-repo discipline preserved.
 <OrchestrationOverview />
 
 <DecisionTree />
-
-<FeatureGrid />
-
-<RulesCallout />
-
-<SkillsPreview />
-
-<Personas />
