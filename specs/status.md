@@ -1,8 +1,8 @@
 # Project Status
 
-> **Last Updated**: 2026-06-19
-> **Current Phase**: Phase 20 — Upgrade Hardening (active, target v0.22.0)
-> **Latest Release**: v0.21.0 — Phase 19 Lifecycle Hardening
+> **Last Updated**: 2026-06-20
+> **Current Phase**: _none active_
+> **Latest Release**: v0.22.0 — Phase 20 Upgrade Hardening
 > **Health**: On Track
 
 ## Summary
@@ -37,6 +37,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
 | 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
+| 20 | Upgrade Hardening | Complete | v0.22.0 (2026-06-20) |
 
 ## Ad-hoc / Patch Releases
 
@@ -53,13 +54,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 20 | Upgrade Hardening | Implementation complete — awaiting release approval | G0–G4 done, 629/629 tests; merge/tag/publish gated on user OK — see `specs/phases/phase-20-upgrade-hardening/tasks.md` |
-
-> Phase 20 — Upgrade Hardening brings momentum's own upgrade mechanism up to
-> standard practice (Copier/Cruft template-sync model: per-repo lock file +
-> orphan cleanup; PULL-model `ecosystem upgrade` sweep; npx/global staleness
-> fixes; folds in BUG-008 + ENH-040). Grounded in a verified deep-research pass.
-> Inserted ahead of Reach, which moves to Phase 21.
+| _(none — Phase 20 released as v0.22.0; next: Phase 21 — Reach)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
