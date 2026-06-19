@@ -22,13 +22,13 @@ momentum ships as an npm package — `@avinash-singh-io/momentum`. The fastest
 path is `npx`:
 
 ```bash
-npx @avinash-singh-io/momentum init
+npx @avinash-singh-io/momentum@latest init
 ```
 
 Or install globally if you'll run it repeatedly:
 
 ```bash
-npm install -g @avinash-singh-io/momentum
+npm install -g @avinash-singh-io/momentum@latest
 momentum init
 ```
 
@@ -36,15 +36,23 @@ Both work. `npx` is one-shot — no global install, just runs once. `-g`
 keeps the `momentum` binary on `PATH` for repeat use
 (`momentum upgrade`, `momentum doctor`, etc.). Pick whichever fits your flow.
 
+:::note[Always pin `@latest`]
+A bare `npx @avinash-singh-io/momentum` can serve a **stale, cached** version,
+and a stale global install shadows newer releases. Pinning `@latest` forces npm
+to resolve the newest published version. This matters because `momentum
+upgrade` copies files from the *installed* CLI — your project files are only
+ever as new as the CLI itself.
+:::
+
 ### Which agent are you using?
 
 `momentum init` defaults to **Claude Code**. Pass `--agent` to scaffold for
 a different one:
 
 ```bash
-npx @avinash-singh-io/momentum init                       # Claude Code (default)
-npx @avinash-singh-io/momentum init --agent codex         # Codex
-npx @avinash-singh-io/momentum init --agent antigravity   # Antigravity
+npx @avinash-singh-io/momentum@latest init                       # Claude Code (default)
+npx @avinash-singh-io/momentum@latest init --agent codex         # Codex
+npx @avinash-singh-io/momentum@latest init --agent antigravity   # Antigravity
 ```
 
 Cursor and Gemini CLI adapters ship in Phase 14. See [IDE
@@ -56,7 +64,7 @@ If you have multiple related repos and want them to coordinate, pass
 `--ecosystem` to bootstrap an ecosystem alongside the first member:
 
 ```bash
-npx @avinash-singh-io/momentum init --ecosystem my-eco
+npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
 ```
 
 This creates `../my-eco/` as a sibling git repo + registers the current

@@ -17,11 +17,11 @@
 - [x] ENH-040 — `--dry-run` for `init` + `upgrade`: module-level `_dryRun` gates every fs-mutation + post-copy chmod/readdir loops + adapter direct writes + git-hook config + manifest + orphan removal; threaded into all 3 adapters via `helpers.dryRun`; prints planned action set (`✋ would …`), exit 0
 - [x] Tests: `tests/upgrade-safety.test.js` (7) + `tests/dry-run.test.js` (5) — orphan removed/preserved/manifest-dropped; user files untouched; BUG-008 re-init backup; fresh-init no .bak; 3-adapter config-survives; dry-run writes nothing (init + 3-adapter upgrade byte-unchanged + orphan-not-removed). Suite **609 → 621**, all green
 
-## Group 2 — Distribution hardening (∥ G1)
-- [ ] Pin `@latest` across README + site docs (getting-started, ide-support, ecosystem, InstallSnippet.astro)
-- [ ] Stale-CLI gate: `upgrade` warns when installed CLI < npm latest (reuse `checkForUpdates()`)
-- [ ] FAQ fix: correct "fetches from registry" claim; drop stale BUG-006 note (fixed v0.20.3)
-- [ ] Tests: stale-CLI warning fires when local < latest; silent when current
+## Group 2 — Distribution hardening (∥ G1) ✅
+- [x] Pin `@latest` across README (3) + getting-started (5 + a "pin @latest" aside) + ide-support (3) + ecosystem.mdx (6) + `InstallSnippet.astro` default
+- [x] Stale-CLI warning: `formatStaleCliWarning(current, latest)` (pure, exported) wired into the `upgrade` dispatch — warns prominently (D2: warn, never block) that upgrade copies from the installed CLI so files are only as new as the CLI; tells user to `npm i -g …@latest` first
+- [x] FAQ fix: corrected the false "`momentum upgrade` fetches from the npm registry" claim (it copies from the installed CLI; only network call is the version check); rewrote the upgrade section around the two-step model + `@latest` + safety (marker/.bak/orphan/dry-run) + ecosystem sweep; dropped the stale BUG-006 "known regression" note (fixed v0.20.3)
+- [x] Tests: `tests/stale-cli-warning.test.js` (4) — warns when behind; silent when current / null / ahead. Suite **621 → 625**, all green
 
 ## Group 3 — Ecosystem batch upgrade (Sequential, needs G0 + G1)
 - [ ] `momentum ecosystem upgrade [--dry-run] [--force] [--agent <a>]` in `bin/ecosystem.js`

@@ -23,18 +23,21 @@ momentum makes that state durable. Specs, decisions, history, backlog — all as
 ## Quick install
 
 ```bash
-npx @avinash-singh-io/momentum init
+npx @avinash-singh-io/momentum@latest init
 ```
 
 That's it. The agent picks up the workflow on next session start.
 
+> Always pin `@latest`. A bare `npx @avinash-singh-io/momentum` can serve a
+> stale, cached version; `@latest` forces npx to resolve the newest release.
+
 ```bash
 # Want a specific adapter?
-npx @avinash-singh-io/momentum init --agent codex        # Codex
-npx @avinash-singh-io/momentum init --agent antigravity  # Antigravity
+npx @avinash-singh-io/momentum@latest init --agent codex        # Codex
+npx @avinash-singh-io/momentum@latest init --agent antigravity  # Antigravity
 
 # Coordinating multiple related projects?
-npx @avinash-singh-io/momentum init --ecosystem my-eco
+npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
 ```
 
 ## Works with any AI IDE

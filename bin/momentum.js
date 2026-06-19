@@ -867,6 +867,29 @@ function isNewerVersion(a, b) {
   return aPatch > bPatch;
 }
 
+/**
+ * Stale-CLI warning for `upgrade` (Phase 20 G2 / D2 — warn, never block).
+ * `momentum upgrade` copies files from the INSTALLED CLI, not from npm — so a
+ * stale global/npx CLI can only ever install stale files. When the published
+ * `latest` is newer than the running CLI, return a prominent warning telling
+ * the user to update the CLI first. Returns null when the CLI is current
+ * (or the version check was unavailable). Pure + unit-testable.
+ */
+function formatStaleCliWarning(current, latest) {
+  if (!latest || !isNewerVersion(latest, current)) return null;
+  return [
+    '',
+    '  ┌────────────────────────────────────────────────────────────────┐',
+    `  │  ⚠  Installed momentum CLI is ${current}, but ${latest} is published.`,
+    '  │     `upgrade` copies files from the INSTALLED CLI — your project',
+    '  │     files will only ever be as new as the CLI itself.',
+    '  │     Update the CLI first, then re-run upgrade:',
+    '  │        npm i -g @avinash-singh-io/momentum@latest',
+    '  └────────────────────────────────────────────────────────────────┘',
+    '',
+  ].join('\n');
+}
+
 function checkForUpdates() {
   return new Promise((resolve) => {
     const https = require('https');
@@ -1205,6 +1228,10 @@ async function main() {
   } else if (args[0] === 'upgrade') {
     const targetDir = args[1] || process.cwd();
     try {
+      // Warn (don't block) if the installed CLI is behind the published latest —
+      // upgrade can only ever install files as new as the CLI itself.
+      const staleWarning = formatStaleCliWarning(pkg.version, await updateCheckPromise);
+      if (staleWarning) console.log(staleWarning);
       upgrade(targetDir, agent, { dryRun });
     } catch (err) {
       console.error(`\nError: ${err.message}`);
@@ -1315,6 +1342,7 @@ module.exports = {
   listFilesRecursive,
   detectOverlayConflicts,
   isNewerVersion,
+  formatStaleCliWarning,
   MARKER,
   DEFAULT_OVERLAY_DESTS,
   listAvailableAgents,

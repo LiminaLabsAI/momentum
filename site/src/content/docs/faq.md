@@ -75,24 +75,40 @@ No. There is no telemetry, no analytics, no phone-home. The source is
 `bin/`, `core/`, and `adapters/` directories. The install scripts and the
 runtime are static; nothing connects to external services.
 
-The only network calls are the ones you initiate: `momentum upgrade`
-fetches from the npm registry (same as `npm install`), and you may
-choose to publish from `/complete-phase`. Both are user-initiated.
+The only network call momentum itself makes is a background version check
+(to tell you when a newer CLI is published). `momentum upgrade` does **not**
+fetch from the registry — it copies the template files bundled in the CLI you
+already have installed. Updating the CLI (`npm install`) and publishing from
+`/complete-phase` are the only registry interactions, and both are things you
+run yourself.
 
 ## How do I upgrade an existing project?
 
+Upgrading is **two steps** — update the CLI, then re-sync the files:
+
 ```bash
-npm install -g @avinash-singh-io/momentum   # or use npx
-momentum upgrade
+npm install -g @avinash-singh-io/momentum@latest   # 1. update the CLI itself
+momentum upgrade                                    # 2. re-sync this project's files
 ```
 
-`momentum upgrade` is **marker-aware**: anything under `## Project
-Extensions` in your `CLAUDE.md` / `AGENTS.md` is preserved across the
-upgrade. Default commands and rules update from the published templates.
+Why two steps? `momentum upgrade` copies files from the *installed* CLI, not
+from npm — so your project files can only ever be as new as the CLI. If you
+skip step 1, step 2 faithfully re-installs the same old files. (If you use
+`npx`, always pin `@latest` — `npx @avinash-singh-io/momentum@latest …` —
+because a bare `npx` invocation serves a cached version. `momentum upgrade`
+also warns you when your installed CLI is behind the published latest.)
 
-Known regression: [BUG-006](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md)
-— the project-title line in `CLAUDE.md` gets clobbered. Restore manually
-after upgrade until the fix lands.
+`momentum upgrade` is **safe and marker-aware**:
+
+- Anything under `## Project Extensions` in your `CLAUDE.md` / `AGENTS.md` is
+  preserved verbatim; only the managed section above it is replaced.
+- Changed files are backed up to `.bak` before being overwritten.
+- Files a newer version no longer ships are removed (also `.bak`-backed) — your
+  own files are never touched.
+- Preview everything first with `momentum upgrade --dry-run` (writes nothing).
+
+For a whole multi-repo ecosystem, run `momentum ecosystem upgrade` to sweep
+every member in one pass.
 
 ## How do I uninstall?
 

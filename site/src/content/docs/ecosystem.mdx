@@ -84,7 +84,7 @@ Skip it when:
 
 ```bash
 # From inside the first project you want to anchor:
-npx @avinash-singh-io/momentum init --ecosystem my-eco
+npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
 ```
 
 This creates `../my-eco/` as a sibling git repo, scaffolds the manifest +
@@ -101,7 +101,7 @@ wrong layer.
 
 ```bash
 # From inside each additional project:
-npx @avinash-singh-io/momentum join ../my-eco
+npx @avinash-singh-io/momentum@latest join ../my-eco
 ```
 
 `join` is idempotent — running it twice does the right thing. It registers
@@ -123,7 +123,7 @@ typically a sibling of members, not an ancestor).
 
 ```bash
 # From inside the member project:
-npx @avinash-singh-io/momentum leave
+npx @avinash-singh-io/momentum@latest leave
 ```
 
 Removes the pointer block and de-registers the project from `ecosystem.json`.
@@ -242,7 +242,7 @@ You're already running momentum in each individually. Now you want to ship
 
 ```bash
 cd ~/work/platform
-npx @avinash-singh-io/momentum init --ecosystem my-stack
+npx @avinash-singh-io/momentum@latest init --ecosystem my-stack
 ```
 
 `../my-stack/` appears as a new sibling. The `platform` repo gains a pointer
@@ -253,10 +253,10 @@ block. `momentum ecosystem status` from inside `platform` now reports a
 
 ```bash
 cd ~/work/sdk
-npx @avinash-singh-io/momentum join ../my-stack
+npx @avinash-singh-io/momentum@latest join ../my-stack
 
 cd ~/work/cli
-npx @avinash-singh-io/momentum join ../my-stack
+npx @avinash-singh-io/momentum@latest join ../my-stack
 ```
 
 Now `ecosystem status` reports 3 members. The shared `ecosystem.json` lists
