@@ -32,11 +32,12 @@
 - [x] Tests: `tests/ecosystem-upgrade.test.js` (4) — clean sweep + per-repo report; dirty skipped then `--force` upgrades; `--dry-run` leaves members byte-unchanged; missing member reported + sweep continues. Suite **625 → 629**, all green
 
 ## Group 4 — Verify, docs, release prep (Sequential, last)
-- [ ] `npm test` green; re-baseline 3 install fingerprints (installed.json is expected new file) with meta
-- [ ] E2E smoke: init manifest; upgrade removes planted orphan + preserves user edit; dry-run no-op; ecosystem sweep 2-repo
-- [ ] Site: "Upgrading" page + ecosystem-upgrade section; README upgrade rewrite (two-step model explicit)
-- [ ] `retrospective.md` with non-empty `## Verification Evidence` (gates release tag)
-- [ ] Version bump v0.22.0; roadmap renumber (Reach→21, Intelligence→22, Platform→23); backlog reconcile (BUG-008, ENH-040 resolved; new FAQ-fix + lockfile items)
+- [x] `npm test` green — **629/629** (581 baseline + 48 new). Fingerprints green, baselines unchanged (`.momentum/` excluded — no re-capture needed)
+- [x] E2E smoke (temp git repo): init manifest (34 managed, specs excluded); upgrade removes planted orphan + preserves user file; `--dry-run` byte-unchanged; stale-CLI warning fires; ecosystem sweep 2-repo (report/dirty-skip/force/missing/dry-run) — captured in `retrospective.md` § Verification Evidence
+- [x] Docs: README "Keeping projects up to date" (two-step + ecosystem sweep + dry-run); FAQ rewrite (registry-claim fix + safety); getting-started "pin @latest" aside; `@latest` pinned across README/getting-started/ide-support/ecosystem/InstallSnippet
+- [x] `retrospective.md` with non-empty `## Verification Evidence` (gates release tag — FEAT-019)
+- [x] Version bump v0.22.0; roadmap renumber done in status.md (Reach→21, Intelligence→22, Platform→23); backlog reconcile (BUG-008 + ENH-040 resolved; FEAT-021 migration escape hatch filed)
+- [ ] **RELEASE (approval-gated)**: merge → main, tag v0.22.0, `gh release create`, `npm publish --access public` — all require explicit user OK (project release checklist)
 
 ## Deferred → backlog (this phase files them, does NOT build)
 - [ ] FEAT — ordered-migration escape hatch (`core/migrations/vX.Y.Z.js`), Nx-style, for structural transforms (D4)

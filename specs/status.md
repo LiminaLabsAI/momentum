@@ -53,7 +53,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 20 | Upgrade Hardening | In Progress | G0 (lock file) underway — see `specs/phases/phase-20-upgrade-hardening/tasks.md` |
+| 20 | Upgrade Hardening | Implementation complete — awaiting release approval | G0–G4 done, 629/629 tests; merge/tag/publish gated on user OK — see `specs/phases/phase-20-upgrade-hardening/tasks.md` |
 
 > Phase 20 — Upgrade Hardening brings momentum's own upgrade mechanism up to
 > standard practice (Copier/Cruft template-sync model: per-repo lock file +

@@ -43,3 +43,41 @@ phase's safety scope and are pulled in rather than tracked separately. Both
 were already filed; this phase resolves them.
 
 ---
+
+### [DISCOVERY] 2026-06-19 — Orphan cleanup depended on managed-set completeness (near-miss)
+Topics: orphan-cleanup, adapters, lock-file
+Affects-phases: phase-20-upgrade-hardening
+Affects-specs: none
+Detail: Orphan cleanup removes `prev.managedFiles − current set`. The codex
+fingerprint test caught that adapters skip re-writing `hooks.json`/`settings.json`
+when identical, so those files weren't re-recorded on upgrade and were falsely
+flagged as orphans — i.e. upgrade would have silently DELETED the agent's hook
+config. Fix: adapters now record what they own via `helpers.recordManaged`
+independent of whether they rewrite it; added a 3-adapter regression test. The
+invariant: the orphan diff is only safe when the current managed set is complete.
+
+---
+
+### [NOTE] 2026-06-19 — Two wiring bugs from the in-process ecosystem sweep
+Topics: ecosystem-upgrade, circular-require, cli-flags
+Affects-phases: phase-20-upgrade-hardening
+Affects-specs: none
+Detail: (1) The sweep calls `upgrade()` in-process, which `require()`s
+`bin/momentum.js` back during `main()`'s synchronous dispatch — `module.exports`
+had to move ABOVE `if (require.main === module) main()` or `upgrade` was
+undefined. (2) A global `--dry-run` strip in `main()` hid the flag from the
+`ecosystem upgrade` subcommand; `--dry-run` is now parsed per-command. Both are
+load-bearing — note for anyone adding another in-process subcommand dispatch.
+
+---
+
+### [NOTE] 2026-06-20 — Implementation complete (G0–G4), awaiting release
+Topics: release, verification
+Affects-phases: phase-20-upgrade-hardening
+Affects-specs: specs/phases/phase-20-upgrade-hardening/retrospective.md
+Detail: All groups landed; suite 629/629; retrospective written with
+Verification Evidence (gates the release tag). Version bumped to v0.22.0,
+roadmap renumbered (Reach→21, Intelligence→22, Platform→23). Merge to main +
+tag + GitHub Release + npm publish are gated on explicit user approval.
+
+---

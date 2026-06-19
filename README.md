@@ -52,6 +52,33 @@ npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
 
 Same commands, same workflow, every agent. Switch adapters anytime; the per-project state survives.
 
+## Keeping projects up to date
+
+Upgrading is **two steps** — update the CLI, then re-sync each project's files:
+
+```bash
+npm install -g @avinash-singh-io/momentum@latest   # 1. update the CLI
+momentum upgrade                                    # 2. re-sync this project
+```
+
+`momentum upgrade` copies files from the *installed* CLI (not from npm), so your
+project files are only ever as new as the CLI — skip step 1 and step 2 just
+re-installs the same old files. Upgrade is safe by design: your `## Project
+Extensions` block is preserved, changed files are backed up to `.bak`, files a
+newer version drops are removed (also `.bak`-backed), and your own files are
+never touched. Preview anything with `momentum upgrade --dry-run`.
+
+Running an **ecosystem**? Sweep every member in one pass:
+
+```bash
+momentum ecosystem upgrade            # skips dirty repos; reports each version
+momentum ecosystem upgrade --dry-run  # preview the whole fleet, write nothing
+```
+
+A momentum-managed project records its version-of-record in
+`.momentum/installed.json` (committed) — that's what powers orphan cleanup and
+the ecosystem sweep's per-repo version report.
+
 ## What you get
 
 | | |
