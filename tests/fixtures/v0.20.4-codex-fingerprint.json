@@ -3,14 +3,14 @@
     "captured": "2026-06-19",
     "capturedFrom": "phase-19-lifecycle-hardening",
     "adapter": "codex",
-    "note": "Phase 19 G0 (Lifecycle Hardening) — added the ad-hoc work-record template scaffold (specs/adhoc/README.md + _TEMPLATE.md), installed by all three adapters via core/specs-templates. Drift is intentional and limited to these 2 additive files; no existing install content changed. The git-hook scripts (core/git-hooks/) are NOT yet installed — Group 1 wires the dedicated .githooks copy + core.hooksPath."
+    "note": "Phase 19 G1 (Lifecycle Hardening) — installs vendor-neutral git hooks (.githooks/{commit-msg,pre-push,run-check.js,contract.js}) via core.hooksPath, and ENH-042 branch-delete + branch-hygiene self-audit steps in /complete-phase. Drift: +4 .githooks files (the hook scripts; core.hooksPath is set only when target is a git repo, so non-git fingerprint install just lays down files) and the complete-phase command/skill/workflow content. No other install content changed."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".agent/rules/project.md": "e9e99f7b4230bfdb95a44fe967d5d7559eec7d7f559158dca3e822887b77988a",
     ".agents/skills/brainstorm-idea/SKILL.md": "b5354a76b752c9602c38e2df0365af41fcb9f5ce751de80a134a5ab56164bfaa",
     ".agents/skills/brainstorm-phase/SKILL.md": "c4a8f125890a1301fb2604592164fd93c8ac6580e59c1035c5fc5d9cdf5dc56d",
-    ".agents/skills/complete-phase/SKILL.md": "806ecd968a1e8bc76dfb7b1b4303461134a4462e6e32f5efa1758a0e6818c191",
+    ".agents/skills/complete-phase/SKILL.md": "efe1a3c511ff6a8e915896b0f27e831b086a1ceedc7b3a1d87e6ec2d57cdf659",
     ".agents/skills/continue/SKILL.md": "ca2916ecb23efcf4b874bad4ee8793f79dfd05465d8aae70d0219dbfebc9b120",
     ".agents/skills/dispatch/SKILL.md": "392dd19d1e8b7d149e115c96bf80f42e447ea6f0f8c141954ab6f72f379c6d2a",
     ".agents/skills/ecosystem/SKILL.md": "3c534500e7280235d75cb83a32b119691d61218fbe1db910904328a4aa1bee54",
@@ -34,6 +34,10 @@
     ".codex/agents/momentum-reviewer-security.toml": "d9f8884b70d7ddb2602616f5f1ae1fc9f5074179bb8dd4cce9905633f909daae",
     ".codex/agents/swarm-supervisor.toml": "0cbeade0ea9d4a3351b4371a82d656c5984ba21a03a528b7ce6352eb4c6dbe40",
     ".codex/hooks.json": "e374fbbee01ce2989c19057e2b40c272457deacdcde802d055aa188b130e1474",
+    ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
+    ".githooks/contract.js": "e4fcdd241c3be85ac53135c1c093c7066391898c211e4be28c3cb9cdd50f2c88",
+    ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
+    ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
     ".gitignore": "5b33fc8beb30c61c482fe55efc25e4958398c986e1bc31544c3e37823597af66",
     "AGENTS.md": "913081fb46e95ecd2c0fc3689eea4025c247b7d33ba0d75798417034d676340f",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",

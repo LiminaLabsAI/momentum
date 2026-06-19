@@ -66,6 +66,22 @@ Detail: Hook scripts live in `core/git-hooks/` (NOT `core/scripts/`, which auto-
 
 ---
 
+### [NOTE] 2026-06-19 — Group 1 complete: git-lifecycle enforcement hooks live
+Topics: git-enforcement, git-hooks, commit-msg, pre-push, install
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/git-hooks/, bin/momentum.js, core/commands/complete-phase.md
+Detail: Shipped `core/git-hooks/{commit-msg,pre-push,run-check.js}` (FEAT-018/019) — shell wrappers over a node dispatcher that delegates all decisions to contract.js. `commit-msg` enforces Conventional Commits; `pre-push` blocks direct pushes to protected branches (without the single-use `.momentum/merge-approved` sentinel) and release-tag pushes lacking `## Verification Evidence`. `installGitHooks()` in bin/momentum.js wires them into `.githooks/` + `core.hooksPath` on init + upgrade, with warn-not-clobber for husky / pre-existing hooks paths. ENH-042 branch-delete + branch-hygiene self-audit added to `/complete-phase`. 9 integration tests; suite 591→600. Fingerprints re-baselined (+4 .githooks files + complete-phase content per adapter).
+
+---
+
+### [DECISION] 2026-06-19 — ENH-042 branch-hygiene audit lives in /complete-phase, not SessionStart
+Topics: git-enforcement, branch-cleanup, session-start
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/commands/complete-phase.md, CLAUDE.md
+Detail: ENH-042 named a "session-start branch-hygiene self-audit." Implemented the substantive audit as steps 13–14 of `/complete-phase` (the moment a branch actually goes stale), not inside `sessionstart-handoff.sh` — that hook has a <100ms budget and a `git branch -r`-based audit is git-state-dependent and slow there. A lightweight session-start reminder line will be added to CLAUDE.md's existing self-audit block in Group 3 (docs), keeping enforcement code out of the hot path.
+
+---
+
 ### [SCOPE_CHANGE] 2026-06-19 — Phase 19 inserted; roadmap renumbered
 Topics: roadmap
 Affects-phases: phase-19-lifecycle-hardening

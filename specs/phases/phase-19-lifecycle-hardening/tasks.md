@@ -10,13 +10,13 @@
 - [x] Work-type taxonomy: `phase` / `quick-task` / `spike` (`CONTRACT.workTypes`) + ceremony table in `specs/adhoc/README.md`
 - [x] Tests for contract surfaces — `tests/lifecycle-contract.test.js` (11 tests); also added dev helper `scripts/capture-fingerprints.js` (resolves the fingerprint tests' dangling "capture helper" reference)
 
-## Group 1 — Git Lifecycle Enforcement (∥ G2)
-- [ ] FEAT-018 `commit-msg` hook — conventional-commit validation, exit≠0, honors escape hatch
-- [ ] FEAT-018 `pre-push` hook — block direct push to main/staging without sentinel
-- [ ] FEAT-019 `pre-push` tag path — block release tag without `## Verification Evidence`
-- [ ] Install wiring in `bin/momentum.js` (init + upgrade), `chmod +x`, warn-not-clobber, 3-adapter parity
-- [ ] ENH-042 — guarded branch-delete in `/complete-phase` + session-start branch-hygiene self-audit
-- [ ] Tests: commit-msg, pre-push, tag gate, escape hatch, warn-not-clobber
+## Group 1 — Git Lifecycle Enforcement (∥ G2) ✅
+- [x] FEAT-018 `commit-msg` hook — `core/git-hooks/commit-msg` → `run-check.js`; conventional-commit validation, exit≠0, honors `MOMENTUM_SKIP_HOOKS`
+- [x] FEAT-018 `pre-push` hook — blocks direct push to main/staging without `.momentum/merge-approved` (single-use, consumed on push)
+- [x] FEAT-019 `pre-push` tag path — blocks release-tag push without a non-empty `## Verification Evidence` (inert when no retrospective convention exists)
+- [x] Install wiring in `bin/momentum.js` (`installGitHooks` in init + upgrade): copy `core/git-hooks/*` → `.githooks/`, chmod +x, `git config core.hooksPath`, warn-not-clobber; agent-agnostic (works for all 3 adapters)
+- [x] ENH-042 — guarded branch-delete (step 13) + branch-hygiene self-audit (step 14) in `/complete-phase`. Note: the audit lives in `/complete-phase` (runs when branches go stale), not the SessionStart hook (kept <100ms, git-state-dependent audits are fragile there); a session-start one-liner lands in CLAUDE.md's existing self-audit block in Group 3.
+- [x] Tests: `tests/git-hooks.test.js` (9 tests) — install, warn-not-clobber, commit-msg good/bad/escape, pre-push protected/sentinel/tag-gate/escape/inert. Suite 591→600 (+9). Fingerprints re-baselined.
 
 ## Group 2 — Ad-hoc Work Lane (∥ G1)
 - [ ] FEAT-020 `/hotfix` command — scaffold branch + `specs/adhoc/<id>/record.md`, reuse Rule 12 gate (3-adapter parity)

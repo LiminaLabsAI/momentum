@@ -3,6 +3,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
+
+// Phase 19 — single source of truth for git-hook install constants.
+const { CONTRACT: LIFECYCLE } = require(path.join(__dirname, '..', 'core', 'git-hooks', 'contract'));
 
 // ── Version ───────────────────────────────────────────────────────────────────
 
@@ -365,6 +369,56 @@ function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
 
 // ── Init command ──────────────────────────────────────────────────────────────
 
+// ── Git hooks (Phase 19 — Lifecycle Hardening) ─────────────────────────────────
+//
+// Install momentum's vendor-neutral git-lifecycle hooks into the target's
+// `.githooks/` dir and point `core.hooksPath` at it. Zero-dependency: plain
+// shell wrappers + a node dispatcher, no husky/lefthook.
+//
+// Warn-not-clobber (the BUG-008 lesson): if the target already uses a custom
+// `core.hooksPath` or husky, momentum skips rather than overwriting.
+function installGitHooks(src, target, opts = {}) {
+  const hooksSrc = path.join(src, 'core', 'git-hooks');
+  if (!fs.existsSync(hooksSrc)) return;
+
+  const ourPath = LIFECYCLE.hooksPath; // '.githooks'
+  const isGitRepo = fs.existsSync(path.join(target, '.git'));
+  const huskyPresent = fs.existsSync(path.join(target, '.husky'));
+
+  let existingHooksPath = '';
+  if (isGitRepo) {
+    const r = spawnSync('git', ['-C', target, 'config', '--local', '--get', 'core.hooksPath'], {
+      encoding: 'utf8',
+    });
+    existingHooksPath = (r.stdout || '').trim();
+  }
+
+  if (huskyPresent || (existingHooksPath && existingHooksPath !== ourPath)) {
+    const which = huskyPresent ? 'husky (.husky/)' : `core.hooksPath=${existingHooksPath}`;
+    console.log(`  ⚠️  git hooks: target already uses ${which} — skipping momentum git-hook install.`);
+    console.log(`     To enable manually, copy core/git-hooks/* into your hooks dir.`);
+    return;
+  }
+
+  // Copy hook files into <target>/.githooks/ (upgrade-aware via copyDir opts).
+  const hooksDest = path.join(target, ourPath);
+  copyDir(hooksSrc, hooksDest, opts.upgradeMode ? { upgradeMode: true, root: target } : {});
+  // Executable bit on every shipped hook file except the .md/.js libs (only
+  // git-named hooks run, but +x is harmless and keeps the dispatcher runnable).
+  for (const f of fs.readdirSync(hooksDest)) {
+    const fp = path.join(hooksDest, f);
+    if (fs.statSync(fp).isFile() && !f.endsWith('.md')) fs.chmodSync(fp, 0o755);
+  }
+
+  if (isGitRepo) {
+    spawnSync('git', ['-C', target, 'config', '--local', 'core.hooksPath', ourPath]);
+    console.log(`  ✓ git hooks installed → .githooks/ (core.hooksPath set).`);
+  } else {
+    console.log(`  ⚠️  not a git repo — hooks copied to .githooks/; after 'git init' run:`);
+    console.log(`       git config core.hooksPath ${ourPath}`);
+  }
+}
+
 function init(targetDir, agent) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
@@ -410,6 +464,10 @@ function init(targetDir, agent) {
     copyFile(sessionSrc, sessionDest);
     fs.chmodSync(sessionDest, 0o755);
   }
+
+  // .githooks/ — git-lifecycle enforcement hooks (Phase 19)
+  console.log('→ Installing git-lifecycle hooks...');
+  installGitHooks(src, target);
 
   // core/engines/
   console.log('→ Installing execution engines...');
@@ -514,6 +572,10 @@ function upgrade(targetDir, agent) {
       if (f.endsWith('.sh')) fs.chmodSync(path.join(scriptsDir, f), 0o755);
     }
   }
+
+  // Upgrade git-lifecycle hooks (Phase 19)
+  console.log('→ Upgrading git-lifecycle hooks...');
+  installGitHooks(src, target, { upgradeMode: true });
 
   // Upgrade execution engines
   console.log('→ Upgrading execution engines...');
