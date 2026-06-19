@@ -17,13 +17,14 @@ if [ -n "$FILE_PATH" ]; then
   case "$FILE_PATH" in
     specs/decisions/*.md)       SIGNIFICANT=true ;;
     specs/phases/*/tasks.md)    SIGNIFICANT=true ;;
+    specs/adhoc/*/record.md)    SIGNIFICANT=true ;;
     specs/backlog/backlog.md)   SIGNIFICANT=true ;;
     specs/status.md)            SIGNIFICANT=true ;;
     specs/architecture/*.md)    SIGNIFICANT=true ;;
   esac
 
   if [ "$SIGNIFICANT" = "true" ]; then
-    echo "PHASE HISTORY REMINDER: '$FILE_PATH' was modified — if this reflects a decision, scope change, or discovery, append an entry to the active phase history file (specs/phases/<active-phase>/history.md)."
+    echo "HISTORY REMINDER: '$FILE_PATH' was modified — if this reflects a decision, scope change, or discovery, append an entry to the active phase history file (specs/phases/<active-phase>/history.md), or — when no phase is active — to the ad-hoc record (specs/adhoc/<id>/record.md) or specs/adhoc/history.md."
   fi
 fi
 

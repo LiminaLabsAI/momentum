@@ -18,13 +18,13 @@
 - [x] ENH-042 — guarded branch-delete (step 13) + branch-hygiene self-audit (step 14) in `/complete-phase`. Note: the audit lives in `/complete-phase` (runs when branches go stale), not the SessionStart hook (kept <100ms, git-state-dependent audits are fragile there); a session-start one-liner lands in CLAUDE.md's existing self-audit block in Group 3.
 - [x] Tests: `tests/git-hooks.test.js` (9 tests) — install, warn-not-clobber, commit-msg good/bad/escape, pre-push protected/sentinel/tag-gate/escape/inert. Suite 591→600 (+9). Fingerprints re-baselined.
 
-## Group 2 — Ad-hoc Work Lane (∥ G1)
-- [ ] FEAT-020 `/hotfix` command — scaffold branch + `specs/adhoc/<id>/record.md`, reuse Rule 12 gate (3-adapter parity)
-- [ ] FEAT-020 spike mode — declared, gate-exempt, recorded as such
-- [ ] ENH-044 — `/log` + `/sync-docs` + history hook phase-optional with fallback sink
-- [ ] ENH-044 — "Ad-hoc / Patch Releases" section in status.md template; move v0.20.1 / v0.20.3 rows
-- [ ] ENH-044 — `/validate` treats no-active-phase as valid
-- [ ] Tests: hotfix scaffold, phase-optional fallback, validate no-phase
+## Group 2 — Ad-hoc Work Lane (∥ G1) ✅
+- [x] FEAT-020 `/hotfix` command — `core/commands/hotfix.md`; scaffolds branch + `specs/adhoc/<id>/record.md`, reuses Rule 12 gate. Auto-parity: claude command + codex skill + antigravity workflow (adapters enumerate all commands, no allowlist).
+- [x] FEAT-020 spike mode — `/hotfix --spike`: declared, gate-exempt, records what was learned + follow-up
+- [x] ENH-044 — `/log` + `/sync-docs` + `check-history-reminder.sh` phase-optional with `specs/adhoc/<id>/record.md` (or `specs/adhoc/history.md`) fallback sink
+- [x] ENH-044 — "Ad-hoc / Patch Releases" section in status.md template + live; moved v0.20.1 + v0.20.3 `—` rows there
+- [x] ENH-044 — `/validate` treats no-active-phase as a valid state (steps 1 + 4)
+- [x] Tests: `tests/adhoc-lane.test.js` (4 tests) — 3-adapter parity, recipe steps, phase-optional recipes, status section. Suite 600→604 (+4). Fingerprints re-baselined; reminder marker `PHASE HISTORY REMINDER`→`HISTORY REMINDER` (3 assertions updated).
 
 ## Group 3 — Docs Honesty & Rules (Sequential)
 - [ ] BUG-009 — relabel Rule 6 (enforced vs advised); fix `--no-verify` line

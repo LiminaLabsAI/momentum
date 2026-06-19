@@ -6,7 +6,10 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
 
 1. Read `specs/status.md` — verify required fields are present:
    - `Last Updated`, `Current Phase`, `Latest Release`, `Health`
-   - Active Phase table exists with at least one row
+   - Active Phase table exists. **"No active phase" is a VALID state** — a
+     single row reading `_(none)_` / `no active phase` (e.g. between phases, or
+     during ad-hoc `/hotfix` work) is NOT a failure. Only flag a structurally
+     missing/empty table.
    - Report any missing fields as failures
 
 2. Read `specs/backlog/backlog.md` — verify all 4 section tables present:
@@ -19,13 +22,14 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
    - Report missing directories or files as failures
 
 4. Cross-check active phase consistency:
-   - Active phase in `status.md` must be listed in `index.json`
-   - Its directory must exist
-   - Report mismatch as a failure
+   - If an active phase is named, it must be listed in `index.json` and its
+     directory must exist — report mismatch as a failure.
+   - If `Current Phase` is "none" / no active phase, **skip this check** (valid
+     between-phases state).
 
 5. Check `.claude/commands/` for standard momentum commands:
    - Required: `brainstorm-idea`, `brainstorm-phase`, `start-project`, `start-phase`,
-     `complete-phase`, `log`, `sync-docs`, `track`, `migrate`, `validate`
+     `complete-phase`, `log`, `sync-docs`, `track`, `migrate`, `validate`, `hotfix`
    - Report any missing commands as warnings (not failures — project may predate them)
 
 6. Report results:

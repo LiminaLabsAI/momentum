@@ -34,10 +34,19 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 15 | Ecosystem Agent Discoverability | Complete | v0.18.0 (2026-06-08) |
 | 16 | Codex & Antigravity Adapter Rework (Native-Idiom) | Complete | v0.19.0 (2026-06-11) |
 | 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete | v0.20.0 (2026-06-12) |
-| — | Codex Runtime Refresh (BUG-007 + ENH-036) | Complete | v0.20.1 (2026-06-13) |
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
-| — | BUG-006 fix (CLAUDE.md project-name substitution) | Complete | v0.20.3 (2026-06-15) |
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
+
+## Ad-hoc / Patch Releases
+
+> Releases NOT tied to a numbered phase — hotfixes, patch/audit releases, chores.
+> Work records live in `specs/adhoc/`. See Rule 14 for when ad-hoc work must
+> become a phase instead. (Section added 2026-06-19, Phase 19 / ENH-044.)
+
+| Version | Date | Type | Summary |
+|---------|------|------|---------|
+| v0.20.1 | 2026-06-13 | audit/patch | Codex Runtime Refresh (BUG-007 + ENH-036) — moved here from Completed Phases (was a `—` row) |
+| v0.20.3 | 2026-06-15 | patch | BUG-006 fix (CLAUDE.md project-name substitution) — moved here from Completed Phases (was a `—` row) |
 
 ## Active Phase
 

@@ -159,7 +159,7 @@ test('hook: emits phase-history reminder for significant file edits', () => {
       { cwd: tmp },
     );
     assert.equal(res.status, 0);
-    assert.match(res.stdout, /PHASE HISTORY REMINDER/);
+    assert.match(res.stdout, /HISTORY REMINDER/);
   } finally {
     rmrf(tmp);
   }

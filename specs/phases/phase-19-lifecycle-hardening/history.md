@@ -82,6 +82,22 @@ Detail: ENH-042 named a "session-start branch-hygiene self-audit." Implemented t
 
 ---
 
+### [NOTE] 2026-06-19 — Group 2 complete: first-class ad-hoc work lane
+Topics: ad-hoc-work, hotfix, spike, phase-optional, work-types
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/commands/hotfix.md, core/commands/{log,sync-docs,validate}.md, core/scripts/check-history-reminder.sh, core/specs-templates/specs/status.md, specs/status.md
+Detail: Shipped `/hotfix` (FEAT-020) — a quick-task / spike lane that scaffolds a fix/chore/spike branch + a `specs/adhoc/<id>/record.md`, runs the Rule 12 gate without a phase scaffold, and guards against phase-sized work via a Rule 14 escalation check. Auto-parity across all three adapters (claude command / codex skill / antigravity workflow) since adapters enumerate every core command. ENH-044: made `/log`, `/sync-docs`, and the history-reminder hook phase-optional (ad-hoc fallback sink); added an "Ad-hoc / Patch Releases" status section and moved the v0.20.1/v0.20.3 `—` rows there; taught `/validate` that no-active-phase is valid. 4 tests; suite 600→604.
+
+---
+
+### [DECISION] 2026-06-19 — history-reminder marker renamed PHASE HISTORY REMINDER → HISTORY REMINDER
+Topics: ad-hoc-work, history, hooks
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: core/scripts/check-history-reminder.sh
+Detail: The reminder now covers both phase and ad-hoc history, so the marker dropped "PHASE". Three existing adapter/ecosystem hook tests asserted the literal `PHASE HISTORY REMINDER`; updated them to match `HISTORY REMINDER` (a substring of both old and new, so the assertion is robust). Also added `specs/adhoc/*/record.md` to the hook's significant-paths list.
+
+---
+
 ### [SCOPE_CHANGE] 2026-06-19 — Phase 19 inserted; roadmap renumbered
 Topics: roadmap
 Affects-phases: phase-19-lifecycle-hardening

@@ -1,9 +1,15 @@
-Record a manual entry in the active phase history file.
+Record a manual entry in the active phase history file — or, when no phase is
+active, in the ad-hoc work record (off-phase decisions are never dropped).
 
 ## Steps
 
-1. Read `specs/status.md` to identify the active phase
-2. Find the history file: `specs/phases/<active-phase>/history.md`
+1. Read `specs/status.md` to identify the active phase (`Current Phase`).
+2. Find the history file:
+   - **Active phase**: `specs/phases/<active-phase>/history.md`
+   - **No active phase** (between phases, or `/hotfix` quick-task / spike work):
+     the `specs/adhoc/<id>/record.md` you are working in, else
+     `specs/adhoc/history.md` (create it from the same entry format if absent).
+     Off-phase work still captures its *why* (Rule 8) — it just lives here.
 3. Determine entry type from the message:
    - Decision about technology/architecture → [DECISION]
    - Phase scope added/removed → [SCOPE_CHANGE]
@@ -28,4 +34,4 @@ Detail: One to three sentences describing what changed and why.
 ```
 
 8. If the entry introduces a topic not in `specs/decisions/impact-map.json`, add it
-9. Confirm: "Logged [TYPE] entry to [phase] history."
+9. Confirm: "Logged [TYPE] entry to [phase or ad-hoc] history."

@@ -2,7 +2,7 @@
   "meta": {
     "captured": "2026-06-19",
     "capturedFrom": "phase-19-lifecycle-hardening",
-    "note": "Phase 19 G1 (Lifecycle Hardening) — installs vendor-neutral git hooks (.githooks/{commit-msg,pre-push,run-check.js,contract.js}) via core.hooksPath, and ENH-042 branch-delete + branch-hygiene self-audit steps in /complete-phase. Drift: +4 .githooks files (the hook scripts; core.hooksPath is set only when target is a git repo, so non-git fingerprint install just lays down files) and the complete-phase command/skill/workflow content. No other install content changed."
+    "note": "Phase 19 G2 (Lifecycle Hardening) — ad-hoc work lane. ADDED /hotfix (claude command / codex skill / antigravity workflow). DRIFTED log/sync-docs/validate (phase-optional, ENH-044), check-history-reminder.sh (adhoc fallback + path), specs/status.md template (Ad-hoc/Patch Releases section). All intentional."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,8 +14,9 @@
     ".claude/commands/dispatch.md": "461e6dca4e3bbb45b35862d1434bdc8f888f5151792042c455ae659f9634d673",
     ".claude/commands/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
     ".claude/commands/handoff.md": "c4decc3095a5322402ff637e1dd3f7c29badf5eab71fdb7cf452cd24bcba3a7d",
+    ".claude/commands/hotfix.md": "2699a61bdf5b219f2297a6c1ca95d25e3d63a44e37ed77ffdab88077c4715b12",
     ".claude/commands/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
-    ".claude/commands/log.md": "cace0a7ebb9b0ca05532ae794c7a8cdc5cd7e433539fd33c7c4235a9063c2119",
+    ".claude/commands/log.md": "7ad6c8701e600e5152a4866c84e5ee7f644fad583c0826dc28d2b3687cfeb462",
     ".claude/commands/migrate.md": "bc90f868f34429874ac70456f411eb5b2985835e7d63d385bbf9fd4836fcec0d",
     ".claude/commands/review-code.md": "63b331a1849dc468fe6f652ac943f2543798ffacdbf0c7d97f2c4924290f3c20",
     ".claude/commands/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
@@ -24,10 +25,10 @@
     ".claude/commands/start-phase.md": "ea7da972c841f26ace620531c1fdca567ba9e3f97b04d839afb86a179b843080",
     ".claude/commands/start-project.md": "9a9144898f31d3be8959ddadcfef553856acb14988adf5cc44d3c9e48e684213",
     ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7",
-    ".claude/commands/sync-docs.md": "4d03cab1dd5daa2c8cab68f27a9b602cead24ae3947f001e8783b12b472c7387",
+    ".claude/commands/sync-docs.md": "b2ae85e6bb036b79c86edbafa7ae4777949fd628787fa933ebc82fe9f34d0e47",
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
-    ".claude/commands/validate.md": "70d66b97eb1f3aa802c9d0fa00bbb3f9e660f6680ccde1b425288d27cc727d47",
+    ".claude/commands/validate.md": "502988dc1aab6cc4ffb83840fa38ad49beed071003ad23629d96f5907fbd4f6b",
     ".claude/settings.json": "8e547e082fb1c4a3ad4038af974be8471e841823755b3138ceb946177ef3864d",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "e4fcdd241c3be85ac53135c1c093c7066391898c211e4be28c3cb9cdd50f2c88",
@@ -37,7 +38,7 @@
     "CLAUDE.md": "3a6a70ebe52a76ae762f6e62ebf61bf6e5c66e8fc138fb11788540a31d319e16",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
-    "scripts/check-history-reminder.sh": "ea861338fa6ab089a37cf8ec9a1297a1deae845e334a8b61eb0b60937a1e76f9",
+    "scripts/check-history-reminder.sh": "bab41e6615bec204be17c420b9b82e8e22aa0e636743f3a9764b63fd23bd0266",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6",
     "specs/README.md": "88df4820bc11f62ac9e16f1ff62b6faea8f6691de5eaf4eb39ead84156f87703",
@@ -53,7 +54,7 @@
     "specs/phases/README.md": "32c96f255eeb0fe9ee172f56fad47a83359a273f3f77cd983ffba0ce9cf0aa10",
     "specs/phases/index.json": "9c2e35d39ed38ff7d5623ce4c01d2654c40478921905b0c54f0abbbd25cb7100",
     "specs/planning/roadmap.md": "37edbdc1e812d72c19031a1a1e44b9d4125d0e7380f3c1b2131dbfa2a4d1dcad",
-    "specs/status.md": "38861b1a72c0c8dd6a4df54024eb119fd9cdc9337b2dbb4b32535eaeefb42ef3",
+    "specs/status.md": "ff49861613edf621c84b78a5d1f61cf3679fb7a513b76886c70e14aa6ae8c517",
     "specs/vision/principles.md": "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f",
     "specs/vision/project-charter.md": "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa",
     "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271"

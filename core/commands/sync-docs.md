@@ -5,7 +5,12 @@ Token-efficient: reads history + 2 tiny indexes first, then only targeted files.
 
 ### Step 1: Load history and indexes (cheap reads)
 - Read `specs/status.md` → identify active phase
-- Read `specs/phases/<active-phase>/history.md` → extract all entries
+- Read the history log → extract all entries:
+  - **Active phase**: `specs/phases/<active-phase>/history.md`
+  - **No active phase** (ad-hoc work just shipped): the relevant
+    `specs/adhoc/<id>/record.md` (and `specs/adhoc/history.md` if present).
+    If there is no phase and no ad-hoc record, there is nothing to sync —
+    report "nothing to sync" and stop.
 - Read `specs/phases/index.json` (~2KB)
 - Read `specs/decisions/impact-map.json` (~3KB)
 

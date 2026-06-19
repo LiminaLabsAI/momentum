@@ -1,7 +1,7 @@
 # Phase 17.5 Swarm Portability — Scenario join
 
 Captured: 2026-06-14 (Phase 17.5 G5)
-Ecosystem: momentum-test-jP2PRj
+Ecosystem: momentum-test-Q4esAw
 Swarms: 0001-portability
 
 ## Narrative
