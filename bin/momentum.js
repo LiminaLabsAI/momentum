@@ -209,6 +209,56 @@ function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
  * manifest, so they are never eligible. Each removal is backed up to `.bak`.
  * Returns the list of removed relative paths.
  */
+/**
+ * Additively refresh the target's `.gitignore` with any momentum/OS ignore
+ * rules it's missing (Phase 20 follow-up). NEVER removes a user's lines — it
+ * only appends rules from `core/specs-templates/.gitignore` that aren't already
+ * present, under a marker comment, with a `.bak` backup. Fixes the gap where
+ * `upgrade` left an old `.gitignore` untouched, so repos predating the `._*` /
+ * `.momentum/*` rules stayed polluted (which on a non-Unix filesystem like
+ * exFAT makes git effectively unusable). `.gitignore` is user-owned, so it is
+ * deliberately NOT recorded as a managed file (never orphan-cleaned).
+ * Returns 'added' | 'updated' | 'unchanged'.
+ */
+function refreshGitignore(srcRoot, targetDir) {
+  const templatePath = path.join(srcRoot, 'core', 'specs-templates', '.gitignore');
+  const targetPath = path.join(targetDir, '.gitignore');
+  if (!fileExists(templatePath)) return 'unchanged';
+
+  if (!fileExists(targetPath)) {
+    if (_dryRun) {
+      console.log('  ✋ would add:     .gitignore');
+      return 'added';
+    }
+    fs.writeFileSync(targetPath, fs.readFileSync(templatePath, 'utf8'));
+    console.log('  + added:    .gitignore');
+    return 'added';
+  }
+
+  // Append only the rule lines (ignore comments/blanks) the target lacks.
+  const wantedRules = fs
+    .readFileSync(templatePath, 'utf8')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'));
+  const targetContent = fs.readFileSync(targetPath, 'utf8');
+  const have = new Set(targetContent.split('\n').map((l) => l.trim()));
+  const missing = wantedRules.filter((r) => !have.has(r));
+  if (missing.length === 0) return 'unchanged';
+
+  if (_dryRun) {
+    console.log(`  ✋ would append ${missing.length} rule(s) to .gitignore`);
+    return 'updated';
+  }
+  fs.copyFileSync(targetPath, targetPath + '.bak');
+  const addition =
+    '\n# Added by momentum upgrade — keep momentum + OS noise out of git\n' +
+    missing.join('\n') + '\n';
+  fs.writeFileSync(targetPath, targetContent.replace(/\s*$/, '\n') + addition);
+  console.log(`  ↑ updated:  .gitignore (appended ${missing.length} missing rule(s); original saved as .bak)`);
+  return 'updated';
+}
+
 function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   if (!prevManifest || !Array.isArray(prevManifest.managedFiles)) return [];
   const currentRel = new Set(
@@ -751,7 +801,7 @@ function upgrade(targetDir, agent, opts = {}) {
 
   _dryRun = !!opts.dryRun;
   _managedCollector = new Set();
-  let agentRulesResult, primaryInstructionResult, orphans = [];
+  let agentRulesResult, primaryInstructionResult, gitignoreResult, orphans = [];
   try {
   // Upgrade slash commands
   console.log('→ Upgrading slash commands...');
@@ -820,6 +870,10 @@ function upgrade(targetDir, agent, opts = {}) {
   // Delegate adapter-specific upgrade
   adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists, recordManaged, dryRun: _dryRun });
 
+  // Additively refresh .gitignore (append missing momentum/OS ignore rules).
+  console.log('→ Refreshing .gitignore...');
+  gitignoreResult = refreshGitignore(src, target);
+
   // Orphan cleanup — remove files a prior version installed but this one
   // no longer ships (uses the snapshot taken before writes). Only ever
   // touches files we previously recorded as managed.
@@ -849,6 +903,7 @@ function upgrade(targetDir, agent, opts = {}) {
     console.log(`  ${label}:           ${primaryInstructionResult}`);
   }
   console.log(`  agent-rules:         ${agentRulesResult}`);
+  console.log(`  .gitignore:          ${gitignoreResult}`);
   if (orphans.length) {
     console.log(`  removed (orphaned):  ${orphans.length} file(s) — see 🗑 lines above`);
   }
