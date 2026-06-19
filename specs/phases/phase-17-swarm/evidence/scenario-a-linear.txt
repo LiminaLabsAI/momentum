@@ -1,7 +1,7 @@
 # Phase 17 Swarm — Scenario A-LINEAR
 
 Captured: 2026-06-12 (Phase 17 G4)
-Ecosystem: momentum-test-WBRRZU
+Ecosystem: momentum-test-urUjIC
 Swarm: 0001-feature
 
 ## Metrics
@@ -38,7 +38,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "6c2a4f88a827e0f9d6960ae3750f999238643aba"
+      "last_seen_sha": "1d02d27a2829aae4ee7df02322275be53834de58"
     },
     "backend": {
       "wave": 2,
@@ -55,7 +55,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "6c2a4f88a827e0f9d6960ae3750f999238643aba"
+      "last_seen_sha": "1d02d27a2829aae4ee7df02322275be53834de58"
     },
     "frontend": {
       "wave": 3,
@@ -72,7 +72,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "6c2a4f88a827e0f9d6960ae3750f999238643aba"
+      "last_seen_sha": "7ac58fc77cfcda7f5e5f77d0acb6c0532d2ac676"
     }
   },
   "waves": [
@@ -134,7 +134,7 @@ Swarm: 0001-feature
       "detail": "Wave 3 complete"
     },
     {
-      "ts": "2026-06-13T18:55:55Z",
+      "ts": "2026-06-19T15:54:54Z",
       "actor": "conductor",
       "event": "complete",
       "detail": "3/3 repos complete"
@@ -153,7 +153,7 @@ Swarm: 0001-feature
   "version": 1,
   "saga_id": "sg_1osc7d9",
   "mode": "autopilot",
-  "rendered_at": "2026-06-13T18:55:55Z",
+  "rendered_at": "2026-06-19T15:54:54Z",
   "status": "complete",
   "active_wave": 3,
   "repos": [
@@ -188,7 +188,7 @@ Swarm: 0001-feature
   "inbox_count": 0,
   "recent_activity": [
     {
-      "ts": "18:55",
+      "ts": "15:54",
       "msg": "3/3 repos complete"
     },
     {
@@ -221,7 +221,7 @@ Swarm: 0001-feature
 - Mode: autopilot
 - Status: complete
 - Repos: 3/3 complete
-- Completed at: 2026-06-13T18:55:55Z
+- Completed at: 2026-06-19T15:54:54Z
 
 ## Per-repo contributions
 

@@ -61,6 +61,7 @@ overview.md):
 | `/continue` | shipped¹ | shipped² | shipped³ |
 | `/review-code` | shipped¹ | shipped² | shipped³ |
 | `/swarm` (Phase 17 + 17.5) | shipped¹ | shipped¹⁴ | shipped¹⁴ |
+| `/hotfix` (Phase 19) | shipped¹ | shipped² | shipped³ |
 
 ### Personas (skills)
 
@@ -78,6 +79,13 @@ overview.md):
 | `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
 | `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
 | `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
+
+### Git-lifecycle hooks (Phase 19 — agent-agnostic)
+
+| Hook | Claude Code | Codex | Antigravity |
+|---|---|---|---|
+| `commit-msg` (Conventional Commits) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
+| `pre-push` (merge gate + verify-evidence) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
 
 ### Overlay surfaces
 
@@ -131,6 +139,8 @@ overview.md):
 13. **Antigravity `workflows` overlay (gated)** — adapter-specific workflows (`adapters/antigravity/workflows/*.md`) ship to `.agent/workflows/`. Marked `shipped-gated` pending Group 4 live smoke to confirm `.agent/` (singular) vs `.agents/` (plural) — Google's official docs page uses singular, codelab uses plural. If smoke fails, dual-copy and VAL-002 follow-up.
 
 14. **`/swarm` (Phase 17 v0.20.0 + Phase 17.5 v0.20.2 + Phase 18 v0.20.4)** — Phase 18 v0.20.4 brings full Codex + Antigravity parity to the swarm primitive. Implementation: a platform-agnostic `adapter.spawn(directive)` contract added in Phase 18 G0; Codex dispatch + supervisor TOML + MCP cwd shim documented in G1; Antigravity workflow + supervisor skill + AGENTS.md section in G2; multi-adapter synthetic e2e + Codex/Antigravity install fingerprints in G3. **Capability flips deferred** based on G4 live evidence: Codex `parallelSubagents` stays `false` (gated on `codex features list` showing `enable_fanout: stable: true` — currently `under development`); Antigravity `sessionStartHook` stays `false` (no standalone `agy` CLI exists — IDE-only product; operator-manual VAL inside the IDE required). All other adapter surfaces ship with full file-layout coverage; live VAL evidence at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`. Operator-manual closure paths for both VALs documented in those files.
+
+15. **Git-lifecycle hooks (Phase 19, FEAT-018/019)** — vendor-neutral, *agent-agnostic* git hooks installed identically for all three adapters: `bin/momentum.js::installGitHooks()` copies `core/git-hooks/*` to the target's `.githooks/` and runs `git config core.hooksPath .githooks` (warn-not-clobber if husky / a custom hooks path exists). `commit-msg` validates Conventional Commits; `pre-push` blocks direct pushes to protected branches without the single-use `.momentum/merge-approved` sentinel and blocks release-tag pushes lacking a non-empty `## Verification Evidence` (Rule 12). Escape hatch: `MOMENTUM_SKIP_HOOKS=1`. These are git hooks, not agent tool-event hooks — the mechanism is identical regardless of agent; the per-column cells exist only for matrix uniformity. Forge-neutral by design (no GitHub/GitLab API); see `core/lifecycle-contract.md`.
 
 ## Read this if you are…
 

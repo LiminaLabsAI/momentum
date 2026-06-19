@@ -41,16 +41,20 @@ Before starting a new phase, scan backlog for P0/P1 bugs.
 ### Rule 5: Phase Boundary Awareness
 When completing the last task: prompt user to run `/complete-phase`.
 
-### Rule 6: Git Lifecycle (Automatic)
+### Rule 6: Git Lifecycle
 - Before ANY code change: check branch; auto-create feature branch if on main/staging
-- Auto-commit after each logical unit with conventional commits (`feat`/`fix`/`docs`/`refactor`/`chore`/`infra`)
+- Auto-commit after each logical unit with conventional commits (`feat`/`fix`/`docs`/`refactor`/`chore`/`infra`/`test`/`perf`/`build`/`ci`/`style`/`revert`)
 - Never auto-merge to staging or main — always ask user
 - Delete merged feature branches once confirmed merged
+- **Enforced by installed git hooks** (not just convention): `commit-msg`
+  validates the message; `pre-push` blocks direct pushes to main/staging without
+  the single-use `.momentum/merge-approved` sentinel and blocks release tags
+  lacking verification evidence. Emergency bypass: `MOMENTUM_SKIP_HOOKS=1`.
 
 **Red Flags (STOP and switch branches):**
 - "Just one commit to main" — branch first, decide later
 - "I'll create the branch after these edits" — branch is non-optional
-- "--no-verify just this once" — fix the underlying check
+- "--no-verify just this once" — the hooks are real; use auditable `MOMENTUM_SKIP_HOOKS=1` only for genuine emergencies
 - "Force push is fine" — `--force-with-lease` minimum
 
 ### Rule 7: Plan Before Implementing
@@ -150,6 +154,18 @@ If enabled in the project rules extensions (under `## Project Extensions` in thi
 - "I will write the tests at the end" — writing tests post-facto is not TDD and leads to confirmation bias.
 - "The change is too simple to warrant a test-first approach" — simple changes are excellent TDD candidates to establish correct wiring.
 
+### Rule 14: Work-Type Escalation — Pick the Lightest Type That Fits
+Not every change is a phase. Three work types (see `specs/adhoc/README.md`):
+- `phase` — net-new features / cross-cutting / architectural work → `/brainstorm-phase` → `/start-phase` → … → `/complete-phase`.
+- `quick-task` — a bounded bugfix / chore / audit / dep bump → `/hotfix`: an ad-hoc record (`specs/adhoc/<id>/record.md`) + the Rule 12 gate, no phase scaffold.
+- `spike` — time-boxed throwaway exploration → `/hotfix --spike`: declared, gate-exempt, record what was learned.
+
+**Pick the lightest type that fits; escalate only when scope/risk justifies it.** A quick-task MUST become a phase when it touches >~5 files of production code, modifies `specs/architecture/`, needs an ADR, changes a public contract, or displaces a planned phase.
+
+**Red Flags:**
+- "This `/hotfix` is growing" — if it now touches architecture or many files, escalate to a phase.
+- "I'll spin up a whole phase for a one-line fix" — over-ceremony; a `/hotfix` quick-task is right.
+
 ---
 
 ## Naming Conventions
@@ -164,7 +180,7 @@ Priorities (with SLA):
 
 Branches: `phase-N-name` | `feat/desc` | `fix/desc` | `refactor/desc` | `infra/desc`
 
-Commits: `feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:` (CI/build/deploy/tooling)
+Commits: `feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:` (CI/build/deploy/tooling) — plus `test:` `perf:` `build:` `ci:` `style:` `revert:` (all accepted by the `commit-msg` hook)
 
 ---
 

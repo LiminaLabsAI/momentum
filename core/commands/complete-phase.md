@@ -98,4 +98,20 @@ Verify, finalize, and release a completed phase.
     - What was delivered
     - GitHub Release URL
     - What's next
-    - Remind to delete phase branch: `git push origin --delete phase-N-shortname`
+
+13. Delete the merged phase branch (ENH-042 — now that merge → main + release
+    are confirmed; do NOT skip this, or stale branches accumulate on origin):
+    ```bash
+    git branch -d phase-N-shortname             # local — `-d` (not `-D`) refuses if unmerged
+    git push origin --delete phase-N-shortname  # remote
+    ```
+
+14. Branch-hygiene self-audit (ENH-042) — confirm no released phase left a
+    dangling branch:
+    ```bash
+    # Any origin branch for an already-released phase should be gone.
+    git branch -r | grep -E 'origin/(phase-|chore/|audit/)' || echo "✓ clean — no stale branches"
+    ```
+    For each match, verify it is fully merged into `main`
+    (`git branch -r --merged main`) and delete it per step 13. Leave any
+    *unmerged* branch alone and surface it to the user.

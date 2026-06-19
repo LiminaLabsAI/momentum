@@ -132,8 +132,8 @@ test('codex PostToolUse: history reminder fires on apply_patch to spec file', ()
       `PostToolUse should exit 0; got ${JSON.stringify(result.exits)}`,
     );
     assert.ok(
-      result.stdouts.some((s) => /PHASE HISTORY REMINDER/.test(s)),
-      `expected PHASE HISTORY REMINDER; got ${JSON.stringify(result.stdouts)}`,
+      result.stdouts.some((s) => /HISTORY REMINDER/.test(s)),
+      `expected HISTORY REMINDER; got ${JSON.stringify(result.stdouts)}`,
     );
   } finally {
     rmrf(dir);

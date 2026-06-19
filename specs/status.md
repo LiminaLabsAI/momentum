@@ -1,8 +1,8 @@
 # Project Status
 
-> **Last Updated**: 2026-06-15
+> **Last Updated**: 2026-06-19
 > **Current Phase**: _none active_
-> **Latest Release**: v0.20.4 — Phase 18 Swarm Parity (Codex + Antigravity)
+> **Latest Release**: v0.21.0 — Phase 19 Lifecycle Hardening
 > **Health**: On Track
 
 ## Summary
@@ -34,16 +34,26 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 15 | Ecosystem Agent Discoverability | Complete | v0.18.0 (2026-06-08) |
 | 16 | Codex & Antigravity Adapter Rework (Native-Idiom) | Complete | v0.19.0 (2026-06-11) |
 | 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete | v0.20.0 (2026-06-12) |
-| — | Codex Runtime Refresh (BUG-007 + ENH-036) | Complete | v0.20.1 (2026-06-13) |
 | 17.5 | Swarm Portability | Complete | v0.20.2 (2026-06-14) |
-| — | BUG-006 fix (CLAUDE.md project-name substitution) | Complete | v0.20.3 (2026-06-15) |
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
+| 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
+
+## Ad-hoc / Patch Releases
+
+> Releases NOT tied to a numbered phase — hotfixes, patch/audit releases, chores.
+> Work records live in `specs/adhoc/`. See Rule 14 for when ad-hoc work must
+> become a phase instead. (Section added 2026-06-19, Phase 19 / ENH-044.)
+
+| Version | Date | Type | Summary |
+|---------|------|------|---------|
+| v0.20.1 | 2026-06-13 | audit/patch | Codex Runtime Refresh (BUG-007 + ENH-036) — moved here from Completed Phases (was a `—` row) |
+| v0.20.3 | 2026-06-15 | patch | BUG-006 fix (CLAUDE.md project-name substitution) — moved here from Completed Phases (was a `—` row) |
 
 ## Active Phase
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 18 released as v0.20.4; tagged + GitHub Release `Latest` + npm `@avinash-singh-io/momentum@0.20.4` live)_ | | | |
+| _(none — Phase 19 released as v0.21.0; next: Phase 20 — Reach)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or
@@ -54,9 +64,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 19 | Reach | Not Started (target v0.21.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
-| 20 | Intelligence | Not Started (target v0.22.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 21 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 20 | Reach | Not Started (target v0.22.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 21 | Intelligence | Not Started (target v0.23.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 22 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 
@@ -100,6 +110,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-06-19**: **Git-lifecycle + lifecycle-model review (multi-agent).** Found momentum's git "rules" (Rule 6) are advised-only prose with **zero enforcing mechanism** (no git hooks shipped/installed; the merge-to-main gate rests on agent goodwill), "delete merged branch" has a 0% execution rate (**16 stale branches on origin**), worktree lifecycle isn't first-class on `main`, and off-phase work has no first-class lane (v0.20.1/v0.20.3 shipped via `—` phase rows bypassing verification/history). Filed **11 backlog items** (BUG-009, FEAT-018/019/020, TD-007/008, ENH-041/042/043/044/045). Decision: plan a single **"Lifecycle Hardening"** phase — Tier A (enforce the git lifecycle you already promise: hook installs + GitHub Ruleset + branch cleanup + doc honesty) and Tier B (first-class ad-hoc work-types lane + Rule 14 escalation). Brainstorm pending.
 
 - **2026-06-15**: **Phase 18 — Swarm Parity started.** Branch `phase-18-swarm-parity` from `main` (target v0.20.4 after the unplanned v0.20.3 BUG-006 patch). Wires the platform-agnostic `core/swarm/` (Phase 17 + 17.5) into the Codex and Antigravity adapters. Full 13-subcommand surface (Phase 17 baseline + Phase 17.5 portability primitives) for both adapters. Five groups: G0 (spawn contract + Claude Code refactor — pure additive `adapter.spawn(directive)` on the contract; no schema migration) → G1 (Codex: `.codex/agents/swarm-supervisor.toml` + AGENTS.md swarm lookup + MCP cwd shim docs) + G2 (Antigravity: `.agent/workflows/swarm-conductor.md` + `.agents/skills/swarm-supervisor/SKILL.md` + AGENTS.md swarm section) in parallel → G3 (multi-adapter synthetic e2e: 3 scenarios × 2 new adapters = 6 evidence files + Codex/Antigravity fingerprint fixtures) → G4 (live VAL-001 Codex + VAL-002 Antigravity dogfood; capability flips Codex `parallelSubagents` + Antigravity `sessionStartHook` `false→true` gated on live evidence; docs + retrospective + v0.20.4 release). Release blocks on live VAL evidence (synthetic-only Phase 18 would leave both adapter cells degraded indefinitely).
 

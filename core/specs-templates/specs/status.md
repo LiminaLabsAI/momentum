@@ -15,6 +15,16 @@
 |-------|------|--------|---------|
 | _(none yet)_ | | | |
 
+## Ad-hoc / Patch Releases
+
+> Releases NOT tied to a numbered phase — hotfixes, patch/audit releases,
+> chores. Keep these out of the Completed Phases table. Work records live in
+> `specs/adhoc/`. See Rule 14 for when ad-hoc work must become a phase instead.
+
+| Version | Date | Type | Summary |
+|---------|------|------|---------|
+| _(none yet)_ | | | |
+
 ## Active Phase
 
 | Phase | Name | Status | Progress |

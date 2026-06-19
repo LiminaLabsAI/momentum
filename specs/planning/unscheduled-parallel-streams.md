@@ -1,6 +1,19 @@
-# Unscheduled — Parallel Stream Development (NO COMMITTED SLOT)
+# Unscheduled — Parallel Stream Development (CLOSED — won't-do)
 
-> Status: planned, no version target. Pickable any time. Existing implementation lives on the `phase-8-parallel-worktrees` branch (unmerged, awaiting release decision).
+> **Status (2026-06-19, Phase 19 / TD-008): CLOSED — won't-do.** The
+> `phase-8-parallel-worktrees` branch (546 LOC `worktree-manager.js` + 226 LOC
+> tests) is being deleted. Rationale: native Claude Code `--worktree` /
+> `isolation: worktree` + the swarm subsystem now cover single-repo parallel
+> isolation, and the implementation predates the Phase 10 state machine, so
+> reviving it would cost more than rebuilding on the modern base if ever
+> needed. NOTE: the on-branch retrospective inaccurately claimed "Phase 8
+> shipped v0.11.0" — it never shipped; v0.11.0 was never cut. This doc is the
+> accurate record; the branch is removed.
+>
+> If single-repo parallel streams become desirable later, build fresh on
+> Claude Code's native worktrees rather than resurrecting the deleted branch.
+>
+> _Original brief preserved below for context._
 
 ## The problem
 
