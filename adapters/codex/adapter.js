@@ -66,10 +66,11 @@ module.exports = {
   },
 
   runInstall(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     console.log('→ Configuring Codex hooks...');
     const hooksDest = path.join(targetDir, '.codex', 'hooks.json');
+    if (recordManaged) recordManaged(hooksDest); // managed regardless of write
     if (!fileExists(hooksDest)) {
       copyFile(path.join(adapterDir, 'hooks.json'), hooksDest);
     } else {
@@ -78,15 +79,16 @@ module.exports = {
     }
 
     console.log('→ Transforming recipes into native Codex skills...');
-    transformCommandsIntoSkills(targetDir);
+    transformCommandsIntoSkills(targetDir, recordManaged);
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     console.log('→ Upgrading Codex hooks...');
     const src = path.join(adapterDir, 'hooks.json');
     const dest = path.join(targetDir, '.codex', 'hooks.json');
+    if (recordManaged) recordManaged(dest); // managed even when identical-skip
 
     if (fileExists(dest)) {
       const srcContent = fs.readFileSync(src, 'utf8');
@@ -102,7 +104,7 @@ module.exports = {
     }
 
     console.log('→ Re-generating Codex skills from recipes...');
-    transformCommandsIntoSkills(targetDir);
+    transformCommandsIntoSkills(targetDir, recordManaged);
   },
 
   // Phase 18 G1 — adapter.spawn(directive) for Codex.
@@ -148,7 +150,7 @@ module.exports = {
 // one such skill so Codex auto-discovers and dispatches them natively (rather
 // than the AGENTS.md-lookup-then-follow-instructions pattern that shipped in
 // v0.19.0).
-function transformCommandsIntoSkills(targetDir) {
+function transformCommandsIntoSkills(targetDir, recordManaged) {
   const commandsDir = path.join(targetDir, '.codex', 'commands');
   const skillsRoot = path.join(targetDir, '.agents', 'skills');
   if (!fs.existsSync(commandsDir)) {
@@ -167,7 +169,11 @@ function transformCommandsIntoSkills(targetDir) {
     const skillDir = path.join(skillsRoot, name);
     fs.mkdirSync(skillDir, { recursive: true });
     const skillBody = renderSkillMarkdown(name, description, body);
-    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillBody);
+    const skillPath = path.join(skillDir, 'SKILL.md');
+    fs.writeFileSync(skillPath, skillBody);
+    // Generated skills are momentum-managed — record them so they appear in
+    // the lock file and a dropped recipe's skill is orphan-cleaned (Phase 20).
+    if (recordManaged) recordManaged(skillPath);
     count++;
   }
 

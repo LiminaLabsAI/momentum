@@ -63,10 +63,11 @@ module.exports = {
   },
 
   runInstall(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     console.log('→ Configuring Antigravity hooks...');
     const hooksDest = path.join(targetDir, '.agents', 'hooks.json');
+    if (recordManaged) recordManaged(hooksDest); // managed regardless of write
     if (!fileExists(hooksDest)) {
       copyFile(path.join(adapterDir, 'hooks.json'), hooksDest);
     } else {
@@ -76,11 +77,12 @@ module.exports = {
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     console.log('→ Upgrading Antigravity hooks...');
     const src = path.join(adapterDir, 'hooks.json');
     const dest = path.join(targetDir, '.agents', 'hooks.json');
+    if (recordManaged) recordManaged(dest); // managed even when identical-skip
 
     if (fileExists(dest)) {
       const srcContent = fs.readFileSync(src, 'utf8');

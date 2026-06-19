@@ -69,11 +69,14 @@ module.exports = {
   roadmap: {},
 
   runInstall(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     // .claude/settings.json
     console.log('→ Configuring Claude Code hooks...');
     const settingsDest = path.join(targetDir, '.claude', 'settings.json');
+    // Record as adapter-managed regardless of whether we write it, so the
+    // lock file is complete and orphan cleanup never drops it (Phase 20).
+    if (recordManaged) recordManaged(settingsDest);
     if (!fileExists(settingsDest)) {
       copyFile(path.join(adapterDir, 'settings.json'), settingsDest);
     } else {
@@ -83,12 +86,13 @@ module.exports = {
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists } = helpers;
+    const { copyFile, fileExists, recordManaged } = helpers;
 
     // .claude/settings.json
     console.log('→ Upgrading Claude Code hooks...');
     const src = path.join(adapterDir, 'settings.json');
     const dest = path.join(targetDir, '.claude', 'settings.json');
+    if (recordManaged) recordManaged(dest); // managed even when identical-skip
 
     if (fileExists(dest)) {
       const srcContent = fs.readFileSync(src, 'utf8');

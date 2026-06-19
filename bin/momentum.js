@@ -60,6 +60,19 @@ function copyDir(srcDir, destDir, opts = {}) {
       if (opts.skipIfExists && fileExists(dest)) {
         console.log(`  ⚠️  ${dest} already exists — skipping.`);
       } else {
+        // BUG-008: on init, momentum-owned files must not be silently
+        // clobbered. With `backup`, an existing file that differs is saved as
+        // .bak before overwrite — making re-init idempotent and safe. Fresh
+        // adds stay quiet.
+        if (opts.backup && fileExists(dest)) {
+          const srcBuf = fs.readFileSync(src);
+          const destBuf = fs.readFileSync(dest);
+          if (!srcBuf.equals(destBuf)) {
+            fs.copyFileSync(dest, dest + '.bak');
+            const rel = path.relative(opts.root || process.cwd(), dest);
+            console.log(`  ↑ updated:  ${rel} (original saved as .bak)`);
+          }
+        }
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.copyFileSync(src, dest);
       }
@@ -169,6 +182,39 @@ function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
     fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
   }
   return manifest;
+}
+
+/**
+ * Remove orphans: files a previous momentum version installed but the current
+ * one no longer ships (`prev.managedFiles − currentSet`). This is the piece a
+ * copy-only upgrade can never do (Cruft #67). Safety: we only ever consider
+ * files that WE previously recorded as managed — user files are never in the
+ * manifest, so they are never eligible. Each removal is backed up to `.bak`.
+ * Returns the list of removed relative paths.
+ */
+function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
+  if (!prevManifest || !Array.isArray(prevManifest.managedFiles)) return [];
+  const currentRel = new Set(
+    [...currentSet].map((abs) =>
+      path.relative(targetDir, abs).split(path.sep).join('/')
+    )
+  );
+  const removed = [];
+  for (const entry of prevManifest.managedFiles) {
+    if (currentRel.has(entry.path)) continue; // still managed → keep
+    const abs = path.join(targetDir, entry.path);
+    if (!fileExists(abs)) continue; // already gone
+    removed.push(entry.path);
+    if (!opts.dryRun) {
+      fs.copyFileSync(abs, abs + '.bak');
+      fs.rmSync(abs);
+    }
+    console.log(
+      `  ${opts.dryRun ? '✋ would remove' : '🗑  removed'}: ${entry.path}` +
+      `${opts.dryRun ? '' : ' (original saved as .bak)'}`
+    );
+  }
+  return removed;
 }
 
 function listAvailableAgents(src = path.join(__dirname, '..')) {
@@ -525,7 +571,8 @@ function init(targetDir, agent) {
   console.log('→ Installing slash commands...');
   copyDir(
     path.join(src, 'core', 'commands'),
-    path.join(target, ...dests.commands)
+    path.join(target, ...dests.commands),
+    { backup: true, root: target }
   );
 
   // scripts/
@@ -537,7 +584,8 @@ function init(targetDir, agent) {
   // Antigravity also pick it up via the same scripts/ destination.
   copyDir(
     path.join(src, 'core', 'scripts'),
-    path.join(target, ...dests.scripts)
+    path.join(target, ...dests.scripts),
+    { backup: true, root: target }
   );
   for (const f of fs.readdirSync(path.join(target, ...dests.scripts))) {
     if (f.endsWith('.sh')) {
@@ -561,7 +609,8 @@ function init(targetDir, agent) {
   if (fs.existsSync(path.join(src, 'core', 'engines'))) {
     copyDir(
       path.join(src, 'core', 'engines'),
-      path.join(target, ...(dests.engines || ['.agent', 'engines']))
+      path.join(target, ...(dests.engines || ['.agent', 'engines'])),
+      { backup: true, root: target }
     );
   }
 
@@ -589,10 +638,10 @@ function init(targetDir, agent) {
   installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
 
   // Adapter overlay — per-agent commands/agent-rules/scripts (additive)
-  applyOverlay(adapterDir, target, dests);
+  applyOverlay(adapterDir, target, dests, { backup: true, root: target });
 
   // Coding-agent-specific steps
-  adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists });
+  adapter.runInstall(target, adapterDir, { copyFile, copyDir, fileExists, recordManaged });
 
   // Lock file — record the version-of-record + managed-file set (Phase 20)
   writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector });
@@ -637,8 +686,12 @@ function upgrade(targetDir, agent) {
 
   const upgradeOpts = { upgradeMode: true, root: target };
 
+  // Snapshot the prior managed set BEFORE any writes, so orphan cleanup can
+  // diff it against what this version installs (Phase 20 G1).
+  const prevManifest = readInstalledManifest(target);
+
   _managedCollector = new Set();
-  let agentRulesResult, primaryInstructionResult;
+  let agentRulesResult, primaryInstructionResult, orphans = [];
   try {
   // Upgrade slash commands
   console.log('→ Upgrading slash commands...');
@@ -705,7 +758,12 @@ function upgrade(targetDir, agent) {
   applyOverlay(adapterDir, target, dests, upgradeOpts);
 
   // Delegate adapter-specific upgrade
-  adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists });
+  adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists, recordManaged });
+
+  // Orphan cleanup — remove files a prior version installed but this one
+  // no longer ships (uses the snapshot taken before writes). Only ever
+  // touches files we previously recorded as managed.
+  orphans = removeOrphans(target, prevManifest, _managedCollector);
 
   // Lock file — rewrite the version-of-record + managed-file set (Phase 20)
   writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector });
@@ -721,6 +779,9 @@ function upgrade(targetDir, agent) {
     console.log(`  ${label}:           ${primaryInstructionResult}`);
   }
   console.log(`  agent-rules:         ${agentRulesResult}`);
+  if (orphans.length) {
+    console.log(`  removed (orphaned):  ${orphans.length} file(s) — see 🗑 lines above`);
+  }
   console.log('');
 }
 
