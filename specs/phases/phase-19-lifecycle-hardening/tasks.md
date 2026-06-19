@@ -34,10 +34,10 @@
 - [x] ENH-042 (carryover) — session-start branch-hygiene self-audit line added to CLAUDE.md Project Extensions
 - [x] Roadmap renumber: Phase 19 = Lifecycle Hardening; Reach→20 (v0.22.0), Intelligence→21 (v0.23.0), Platform→22 (v1.0); roadmap.md Timeline + status.md Upcoming updated; Phase 18 row marked Complete (v0.20.4)
 
-## Group 4 — Cleanup (Sequential, approval-gated)
-- [ ] ENH-043 — gitignore `.claude/worktrees/` (repo + template)
-- [ ] TD-008 — fix phase-8 false retrospective, delete branch (record won't-do)
-- [ ] TD-007 — confirm-merged then delete the 16 stale origin branches (**user OK required**)
+## Group 4 — Cleanup (Sequential, approval-gated) ✅
+- [x] ENH-043 — `.gitignore` + template ignore `.claude/worktrees/`
+- [x] TD-008 — phase-8 closed won't-do: planning doc records the closure + corrects the false "shipped v0.11.0" claim; branch deleted (local + origin)
+- [x] TD-007 — deleted **14** stale origin branches (user-approved). Merge analysis corrected the naive "16": only 11 were ancestry-merged; added phase-8 (won't-do), phase-18 (squash-merged, content in main), audit/codex-runtime-gaps (superseded by v2). KEPT phase-16-adapter-parity (research record) + phase-7-subagent-engine (unreleased WIP). Local stale refs also pruned.
 
 ## Group 5 — Verification (Sequential, last)
 - [ ] `npm test` green

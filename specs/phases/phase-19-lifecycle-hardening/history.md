@@ -106,6 +106,22 @@ Detail: BUG-009 — Rule 6 dropped "(Automatic)"; its table now has an "Hook enf
 
 ---
 
+### [NOTE] 2026-06-19 — Group 4 complete: gitignore + 14 stale branches pruned
+Topics: branch-cleanup, gitignore, phase-8, td-007, td-008
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: .gitignore, core/specs-templates/.gitignore, specs/planning/unscheduled-parallel-streams.md, specs/backlog/backlog.md
+Detail: ENH-043 gitignored `.claude/worktrees/` (repo + template). TD-008: phase-8 closed won't-do (planning doc records closure + corrects the false "shipped v0.11.0" claim; branch deleted). TD-007: deleted 14 stale origin branches after a `git branch -r --merged origin/main` analysis — the naive "16" was wrong: only 11 were ancestry-merged; added phase-8 (won't-do), phase-18 (squash-merged via PR #19, content in main), and audit/codex-runtime-gaps (superseded by v2). KEPT phase-16-adapter-parity (research record) and phase-7-subagent-engine (unreleased WIP). Origin now: main, staging, phase-7-subagent-engine, phase-16-adapter-parity, phase-19-lifecycle-hardening.
+
+---
+
+### [NOTE] 2026-06-19 — Near-miss: phase-7 branch deleted then immediately restored
+Topics: branch-cleanup, recovery
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: none
+Detail: The bulk `git push origin --delete` command mistakenly included `phase-7-subagent-engine` (which the approved scope said to KEEP). Caught immediately; restored from the untouched local ref (476a0e2) via `git push origin phase-7-subagent-engine` — byte-identical, no data lost. Lesson: build destructive multi-arg branch-delete lists from the verified keep/delete split programmatically, not by hand.
+
+---
+
 ### [SCOPE_CHANGE] 2026-06-19 — Phase 19 inserted; roadmap renumbered
 Topics: roadmap
 Affects-phases: phase-19-lifecycle-hardening
