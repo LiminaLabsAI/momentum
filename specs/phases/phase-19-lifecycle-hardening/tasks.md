@@ -26,12 +26,13 @@
 - [x] ENH-044 — `/validate` treats no-active-phase as a valid state (steps 1 + 4)
 - [x] Tests: `tests/adhoc-lane.test.js` (4 tests) — 3-adapter parity, recipe steps, phase-optional recipes, status section. Suite 600→604 (+4). Fingerprints re-baselined; reminder marker `PHASE HISTORY REMINDER`→`HISTORY REMINDER` (3 assertions updated).
 
-## Group 3 — Docs Honesty & Rules (Sequential)
-- [ ] BUG-009 — relabel Rule 6 (enforced vs advised); fix `--no-verify` line
-- [ ] ENH-045 — Rule 14 escalation criteria + "lightest work type" principle
-- [ ] ENH-041 — forge-neutral server-side branch-protection docs section (no GitHub-specific code)
-- [ ] Parity: CLAUDE.md + template + `.agent/rules/project.md` + codex/antigravity AGENTS.md
-- [ ] Roadmap renumber: Phase 19 slotted; Reach→20, Intelligence→21, Platform→22
+## Group 3 — Docs Honesty & Rules (Sequential) ✅
+- [x] BUG-009 — Rule 6 retitled (dropped "(Automatic)"); table gains an "Hook enforcement" column (enforced vs advised per row); `--no-verify` red-flag now points to the real hooks + `MOMENTUM_SKIP_HOOKS`
+- [x] ENH-045 — Rule 14 (work-type escalation + "lightest type that fits" principle + red flags) in CLAUDE.md, template, and condensed agent-rules
+- [x] ENH-041 — forge-neutral "Optional hardening: server-side branch protection" note in Rule 6 (no GitHub-specific code; DIP preserved)
+- [x] Parity: live CLAUDE.md + `core/specs-templates/CLAUDE.md` + `core/agent-rules/project.md` updated. Codex/Antigravity `AGENTS.md` need no rule edits — rules reach them via `.agent/rules/project.md`. Commit-types expanded to match the hook everywhere.
+- [x] ENH-042 (carryover) — session-start branch-hygiene self-audit line added to CLAUDE.md Project Extensions
+- [x] Roadmap renumber: Phase 19 = Lifecycle Hardening; Reach→20 (v0.22.0), Intelligence→21 (v0.23.0), Platform→22 (v1.0); roadmap.md Timeline + status.md Upcoming updated; Phase 18 row marked Complete (v0.20.4)
 
 ## Group 4 — Cleanup (Sequential, approval-gated)
 - [ ] ENH-043 — gitignore `.claude/worktrees/` (repo + template)

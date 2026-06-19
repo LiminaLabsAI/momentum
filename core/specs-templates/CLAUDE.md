@@ -75,7 +75,20 @@ When completing the last task in a phase:
 - Prompt the user: "All tasks in Phase N are complete. Run `/complete-phase` to verify and release?"
 - Do NOT auto-complete a phase without user confirmation
 
-### Rule 6: Git Lifecycle (Automatic)
+### Rule 6: Git Lifecycle
+
+> **Enforced vs advised.** momentum installs git hooks that *enforce* the
+> high-stakes parts of this lifecycle (see `core/lifecycle-contract.md`):
+> `commit-msg` validates Conventional Commits; `pre-push` blocks direct pushes
+> to `main`/`staging` without the single-use `.momentum/merge-approved`
+> sentinel, and blocks release-tag pushes lacking verification evidence
+> (Rule 12). Hooks install to `.githooks/` via `core.hooksPath`. Emergency
+> bypass (auditable, preferred over `--no-verify`): `MOMENTUM_SKIP_HOOKS=1`.
+> Everything else below is agent convention, not mechanism.
+>
+> *Optional hardening:* enable your forge's server-side branch protection
+> (GitHub Rulesets / GitLab protected branches / Bitbucket permissions) as an
+> unbypassable backstop. momentum stays forge-neutral and ships no forge code.
 
 #### Starting Work
 - **Before ANY code change**, check current branch
@@ -95,15 +108,14 @@ When completing the last task in a phase:
 - Commit all remaining changes, push branch
 - **ASK the user** before merging to `staging` or `main`
 
-| Action | Auto? | Requires Approval? |
-|--------|-------|--------------------|
-| Create feature branch | Yes | No |
-| Commit to feature branch | Yes | No |
-| Push feature branch | Yes | No |
-| Delete merged feature branch | Yes (after confirmed merge) | No |
-| Merge to `staging` | No | **Yes** |
-| Merge to `main` | No | **Yes** |
-| Tag a release | No | **Yes** |
+| Action | Agent does automatically | Needs approval | Hook enforcement |
+|--------|--------------------------|----------------|------------------|
+| Create feature branch | Yes | No | — (convention) |
+| Commit to feature branch | Yes | No | `commit-msg` validates the message |
+| Push feature branch | Yes | No | `pre-push` allows (non-protected) |
+| Delete merged feature branch | Yes (after confirmed merge) | No | `/complete-phase` step 13 |
+| Merge to `staging`/`main` | No | **Yes** | `pre-push` **blocks** without `.momentum/merge-approved` |
+| Tag a release | No | **Yes** | `pre-push` **blocks** without verification evidence |
 
 #### Why
 Direct commits to `main` bypass review, history, and rollback. A single rushed commit on `main` is harder to revert than ten commits on a branch. The branch convention is the cheapest possible insurance against catastrophic mistakes.
@@ -114,7 +126,7 @@ Direct commits to `main` bypass review, history, and rollback. A single rushed c
 |---|---|
 | "Just one tiny commit to main" | One becomes ten — branch first, decide later |
 | "I'll create the branch after these edits" | The edits are the work; the branch is non-optional |
-| "The hook is in the way, --no-verify just this once" | Hooks exist because the underlying check failed before. Fix the cause. |
+| "The hook is in the way, --no-verify just this once" | The momentum hooks are real now. Fix the cause; for a genuine emergency use the auditable `MOMENTUM_SKIP_HOOKS=1`, never blanket `--no-verify`. |
 | "Force push is fine, nobody else is on this branch" | Future you is on this branch. `--force-with-lease` at minimum. |
 
 #### Anti-Rationalization Counters
@@ -287,6 +299,38 @@ If a verification command does not exist for the task, write one before marking 
 
 ---
 
+> Rule 13 (Test-Driven Development, opt-in) is defined in the condensed agent
+> rules at `.agent/rules/project.md`.
+
+### Rule 14: Work-Type Escalation — Pick the Lightest Type That Fits
+
+Not every change is a phase. momentum has three work types (see
+`specs/adhoc/README.md`):
+
+| Type | When | How |
+|---|---|---|
+| `phase` | Net-new features; cross-cutting or architectural work | `/brainstorm-phase` → `/start-phase` → … → `/complete-phase` |
+| `quick-task` | A bounded bugfix / chore / audit / dependency bump | `/hotfix` — ad-hoc record + Rule 12 gate, no phase scaffold |
+| `spike` | Time-boxed, throwaway exploration | `/hotfix --spike` — declared, gate-exempt, record what was learned |
+
+**Governing principle:** select the lightest work type that fits; escalate only
+when scope/risk/cross-cutting impact justifies it. (Per Anthropic's "build the
+simplest thing first; add structure only when it demonstrably helps.")
+
+**A quick-task MUST escalate to a phase when it:** touches more than ~5 files of
+production code, modifies anything under `specs/architecture/`, needs an ADR,
+changes a public contract/interface, or displaces a planned phase.
+
+#### Red Flags — STOP and escalate (or de-escalate)
+
+| If you find yourself thinking… | …STOP |
+|---|---|
+| "This `/hotfix` is growing — I'll just keep going" | If it now touches architecture or many files, it's a phase. Escalate. |
+| "I'll spin up a whole phase for this one-line fix" | Over-ceremony. A `/hotfix` quick-task is the right size. |
+| "It's exploratory but I'll ship it straight to main" | A spike is gate-exempt *because* it's throwaway. Harden it as a quick-task first. |
+
+---
+
 ## Naming Conventions
 
 ### Backlog IDs
@@ -317,6 +361,8 @@ If a verification command does not exist for the task, write one before marking 
 
 ### Git Commits (Conventional)
 `feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:`
+
+Also accepted by the `commit-msg` hook: `test:` `perf:` `build:` `ci:` `style:` `revert:` (standard Conventional-Commit types). Scope and breaking-change `!` are optional, e.g. `fix(install)!: …`.
 
 Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that don't ship code.
 

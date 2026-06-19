@@ -3,11 +3,11 @@
     "captured": "2026-06-19",
     "capturedFrom": "phase-19-lifecycle-hardening",
     "adapter": "antigravity",
-    "note": "Phase 19 G2 (Lifecycle Hardening) — ad-hoc work lane. ADDED /hotfix (claude command / codex skill / antigravity workflow). DRIFTED log/sync-docs/validate (phase-optional, ENH-044), check-history-reminder.sh (adhoc fallback + path), specs/status.md template (Ad-hoc/Patch Releases section). All intentional."
+    "note": "Phase 19 G3 (Lifecycle Hardening) — docs honesty + rules. DRIFTED: CLAUDE.md template (Rule 6 relabeled enforced-vs-advised + forge-neutral note, BUG-009; Rule 14 work-type escalation, ENH-045; commit-types expanded) and .agent/rules/project.md (same, condensed). Codex/Antigravity AGENTS.md unchanged — rules reach them via .agent/rules/project.md. No behavior change, doc-only."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
-    ".agent/rules/project.md": "e9e99f7b4230bfdb95a44fe967d5d7559eec7d7f559158dca3e822887b77988a",
+    ".agent/rules/project.md": "175bc78d3370130c195fb0a5c4b1cc151c5594e8c7eb1c759db0906abaa4b8ee",
     ".agent/workflows/brainstorm-idea.md": "9208587d39dd579e28565c0459650bf269130da2b1049ed31065acab054c7787",
     ".agent/workflows/brainstorm-phase.md": "e97e5525d4edd4276e91e7d80f18a27b16dc5676795e0a1262c936c89f889dbe",
     ".agent/workflows/complete-phase.md": "9d8994237718abb35b0033cc7b59b855a24f58bad78fa4a5d8b5e6f744edf170",

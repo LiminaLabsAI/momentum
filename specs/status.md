@@ -63,9 +63,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 19 | Reach | Not Started (target v0.21.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
-| 20 | Intelligence | Not Started (target v0.22.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 21 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 20 | Reach | Not Started (target v0.22.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 21 | Intelligence | Not Started (target v0.23.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 22 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
 
 ## Unscheduled Future Work
 

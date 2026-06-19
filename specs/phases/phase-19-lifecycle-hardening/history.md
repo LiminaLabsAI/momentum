@@ -98,6 +98,14 @@ Detail: The reminder now covers both phase and ad-hoc history, so the marker dro
 
 ---
 
+### [NOTE] 2026-06-19 — Group 3 complete: rule honesty + Rule 14 + renumber
+Topics: rule-6-honesty, rule-14-escalation, forge-neutral, docs, roadmap
+Affects-phases: phase-19-lifecycle-hardening
+Affects-specs: CLAUDE.md, core/specs-templates/CLAUDE.md, core/agent-rules/project.md, specs/planning/roadmap.md, specs/status.md
+Detail: BUG-009 — Rule 6 dropped "(Automatic)"; its table now has an "Hook enforcement" column distinguishing the hook-enforced rows (commit-msg, merge gate, tag gate) from convention; the `--no-verify` red flag points to the real hooks + `MOMENTUM_SKIP_HOOKS`. ENH-045 — added Rule 14 (work-type escalation). ENH-041 — forge-neutral server-side branch-protection note (no GitHub code). Applied to all three rule surfaces; AGENTS.md needs none (rules reach codex/antigravity via .agent/rules/project.md). Roadmap renumbered (Reach→20, Intelligence→21, Platform→22). Suite 604/604; fingerprints re-baselined (template CLAUDE.md + agent-rules).
+
+---
+
 ### [SCOPE_CHANGE] 2026-06-19 — Phase 19 inserted; roadmap renumbered
 Topics: roadmap
 Affects-phases: phase-19-lifecycle-hardening
