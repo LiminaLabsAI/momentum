@@ -5,6 +5,10 @@
 # momentum brainstorm-gate sentinel directory
 .momentum/
 
+# Ephemeral agent worktrees (momentum does not manage these — your coding
+# agent creates them; they must never pollute tracked state)
+.claude/worktrees/
+
 # Node
 node_modules/
 *.log

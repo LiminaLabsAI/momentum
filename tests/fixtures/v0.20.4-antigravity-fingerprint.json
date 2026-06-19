@@ -3,7 +3,7 @@
     "captured": "2026-06-19",
     "capturedFrom": "phase-19-lifecycle-hardening",
     "adapter": "antigravity",
-    "note": "Phase 19 G3 (Lifecycle Hardening) — docs honesty + rules. DRIFTED: CLAUDE.md template (Rule 6 relabeled enforced-vs-advised + forge-neutral note, BUG-009; Rule 14 work-type escalation, ENH-045; commit-types expanded) and .agent/rules/project.md (same, condensed). Codex/Antigravity AGENTS.md unchanged — rules reach them via .agent/rules/project.md. No behavior change, doc-only."
+    "note": "Phase 19 G4 (Lifecycle Hardening) — ENH-043: gitignore .claude/worktrees/ (agent worktrees) in the template. Single-line additive change to the scaffolded .gitignore."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -40,7 +40,7 @@
     ".githooks/contract.js": "e4fcdd241c3be85ac53135c1c093c7066391898c211e4be28c3cb9cdd50f2c88",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
-    ".gitignore": "5b33fc8beb30c61c482fe55efc25e4958398c986e1bc31544c3e37823597af66",
+    ".gitignore": "66855f69f8055dd7f7f8a792c9b8f148736492dd5e7ab33b7563bda365aec2ad",
     "AGENTS.md": "4fc6e3e34efc7518a910b49fe9cdb907722f142d0593454c98f68c8f7e16d78c",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
