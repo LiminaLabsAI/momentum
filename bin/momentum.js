@@ -890,6 +890,62 @@ function formatStaleCliWarning(current, latest) {
   ].join('\n');
 }
 
+// ── Autostash (Phase 20 follow-up) ───────────────────────────────────────────
+//
+// Lets a DIRTY repo be upgraded without committing/stashing by hand: stash the
+// in-flight work (incl. untracked), run the upgrade on the now-clean tree, then
+// restore the work exactly as it was. Mirrors `git rebase --autostash`.
+//
+// Safety invariant: on a pop that can't apply cleanly (the upgrade touched a
+// file the user had also changed), we NEVER drop the stash — the user's work
+// stays recoverable in `git stash list`, and we say so loudly.
+
+/** Returns `git status --porcelain` output, or null if not a git repo. */
+function gitPorcelain(repoPath) {
+  const r = spawnSync('git', ['-C', repoPath, 'status', '--porcelain'], { encoding: 'utf8' });
+  return r.status === 0 ? (r.stdout || '') : null;
+}
+
+/**
+ * Run `fn` (an upgrade) inside a stash/pop so a dirty working tree is preserved.
+ * No-op wrapper when the tree is already clean or not a git repo.
+ * Returns { stashed, restored, conflict, result }.
+ */
+function withAutostash(repoPath, fn) {
+  const status = gitPorcelain(repoPath);
+  const dirty = status !== null && status.trim().length > 0;
+  if (!dirty) return { stashed: false, restored: true, conflict: false, result: fn() };
+
+  const push = spawnSync(
+    'git',
+    ['-C', repoPath, 'stash', 'push', '--include-untracked', '-m', 'momentum-autostash'],
+    { encoding: 'utf8' },
+  );
+  if (push.status !== 0) {
+    throw new Error(`autostash: \`git stash\` failed — ${(push.stderr || '').trim()}`);
+  }
+  console.log('  ⎘ autostash: stashed your in-flight work (will restore after upgrade).');
+
+  let result, conflict = false, restored = false;
+  try {
+    result = fn();
+  } finally {
+    const pop = spawnSync('git', ['-C', repoPath, 'stash', 'pop'], { encoding: 'utf8' });
+    if (pop.status === 0) {
+      restored = true;
+      console.log('  ⎗ autostash: restored your in-flight work.');
+    } else {
+      // Pop failed (overlap with what the upgrade wrote). DO NOT drop the stash.
+      conflict = true;
+      console.log('  ⚠️  autostash: could not re-apply your changes cleanly — the upgrade');
+      console.log('     touched a file you had also modified. YOUR WORK IS SAFE in the stash:');
+      console.log(`       (cd "${repoPath}" && git stash list)   # your changes are stash@{0}`);
+      console.log('       resolve by hand: `git checkout-index -a` is NOT needed — run `git stash pop` and fix conflicts.');
+    }
+  }
+  return { stashed: true, restored, conflict, result };
+}
+
 function checkForUpdates() {
   return new Promise((resolve) => {
     const https = require('https');
@@ -970,6 +1026,7 @@ Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
   --dry-run                           init/upgrade: preview the action set; write nothing
+  --autostash                         upgrade: stash a dirty tree, upgrade, then restore it
   --no-ecosystem                      Skip the post-init auto-detect prompt
   -h, --help                          Show this help message
   -v, --version                       Show version number
@@ -1224,13 +1281,20 @@ async function main() {
     }
   } else if (args[0] === 'upgrade') {
     const dryRun = args.includes('--dry-run');
+    const autostash = args.includes('--autostash');
     const targetDir = args.slice(1).find((a) => !a.startsWith('--')) || process.cwd();
     try {
       // Warn (don't block) if the installed CLI is behind the published latest —
       // upgrade can only ever install files as new as the CLI itself.
       const staleWarning = formatStaleCliWarning(pkg.version, await updateCheckPromise);
       if (staleWarning) console.log(staleWarning);
-      upgrade(targetDir, agent, { dryRun });
+      // --autostash: stash a dirty tree, upgrade, restore. Dry-run writes
+      // nothing, so it never needs to stash.
+      if (autostash && !dryRun) {
+        withAutostash(path.resolve(targetDir), () => upgrade(targetDir, agent, { dryRun }));
+      } else {
+        upgrade(targetDir, agent, { dryRun });
+      }
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
@@ -1336,6 +1400,8 @@ module.exports = {
   detectOverlayConflicts,
   isNewerVersion,
   formatStaleCliWarning,
+  gitPorcelain,
+  withAutostash,
   MARKER,
   DEFAULT_OVERLAY_DESTS,
   listAvailableAgents,
