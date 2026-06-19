@@ -66,7 +66,7 @@ module.exports = {
   },
 
   runInstall(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists, recordManaged } = helpers;
+    const { copyFile, fileExists, recordManaged, dryRun } = helpers;
 
     console.log('→ Configuring Codex hooks...');
     const hooksDest = path.join(targetDir, '.codex', 'hooks.json');
@@ -79,11 +79,12 @@ module.exports = {
     }
 
     console.log('→ Transforming recipes into native Codex skills...');
-    transformCommandsIntoSkills(targetDir, recordManaged);
+    if (dryRun) console.log('  ✋ would generate skills at .agents/skills/ from recipes');
+    else transformCommandsIntoSkills(targetDir, recordManaged);
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists, recordManaged } = helpers;
+    const { copyFile, fileExists, recordManaged, dryRun } = helpers;
 
     console.log('→ Upgrading Codex hooks...');
     const src = path.join(adapterDir, 'hooks.json');
@@ -94,17 +95,22 @@ module.exports = {
       const srcContent = fs.readFileSync(src, 'utf8');
       const destContent = fs.readFileSync(dest, 'utf8');
       if (srcContent !== destContent) {
-        fs.copyFileSync(dest, dest + '.bak');
-        copyFile(src, dest);
-        console.log('  ↑ upgraded: .codex/hooks.json (original saved as .bak)');
+        if (dryRun) {
+          console.log('  ✋ would upgrade: .codex/hooks.json');
+        } else {
+          fs.copyFileSync(dest, dest + '.bak');
+          copyFile(src, dest);
+          console.log('  ↑ upgraded: .codex/hooks.json (original saved as .bak)');
+        }
       }
     } else {
       copyFile(src, dest);
-      console.log('  + added:    .codex/hooks.json');
+      console.log(`  ${dryRun ? '✋ would add:    ' : '+ added:   '} .codex/hooks.json`);
     }
 
     console.log('→ Re-generating Codex skills from recipes...');
-    transformCommandsIntoSkills(targetDir, recordManaged);
+    if (dryRun) console.log('  ✋ would re-generate skills at .agents/skills/ from recipes');
+    else transformCommandsIntoSkills(targetDir, recordManaged);
   },
 
   // Phase 18 G1 — adapter.spawn(directive) for Codex.

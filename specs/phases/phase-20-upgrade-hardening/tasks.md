@@ -10,11 +10,12 @@
 - [x] Fingerprint tests exclude `.momentum/` (generated runtime state, non-deterministic) — baselines unchanged, no re-capture needed
 - [x] Tests: `tests/installed-manifest.test.js` (5) — well-formed lock file; specs excluded + tool files included; sha256 integrity; upgrade preserves installedAt; codex agent recorded. Suite **604 → 609** (+5), all green
 
-## Group 1 — Safe upgrade: orphan cleanup + BUG-008 + dry-run (∥ G2)
-- [ ] Orphan cleanup on upgrade (diff old vs new manifest; back up + remove; only previously-managed files eligible)
-- [ ] BUG-008 — `init` backs up momentum-owned files before overwrite (no silent clobber)
-- [ ] ENH-040 — `--dry-run` for `init` + `upgrade` (thread `opts.dryRun`, gate all fs writes, print planned actions, exit 0)
-- [ ] Tests: orphan removed; user file preserved; init no-clobber; dry-run writes nothing
+## Group 1 — Safe upgrade: orphan cleanup + BUG-008 + dry-run (∥ G2) ✅
+- [x] Orphan cleanup on upgrade — `removeOrphans()` diffs prev-manifest vs current managed set; backs up + removes; only previously-managed files eligible; no-op when no prior lock file (pre-Phase-20 installs upgrade safely)
+- [x] **Adapter recordManaged fix** — adapters now record owned config (settings.json/hooks.json + codex generated skills) via `helpers.recordManaged` regardless of rewrite; fixes a near-miss where orphan cleanup deleted adapter hook config on the identical-skip path. 3-adapter regression test added.
+- [x] BUG-008 — `init` backs up momentum-owned files before overwrite via `copyDir` `backup` mode (commands/scripts/engines/overlay); fresh installs stay quiet
+- [x] ENH-040 — `--dry-run` for `init` + `upgrade`: module-level `_dryRun` gates every fs-mutation + post-copy chmod/readdir loops + adapter direct writes + git-hook config + manifest + orphan removal; threaded into all 3 adapters via `helpers.dryRun`; prints planned action set (`✋ would …`), exit 0
+- [x] Tests: `tests/upgrade-safety.test.js` (7) + `tests/dry-run.test.js` (5) — orphan removed/preserved/manifest-dropped; user files untouched; BUG-008 re-init backup; fresh-init no .bak; 3-adapter config-survives; dry-run writes nothing (init + 3-adapter upgrade byte-unchanged + orphan-not-removed). Suite **609 → 621**, all green
 
 ## Group 2 — Distribution hardening (∥ G1)
 - [ ] Pin `@latest` across README + site docs (getting-started, ide-support, ecosystem, InstallSnippet.astro)

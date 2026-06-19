@@ -86,7 +86,7 @@ module.exports = {
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists, recordManaged } = helpers;
+    const { copyFile, fileExists, recordManaged, dryRun } = helpers;
 
     // .claude/settings.json
     console.log('→ Upgrading Claude Code hooks...');
@@ -98,14 +98,18 @@ module.exports = {
       const srcContent = fs.readFileSync(src, 'utf8');
       const destContent = fs.readFileSync(dest, 'utf8');
       if (srcContent !== destContent) {
-        fs.copyFileSync(dest, dest + '.bak');
-        copyFile(src, dest);
-        console.log(`  ↑ upgraded: .claude/settings.json (original saved as .bak)`);
+        if (dryRun) {
+          console.log('  ✋ would upgrade: .claude/settings.json');
+        } else {
+          fs.copyFileSync(dest, dest + '.bak');
+          copyFile(src, dest);
+          console.log(`  ↑ upgraded: .claude/settings.json (original saved as .bak)`);
+        }
       }
       // identical — silent skip
     } else {
       copyFile(src, dest);
-      console.log(`  + added:    .claude/settings.json`);
+      console.log(`  ${dryRun ? '✋ would add:    ' : '+ added:   '} .claude/settings.json`);
     }
   },
 

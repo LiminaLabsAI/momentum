@@ -77,7 +77,7 @@ module.exports = {
   },
 
   runUpgrade(targetDir, adapterDir, helpers) {
-    const { copyFile, fileExists, recordManaged } = helpers;
+    const { copyFile, fileExists, recordManaged, dryRun } = helpers;
 
     console.log('→ Upgrading Antigravity hooks...');
     const src = path.join(adapterDir, 'hooks.json');
@@ -88,9 +88,13 @@ module.exports = {
       const srcContent = fs.readFileSync(src, 'utf8');
       const destContent = fs.readFileSync(dest, 'utf8');
       if (srcContent !== destContent) {
-        fs.copyFileSync(dest, dest + '.bak');
-        copyFile(src, dest);
-        console.log('  ↑ upgraded: .agents/hooks.json (original saved as .bak)');
+        if (dryRun) {
+          console.log('  ✋ would upgrade: .agents/hooks.json');
+        } else {
+          fs.copyFileSync(dest, dest + '.bak');
+          copyFile(src, dest);
+          console.log('  ↑ upgraded: .agents/hooks.json (original saved as .bak)');
+        }
       }
     } else {
       copyFile(src, dest);
