@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-06-15
-> **Current Phase**: _none active_
+> **Last Updated**: 2026-06-19
+> **Current Phase**: Phase 19 — Lifecycle Hardening (in progress)
 > **Latest Release**: v0.20.4 — Phase 18 Swarm Parity (Codex + Antigravity)
 > **Health**: On Track
 
@@ -43,7 +43,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 18 released as v0.20.4; tagged + GitHub Release `Latest` + npm `@avinash-singh-io/momentum@0.20.4` live)_ | | | |
+| 19 | Lifecycle Hardening | In Progress | Branch `phase-19-lifecycle-hardening`; Group 0 (Contracts) starting. Target v0.21.0. |
 
 > Phase 8 (Parallel Worktree Orchestration) was implemented on the
 > `phase-8-parallel-worktrees` branch but has not been merged or

@@ -21,7 +21,8 @@
 | 16 | Codex & Antigravity Adapter Rework (Native-Idiom) | Complete (v0.19.0) | [phase-16-adapter-rework/](phase-16-adapter-rework/) |
 | 17 | Swarm — Single-Session Multi-Project Feature Delivery (Claude Code) | Complete (v0.20.0) | [phase-17-swarm/](phase-17-swarm/) |
 | 17.5 | Swarm Portability | Complete (v0.20.2 — pending release) | [phase-17-5-swarm-portability/](phase-17-5-swarm-portability/) |
-| 18 | Swarm Parity (Codex + Antigravity) | Complete on branch (v0.20.4 pending release) | [phase-18-swarm-parity/](phase-18-swarm-parity/) |
+| 18 | Swarm Parity (Codex + Antigravity) | Complete (v0.20.4) | [phase-18-swarm-parity/](phase-18-swarm-parity/) |
+| 19 | Lifecycle Hardening | In Progress (target v0.21.0) | [phase-19-lifecycle-hardening/](phase-19-lifecycle-hardening/) |
 
 ## Phase Structure
 
