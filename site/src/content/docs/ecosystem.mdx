@@ -119,6 +119,38 @@ root, or an ecosystem member, plus detected issues with the state files.
 Walk-and-check covers parent dirs AND sibling dirs (the ecosystem root is
 typically a sibling of members, not an ancestor).
 
+### Upgrade every member at once
+
+```bash
+# From the ecosystem root (or any member):
+npm install -g @avinash-singh-io/momentum@latest   # update the CLI first
+momentum ecosystem upgrade
+```
+
+Sweeps `momentum upgrade` across every member in one pass — no more `cd`-ing
+into each repo. It's a **pull** sweep over your local checkouts (no bot, no
+forge integration), so it stays vendor-neutral. Per member it:
+
+- **skips a dirty working tree** (commit/stash first, or pass `--force`) so an
+  upgrade never lands on top of unrelated uncommitted work;
+- **detects the adapter** from that repo's `.momentum/installed.json` lock file
+  (override with `--agent <name>`);
+- runs the upgrade and reports the momentum version **before → after**;
+- **tolerates partial failure** — one bad repo never aborts the fleet.
+
+Preview the whole sweep without writing anything:
+
+```bash
+momentum ecosystem upgrade --dry-run
+```
+
+:::note[The CLI version bounds the result]
+`momentum upgrade` copies files from the *installed* CLI, not from npm — so a
+member can only ever be as new as your CLI. Always `npm i -g
+@avinash-singh-io/momentum@latest` before a sweep. See the
+[FAQ](/faq/#how-do-i-upgrade-an-existing-project) for the full upgrade model.
+:::
+
 ### Leave an ecosystem
 
 ```bash
