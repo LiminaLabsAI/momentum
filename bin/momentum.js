@@ -1196,13 +1196,9 @@ async function main() {
     args.splice(agentFlagIdx, 2);
   }
 
-  // Extract --dry-run flag (init + upgrade): preview the action set, write nothing.
-  let dryRun = false;
-  const dryRunIdx = args.indexOf('--dry-run');
-  if (dryRunIdx !== -1) {
-    dryRun = true;
-    args.splice(dryRunIdx, 1);
-  }
+  // --dry-run is parsed per-command (init/upgrade here; `ecosystem upgrade`
+  // parses its own) — NOT stripped globally, or the ecosystem sweep would
+  // never see it.
 
   // Start update check concurrently — runs while command executes
   const updateCheckPromise = checkForUpdates();
@@ -1215,7 +1211,8 @@ async function main() {
   } else if (args[0] === '--version' || args[0] === '-v') {
     console.log(pkg.version);
   } else if (args[0] === 'init') {
-    const initOpts = extractInitFlags(args);
+    const dryRun = args.includes('--dry-run');
+    const initOpts = extractInitFlags(args.filter((a) => a !== '--dry-run'));
     const targetDir = initOpts.target || process.cwd();
     try {
       init(targetDir, agent, { dryRun });
@@ -1226,7 +1223,8 @@ async function main() {
       exitCode = 1;
     }
   } else if (args[0] === 'upgrade') {
-    const targetDir = args[1] || process.cwd();
+    const dryRun = args.includes('--dry-run');
+    const targetDir = args.slice(1).find((a) => !a.startsWith('--')) || process.cwd();
     try {
       // Warn (don't block) if the installed CLI is behind the published latest —
       // upgrade can only ever install files as new as the CLI itself.
@@ -1331,11 +1329,6 @@ async function main() {
   process.exit(exitCode);
 }
 
-// Run only when invoked as a CLI, not when required by tests.
-if (require.main === module) {
-  main();
-}
-
 module.exports = {
   // Pure helpers (unit-testable)
   partitionByMarker,
@@ -1355,3 +1348,11 @@ module.exports = {
   init,
   upgrade,
 };
+
+// Run only when invoked as a CLI, not when required by tests.
+// NOTE: exports MUST be assigned above this line — main() dispatches the
+// `ecosystem upgrade` sweep synchronously, which require()s this module back;
+// if exports weren't set yet, `upgrade` would be undefined (circular require).
+if (require.main === module) {
+  main();
+}

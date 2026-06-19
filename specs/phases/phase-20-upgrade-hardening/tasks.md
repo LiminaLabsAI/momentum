@@ -23,12 +23,13 @@
 - [x] FAQ fix: corrected the false "`momentum upgrade` fetches from the npm registry" claim (it copies from the installed CLI; only network call is the version check); rewrote the upgrade section around the two-step model + `@latest` + safety (marker/.bak/orphan/dry-run) + ecosystem sweep; dropped the stale BUG-006 "known regression" note (fixed v0.20.3)
 - [x] Tests: `tests/stale-cli-warning.test.js` (4) — warns when behind; silent when current / null / ahead. Suite **621 → 625**, all green
 
-## Group 3 — Ecosystem batch upgrade (Sequential, needs G0 + G1)
-- [ ] `momentum ecosystem upgrade [--dry-run] [--force] [--agent <a>]` in `bin/ecosystem.js`
-- [ ] Per member: existence check → dirty-tree gate (skip unless `--force`) → detect agent → run `upgrade()` in-process → capture result
-- [ ] Per-repo version report (before → after), partial-failure tolerance, fleet summary
-- [ ] Usage text + `momentum doctor` per-repo version
-- [ ] Tests: synthetic 2-repo fixture — clean upgrades / dirty skipped / missing reported / summary / dry-run no-op
+## Group 3 — Ecosystem batch upgrade (Sequential, needs G0 + G1) ✅
+- [x] `momentum ecosystem upgrade [--dry-run] [--force] [--agent <a>]` in `bin/ecosystem.js` (PULL model — vendor-neutral over local checkouts, NOT a forge bot)
+- [x] Per member: existence check → dirty-tree gate (`git status --porcelain`, skip unless `--force`; non-git = clean) → detect agent (`detectMemberAgent`: lock file authoritative, else heuristic) → run `upgrade()` in-process → capture result
+- [x] Per-repo version report (`before → after` from lock file), partial-failure tolerance (one bad repo never aborts the fleet), `printSweepSummary` with per-status counts
+- [x] **Circular-require fix**: moved `module.exports` above the `if (require.main === module) main()` line in `bin/momentum.js` — the in-process sweep require()s the module back during main()'s synchronous dispatch; exports had to be set first. **Flag-scoping fix**: `--dry-run` is parsed per-command, not stripped globally, or the ecosystem subcommand never saw it.
+- [x] Usage text updated (dispatch + `printUsage`); `momentum doctor` per-repo version DEFERRED (sweep already reports before→after; minor)
+- [x] Tests: `tests/ecosystem-upgrade.test.js` (4) — clean sweep + per-repo report; dirty skipped then `--force` upgrades; `--dry-run` leaves members byte-unchanged; missing member reported + sweep continues. Suite **625 → 629**, all green
 
 ## Group 4 — Verify, docs, release prep (Sequential, last)
 - [ ] `npm test` green; re-baseline 3 install fingerprints (installed.json is expected new file) with meta
