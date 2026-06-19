@@ -72,11 +72,11 @@ story is a **PULL-model sweep** (mani-style), NOT a forge-coupled PUSH bot
 
 ## Verification Evidence
 
-- **Test suite**: `npm test` → **629/629 passing** (581 v0.21.0 baseline + 48
-  new across `installed-manifest` (5), `upgrade-safety` (7), `dry-run` (5),
-  `stale-cli-warning` (4), `ecosystem-upgrade` (4) + adapter recordManaged
-  regression). Fingerprints (claude-code/codex/antigravity) green with
-  baselines unchanged.
+- **Test suite**: `npm test` → **629/629 passing** (604 v0.21.0 baseline + 25
+  new: `installed-manifest` (5), `upgrade-safety` (7, incl. the 3-adapter
+  recordManaged regression), `dry-run` (5), `stale-cli-warning` (4),
+  `ecosystem-upgrade` (4)). Fingerprints (claude-code/codex/antigravity) green
+  with baselines unchanged.
 - **E2E smoke** (temp git repo, fresh from this session):
   - init writes `.momentum/installed.json` — `version=0.21.0 agent=claude-code
     managed=34 specs-excluded=true`.
