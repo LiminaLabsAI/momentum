@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-06-20
 > **Current Phase**: _none active_
-> **Latest Release**: v0.22.1 — `--autostash` for upgrade / ecosystem upgrade
+> **Latest Release**: v0.22.3 — BUG-011: additive/self-healing git-hook install
 > **Health**: On Track
 
 ## Summary
@@ -49,6 +49,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 |---------|------|------|---------|
 | v0.20.1 | 2026-06-13 | audit/patch | Codex Runtime Refresh (BUG-007 + ENH-036) — moved here from Completed Phases (was a `—` row) |
 | v0.20.3 | 2026-06-15 | patch | BUG-006 fix (CLAUDE.md project-name substitution) — moved here from Completed Phases (was a `—` row) |
+| v0.22.3 | 2026-06-20 | bugfix/patch | BUG-011 — `init`/`upgrade` git-hook install made additive/self-healing (was skipping entirely when `core.hooksPath` ≠ `.githooks`, leaving repos with zero enforcement). Picked up via `/continue` handoff-001 from cerebrio-sapience. |
 
 ## Active Phase
 
