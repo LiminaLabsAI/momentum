@@ -81,3 +81,11 @@ roadmap renumbered (Reach→21, Intelligence→22, Platform→23). Merge to main
 tag + GitHub Release + npm publish are gated on explicit user approval.
 
 ---
+
+### [NOTE] 2026-06-20 — Picked up handoff-001 from cerebrio-sapience
+Topics: orchestration, handoff-pickup, handoff-001
+Affects-phases: phase-20-upgrade-hardening (or "none")
+Affects-specs: .momentum/inbox/read/handoff-001.md
+Detail: Received handoff from cerebrio-sapience. Summary: BUG: init/upgrade skips git-hook install whenever core.hooksPath is set (even to the default .git/hooks) without checking if momentum hooks are present — repos end up with zero enforcement hooks while install reports success. Make hook install additive/self-healing.
+
+---

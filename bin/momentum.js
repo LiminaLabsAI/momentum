@@ -600,49 +600,119 @@ function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
 //
 // Warn-not-clobber (the BUG-008 lesson): if the target already uses a custom
 // `core.hooksPath` or husky, momentum skips rather than overwriting.
+// True if `filePath` is one of momentum's own shipped hook files (vs a foreign
+// hook of the same name). Recognizes the current header signature AND legacy
+// pre-BUG-011 installs, so `upgrade` can self-heal older repos in place.
+function isMomentumHookFile(filePath) {
+  try {
+    if (!fs.existsSync(filePath)) return false;
+    const c = fs.readFileSync(filePath, 'utf8');
+    return /momentum[^\n]*hook/i.test(c) || c.includes('Lifecycle Hardening');
+  } catch {
+    return false;
+  }
+}
+
+// Install momentum's hook files into `hooksDest` ADDITIVELY (BUG-011):
+//   missing            → install it
+//   existing & ours    → upgrade in place (.bak first)
+//   existing & foreign → leave untouched (warn-not-clobber)
+// Skips macOS AppleDouble (`._*`) sidecars so exFAT volumes don't leak junk.
+function installHookFiles(hooksSrc, hooksDest) {
+  const out = { installed: [], upgraded: [], skipped: [] };
+  if (!_dryRun) fs.mkdirSync(hooksDest, { recursive: true });
+  for (const f of fs.readdirSync(hooksSrc)) {
+    if (f.startsWith('._') || f === '.DS_Store') continue;
+    const srcF = path.join(hooksSrc, f);
+    if (!fs.statSync(srcF).isFile()) continue;
+    const destF = path.join(hooksDest, f);
+    if (fs.existsSync(destF)) {
+      if (isMomentumHookFile(destF)) {
+        if (!_dryRun) {
+          fs.copyFileSync(destF, destF + '.bak');
+          fs.copyFileSync(srcF, destF);
+        }
+        recordManaged(destF);
+        out.upgraded.push(f);
+      } else {
+        out.skipped.push(f); // foreign hook — never clobber
+      }
+    } else {
+      if (!_dryRun) fs.copyFileSync(srcF, destF);
+      recordManaged(destF);
+      out.installed.push(f);
+    }
+  }
+  return out;
+}
+
 function installGitHooks(src, target, opts = {}) {
   const hooksSrc = path.join(src, 'core', 'git-hooks');
   if (!fs.existsSync(hooksSrc)) return;
 
   const ourPath = LIFECYCLE.hooksPath; // '.githooks'
   const isGitRepo = fs.existsSync(path.join(target, '.git'));
-  const huskyPresent = fs.existsSync(path.join(target, '.husky'));
 
-  let existingHooksPath = '';
-  if (isGitRepo) {
-    const r = spawnSync('git', ['-C', target, 'config', '--local', '--get', 'core.hooksPath'], {
-      encoding: 'utf8',
-    });
-    existingHooksPath = (r.stdout || '').trim();
-  }
-
-  if (huskyPresent || (existingHooksPath && existingHooksPath !== ourPath)) {
-    const which = huskyPresent ? 'husky (.husky/)' : `core.hooksPath=${existingHooksPath}`;
-    console.log(`  ⚠️  git hooks: target already uses ${which} — skipping momentum git-hook install.`);
+  // husky is the one genuine skip — momentum won't fight a husky setup.
+  if (fs.existsSync(path.join(target, '.husky'))) {
+    console.log(`  ⚠️  git hooks: target uses husky (.husky/) — skipping momentum git-hook install.`);
     console.log(`     To enable manually, copy core/git-hooks/* into your hooks dir.`);
     return;
   }
 
-  // Copy hook files into <target>/.githooks/ (upgrade-aware via copyDir opts).
-  const hooksDest = path.join(target, ourPath);
-  copyDir(hooksSrc, hooksDest, opts.upgradeMode ? { upgradeMode: true, root: target } : {});
-  if (_dryRun) {
-    console.log(`  ✋ would set core.hooksPath → ${ourPath}/`);
-    return;
-  }
-  // Executable bit on every shipped hook file except the .md/.js libs (only
-  // git-named hooks run, but +x is harmless and keeps the dispatcher runnable).
-  for (const f of fs.readdirSync(hooksDest)) {
-    const fp = path.join(hooksDest, f);
-    if (fs.statSync(fp).isFile() && !f.endsWith('.md')) fs.chmodSync(fp, 0o755);
+  let existingHooksPath = '';
+  if (isGitRepo) {
+    const cfg = spawnSync('git', ['-C', target, 'config', '--local', '--get', 'core.hooksPath'], {
+      encoding: 'utf8',
+    });
+    existingHooksPath = (cfg.stdout || '').trim();
   }
 
-  if (isGitRepo) {
+  // BUG-011: when a core.hooksPath is already configured (even the default
+  // .git/hooks), RESPECT it and install momentum's hooks ADDITIVELY into it.
+  // The old guard skipped the install entirely in this case, leaving repos with
+  // zero enforcement hooks while reporting success. Only adopt .githooks and
+  // set the config ourselves when nothing is configured.
+  const usingConfiguredPath = !!(existingHooksPath && existingHooksPath !== ourPath);
+  const destRel = usingConfiguredPath ? existingHooksPath : ourPath;
+  const hooksDest = path.isAbsolute(destRel) ? destRel : path.join(target, destRel);
+
+  const res = installHookFiles(hooksSrc, hooksDest);
+
+  if (_dryRun) {
+    console.log(
+      `  ✋ would ${usingConfiguredPath ? `install momentum hooks into ${destRel}/` : `set core.hooksPath → ${ourPath}/`}`
+    );
+    return;
+  }
+
+  // Executable bit on the hook files we just wrote (git only execs the
+  // git-named wrappers, but +x is harmless on the node libs).
+  for (const f of [...res.installed, ...res.upgraded]) {
+    if (f.endsWith('.md')) continue;
+    const fp = path.join(hooksDest, f);
+    if (fs.existsSync(fp)) fs.chmodSync(fp, 0o755);
+  }
+
+  // Adopt .githooks + point core.hooksPath at it only when nothing was set.
+  if (isGitRepo && !usingConfiguredPath) {
     spawnSync('git', ['-C', target, 'config', '--local', 'core.hooksPath', ourPath]);
-    console.log(`  ✓ git hooks installed → .githooks/ (core.hooksPath set).`);
-  } else {
-    console.log(`  ⚠️  not a git repo — hooks copied to .githooks/; after 'git init' run:`);
-    console.log(`       git config core.hooksPath ${ourPath}`);
+  }
+
+  if (res.installed.length + res.upgraded.length > 0) {
+    const where = usingConfiguredPath
+      ? `${destRel}/ (your configured core.hooksPath)`
+      : `.githooks/ (core.hooksPath set)`;
+    console.log(`  ✓ git hooks installed → ${where}.`);
+  } else if (res.skipped.length === 0) {
+    console.log(`  ✓ git hooks: already current at ${destRel}/.`);
+  }
+  for (const f of res.skipped) {
+    console.log(`  ⚠️  git hooks: ${destRel}/${f} exists and is not momentum's — left untouched.`);
+  }
+  if (!isGitRepo) {
+    console.log(`  ⚠️  not a git repo — hooks copied to ${destRel}/; after 'git init' run:`);
+    console.log(`       git config core.hooksPath ${destRel}`);
   }
 }
 

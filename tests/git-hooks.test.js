@@ -89,18 +89,87 @@ test('commit-msg: rejects non-conventional, accepts conventional, honors escape 
   }
 });
 
-test('init warns and does NOT clobber a pre-existing custom core.hooksPath', () => {
-  const tmp = mktmp('momentum-githooks-clobber-');
+test('BUG-011: init installs ADDITIVELY into a configured core.hooksPath (no skip, no relocate)', () => {
+  const tmp = mktmp('momentum-githooks-configured-');
   const repo = path.join(tmp, 'proj');
   fs.mkdirSync(repo);
   git(repo, ['init', '-q']);
-  git(repo, ['config', 'core.hooksPath', 'my-existing-hooks']);
+  git(repo, ['config', 'user.email', 'test@momentum.test']);
+  git(repo, ['config', 'user.name', 'Momentum Test']);
+  // Reproduce the reported bug: core.hooksPath explicitly set to the git
+  // default, holding only .sample files (no real hooks).
+  git(repo, ['config', 'core.hooksPath', '.git/hooks']);
   try {
     const res = runCli(['init', repo, '--agent', 'claude-code']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
-    const hp = git(repo, ['config', '--local', '--get', 'core.hooksPath']);
-    assert.equal(hp.stdout.trim(), 'my-existing-hooks', 'must not overwrite custom hooks path');
-    assert.match(res.stdout, /skipping momentum git-hook install/i);
+    // momentum hooks installed INTO the configured path...
+    for (const f of ['commit-msg', 'pre-push', 'run-check.js', 'contract.js']) {
+      assert.ok(fs.existsSync(path.join(repo, '.git', 'hooks', f)), `missing .git/hooks/${f}`);
+    }
+    for (const f of ['commit-msg', 'pre-push']) {
+      assert.ok(fs.statSync(path.join(repo, '.git', 'hooks', f)).mode & 0o100, `.git/hooks/${f} not executable`);
+    }
+    // ...the user's path choice is respected (NOT relocated to .githooks)...
+    assert.equal(git(repo, ['config', '--local', '--get', 'core.hooksPath']).stdout.trim(), '.git/hooks');
+    // ...and enforcement is actually live at that path.
+    const bad = git(repo, ['commit', '--allow-empty', '-m', 'nope not conventional']);
+    assert.notEqual(bad.status, 0, 'commit-msg should enforce at the configured path');
+    assert.match(bad.stderr, /Conventional Commit/);
+  } finally {
+    rmrf(tmp);
+  }
+});
+
+test('git hooks: a foreign hook of the same name is never clobbered (warn-not-clobber)', () => {
+  const tmp = mktmp('momentum-githooks-foreign-');
+  const repo = path.join(tmp, 'proj');
+  fs.mkdirSync(repo);
+  git(repo, ['init', '-q']);
+  git(repo, ['config', 'core.hooksPath', '.git/hooks']);
+  const foreign = '#!/bin/sh\necho "my own hook"\nexit 0\n';
+  fs.writeFileSync(path.join(repo, '.git', 'hooks', 'commit-msg'), foreign);
+  try {
+    const res = runCli(['init', repo, '--agent', 'claude-code']);
+    assert.equal(res.status, 0, `init failed: ${res.stderr}`);
+    // foreign commit-msg left byte-for-byte untouched...
+    assert.equal(fs.readFileSync(path.join(repo, '.git', 'hooks', 'commit-msg'), 'utf8'), foreign);
+    assert.match(res.stdout, /not momentum's — left untouched/i);
+    // ...but pre-push (name was free) still installs.
+    assert.ok(fs.existsSync(path.join(repo, '.git', 'hooks', 'pre-push')), 'pre-push should still install');
+  } finally {
+    rmrf(tmp);
+  }
+});
+
+test('git hooks: a husky setup is a genuine skip', () => {
+  const tmp = mktmp('momentum-githooks-husky-');
+  const repo = path.join(tmp, 'proj');
+  fs.mkdirSync(repo);
+  git(repo, ['init', '-q']);
+  fs.mkdirSync(path.join(repo, '.husky'));
+  try {
+    const res = runCli(['init', repo, '--agent', 'claude-code']);
+    assert.equal(res.status, 0, `init failed: ${res.stderr}`);
+    assert.match(res.stdout, /uses husky.*skipping/i);
+    assert.ok(!fs.existsSync(path.join(repo, '.githooks', 'commit-msg')), 'must not install over husky');
+  } finally {
+    rmrf(tmp);
+  }
+});
+
+test('BUG-011: upgrade self-heals a repo missing momentum hooks (idempotent backfill)', () => {
+  const { tmp, repo } = setupInstalledRepo();
+  try {
+    // Simulate a pre-fix install: no momentum hooks present, repo on the git
+    // default hooks dir.
+    rmrf(path.join(repo, '.githooks'));
+    git(repo, ['config', 'core.hooksPath', '.git/hooks']);
+    assert.ok(!fs.existsSync(path.join(repo, '.git', 'hooks', 'commit-msg')), 'precondition: no momentum hook yet');
+    const res = runCli(['upgrade', repo]);
+    assert.equal(res.status, 0, `upgrade failed: ${res.stderr}`);
+    for (const f of ['commit-msg', 'pre-push', 'run-check.js', 'contract.js']) {
+      assert.ok(fs.existsSync(path.join(repo, '.git', 'hooks', f)), `upgrade should backfill .git/hooks/${f}`);
+    }
   } finally {
     rmrf(tmp);
   }
