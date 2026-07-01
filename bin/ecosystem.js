@@ -592,7 +592,8 @@ function printSweepSummary(results, dryRun) {
     const ag = r.agent ? `  [${r.agent}]` : '';
     const tag = r.conflict ? '  (autostash CONFLICT — work safe in stash)'
       : r.autostashed ? '  (autostashed)' : '';
-    console.log(`  ${icon[r.status] || '•'} ${r.id}: ${r.status}${ver}${ag}${tag}`);
+    const err = r.status === 'failed' && r.error ? `  — ${r.error}` : '';
+    console.log(`  ${icon[r.status] || '•'} ${r.id}: ${r.status}${ver}${ag}${tag}${err}`);
   }
   const counts = {};
   for (const r of results) counts[r.status] = (counts[r.status] || 0) + 1;
