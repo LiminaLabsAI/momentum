@@ -1,6 +1,6 @@
 # Project Status
 
-> **Last Updated**: 2026-06-20
+> **Last Updated**: 2026-07-02
 > **Current Phase**: _none active_
 > **Latest Release**: v0.22.3 — BUG-011: additive/self-healing git-hook install
 > **Health**: On Track
@@ -57,10 +57,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 |-------|------|--------|----------|
 | _(none — Phase 20 released as v0.22.0; next: Phase 21 — Reach)_ | | | |
 
-> Phase 8 (Parallel Worktree Orchestration) was implemented on the
-> `phase-8-parallel-worktrees` branch but has not been merged or
-> released. Treat its status as "completed on branch, awaiting release
-> decision" until that's resolved as a separate workstream.
+> Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
+> (2026-06-19, TD-008) and its branch deleted — see
+> `specs/planning/unscheduled-parallel-streams.md` for the closure record.
 
 ## Upcoming Phases
 
@@ -75,7 +74,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | Name | Stub | Notes |
 |------|------|-------|
 | Hardening & Activation | `specs/planning/unscheduled-hardening-activation.md` | Originally Phase 10. Displaced 2026-06-07. Scope: full systematic-debugging skill; SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017. Pickable any time. |
-| Parallel Stream Development | `specs/planning/unscheduled-parallel-streams.md` | Enable parallel feature work on a single project via git worktrees. Existing implementation on `phase-8-parallel-worktrees` branch (unmerged; needs reconciliation with Phase 10 state machine before merge). |
+| ~~Parallel Stream Development~~ | `specs/planning/unscheduled-parallel-streams.md` | **CLOSED won't-do (Phase 19, TD-008)** — native Claude Code `--worktree` + the swarm subsystem now cover single-repo parallel isolation; `phase-8-parallel-worktrees` branch deleted. Kept in this table only as a pointer to the closure record. |
 | Context Economy | `specs/planning/future-context-economy.md` | Trigger-gated. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
 
 ## Blockers
@@ -96,9 +95,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
 3. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
 4. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
-5. Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision as a parallel workstream — implementation exists on `phase-8-parallel-worktrees` branch but was never released.
+5. ~~Resolve Phase 8 (Parallel Worktree Orchestration) merge/release decision~~ — ✅ **DONE** in Phase 19 (2026-06-19): closed won't-do (native Claude Code `--worktree` + swarm now cover the parallel-isolation need); branch deleted after correcting its false "shipped v0.11.0" retrospective. See `specs/phases/phase-19-lifecycle-hardening/history.md`.
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
-7. (Optional housekeeping) Rename `phase-16-adapter-parity` branch on origin to `phase-16-research-record` to make the relationship to the merged rework branch explicit.
+7. ~~(Optional housekeeping) Rename `phase-16-adapter-parity` branch~~ — ✅ **DECIDED** in Phase 19: kept as-is (deliberately retained as a research record, not renamed) during the TD-007 stale-branch cleanup.
+8. **BUG-010** (P2, in-progress) — sweep-summary error visibility fixed on `fix/BUG-010-sweep-error-visibility` (2026-07-02); deeper mid-write root cause on open-guard/open-shield-python still open, unreproducible synthetically. Awaiting merge approval.
 
 ## Key Decisions Made
 
@@ -112,6 +112,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-02**: **Open-threads pass.** (1) Status-drift cleanup: `Next Actions` #5/#7 and the "Unscheduled Future Work" table still described Phase 8 (Parallel Worktree Orchestration) and the `phase-16-adapter-parity` branch-rename as open decisions — both were actually already resolved in Phase 19 (2026-06-19, TD-008/TD-007) and just never removed from this file. Corrected in place; no behavior changed. (2) **BUG-010** partially fixed on `fix/BUG-010-sweep-error-visibility`: `printSweepSummary()` (`bin/ecosystem.js`) captured `err.message` on a failed sweep member but never rendered it in the final summary table — only in the scrolled live log. Now the `failed` line carries the error text. Regression test added (mid-write EACCES repro); suite 640 → 644. Record at `specs/adhoc/BUG-010/record.md`. Bug stays `in-progress`: the deeper mid-write root cause on open-guard/open-shield-python is still unreproduced. (3) **Confirmed still blocked, not attempted**: VAL-001/VAL-002 (no `codex`/`agy` CLI in this dev environment); the cerebrio cross-repo dogfood follow-ups (stash-pop + resolve in py/cli/open-guard/open-shield-python, review+commit upgrade diffs) — left to the operator as before, since those repos carry substantial unrelated in-flight work (open-guard alone has 7 stash entries spanning back to phase-4/5) and resolving them isn't safe to automate.
 
 - **2026-06-19**: **Git-lifecycle + lifecycle-model review (multi-agent).** Found momentum's git "rules" (Rule 6) are advised-only prose with **zero enforcing mechanism** (no git hooks shipped/installed; the merge-to-main gate rests on agent goodwill), "delete merged branch" has a 0% execution rate (**16 stale branches on origin**), worktree lifecycle isn't first-class on `main`, and off-phase work has no first-class lane (v0.20.1/v0.20.3 shipped via `—` phase rows bypassing verification/history). Filed **11 backlog items** (BUG-009, FEAT-018/019/020, TD-007/008, ENH-041/042/043/044/045). Decision: plan a single **"Lifecycle Hardening"** phase — Tier A (enforce the git lifecycle you already promise: hook installs + GitHub Ruleset + branch cleanup + doc honesty) and Tier B (first-class ad-hoc work-types lane + Rule 14 escalation). Brainstorm pending.
 
