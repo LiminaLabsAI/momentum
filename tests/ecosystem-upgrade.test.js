@@ -104,6 +104,35 @@ test('ecosystem upgrade --dry-run — writes nothing to any member', () => {
   }
 });
 
+test('ecosystem upgrade — a failed member reports its error in the sweep summary (BUG-010)', () => {
+  const { tmp, root } = makeEco();
+  const failing = addMember(tmp, root, 'repo-broken');
+  const commandsDir = path.join(failing, '.claude', 'commands');
+  const trackMd = path.join(commandsDir, 'track.md');
+  try {
+    addMember(tmp, root, 'repo-live');
+    // Make one file differ from core (so upgrade must actually write it),
+    // then lock the containing dir so the write throws mid-upgrade — the
+    // same class of failure BUG-010 hit on two large repos.
+    fs.writeFileSync(trackMd, fs.readFileSync(trackMd, 'utf8') + '\n<!-- locally modified -->\n');
+    fs.chmodSync(commandsDir, 0o555);
+
+    const res = runCli(['ecosystem', 'upgrade'], { cwd: root });
+    assert.equal(res.status, 0, res.stderr); // one bad repo never aborts the fleet
+    assert.match(res.stdout, /❌ upgrade failed:/);
+    assert.match(res.stdout, /1 failed/);
+    assert.match(res.stdout, /1 upgraded/); // the live member still ran
+    // The failure line in the FINAL summary (not just the scrolled live log)
+    // must carry the actual error message — that's the bug: it was captured
+    // but never printed in printSweepSummary.
+    const summary = res.stdout.slice(res.stdout.indexOf('Sweep summary'));
+    assert.match(summary, /repo-broken: failed.+— .+\S/);
+  } finally {
+    fs.chmodSync(commandsDir, 0o755);
+    rmrf(tmp);
+  }
+});
+
 test('ecosystem upgrade — reports a missing member and continues the sweep', () => {
   const { tmp, root } = makeEco();
   try {
