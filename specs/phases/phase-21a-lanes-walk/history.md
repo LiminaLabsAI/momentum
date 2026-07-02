@@ -73,3 +73,19 @@ Affects-specs: specs/status.md#Active Phase
 Detail: Fork point for the dogfood-in-phase trial. Two lane branches created from this commit: `phase-21a-lanes-walk-g2` (Lane A — templates + fingerprint) and `phase-21a-lanes-walk-g3` (Lane B — site page + README), each in its own worktree with its own agent session. Board rows added for both lanes (conductor-owned edit); from here each lane touches only its own row/section per Rule 15. Landing in G4 follows the Rule 6 Landing Order with the phase branch as the integration point (recursive per ADR-0001). Trial scored against the three pre-written thresholds.
 
 ---
+
+### [DISCOVERY] 2026-07-03 — BUG-012: committed exec bits missing on 7 shipped scripts (surfaced by the first fresh lane worktree)
+Topics: lanes, git-hooks, test-suite
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: none
+Detail: Lane A's first full suite run in a fresh worktree failed 2 non-fingerprint tests: committed git modes for brainstorm-gate.sh / sessionstart-handoff.sh / session-append.sh (core + scripts/ mirrors) and adapters/claude-code/adapter.sh are 100644, masked in the primary working tree by core.fileMode=false plus never-committed local exec bits — every fresh clone/CI/lane worktree inherits non-executable hook scripts. Deterministic (red in isolation pre-fix, 23/23 green after chmod +x); filed as BUG-012 (P1). In-lane workaround (chmod +x) is invisible to git under fileMode=false, so the lane commit stays clean; real fix is git update-index --chmod=+x + a suite guard on committed modes.
+
+---
+
+### [FEATURE] 2026-07-03 — G2 (Lane A): templates ship the multi-lane conventions
+Topics: lanes, templates, concurrent-workstreams
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: none
+Detail: Mirrored the G0 self-repo reference into the shipped templates: core/specs-templates/CLAUDE.md gains the full Rule 15 + lane-scoped Rules 2/4/5/8 + the Rule 6 Landing Order subsection (all above the `## Project Extensions` upgrade marker); template status.md gains the multi-row Active Phase lane board (none-row placeholder); core/agent-rules/project.md gains a condensed Rule 15 + lane-scoped Rule 2/8 lines; codex + antigravity AGENTS.md received minimal lane-aware touch-ups. All three adapter fingerprints re-baselined with meta (drift per adapter = primary instruction file + .agent/rules/project.md + specs/status.md only); suite 651/651 green. Executed as Lane A of the G2∥G3 live concurrency trial.
+
+---

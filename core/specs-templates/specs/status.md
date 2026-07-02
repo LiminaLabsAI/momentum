@@ -27,9 +27,13 @@
 
 ## Active Phase
 
-| Phase | Name | Status | Progress |
-|-------|------|--------|----------|
-| 0 | Bootstrap | Not Started | 0% |
+> One row per active lane (Rule 15, ADR-0001). Each session's phase is the
+> one bound to its branch; this table is the cross-lane overview and the
+> fallback for branches that don't resolve. Lanes touch only their own row.
+
+| Phase | Branch | Status | Progress |
+|-------|--------|--------|----------|
+| _(none — no active phase)_ | | | |
 
 ## Upcoming Phases
 
