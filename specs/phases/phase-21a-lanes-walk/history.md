@@ -89,3 +89,11 @@ Affects-specs: none
 Detail: Mirrored the G0 self-repo reference into the shipped templates: core/specs-templates/CLAUDE.md gains the full Rule 15 + lane-scoped Rules 2/4/5/8 + the Rule 6 Landing Order subsection (all above the `## Project Extensions` upgrade marker); template status.md gains the multi-row Active Phase lane board (none-row placeholder); core/agent-rules/project.md gains a condensed Rule 15 + lane-scoped Rule 2/8 lines; codex + antigravity AGENTS.md received minimal lane-aware touch-ups. All three adapter fingerprints re-baselined with meta (drift per adapter = primary instruction file + .agent/rules/project.md + specs/status.md only); suite 651/651 green. Executed as Lane A of the G2∥G3 live concurrency trial.
 
 ---
+
+### [FEATURE] 2026-07-03 — G3 (Lane B): docs — working on multiple things at once
+Topics: lanes, site-docs, concurrent-workstreams
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: none
+Detail: New site page `site/src/content/docs/parallel-work.md` ("Working on multiple things at once" — lane model, recursive plan graph, substrate by detection with git worktree/treehouse/GitButler, Rule 6 Landing Order, lane-scoped tracking, off-lane work, Run/Fly preview) registered in the Start here sidebar group, plus a README "Parallel workstreams" section linking it. Verified per Rule 12: `npm run build` exit 0 (13 pages), `dist/parallel-work/index.html` emitted with full body (61,846 bytes, 1 inline mermaid SVG, title + content probes all green). Environment note surfaced to the conductor as a [DISCOVERY] candidate: a fresh worktree without Playwright's chromium-headless-shell makes rehype-mermaid pages silently emit EMPTY bodies while the build still exits 0 — fixed locally via `npx playwright install chromium-headless-shell`.
+
+---

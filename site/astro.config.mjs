@@ -123,6 +123,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Getting started', slug: 'getting-started' },
 						{ label: 'Concepts', slug: 'concepts' },
+						{ label: 'Parallel work', slug: 'parallel-work' },
 					],
 				},
 				{

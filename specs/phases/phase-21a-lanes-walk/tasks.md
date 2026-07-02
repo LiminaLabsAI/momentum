@@ -24,9 +24,9 @@
 - [x] Fingerprint re-baselined with meta — ×3 adapters; drift = primary instruction + `.agent/rules/project.md` + `specs/status.md` only; suite 651/651 green
 
 ## Group 3 — Docs (LANE B)
-- [ ] Site page "Working on multiple things at once"
-- [ ] README parallel-workstreams section
-- [ ] `npm run build` green (Node ≥22.12)
+- [x] Site page "Working on multiple things at once"
+- [x] README parallel-workstreams section
+- [x] `npm run build` green (Node ≥22.12)
 
 ## Group 4 — Trial evaluation
 - [ ] Lane A + Lane B landed sequentially per new Rule 6 (suite green between)
