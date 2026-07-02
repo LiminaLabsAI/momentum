@@ -1,12 +1,12 @@
 {
   "meta": {
     "captured": "2026-07-02",
-    "capturedFrom": "phase-21a-lanes-walk",
-    "note": "Phase 21a G1: branch→phase resolution — check-history-reminder.sh resolves the lane from the current branch (fallback status.md Active Phase rows, ad-hoc sink for non-phase branches); log/validate/sync-docs/start-phase/complete-phase recipes gain Rule 15 lane-binding preambles"
+    "capturedFrom": "phase-21a-lanes-walk-g2",
+    "note": "Phase 21a G2 (Lane A): multi-lane spec conventions — Rule 15 + lane-scoped rule edits in CLAUDE.md/AGENTS.md templates + condensed agent rules; template status.md multi-row Active Phase board"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
-    ".agent/rules/project.md": "175bc78d3370130c195fb0a5c4b1cc151c5594e8c7eb1c759db0906abaa4b8ee",
+    ".agent/rules/project.md": "bd41b8a1369f88ffaaee13f7d441c845b2ab30789695c8460b7a2d1f7acadfd7",
     ".claude/commands/brainstorm-idea.md": "9208587d39dd579e28565c0459650bf269130da2b1049ed31065acab054c7787",
     ".claude/commands/brainstorm-phase.md": "e97e5525d4edd4276e91e7d80f18a27b16dc5676795e0a1262c936c89f889dbe",
     ".claude/commands/complete-phase.md": "e978ee364b7588715982cbd031de1deb8f423daf325f0b068dce21c6118f3c4a",
@@ -35,7 +35,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "CLAUDE.md": "38b5e2970b0203e014348d0879e67e7b7cf871b10f80bd57df73d9ae20a6f43e",
+    "CLAUDE.md": "7bbf156d4175a32cf1ffd6d89d3fe415d373be140d9dbfe1b07c4fbfad4fca62",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
@@ -54,7 +54,7 @@
     "specs/phases/README.md": "32c96f255eeb0fe9ee172f56fad47a83359a273f3f77cd983ffba0ce9cf0aa10",
     "specs/phases/index.json": "9c2e35d39ed38ff7d5623ce4c01d2654c40478921905b0c54f0abbbd25cb7100",
     "specs/planning/roadmap.md": "37edbdc1e812d72c19031a1a1e44b9d4125d0e7380f3c1b2131dbfa2a4d1dcad",
-    "specs/status.md": "ff49861613edf621c84b78a5d1f61cf3679fb7a513b76886c70e14aa6ae8c517",
+    "specs/status.md": "dd9d85968b173df783ee72cbc91b4b52477bda80ae02ce98ebf09b0207008035",
     "specs/vision/principles.md": "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f",
     "specs/vision/project-charter.md": "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa",
     "specs/vision/success-criteria.md": "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271"

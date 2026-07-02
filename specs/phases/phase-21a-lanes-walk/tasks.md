@@ -17,11 +17,11 @@
 - [x] `tests/phase-resolution.test.js` (7 tests: 5 planned cases + generic-fallback + mirror-integrity) green; fingerprints re-baselined ×3 adapters; suite 651/651
 
 ## Group 2 — Templates + fingerprint (LANE A)
-- [ ] Template status.md multi-row Active Phase
-- [ ] CLAUDE.md template: Rule 15 + rule edits
-- [ ] `core/agent-rules/project.md` condensed update
-- [ ] Upgrade-path check (marker-managed rules replace cleanly)
-- [ ] Fingerprint re-baselined with meta
+- [x] Template status.md multi-row Active Phase — lane-board blockquote + Phase|Branch|Status|Progress columns + none-row placeholder
+- [x] CLAUDE.md template: Rule 15 + rule edits — full Rule 15 after Rule 14; Rules 2/4/5/8 lane-scoped; Rule 6 Landing Order subsection; all above `## Project Extensions`
+- [x] `core/agent-rules/project.md` condensed update — condensed Rule 15 + lane-scoped Rules 2/8 (+ minimal lane-aware touch-ups in codex/antigravity AGENTS.md)
+- [x] Upgrade-path check (marker-managed rules replace cleanly) — Rule 15 at L351 vs marker at L459; upgrade marker tests green in full suite
+- [x] Fingerprint re-baselined with meta — ×3 adapters; drift = primary instruction + `.agent/rules/project.md` + `specs/status.md` only; suite 651/651 green
 
 ## Group 3 — Docs (LANE B)
 - [ ] Site page "Working on multiple things at once"
