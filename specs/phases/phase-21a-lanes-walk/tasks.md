@@ -5,10 +5,10 @@
 > Execution: G0 → G1 → (G2 ∥ G3 as live lanes) → G4 → G5
 
 ## Group 0 — ADR + self-repo conventions
-- [ ] ADR-0001 `specs/decisions/0001-concurrent-workstreams.md`
-- [ ] Self CLAUDE.md: Rule 15 + Rule 2/4/5/8 edits + Rule 6 merge extension
-- [ ] Self status.md: multi-row Active Phase table
-- [ ] impact-map topics: concurrent-workstreams, lanes, merge-discipline
+- [x] ADR-0001 `specs/decisions/0001-concurrent-workstreams.md`
+- [x] Self CLAUDE.md: Rule 15 + Rule 2/4/5/8 edits + Rule 6 merge extension
+- [x] Self status.md: multi-row Active Phase table
+- [x] impact-map topics: concurrent-workstreams, lanes, merge-discipline (landed at brainstorm; verified present)
 
 ## Group 1 — Branch→phase resolution
 - [ ] `core/scripts/check-history-reminder.sh` branch→phase resolution + fallbacks

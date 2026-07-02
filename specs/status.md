@@ -53,9 +53,13 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Active Phase
 
-| Phase | Name | Status | Progress |
-|-------|------|--------|----------|
-| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | In Progress (branch `phase-21a-lanes-walk`, target v0.23.0) | G0 of G0→G1→(G2∥G3)→G4→G5 |
+> One row per active lane (Rule 15, ADR-0001). Each session's phase is the
+> one bound to its branch; this table is the cross-lane overview and the
+> fallback for branches that don't resolve. Lanes touch only their own row.
+
+| Phase | Branch | Status | Progress |
+|-------|--------|--------|----------|
+| 21a — Parallel Lanes Walk (Concurrent Workstreams) | `phase-21a-lanes-walk` | In Progress (target v0.23.0) | G0 ✓ → G1 of G0→G1→(G2∥G3)→G4→G5 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
