@@ -55,7 +55,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 20 released as v0.22.0; next: Phase 21 — Reach)_ | | | |
+| _(none — Phase 20 released as v0.22.0; next: Phase 21 — Parallel Lanes, Walk step)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -65,15 +65,16 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 21 | Reach | Not Started (target v0.23.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
-| 22 | Intelligence | Not Started (target v0.24.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 23 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; dependency-aware tasks; bidirectional spec sync; ecosystem Tier 2 |
+| 21 | Parallel Lanes — Walk (Concurrent Workstreams) | Not Started (target v0.23.0) | ENH-046 spec-layer conventions: multi-row Active Phase, lane-/branch-scoped rules, sequential-merge discipline (Rule 6 extension), off-lane brainstorms/spikes, parallel-work docs. Scope via `/brainstorm-phase`. Arc: `specs/planning/platform-parallel-lanes.md` (decided 2026-07-02) |
+| 22 | Reach | Not Started (target v0.24.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
+| 23 | Intelligence | Not Started (target v0.25.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 24 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
 
 ## Unscheduled Future Work
 
 | Name | Stub | Notes |
 |------|------|-------|
-| **Parallel Lanes Platform** | `specs/planning/platform-parallel-lanes.md` | **Direction adopted 2026-07-02** (operator brainstorm): momentum = coordination & trust plane for parallel agent development — Lanes / Waves / Board / Gates / Queue over a recursive plan graph (ecosystem ⊃ repos ⊃ phases ⊃ tasks). Walk = ENH-046 (conventions), Run = FEAT-026/027 (+ENH-047), Fly = FEAT-028 (absorbs Phase-23 "dependency-aware tasks"). Substrate delegated by detection (plain git default; treehouse/GitButler optional). Landscape evidence: `research-parallel-agent-landscape.md`. **Roadmap placement vs Phase 21 Reach = pending operator decision (Next Action #9).** |
+| **Parallel Lanes Platform** | `specs/planning/platform-parallel-lanes.md` | **Direction adopted 2026-07-02** (operator brainstorm): momentum = coordination & trust plane for parallel agent development — Lanes / Waves / Board / Gates / Queue over a recursive plan graph (ecosystem ⊃ repos ⊃ phases ⊃ tasks). Walk = ENH-046 (conventions), Run = FEAT-026/027 (+ENH-047), Fly = FEAT-028 (absorbs Phase-23 "dependency-aware tasks"). Substrate delegated by detection (plain git default; treehouse/GitButler optional). Landscape evidence: `research-parallel-agent-landscape.md`. **Walk step scheduled as Phase 21 (decided 2026-07-02, Next Action #9); Run/Fly remain unscheduled until Walk ships.** |
 | Hardening & Activation | `specs/planning/unscheduled-hardening-activation.md` | Originally Phase 10. Displaced 2026-06-07. Scope: full systematic-debugging skill; SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017. Pickable any time. |
 | ~~Parallel Stream Development~~ | `specs/planning/unscheduled-parallel-streams.md` | **CLOSED won't-do (Phase 19, TD-008)** — native Claude Code `--worktree` + the swarm subsystem now cover single-repo parallel isolation; `phase-8-parallel-worktrees` branch deleted. Kept in this table only as a pointer to the closure record. |
 | Context Economy | `specs/planning/future-context-economy.md` | Trigger-gated. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
@@ -100,7 +101,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 6. When Hardening & Activation becomes the right next thing, brainstorm from `specs/planning/unscheduled-hardening-activation.md`.
 7. ~~(Optional housekeeping) Rename `phase-16-adapter-parity` branch~~ — ✅ **DECIDED** in Phase 19: kept as-is (deliberately retained as a research record, not renamed) during the TD-007 stale-branch cleanup.
 8. **BUG-010** (P2, in-progress) — sweep-summary error visibility fixed on `fix/BUG-010-sweep-error-visibility` (2026-07-02); deeper mid-write root cause on open-guard/open-shield-python still open, unreproducible synthetically. Awaiting merge approval.
-9. **DECIDE: roadmap placement of the Parallel Lanes arc vs Phase 21 Reach** (from the 2026-07-02 platform brainstorm, `specs/planning/platform-parallel-lanes.md`). Option A: Lanes next — it is the launch differentiator ("coordination & trust layer for parallel agent development") and fixes the operator's own daily pain, so dogfood value compounds; Reach follows with a stronger story to spread. Option B: Reach first — Cursor + Gemini adapters widen who can even try momentum before the differentiator lands. Operator call; once made, update `specs/planning/roadmap.md` + this file's Upcoming Phases.
+9. ~~DECIDE: roadmap placement of the Parallel Lanes arc vs Phase 21 Reach~~ — ✅ **DECIDED** (operator, 2026-07-02): **Lanes next.** Phase 21 = Parallel Lanes Walk (target v0.23.0); Reach → 22 (v0.24.0), Intelligence → 23 (v0.25.0), Platform → 24 (v1.0). Rationale: launch differentiator + fixes the operator's own daily pain, so dogfooding compounds. Roadmap + Upcoming Phases updated; kick off with `/brainstorm-phase` when ready.
 
 ## Key Decisions Made
 

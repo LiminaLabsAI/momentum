@@ -2,9 +2,10 @@
 
 > **Status:** direction adopted in an operator brainstorm session (SIEVE →
 > FORGE, 2026-07-02). Pre-phase planning stub — the ADR gets authored when the
-> first phase of this arc starts (`/brainstorm-phase`). Roadmap placement
-> (Lanes vs Phase 21 Reach) is an open operator decision — see status.md Next
-> Actions. Supporting evidence: `research-parallel-agent-landscape.md`.
+> first phase of this arc starts (`/brainstorm-phase`). **Roadmap placement
+> decided same day (operator): Walk step = Phase 21 (target v0.23.0),
+> displacing Reach → 22, Intelligence → 23, Platform → 24.** Supporting
+> evidence: `research-parallel-agent-landscape.md`.
 
 ## The reframe (adopted)
 
@@ -114,8 +115,8 @@ paper other surfaces render.
 
 ## Open questions
 
-1. **Roadmap placement** — Lanes arc vs Phase 21 Reach (Cursor/Gemini
-   adapters): operator decision pending.
+1. ~~Roadmap placement~~ — **DECIDED 2026-07-02 (operator): Lanes next.**
+   Phase 21 = Walk (v0.23.0); Reach/Intelligence/Platform shift to 22/23/24.
 2. Lane-state file format design (one-way door — design slowly, during Run).
 3. Ecosystem-mode interaction: lanes inside a member repo vs swarm-level
    coordination — brainstorm at phase start (the closure record flagged the
