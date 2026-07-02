@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-07-02
-> **Current Phase**: _none active_
+> **Last Updated**: 2026-07-03
+> **Current Phase**: Phase 21a — Parallel Lanes Walk (Concurrent Workstreams)
 > **Latest Release**: v0.22.3 — BUG-011: additive/self-healing git-hook install
 > **Health**: On Track
 
@@ -55,7 +55,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| _(none — Phase 21a "Lanes Walk" planned 2026-07-03 on branch `phase-21a-lanes-walk`; run `/start-phase` to begin)_ | | | |
+| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | In Progress (branch `phase-21a-lanes-walk`, target v0.23.0) | G0 of G0→G1→(G2∥G3)→G4→G5 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -65,7 +65,6 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 21a | Parallel Lanes — Walk | **Planned** (2026-07-03, target v0.23.0) | Full plan: `specs/phases/phase-21a-lanes-walk/`. ADR-0001; Rule 15 + lane-scoped rule edits; multi-row Active Phase; branch→phase resolution; docs; dogfood-in-phase trial (G2∥G3 as live lanes, threshold-gated release). ENH-046. Run `/start-phase` to begin |
 | 21b | Parallel Lanes — Run | Not Started (target v0.24.0) | FEAT-026 lanes/board/signals; FEAT-027 merge queue + graded gates; ENH-047 overlap warnings. Scope: `specs/planning/platform-parallel-lanes.md` |
 | 21c | Parallel Lanes — Fly | Not Started (target v0.25.0) | FEAT-028 recursive wave planner (absorbs old "dependency-aware tasks"); swarm as top-scale consumer; lane-state contract decision |
 | 22 | Reach | Not Started (target v0.26.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
@@ -117,6 +116,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-03**: **Phase 21a — Lanes Walk started** (`/start-phase`). Branch `phase-21a-lanes-walk` active (created at brainstorm); target v0.23.0. Execution: G0 (ADR-0001 + self-repo Rule 15/conventions) → G1 (branch→phase resolution + tests) → G2∥G3 as two live lanes (templates ∥ docs — the dogfood trial, deliverable D6) → G4 (trial scored against the three pre-written thresholds) → G5 (release gate). Setup also repaired tracking drift: `specs/phases/index.json` (phase-7c stale `in-progress`; phase-20 entry missing) and `specs/phases/README.md` (phase-20 row missing; stale 17.5 "pending release" note).
 
 - **2026-07-03**: **Phase 21a — Lanes Walk brainstormed and planned** (`/brainstorm-phase`, gate contract honored — files written only after operator approval). Operator decisions: (1) **dogfood-in-phase** — G2 (templates) ∥ G3 (docs) execute as two live lanes under the phase's own new conventions; pre-written SIEVE thresholds gate the template release; (2) **everything from the platform session covered as a phase family** — 21a Walk (v0.23.0) / 21b Run (v0.24.0) / 21c Fly (v0.25.0), per the 7a/7b/7c precedent; Reach/Intelligence targets slide to v0.26.0/v0.27.0; (3) branch→phase resolution included in Walk as the minimal enabling mechanism. Four phase files written to `specs/phases/phase-21a-lanes-walk/`; 21b/21c committed scope recorded in `platform-parallel-lanes.md`; backlog items re-slotted (ENH-046→21a, FEAT-026/027+ENH-047→21b, FEAT-028→21c). ADR-0001 (first real ADR) authored in G0.
 

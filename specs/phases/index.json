@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-06-19-phase-19-started",
+  "updated": "2026-07-03-phase-21a-started",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -41,7 +41,7 @@
       "topics": ["phase-7b", "adapter-contract-v3", "agent-runtime", "compatibility", "codex", "agents-md", "codex-hooks", "commands", "claude-code", "adapter-metadata", "tarball-shape", "npm-pack"]
     },
     "phase-7c-autonomous-tdd": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": ["phase-7c", "autonomous-execution", "tdd", "rule-13", "retry-budget", "antigravity", "systematic-debug", "subagent"]
     },
     "phase-9-ecosystem-tier1": {
@@ -91,6 +91,14 @@
     "phase-19-lifecycle-hardening": {
       "status": "complete",
       "topics": ["phase-19", "lifecycle-hardening", "git-enforcement", "git-hooks", "commit-msg-hook", "pre-push-hook", "conventional-commits", "core-hookspath", "githooks", "zero-dependency", "no-husky", "escape-hatch", "merge-approved-sentinel", "verify-evidence-gate", "rule-12-enforcement", "rule-6-honesty", "rule-14-escalation", "ad-hoc-work", "hotfix", "spike-mode", "work-types", "specs-adhoc", "phase-optional", "log", "sync-docs", "validate-no-phase", "ad-hoc-releases", "forge-neutral", "vendor-agnostic", "dip", "branch-protection-docs", "branch-cleanup", "stale-branches", "gitignore-worktrees", "phase-8-close", "td-007", "td-008", "warn-not-clobber", "v0-21-0"]
+    },
+    "phase-20-upgrade-hardening": {
+      "status": "complete",
+      "topics": ["phase-20", "upgrade-hardening", "lock-file", "installed-json", "orphan-cleanup", "clean-tree-gate", "dry-run", "backup", "bak-files", "idempotent-init", "bug-008", "enh-040", "upgrade-safety", "momentum-upgrade", "ecosystem-upgrade", "v0-22-0"]
+    },
+    "phase-21a-lanes-walk": {
+      "status": "in-progress",
+      "topics": ["phase-21a", "lanes", "concurrent-workstreams", "multi-active-phase", "lane-binding", "branch-phase-resolution", "rule-15", "lane-scoped-rules", "merge-discipline", "sequential-landing", "rebase-onto-main", "stacked-lanes", "off-lane", "brainstorms", "spikes", "status-multi-row", "active-phase-table", "adr-0001", "dogfood-in-phase", "trial-thresholds", "worktrees", "treehouse", "gitbutler", "templates", "agent-rules", "fingerprint-snapshot", "check-history-reminder", "site-docs", "enh-046", "v0-23-0"]
     }
   }
 }
