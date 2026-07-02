@@ -59,9 +59,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 21a — Parallel Lanes Walk (Concurrent Workstreams) | `phase-21a-lanes-walk` | In Progress (target v0.23.0) | G0 ✓ G1 ✓ → G2∥G3 live-lane trial |
-| 21a · G2 — Lane A (templates + fingerprint) | `phase-21a-lanes-walk-g2` | Lane open (concurrency trial) | done — awaiting landing |
-| 21a · G3 — Lane B (docs: site page + README) | `phase-21a-lanes-walk-g3` | Lane open (concurrency trial) | done — awaiting landing |
+| 21a — Parallel Lanes Walk (Concurrent Workstreams) | `phase-21a-lanes-walk` | In Progress (target v0.23.0) | G0–G4 ✓ (trial PASSED 3/3 thresholds) → G5 verification + release |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

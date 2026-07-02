@@ -29,9 +29,9 @@
 - [x] `npm run build` green (Node ≥22.12)
 
 ## Group 4 — Trial evaluation
-- [ ] Lane A + Lane B landed sequentially per new Rule 6 (suite green between)
-- [ ] `evidence/trial-report.md` — 3 thresholds scored, session evidence attached
-- [ ] Breaches (if any) logged as [DISCOVERY] + operator decision recorded
+- [x] Lane A + Lane B landed sequentially per new Rule 6 (A: `4742c76`, suite 651/651; B rebased — 3 keep-both conflicts, 98 s — then `2b8423f`, suite 651/651)
+- [x] `evidence/trial-report.md` — 3 thresholds scored (ALL PASS), lane session reports at `evidence/lane-a-report.md` / `lane-b-report.md`
+- [x] Breaches (if any) logged — none; discoveries filed instead (BUG-012 P1 by Lane A, BUG-013 P2 by Lane B)
 
 ## Group 5 — Verification + release
 - [ ] Full suite green; 3-adapter install smoke

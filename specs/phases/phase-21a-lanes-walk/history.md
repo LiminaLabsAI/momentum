@@ -97,3 +97,19 @@ Affects-specs: none
 Detail: New site page `site/src/content/docs/parallel-work.md` ("Working on multiple things at once" — lane model, recursive plan graph, substrate by detection with git worktree/treehouse/GitButler, Rule 6 Landing Order, lane-scoped tracking, off-lane work, Run/Fly preview) registered in the Start here sidebar group, plus a README "Parallel workstreams" section linking it. Verified per Rule 12: `npm run build` exit 0 (13 pages), `dist/parallel-work/index.html` emitted with full body (61,846 bytes, 1 inline mermaid SVG, title + content probes all green). Environment note surfaced to the conductor as a [DISCOVERY] candidate: a fresh worktree without Playwright's chromium-headless-shell makes rehype-mermaid pages silently emit EMPTY bodies while the build still exits 0 — fixed locally via `npx playwright install chromium-headless-shell`.
 
 ---
+
+### [DISCOVERY] 2026-07-03 — BUG-013: site build exits 0 with empty mermaid page bodies when headless shell missing
+Topics: site-docs, verification
+Affects-phases: none
+Affects-specs: none
+Detail: Lane B's fresh-worktree build emitted ~24KB empty-body shells for every rehype-mermaid page while exiting 0 (the browserType.launch error is log-only), and the empty renders get cached in .astro caches. Filed as BUG-013 (P2) with fix candidates (postbuild non-empty-body gate + documented two-step Playwright install — `chromium-headless-shell` is a separate download from `chromium`). Conductor also added the `site-docs` topic to impact-map.json (used by Lane B's history entry; was missing).
+
+---
+
+### [NOTE] 2026-07-03 — G4: both lanes landed sequentially; trial PASSED all three thresholds
+Topics: lanes, dogfood, trial-thresholds, merge-discipline
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: specs/status.md#Active Phase
+Detail: Landing Order executed exactly as written: Lane A merged (`4742c76`) → suite 651/651 → Lane B rebased onto the updated phase branch (3 keep-both append conflicts — status.md adjacent rows / history EOF / changelog section — resolved in 98 s) → merged (`2b8423f`) → suite 651/651. Trial scored in `evidence/trial-report.md`: corruption 0, misorientation 0, tracking-merge overhead ~1.6 min per landing cycle (< 15 min/week under any realistic cadence) — ALL THREE THRESHOLDS MET, template release (D4) ships in v0.23.0. Lane rows collapsed from the board; lane branches deleted post-merge per Rule 6.
+
+---

@@ -324,6 +324,12 @@
         {"path": "specs/decisions/0001-concurrent-workstreams.md", "section": null}
       ]
     },
+    "site-docs": {
+      "files": [
+        {"path": "site/src/content/docs/", "section": null},
+        {"path": "README.md", "section": null}
+      ]
+    },
     "tier-2": {
       "files": [
         {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What's NOT in Tier 1"},
