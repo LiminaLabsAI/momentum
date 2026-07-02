@@ -65,3 +65,11 @@ Affects-specs: none
 Detail: The self-repo's installed copies (.claude/commands/{log,validate,sync-docs,complete-phase}.md and scripts/check-history-reminder.sh) had drifted BEHIND core (missing Phase-19 phase-optional updates — the repo was never re-upgraded post-v0.21.0). Mirroring for G1 copied the new core versions over them, healing the stale drift in the same stroke; a new mirror-integrity test pins script parity going forward. All three adapter install fingerprints re-baselined with meta (6 intended drifts each: 5 recipes + hook script; zero unintentional).
 
 ---
+
+### [NOTE] 2026-07-03 — Lanes A and B opened for the G2∥G3 concurrency trial (D6)
+Topics: lanes, dogfood, trial-thresholds
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: specs/status.md#Active Phase
+Detail: Fork point for the dogfood-in-phase trial. Two lane branches created from this commit: `phase-21a-lanes-walk-g2` (Lane A — templates + fingerprint) and `phase-21a-lanes-walk-g3` (Lane B — site page + README), each in its own worktree with its own agent session. Board rows added for both lanes (conductor-owned edit); from here each lane touches only its own row/section per Rule 15. Landing in G4 follows the Rule 6 Landing Order with the phase branch as the integration point (recursive per ADR-0001). Trial scored against the three pre-written thresholds.
+
+---
