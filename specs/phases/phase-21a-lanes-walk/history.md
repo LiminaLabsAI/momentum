@@ -113,3 +113,11 @@ Affects-specs: specs/status.md#Active Phase
 Detail: Landing Order executed exactly as written: Lane A merged (`4742c76`) → suite 651/651 → Lane B rebased onto the updated phase branch (3 keep-both append conflicts — status.md adjacent rows / history EOF / changelog section — resolved in 98 s) → merged (`2b8423f`) → suite 651/651. Trial scored in `evidence/trial-report.md`: corruption 0, misorientation 0, tracking-merge overhead ~1.6 min per landing cycle (< 15 min/week under any realistic cadence) — ALL THREE THRESHOLDS MET, template release (D4) ships in v0.23.0. Lane rows collapsed from the board; lane branches deleted post-merge per Rule 6.
 
 ---
+
+### [SCOPE_CHANGE] 2026-07-03 — BUG-012 fixed in-phase (post-G4): committed exec bits + suite guard
+Topics: lanes, git-hooks, test-suite
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: none
+Detail: Small in-scope addition — the bug directly undermines the lane-worktree flow this release ships (every fresh lane worktree opened with 2 red tests), so fixing before G5 keeps D7's release honest. `git update-index --chmod=+x` on the 7 affected scripts (index now 10/10 committed `.sh` at 100755); new `tests/committed-exec-bits.test.js` guards committed modes via `git ls-files -s`, immune to the `core.fileMode=false` masking that hid this for months. Suite 651 → 652 green. BUG-012 marked resolved (phase-21a).
+
+---
