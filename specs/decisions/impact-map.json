@@ -304,6 +304,26 @@
         {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What's NOT in Tier 1"}
       ]
     },
+    "concurrent-workstreams": {
+      "files": [
+        {"path": "specs/planning/platform-parallel-lanes.md", "section": null},
+        {"path": "specs/planning/roadmap.md", "section": "Timeline"},
+        {"path": "specs/status.md", "section": "Active Phase"},
+        {"path": "specs/decisions/0001-concurrent-workstreams.md", "section": null}
+      ]
+    },
+    "lanes": {
+      "files": [
+        {"path": "specs/planning/platform-parallel-lanes.md", "section": null},
+        {"path": "specs/backlog/backlog.md", "section": "Features"}
+      ]
+    },
+    "merge-discipline": {
+      "files": [
+        {"path": "CLAUDE.md", "section": "Rule 6: Git Lifecycle"},
+        {"path": "specs/decisions/0001-concurrent-workstreams.md", "section": null}
+      ]
+    },
     "tier-2": {
       "files": [
         {"path": "core/specs-templates/specs/architecture/ecosystem.md", "section": "What's NOT in Tier 1"},
