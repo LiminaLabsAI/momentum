@@ -49,3 +49,19 @@ Affects-specs: specs/phases/index.json, specs/phases/README.md
 Detail: specs/phases/index.json still carried phase-7c as "in-progress" (complete since v0.10.0, 2026-05-28) and had no phase-20 entry; specs/phases/README.md was missing the phase-20 row and still marked 17.5 "pending release". All repaired in the phase-start commit (971c7d3) — no separate backlog item; fixed in place as tracking hygiene.
 
 ---
+
+### [FEATURE] 2026-07-03 — G1: branch→phase resolution shipped (script + 5 recipes + tests)
+Topics: lanes, branch-phase-resolution, commands, hooks
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: none
+Detail: core/scripts/check-history-reminder.sh now resolves the lane from the current branch (phase-* branch ↔ specs/phases/<branch>/; fallback = status.md Active Phase rows, first row with an existing dir; non-phase branch → ad-hoc sink preserving ENH-044; detached HEAD → fallback; nothing resolvable → original generic wording). log/validate/sync-docs/start-phase/complete-phase recipes gain Rule 15 lane-binding preambles plus multi-row-aware step edits (validate accepts N rows; start-phase adds-own-row; complete-phase removes-own-row + Landing Order gate). tests/phase-resolution.test.js: 7 tests (5 planned cases + generic fallback + core↔self-repo mirror integrity). Suite 651/651.
+
+---
+
+### [NOTE] 2026-07-03 — G1: stale self-repo installed copies self-healed; fingerprints re-baselined
+Topics: dogfood, fingerprint-snapshot, tracking
+Affects-phases: phase-21a-lanes-walk
+Affects-specs: none
+Detail: The self-repo's installed copies (.claude/commands/{log,validate,sync-docs,complete-phase}.md and scripts/check-history-reminder.sh) had drifted BEHIND core (missing Phase-19 phase-optional updates — the repo was never re-upgraded post-v0.21.0). Mirroring for G1 copied the new core versions over them, healing the stale drift in the same stroke; a new mirror-integrity test pins script parity going forward. All three adapter install fingerprints re-baselined with meta (6 intended drifts each: 5 recipes + hook script; zero unintentional).
+
+---

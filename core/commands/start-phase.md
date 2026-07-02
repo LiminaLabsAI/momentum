@@ -2,6 +2,12 @@ Begin a new implementation phase.
 
 After setup, **executes the plan end-to-end autonomously** — no per-group approval prompts, no "should I commit?" interruptions. The engine stops once: at the merge + release gate after the final group's verification passes. See the [Autonomous Execution Contract](#autonomous-execution-contract) below.
 
+> **Which phase is yours (Rule 15):** the phase bound to your branch — branch
+> `phase-N-shortname` ↔ `specs/phases/phase-N-shortname/`. `status.md`'s
+> Active Phase table is the fallback and the cross-lane overview. Starting a
+> phase while other lanes are active is normal — add your lane's row to the
+> table; never replace or rewrite other lanes' rows.
+
 ## Setup Steps (run once at phase start)
 
 1. Read current state:
@@ -55,8 +61,11 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
    - Change phase status: `Not Started` → `In Progress`
 
 6. Update `specs/status.md`:
-   - Set "Current Phase" to the new phase
-   - Update "Active Phase" table
+   - Set "Current Phase" to the new phase (with other lanes active, the most
+     recently started lane; the Active Phase table is the full picture)
+   - Add this phase's row to the "Active Phase" table
+     (Phase | Branch | Status | Progress) — one row per active lane; touch
+     ONLY your own row (Rule 15)
    - Clear/update blockers
 
 7. For monorepo only — identify relevant architecture specs:

@@ -11,10 +11,10 @@
 - [x] impact-map topics: concurrent-workstreams, lanes, merge-discipline (landed at brainstorm; verified present)
 
 ## Group 1 — Branch→phase resolution
-- [ ] `core/scripts/check-history-reminder.sh` branch→phase resolution + fallbacks
-- [ ] Recipes updated: log / validate / sync-docs / start-phase / complete-phase
-- [ ] Self-repo `scripts/check-history-reminder.sh` mirrored
-- [ ] `tests/phase-resolution.test.js` (5 cases) green
+- [x] `core/scripts/check-history-reminder.sh` branch→phase resolution + fallbacks
+- [x] Recipes updated: log / validate / sync-docs / start-phase / complete-phase
+- [x] Self-repo `scripts/check-history-reminder.sh` mirrored (+ 5 stale `.claude/commands/` copies self-healed from core)
+- [x] `tests/phase-resolution.test.js` (7 tests: 5 planned cases + generic-fallback + mirror-integrity) green; fingerprints re-baselined ×3 adapters; suite 651/651
 
 ## Group 2 — Templates + fingerprint (LANE A)
 - [ ] Template status.md multi-row Active Phase
