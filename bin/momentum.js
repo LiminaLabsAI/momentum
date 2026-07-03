@@ -216,7 +216,10 @@ function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
  * present, under a marker comment, with a `.bak` backup. Fixes the gap where
  * `upgrade` left an old `.gitignore` untouched, so repos predating the `._*` /
  * `.momentum/*` rules stayed polluted (which on a non-Unix filesystem like
- * exFAT makes git effectively unusable). `.gitignore` is user-owned, so it is
+ * exFAT makes git effectively unusable). One designed exception (BUG-014): a
+ * bare directory-level `.momentum/` rule is commented out in place, because
+ * it defeats the `!.momentum/installed.json` negation — the line's content is
+ * preserved, just disabled. `.gitignore` is user-owned, so it is
  * deliberately NOT recorded as a managed file (never orphan-cleaned).
  * Returns 'added' | 'updated' | 'unchanged'.
  */
@@ -244,18 +247,51 @@ function refreshGitignore(srcRoot, targetDir) {
   const targetContent = fs.readFileSync(targetPath, 'utf8');
   const have = new Set(targetContent.split('\n').map((l) => l.trim()));
   const missing = wantedRules.filter((r) => !have.has(r));
-  if (missing.length === 0) return 'unchanged';
+
+  // BUG-014 — a bare directory-level `.momentum/` rule (every pre-Phase-20
+  // install has one) defeats the appended `!.momentum/installed.json`: git
+  // cannot re-include a file under an ignored DIRECTORY, so the lock file
+  // stays silently ignored while upgrade reports success. Neutralize it by
+  // commenting it out in place — the designed exception to "never remove a
+  // user's lines" (the line's content is preserved, just disabled). Matches
+  // ONLY lines that are exactly `.momentum/` or `/.momentum/` modulo
+  // whitespace; `.momentum/*`, negations, comments, and unrelated lines are
+  // untouched. Runs even when nothing is missing (the pair may already exist
+  // from a prior upgrade with the legacy rule still winning above it).
+  const isLegacyDirRule = (l) => {
+    const t = l.trim();
+    return t === '.momentum/' || t === '/.momentum/';
+  };
+  const legacyCount = targetContent.split('\n').filter(isLegacyDirRule).length;
+  if (missing.length === 0 && legacyCount === 0) return 'unchanged';
 
   if (_dryRun) {
-    console.log(`  ✋ would append ${missing.length} rule(s) to .gitignore`);
+    if (legacyCount > 0) {
+      console.log(`  ✋ would comment out ${legacyCount} legacy .momentum/ dir rule(s) in .gitignore (BUG-014)`);
+    }
+    if (missing.length > 0) {
+      console.log(`  ✋ would append ${missing.length} rule(s) to .gitignore`);
+    }
     return 'updated';
   }
   fs.copyFileSync(targetPath, targetPath + '.bak');
-  const addition =
-    '\n# Added by momentum upgrade — keep momentum + OS noise out of git\n' +
-    missing.join('\n') + '\n';
-  fs.writeFileSync(targetPath, targetContent.replace(/\s*$/, '\n') + addition);
-  console.log(`  ↑ updated:  .gitignore (appended ${missing.length} missing rule(s); original saved as .bak)`);
+  let next = legacyCount === 0 ? targetContent : targetContent
+    .split('\n')
+    .map((l) => isLegacyDirRule(l)
+      ? `# ${l.trim()}   (disabled by momentum upgrade — directory rule defeats !.momentum/installed.json, BUG-014)`
+      : l)
+    .join('\n');
+  if (missing.length > 0) {
+    const addition =
+      '\n# Added by momentum upgrade — keep momentum + OS noise out of git\n' +
+      missing.join('\n') + '\n';
+    next = next.replace(/\s*$/, '\n') + addition;
+  }
+  fs.writeFileSync(targetPath, next);
+  const did = [];
+  if (legacyCount > 0) did.push(`commented out ${legacyCount} legacy .momentum/ dir rule(s)`);
+  if (missing.length > 0) did.push(`appended ${missing.length} missing rule(s)`);
+  console.log(`  ↑ updated:  .gitignore (${did.join('; ')}; original saved as .bak)`);
   return 'updated';
 }
 
