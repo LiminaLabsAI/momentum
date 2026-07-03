@@ -118,6 +118,10 @@ function percentile(arr, p) {
 }
 
 function captureEvidence(scenarioId, ecosystemRoot, swarmId, metrics) {
+  // TD-006: the committed evidence files embed the random tmp-dir name, so
+  // regenerating them on every `npm test` dirties the tree. Evidence capture
+  // is opt-in via `npm run capture-evidence`; the plain suite only verifies.
+  if (process.env.MOMENTUM_CAPTURE_EVIDENCE !== '1') return null;
   fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
   const evidencePath = path.join(EVIDENCE_DIR, `scenario-${scenarioId}.txt`);
   const lines = [

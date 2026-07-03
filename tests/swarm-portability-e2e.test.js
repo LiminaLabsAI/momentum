@@ -60,6 +60,10 @@ function setupEcosystem(tmp, name, members, deps) {
 }
 
 function captureEvidence(scenarioId, ecosystemRoot, swarmIds, narrative) {
+  // TD-006: the committed evidence files embed the random tmp-dir name, so
+  // regenerating them on every `npm test` dirties the tree. Evidence capture
+  // is opt-in via `npm run capture-evidence`; the plain suite only verifies.
+  if (process.env.MOMENTUM_CAPTURE_EVIDENCE !== '1') return null;
   fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
   const evidencePath = path.join(EVIDENCE_DIR, `scenario-portability-${scenarioId}.txt`);
   const lines = [
