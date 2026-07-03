@@ -752,9 +752,46 @@ function installGitHooks(src, target, opts = {}) {
   }
 }
 
+// ── Ecosystem-root guard (BUG-016) ────────────────────────────────────────────
+//
+// The project-mode scaffold must never land in an ecosystem coordination
+// root. A directory whose ecosystem.json carries both `name` and a `members`
+// array is the coordination layer: its CLAUDE.md / AGENTS.md are the
+// ecosystem templates owned by `momentum ecosystem init|upgrade`, and no
+// specs/ tree exists there. Installing the project scaffold over it points
+// every future agent session at specs/status.md — a file that can never
+// exist in a coordination root. Requiring BOTH keys keeps a foreign
+// ecosystem.json (e.g. PM2's) from false-positiving the guard.
+function assertNotEcosystemRoot(target, command) {
+  const manifestPath = path.join(target, 'ecosystem.json');
+  if (!fileExists(manifestPath)) return;
+  let manifest;
+  try {
+    manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  } catch {
+    return; // non-JSON — not a momentum manifest
+  }
+  if (
+    !manifest || typeof manifest !== 'object' ||
+    !manifest.name || !Array.isArray(manifest.members)
+  ) {
+    return;
+  }
+  throw new Error(
+    `${command}: ${target} is the coordination root of ecosystem "${manifest.name}" ` +
+      `(ecosystem.json present) — the project scaffold does not belong here.\n` +
+      `  The coordination root's CLAUDE.md / AGENTS.md are managed by the ecosystem commands:\n` +
+      `    momentum ecosystem upgrade          # refresh root instructions + sweep member repos\n` +
+      `  To install momentum into a member repo, run it from (or point it at) that repo:\n` +
+      `    momentum ${command} <member-path>`
+  );
+}
+
 function init(targetDir, agent, opts = {}) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
+
+  assertNotEcosystemRoot(target, 'init');
 
   // Load adapter
   const { adapterDir, adapter } = loadAdapter(src, agent);
@@ -886,6 +923,8 @@ function init(targetDir, agent, opts = {}) {
 function upgrade(targetDir, agent, opts = {}) {
   const target = path.resolve(targetDir);
   const src = path.join(__dirname, '..');
+
+  assertNotEcosystemRoot(target, 'upgrade');
 
   // Load adapter
   const { adapterDir, adapter } = loadAdapter(src, agent);
@@ -1583,6 +1622,7 @@ async function main() {
 module.exports = {
   // Pure helpers (unit-testable)
   partitionByMarker,
+  assertNotEcosystemRoot,
   listFilesRecursive,
   detectOverlayConflicts,
   isNewerVersion,
