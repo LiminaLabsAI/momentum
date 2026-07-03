@@ -1455,11 +1455,17 @@ async function main() {
     process.exit(1);
   }
 
-  // Extract --agent flag before command dispatch
+  // Extract --agent flag before command dispatch. Remember whether it was
+  // explicit: the ecosystem subcommands parse --agent themselves (init's
+  // root command surface, upgrade's sweep override — ENH-049), so an
+  // explicit flag is re-injected at that dispatch rather than silently
+  // swallowed here.
   let agent = 'claude-code';
+  let agentExplicit = false;
   const agentFlagIdx = args.indexOf('--agent');
   if (agentFlagIdx !== -1) {
     agent = args[agentFlagIdx + 1];
+    agentExplicit = true;
     args.splice(agentFlagIdx, 2);
   }
 
@@ -1512,7 +1518,9 @@ async function main() {
   } else if (args[0] === 'ecosystem') {
     try {
       const { runEcosystem } = require('./ecosystem');
-      runEcosystem(args.slice(1));
+      runEcosystem(
+        agentExplicit ? [...args.slice(1), '--agent', agent] : args.slice(1),
+      );
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

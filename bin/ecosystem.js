@@ -90,7 +90,11 @@ Location:
 Subcommands:
   init        Scaffold a new ecosystem root in the CWD (or under [name]/).
               Writes ecosystem.json, initiatives/, sessions/, .state/,
-              .gitignore, README.md, CLAUDE.md, AGENTS.md. Runs \`git init\`
+              .gitignore, README.md, CLAUDE.md, AGENTS.md, plus the
+              coordination command surface those instructions advertise
+              (/scout /dispatch /handoff /continue /initiative /session
+              /ecosystem /swarm + session scripts + hook wiring) for
+              --agent <name> (default: claude-code). Runs \`git init\`
               and an initial commit.
 
   add         Register a momentum-installed repo as a member. Writes the
@@ -137,7 +141,20 @@ This command must be run from inside an ecosystem root (or, for
 // ─────────────────────────────────────────────────────────────────────────────
 
 function cmdInit(args) {
-  const name = args[0] || path.basename(process.cwd());
+  const opts = parseFlags(args, { agent: 'string' });
+  // Positionals = args minus flags and their values (parseFlags doesn't strip).
+  const positionals = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i].startsWith('--')) {
+      if (args[i] === '--agent') i++;
+      continue;
+    }
+    positionals.push(args[i]);
+  }
+  const agent = opts.agent || 'claude-code';
+  rootCommandDest(agent); // validates the agent name before any writes
+
+  const name = positionals[0] || path.basename(process.cwd());
   if (!/^[a-z][a-z0-9-]*$/.test(name)) {
     throw new Error(
       `init: ecosystem name "${name}" must match /^[a-z][a-z0-9-]*$/ ` +
@@ -146,7 +163,7 @@ function cmdInit(args) {
   }
 
   // If [name] is given, scaffold under ./<name>/. Otherwise scaffold in CWD.
-  const cliGaveName = args[0] !== undefined;
+  const cliGaveName = positionals[0] !== undefined;
   const root = cliGaveName ? path.resolve(process.cwd(), name) : process.cwd();
 
   if (fs.existsSync(path.join(root, lib.MANIFEST_FILENAME))) {
@@ -215,6 +232,9 @@ function cmdInit(args) {
     renderEcosystemInstruction('ecosystem-agents.md', name),
   );
 
+  // ENH-049: the command surface those instruction files advertise.
+  ensureRootCommandSurface(root, agent, false);
+
   // git init + initial commit (best-effort; if git is unavailable the
   // user can do it themselves).
   try {
@@ -237,6 +257,7 @@ function cmdInit(args) {
   console.log(`Initialized ecosystem "${name}" at ${root}`);
   console.log(`  + CLAUDE.md (managed; tells agents this is a coordination layer, not a project)`);
   console.log(`  + AGENTS.md (same content, for AGENTS.md-aware agents)`);
+  console.log(`  + ${rootCommandDest(agent).join('/')}/ (coordination commands, agent: ${agent})`);
   console.log(`Next steps:`);
   console.log(`  cd ${cliGaveName ? name : '.'}`);
   console.log(`  momentum ecosystem add ../<repo-name>`);
@@ -355,6 +376,165 @@ function hasExtensionContent(extensions) {
       t !== '' && !t.startsWith('>') && !t.startsWith('## Project Extensions') && t !== '---'
     );
   });
+}
+
+// ── Coordination-root command surface (ENH-049) ──────────────────────────────
+//
+// The ecosystem CLAUDE.md/AGENTS.md advertise slash-command primitives
+// (/scout /dispatch /handoff /continue /initiative /session plus the
+// /ecosystem and /swarm operator doors). Before ENH-049 nothing shipped
+// them: a fresh coordination root promised commands that did not resolve
+// (the cerebrio root only had a working surface by accident of the BUG-016
+// project-mode mis-install). `ecosystem init` installs the curated fileset
+// below; `ecosystem upgrade` retrofits/refreshes it. Strictly the
+// coordination layer — project/phase commands are the BUG-016 anti-pattern:
+// warned about, never shipped, never deleted.
+
+const ROOT_SURFACE_COMMANDS = [
+  // adapter-overlay recipes (per-agent copies under adapters/<agent>/)
+  'scout.md', 'dispatch.md', 'handoff.md', 'continue.md', 'swarm.md',
+  // agent-neutral recipes (core/commands/)
+  'ecosystem.md', 'initiative.md', 'session.md',
+];
+
+const ROOT_SURFACE_SCRIPTS = [
+  ['core', 'scripts', 'sessionstart-handoff.sh'],
+  ['core', 'ecosystem', 'scripts', 'session-append.sh'],
+];
+
+// Project-layer commands that must not live in a coordination root.
+const PROJECT_LAYER_COMMANDS = new Set([
+  'brainstorm-idea.md', 'brainstorm-phase.md', 'start-project.md',
+  'start-phase.md', 'complete-phase.md', 'sync-docs.md', 'hotfix.md',
+  'track.md', 'validate.md', 'log.md', 'migrate.md', 'review.md',
+  'review-code.md', 'systematic-debug.md', 'lanes.md',
+]);
+
+function listRootAgents() {
+  const dir = path.join(__dirname, '..', 'adapters');
+  return fs.readdirSync(dir, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && fs.existsSync(path.join(dir, e.name, 'adapter.js')))
+    .map((e) => e.name);
+}
+
+/** Commands destination for an agent, e.g. ['.claude','commands']. */
+function rootCommandDest(agent) {
+  const adapterPath = path.join(__dirname, '..', 'adapters', agent, 'adapter.js');
+  if (!fs.existsSync(adapterPath)) {
+    throw new Error(
+      `unknown agent "${agent}" (available: ${listRootAgents().join(', ')})`,
+    );
+  }
+  const adapter = require(adapterPath);
+  return (adapter.destinations && adapter.destinations.commands) || ['.claude', 'commands'];
+}
+
+/** Recipe source: adapter overlay first (commands/ or workflows/), then core. */
+function resolveRootCommandSource(agent, file) {
+  const src = path.join(__dirname, '..');
+  const candidates = [
+    path.join(src, 'adapters', agent, 'commands', file),
+    path.join(src, 'adapters', agent, 'workflows', file), // Antigravity ships recipes as workflows
+    path.join(src, 'core', 'commands', file),
+  ];
+  for (const c of candidates) if (fs.existsSync(c)) return c;
+  return null;
+}
+
+/** Agents whose command surface already exists in the root (for upgrade). */
+function detectRootAgents(root) {
+  return listRootAgents().filter((agent) =>
+    fs.existsSync(path.join(root, ...rootCommandDest(agent))),
+  );
+}
+
+/**
+ * Install/refresh the coordination-root command surface for one agent:
+ * add when missing; refresh differing momentum-owned files with a `.bak`
+ * (house upgrade semantics); count identical files as up to date. The
+ * Claude Code hook wiring (`.claude/settings.json`) is written only when
+ * absent — settings are user-owned once they exist.
+ */
+function ensureRootCommandSurface(root, agent, dryRun) {
+  const destRel = rootCommandDest(agent);
+  const destDir = path.join(root, ...destRel);
+  let upToDate = 0;
+
+  const place = (srcContent, destPath, { exec = false } = {}) => {
+    const rel = path.relative(root, destPath);
+    if (!fs.existsSync(destPath)) {
+      if (dryRun) {
+        console.log(`  ✋ would add: ${rel}`);
+        return;
+      }
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+      fs.writeFileSync(destPath, srcContent);
+      if (exec) fs.chmodSync(destPath, 0o755);
+      console.log(`  + added: ${rel}`);
+      return;
+    }
+    if (fs.readFileSync(destPath, 'utf8') === srcContent) {
+      if (exec) {
+        try { fs.chmodSync(destPath, 0o755); } catch (_e) { /* best-effort */ }
+      }
+      upToDate++;
+      return;
+    }
+    if (dryRun) {
+      console.log(`  ✋ would refresh: ${rel}`);
+      return;
+    }
+    fs.copyFileSync(destPath, destPath + '.bak');
+    fs.writeFileSync(destPath, srcContent);
+    if (exec) fs.chmodSync(destPath, 0o755);
+    console.log(`  ↑ refreshed: ${rel} (original saved as .bak)`);
+  };
+
+  for (const file of ROOT_SURFACE_COMMANDS) {
+    const srcPath = resolveRootCommandSource(agent, file);
+    if (!srcPath) {
+      console.log(`  ⚠️  no source for ${file} (agent: ${agent}) — skipped.`);
+      continue;
+    }
+    place(fs.readFileSync(srcPath, 'utf8'), path.join(destDir, file));
+  }
+
+  for (const relParts of ROOT_SURFACE_SCRIPTS) {
+    const srcPath = path.join(__dirname, '..', ...relParts);
+    place(fs.readFileSync(srcPath, 'utf8'), path.join(root, 'scripts', relParts[relParts.length - 1]), { exec: true });
+  }
+
+  if (agent === 'claude-code') {
+    const settingsPath = path.join(root, '.claude', 'settings.json');
+    if (!fs.existsSync(settingsPath)) {
+      if (dryRun) {
+        console.log(`  ✋ would add: .claude/settings.json (SessionStart hook wiring)`);
+      } else {
+        fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
+        fs.writeFileSync(
+          settingsPath,
+          renderEcosystemInstruction('ecosystem-settings-claude.json', ''),
+        );
+        console.log(`  + added: .claude/settings.json (SessionStart hook wiring)`);
+      }
+    } else {
+      upToDate++; // user-owned once present — never rewritten
+    }
+  }
+
+  if (upToDate > 0) {
+    console.log(`  = ${destRel.join('/')} [${agent}]: ${upToDate} file(s) up to date`);
+  }
+
+  const offenders = fs.existsSync(destDir)
+    ? fs.readdirSync(destDir).filter((f) => PROJECT_LAYER_COMMANDS.has(f))
+    : [];
+  if (offenders.length) {
+    console.log(
+      `  ⚠️  project-layer commands in the coordination root (BUG-016 anti-pattern — ` +
+        `remove them; they mis-orient agents): ${offenders.join(', ')}`,
+    );
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -605,6 +785,16 @@ function cmdUpgrade(args) {
   // project-mode `momentum upgrade` refuses to run in a coordination root,
   // so this is the only refresh/retrofit path they have.
   refreshRootInstructions(root, manifest.name, dryRun);
+
+  // ENH-049: the command surface those instructions advertise. Manage every
+  // agent surface already present in the root; retrofit the default (or
+  // --agent) surface when none exists yet (pre-ENH-049 roots).
+  const rootAgents = detectRootAgents(root);
+  const surfaceAgents = rootAgents.length ? rootAgents : [opts.agent || 'claude-code'];
+  console.log('Coordination-root command surface:');
+  for (const agent of surfaceAgents) {
+    ensureRootCommandSurface(root, agent, dryRun);
+  }
 
   console.log('');
   console.log(`Sweeping \`momentum upgrade\` across ${manifest.members.length} member(s)${dryRun ? '  [dry run — no writes]' : ''}`);
