@@ -3,13 +3,13 @@
 > Mirrors plan (in overview.md scope). Execution: G0 → G1 → G2 → G3 → G4.
 
 ## Group 0 — Scaffold + ADR-0003
-- [ ] Phase files + tracking (status row, changelog, index.json, README)
-- [ ] ADR-0003 `specs/decisions/0003-recursive-wave-planner.md`
+- [x] Phase files + tracking (status row, changelog, index.json, README) — commit 5f9a5f6
+- [x] ADR-0003 `specs/decisions/0003-recursive-wave-planner.md`
 
 ## Group 1 — Core engine + swarm rewire
-- [ ] `core/waves/lib/waves.js` (Kahn layering, stable order, cycle errors, label-compatible)
-- [ ] `core/swarm/lib/wave-ordering.js` → thin adapter; byte-stable
-- [ ] `tests/waves-engine.test.js` green (incl. swarm-parity pin); full swarm test files green unchanged
+- [x] `core/waves/lib/waves.js` (Kahn layering, stable order, cycle errors, label-compatible)
+- [x] `core/swarm/lib/wave-ordering.js` → thin adapter; byte-stable ({index, repos} shape + error strings pinned)
+- [x] `tests/waves-engine.test.js` green (7/7 incl. swarm-parity pin); swarm e2e scenarios 8/8 unchanged
 
 ## Group 2 — Annotations + `momentum waves` CLI
 - [ ] tasks.md `(deps: …)` heading parser + index.json phase `deps`
