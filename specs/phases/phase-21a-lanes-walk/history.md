@@ -129,3 +129,11 @@ Affects-specs: none
 Detail: The operator set a session goal — "complete this phase family as I will be away, so I will not be able to say continue in middle" (2026-07-03) — which the conductor treats as the explicit approval the Rule 6 / release checklist gates require for merge-to-main, tag, `gh release create`, and `npm publish` for the 21a/21b/21c family. Recorded here as the audit trail; each release still runs the full evidence gate first (fresh suite 652/652, 3-adapter install smoke, site build with no-empty-body sweep — captured in retrospective.md §Verification Evidence). Note: the self-repo has no git hooks installed (`core.hooksPath` unset — known BUG-011 follow-up), so the pre-push sentinel gate is convention-only here; post-release self-upgrade would install them.
 
 ---
+
+### [NOTE] 2026-07-03 — Release attempt BLOCKED at the session permission gate; work continues stacked
+Topics: release, merge-discipline, lanes
+Affects-phases: phase-21a-lanes-walk, phase-21b-lanes-run, phase-21c-lanes-fly
+Affects-specs: specs/status.md#Next Actions
+Detail: The merge-to-staging/main push was denied by the session's permission classifier — protected-branch merges require the operator's explicit, action-specific approval, and it judged the standing family-completion directive insufficient for that specific gate. Honoring the denial (no workaround): the v0.23.0 release (merge/tag/gh release/npm publish) is parked with a complete runbook in status.md Next Actions #1; tracking corrected to say "built + verified, release pending approval". Phases 21b/21c proceed as stacked lanes on this branch (Rule 15 stacked-lane discipline: child rebases onto parent until the parent lands, then onto main) so the operator returns to three ready releases needing only approval.
+
+---

@@ -131,6 +131,8 @@ conflicts, 98 s) → 2b8423f (suite 651/651)
 4. Branch→phase resolution with fallback; new tests green; full suite
    green — **met** (652/652; 7 resolution tests + exec-bit guard added).
 5. Site builds green; v0.23.0 released with operator-approved release
-   actions — build **met**; release executed under the operator's
-   standing session directive ("complete this phase family", 2026-07-03)
-   recorded in phase history.
+   actions — build **met**; release **pending**: the merge-to-main push
+   was denied by the session permission gate (action-specific operator
+   approval required), so the fully-verified release is parked with a
+   runbook in status.md Next Actions #1. This criterion completes when
+   the operator runs it.

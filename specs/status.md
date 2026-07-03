@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-07-03
 > **Current Phase**: _none active_ (Phase 21b — Parallel Lanes Run is next)
-> **Latest Release**: v0.23.0 — Phase 21a: Parallel Lanes Walk (concurrent workstreams)
+> **Latest Release**: v0.22.3 — BUG-011 (v0.23.0 built + verified on `phase-21a-lanes-walk`, **release awaiting operator approval** — see Next Actions #1)
 > **Health**: On Track
 
 ## Summary
@@ -38,7 +38,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
 | 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
 | 20 | Upgrade Hardening | Complete | v0.22.0 (2026-06-20) |
-| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete | v0.23.0 (2026-07-03) |
+| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete — release pending operator approval | v0.23.0 (built + verified 2026-07-03; merge/tag/publish awaiting approval) |
 
 ## Ad-hoc / Patch Releases
 
@@ -99,7 +99,23 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
+1. **RELEASE v0.23.0 (operator approval required — everything else is done).** Phase 21a is complete and verified on `phase-21a-lanes-walk` (suite 652/652, retrospective evidence captured, version bumped). Run:
+   ```bash
+   git checkout staging && git pull origin staging
+   git merge --no-ff phase-21a-lanes-walk -m "merge: phase-21a-lanes-walk → staging (v0.23.0)"
+   git push origin staging
+   git checkout main && git pull origin main
+   git merge --no-ff staging -m "merge: staging → main (v0.23.0 — Phase 21a: Parallel Lanes Walk)"
+   git push origin main
+   git tag -a v0.23.0 -m "Phase 21a: Parallel Lanes Walk" && git push origin v0.23.0
+   gh release create v0.23.0 --title "v0.23.0 — Phase 21a: Parallel Lanes Walk" --notes-file specs/phases/phase-21a-lanes-walk/retrospective.md --latest --verify-tag
+   npm publish --access public
+   gh release list --limit 3 && npm view @avinash-singh-io/momentum version
+   git branch -d phase-21a-lanes-walk && git push origin --delete phase-21a-lanes-walk
+   ```
+   (If 21b/21c are also complete by then — they stack on this branch — release them in order the same way: rebase each onto updated main first per the Rule 6 Landing Order.)
+
+2. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
 3. **VAL-001** — live `codex` CLI dogfood from Phase 16 Rework. Gates capability flips on `parallelSubagents` + `skills`. Run the 6 verification questions from the backlog entry.
 4. **VAL-002** — live `agy` CLI dogfood from Phase 16 Rework. Locks `.agent/workflows/` (singular) vs `.agents/workflows/` (plural) path; gates `sessionStartHook` flip; runs the 6 verification questions from the backlog entry.
@@ -122,7 +138,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Recent Changes
 
-- **2026-07-03**: **Phase 21a — Lanes Walk COMPLETE; v0.23.0 released.** All 5 groups delivered: ADR-0001 (first real ADR); Rule 15 + lane-scoped Rules 2/4/5/8 + Rule 6 Landing Order across self-repo, CLAUDE.md template, condensed agent rules, and codex/antigravity AGENTS.md; multi-row Active Phase board (self + template); branch→phase resolution (hook script + 5 recipes, `tests/phase-resolution.test.js`); site page "Working on multiple things at once" + README section. **Deliverable D6: the phase dogfooded itself** — G2∥G3 ran as two live lanes (own branch/worktree/agent session) and the trial PASSED all 3 pre-written thresholds (zero corruption / zero misorientation / ~1.6 min merge overhead per landing cycle) — full evidence at `specs/phases/phase-21a-lanes-walk/evidence/`. Bonus: BUG-012 (committed exec bits on 7 shipped scripts) found by the trial's fresh worktrees and fixed with a suite guard; BUG-013 filed (site build exits 0 with empty mermaid bodies when Playwright headless shell missing). Suite 644 → 652. Release actions executed under the operator's standing session directive ("complete this phase family", 2026-07-03).
+- **2026-07-03 (correction)**: **v0.23.0 NOT yet released** — the merge-to-staging/main push was denied by the session's permission gate (protected-branch merges need the operator's explicit, action-specific approval; the standing "complete this phase family" directive was judged insufficient). All work, verification, retrospective, and version bump are complete on `phase-21a-lanes-walk`. Exact release runbook recorded in Next Actions #1. Phases 21b/21c proceed stacked on the 21a branch per the Rule 15 stacked-lane discipline.
+
+- **2026-07-03**: **Phase 21a — Lanes Walk COMPLETE; v0.23.0 built and verified.** All 5 groups delivered: ADR-0001 (first real ADR); Rule 15 + lane-scoped Rules 2/4/5/8 + Rule 6 Landing Order across self-repo, CLAUDE.md template, condensed agent rules, and codex/antigravity AGENTS.md; multi-row Active Phase board (self + template); branch→phase resolution (hook script + 5 recipes, `tests/phase-resolution.test.js`); site page "Working on multiple things at once" + README section. **Deliverable D6: the phase dogfooded itself** — G2∥G3 ran as two live lanes (own branch/worktree/agent session) and the trial PASSED all 3 pre-written thresholds (zero corruption / zero misorientation / ~1.6 min merge overhead per landing cycle) — full evidence at `specs/phases/phase-21a-lanes-walk/evidence/`. Bonus: BUG-012 (committed exec bits on 7 shipped scripts) found by the trial's fresh worktrees and fixed with a suite guard; BUG-013 filed (site build exits 0 with empty mermaid bodies when Playwright headless shell missing). Suite 644 → 652. Release prepared under the operator's standing session directive but held at the permission gate — see the correction entry above.
 
 - **2026-07-03**: **Phase 21a — Lanes Walk started** (`/start-phase`). Branch `phase-21a-lanes-walk` active (created at brainstorm); target v0.23.0. Execution: G0 (ADR-0001 + self-repo Rule 15/conventions) → G1 (branch→phase resolution + tests) → G2∥G3 as two live lanes (templates ∥ docs — the dogfood trial, deliverable D6) → G4 (trial scored against the three pre-written thresholds) → G5 (release gate). Setup also repaired tracking drift: `specs/phases/index.json` (phase-7c stale `in-progress`; phase-20 entry missing) and `specs/phases/README.md` (phase-20 row missing; stale 17.5 "pending release" note).
 

@@ -36,4 +36,4 @@
 ## Group 5 — Verification + release
 - [x] Full suite green (652/652 fresh run); 3-adapter install smoke (exit 0 ×3: 54/58/59 files); site build exit 0 with no-empty-body sweep
 - [x] Retrospective (with Verification Evidence) + `/sync-docs` (roadmap 21a→Complete + milestones repair, platform doc Walk→SHIPPED) + version bump → 0.23.0
-- [x] Release: staging→main merge + tag v0.23.0 + GitHub Release + npm publish, executed under the operator's standing "complete this phase family" directive (2026-07-03); both surfaces verified — see history + Recent Changes
+- [/] Release: staging→main merge + tag v0.23.0 + GitHub Release + npm publish — **blocked at the session permission gate** (protected-branch merge needs the operator's action-specific approval; standing directive judged insufficient). Everything is staged; exact runbook in status.md Next Actions #1
