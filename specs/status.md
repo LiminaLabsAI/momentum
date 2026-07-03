@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-07-03
 > **Current Phase**: _none active_ (Phase 22 — Reach is next)
-> **Latest Release**: v0.25.0 — Phase 21c: Parallel Lanes Fly (family complete; npm latest = 0.25.0)
+> **Latest Release**: v0.25.1 — BUG-014 + BUG-015 patch, fixed via parallel lanes (npm latest = 0.25.1)
 > **Health**: On Track
 
 ## Summary
@@ -53,6 +53,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | v0.20.1 | 2026-06-13 | audit/patch | Codex Runtime Refresh (BUG-007 + ENH-036) — moved here from Completed Phases (was a `—` row) |
 | v0.20.3 | 2026-06-15 | patch | BUG-006 fix (CLAUDE.md project-name substitution) — moved here from Completed Phases (was a `—` row) |
 | v0.22.3 | 2026-06-20 | bugfix/patch | BUG-011 — `init`/`upgrade` git-hook install made additive/self-healing (was skipping entirely when `core.hooksPath` ≠ `.githooks`, leaving repos with zero enforcement). Picked up via `/continue` handoff-001 from cerebrio-sapience. |
+| v0.25.1 | 2026-07-03 | bugfix/patch | BUG-014 (upgrade neutralizes legacy `.momentum/` gitignore rule so the D1 lock commits) + BUG-015 (commit-msg bypass accepts the house `merge: ` style — also unblocked `lanes land` on hook-enforced repos). **Fixed as two concurrent `momentum lanes`** — the first real parallel-bugfix dogfood; ENH-048 filed en route. Records in `specs/adhoc/fix-BUG-01{4,5}-*/`. |
 
 ## Active Phase
 
@@ -99,7 +100,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **Post-family follow-ups.** v0.23.0/v0.24.0/v0.25.0 are fully released (main + tags + GitHub Releases + npm; `latest` = 0.25.0, published 2026-07-03 with a scoped 30-day automation token). Remaining: (a) `momentum upgrade .` on this repo — self-installs the git hooks (currently absent) and syncs installed copies; (b) lane-state contract publication decision (ADR-0003 §5 — recommend after multi-week `momentum lanes` dogfood); (c) revoke or let expire the npm token in `~/.npmrc` when done; ENH-019 (CI auto-publish on tag) is the durable fix.
+1. **Post-family follow-ups.** v0.23.0 → v0.25.1 all fully released (main + tags + GitHub Releases + npm `latest` = 0.25.1). Self-repo upgraded to its own latest with live git hooks (2026-07-03). Remaining: (a) lane-state contract publication decision (ADR-0003 §5 — recommend after multi-week `momentum lanes` dogfood); (b) npm auth: operator decision 2026-07-03 = KEEP the scoped automation token in `~/.npmrc` for future releases — note it expires ~2026-08-02 (30-day granular token); create a fresh one then, or ship ENH-019 (CI auto-publish) before it lapses; (c) cerebrio fleet: upgrading members to ≥0.25.1 now also heals their legacy `.momentum/` gitignore rules (BUG-014), letting the D1 version lock finally commit — operator-driven since those repos carry in-flight work.
 
 2. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
