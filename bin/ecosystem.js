@@ -272,6 +272,91 @@ function writeManagedInstructionFile(destPath, content) {
   fs.writeFileSync(destPath, content, 'utf8');
 }
 
+/**
+ * Ensure the coordination root's own CLAUDE.md / AGENTS.md exist and carry
+ * the ecosystem instructions (BUG-016 self-heal; also retrofits pre-Phase-15
+ * roots that were scaffolded before ENH-025 wrote these files). Per file:
+ *   - missing → write the rendered template
+ *   - momentum-managed (ecosystem template, or the project template — the
+ *     BUG-016 signature) → replace the managed section above the
+ *     `## Project Extensions` marker, preserving user extensions; `.bak`
+ *     saved first. A boilerplate-only extensions tail (heading + blockquote,
+ *     no user lines) is swapped for the template's own tail.
+ *   - anything else (user-owned surface) → leave untouched, warn
+ */
+function refreshRootInstructions(root, ecosystemName, dryRun) {
+  // Lazy require avoids a load-time cycle (momentum.js requires this module).
+  const { partitionByMarker } = require('./momentum');
+  const surfaces = [
+    { file: 'CLAUDE.md', template: 'ecosystem-claude.md' },
+    { file: 'AGENTS.md', template: 'ecosystem-agents.md' },
+  ];
+  console.log('Coordination-root instructions:');
+  for (const s of surfaces) {
+    const dest = path.join(root, s.file);
+    const rendered = renderEcosystemInstruction(s.template, ecosystemName);
+    if (!fs.existsSync(dest)) {
+      if (dryRun) {
+        console.log(`  ✋ would add: ${s.file} (ecosystem instructions)`);
+        continue;
+      }
+      fs.writeFileSync(dest, rendered, 'utf8');
+      console.log(`  + added: ${s.file} (ecosystem instructions)`);
+      continue;
+    }
+    const existing = fs.readFileSync(dest, 'utf8');
+    if (existing === rendered) {
+      console.log(`  = ${s.file} up to date`);
+      continue;
+    }
+    const firstLine = existing.split('\n', 1)[0];
+    const isEcosystemManaged = /— Ecosystem \(Coordination Layer\)\s*$/.test(firstLine);
+    const isProjectTemplate = /^# Project Rules:/.test(firstLine);
+    if (!isEcosystemManaged && !isProjectTemplate) {
+      console.log(`  ⚠️  ${s.file} exists but is not momentum-managed — left untouched.`);
+      continue;
+    }
+    const renderedParts = partitionByMarker(rendered);
+    const existingParts = partitionByMarker(existing);
+    const tail = hasExtensionContent(existingParts.extensions)
+      ? existingParts.extensions
+      : renderedParts.extensions;
+    const next = renderedParts.managed + (tail || '');
+    if (next === existing) {
+      console.log(`  = ${s.file} up to date`);
+      continue;
+    }
+    const isRepair = isProjectTemplate;
+    const why = isRepair
+      ? ' — project template found in a coordination root (BUG-016)'
+      : '';
+    if (dryRun) {
+      console.log(`  ✋ would ${isRepair ? 'repair' : 'refresh'}: ${s.file}${why}`);
+      continue;
+    }
+    fs.copyFileSync(dest, dest + '.bak');
+    fs.writeFileSync(dest, next, 'utf8');
+    console.log(
+      `  ↻ ${isRepair ? 'repaired' : 'refreshed'}: ${s.file}${why} (original saved as .bak)`,
+    );
+  }
+}
+
+/**
+ * True when an extensions tail (as returned by partitionByMarker) carries
+ * user content — any non-blank line that isn't the marker heading itself,
+ * a `>` blockquote line, or a horizontal rule.
+ */
+function hasExtensionContent(extensions) {
+  if (!extensions) return false;
+  return extensions.split('\n').some((line) => {
+    const t = line.trim();
+    return (
+      t !== '' && !t.startsWith('>') && !t.startsWith('## Project Extensions') && t !== '---'
+    );
+  });
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // add
 // ─────────────────────────────────────────────────────────────────────────────
@@ -515,6 +600,13 @@ function cmdUpgrade(args) {
   const manifest = lib.loadManifest(root);
 
   console.log(`Ecosystem: ${manifest.name} (root: ${root})`);
+
+  // BUG-016: the root's own instruction surfaces are upgraded here — the
+  // project-mode `momentum upgrade` refuses to run in a coordination root,
+  // so this is the only refresh/retrofit path they have.
+  refreshRootInstructions(root, manifest.name, dryRun);
+
+  console.log('');
   console.log(`Sweeping \`momentum upgrade\` across ${manifest.members.length} member(s)${dryRun ? '  [dry run — no writes]' : ''}`);
   if (manifest.members.length === 0) {
     console.log('  (none registered yet — try `momentum ecosystem add ../<repo>`)');
