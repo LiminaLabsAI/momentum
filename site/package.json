@@ -7,6 +7,7 @@
     "start": "astro dev",
     "prebuild": "node scripts/generate-og-cards.mjs",
     "build": "astro build",
+    "postbuild": "node scripts/check-dist-content.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

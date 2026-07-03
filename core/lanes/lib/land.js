@@ -17,11 +17,22 @@
  *                     non-empty "## Verification Evidence" section
  *   5. touch-overlap re-warning (advisory)
  *
+ * Gate evidence is read from the LANE BRANCH first (`git show
+ * <branch>:<path>` — a record committed on the lane arrives WITH the
+ * merge, so the invoking worktree can't see it beforehand; ENH-048),
+ * falling back to the invoking worktree's filesystem for the 21b G5
+ * pattern of uncommitted records.
+ *
  * --execute merges (--no-ff) into the CURRENT branch (which must equal
  * --into when given), marks the lane `landed`, and drops an advisory
  * `message` signal into every other open lane's inbox. It never pushes —
  * protected-branch pushes stay behind the Phase-19 hooks + operator
  * approval.
+ *
+ * --mark-landed is bookkeeping only (ENH-048): when the merge already
+ * happened out-of-band, it records `landed` + landedAt and sends the
+ * advisory nudges — no turn/freshness/gate checks, no merge. Requires
+ * status `done` and the lane branch already merged into HEAD.
  */
 
 const fs = require('fs');
@@ -40,7 +51,7 @@ function parseFlags(argv) {
   const positional = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--execute' || a === '--force' || a === '--json') flags[a.slice(2)] = true;
+    if (a === '--execute' || a === '--force' || a === '--json' || a === '--mark-landed') flags[a.slice(2)] = true;
     else if (a.startsWith('--')) flags[a.slice(2)] = argv[++i];
     else positional.push(a);
   }
@@ -77,36 +88,69 @@ function writeAdvisorySignal(anchor, laneId, text, from) {
   });
 }
 
-/** Gate check per ADR-0002 §4. Returns { ok, detail }. */
-function gateCheck(repoRoot, lane) {
+/** Blob content at `<branch>:<relPath>` (repo-root-relative), or null when absent. */
+function readFromBranch(cwd, branch, relPath) {
+  const res = git(cwd, 'show', `${branch}:${relPath}`);
+  return res.status === 0 ? res.stdout : null;
+}
+
+/** Trimmed "## Verification Evidence" section body, or null when missing/empty. */
+function evidenceSection(body) {
+  const m = body.match(/^## Verification Evidence\s*$([\s\S]*?)(?=^## |\s*$(?![\s\S]))/m);
+  return (m && m[1] && m[1].trim()) || null;
+}
+
+/**
+ * Gate check per ADR-0002 §4. Returns { ok, detail }.
+ *
+ * Evidence is read from the LANE BRANCH first (ENH-048 — a record
+ * committed on the lane only arrives in the integration worktree WITH
+ * the merge), falling back to the invoking worktree's filesystem for
+ * the 21b G5 pattern of uncommitted records. `cwd` is where git runs.
+ */
+function gateCheck(cwd, repoRoot, lane) {
   if (lane.grade === 'spike') {
     return { ok: true, detail: 'spike — gate-exempt by declaration' };
   }
   if (lane.grade === 'quick-task') {
+    const rel = `specs/adhoc/${lane.id}/record.md`;
+    const fromBranch = readFromBranch(cwd, lane.branch, rel);
+    if (fromBranch && fromBranch.trim()) {
+      return { ok: true, detail: `ad-hoc record present (${rel}, read from the lane branch)` };
+    }
     const rec = path.join(repoRoot, 'specs', 'adhoc', lane.id, 'record.md');
     return fs.existsSync(rec)
-      ? { ok: true, detail: `ad-hoc record present (specs/adhoc/${lane.id}/record.md)` }
-      : { ok: false, detail: `missing ad-hoc record: specs/adhoc/${lane.id}/record.md (Rule 14 quick-task evidence)` };
+      ? { ok: true, detail: `ad-hoc record present (${rel})` }
+      : { ok: false, detail: `missing ad-hoc record: ${rel} — not on '${lane.branch}' nor in the worktree (Rule 14 quick-task evidence)` };
   }
   // phase grade
   const ref = (lane.planNode && lane.planNode.ref) || lane.id;
+  const rel = `specs/phases/${ref}/retrospective.md`;
+  const fromBranch = readFromBranch(cwd, lane.branch, rel);
+  if (fromBranch !== null) {
+    const section = evidenceSection(fromBranch);
+    if (section) {
+      return { ok: true, detail: `retrospective Verification Evidence present (${section.length} chars, read from the lane branch)` };
+    }
+    // present on the branch but section missing/empty — the worktree copy may still carry it
+  }
   const retro = path.join(repoRoot, 'specs', 'phases', ref, 'retrospective.md');
   if (!fs.existsSync(retro)) {
-    return { ok: false, detail: `missing retrospective: specs/phases/${ref}/retrospective.md (Rule 12 phase evidence)` };
+    return fromBranch !== null
+      ? { ok: false, detail: `retrospective on '${lane.branch}' exists but "## Verification Evidence" is missing or empty (${rel})` }
+      : { ok: false, detail: `missing retrospective: ${rel} (Rule 12 phase evidence)` };
   }
-  const body = fs.readFileSync(retro, 'utf8');
-  const m = body.match(/^## Verification Evidence\s*$([\s\S]*?)(?=^## |\s*$(?![\s\S]))/m);
-  const section = m && m[1] && m[1].trim();
+  const section = evidenceSection(fs.readFileSync(retro, 'utf8'));
   return section
     ? { ok: true, detail: `retrospective Verification Evidence present (${section.length} chars)` }
-    : { ok: false, detail: `retrospective exists but "## Verification Evidence" is missing or empty (${path.relative(repoRoot, retro)})` };
+    : { ok: false, detail: `retrospective exists but "## Verification Evidence" is missing or empty (${rel})` };
 }
 
 function cmdLand(cwd, argv) {
   const { flags, positional } = parseFlags(argv);
   const id = positional[0];
   if (!id) {
-    console.error('✗ usage: momentum lanes land <lane-id> [--into <ref>] [--execute] [--force]');
+    console.error('✗ usage: momentum lanes land <lane-id> [--into <ref>] [--execute] [--force] [--mark-landed]');
     return 1;
   }
   const anchor = state.resolveAnchor(cwd);
@@ -123,6 +167,37 @@ function cmdLand(cwd, argv) {
 
   const currentBranch = (git(cwd, 'rev-parse', '--abbrev-ref', 'HEAD').stdout || '').trim();
   const into = flags.into || currentBranch;
+
+  // ── --mark-landed: bookkeeping for a merge that already happened
+  // out-of-band (ENH-048). No turn/freshness/gate checks, no merge.
+  if (flags['mark-landed']) {
+    if (lane.status !== 'done') {
+      console.error(`✗ --mark-landed requires status 'done' (lane '${id}' is '${lane.status}') — mark it first: momentum lanes done ${id}`);
+      return 1;
+    }
+    const merged = git(cwd, 'merge-base', '--is-ancestor', lane.branch, 'HEAD').status === 0;
+    if (!merged) {
+      console.error(`✗ --mark-landed: '${lane.branch}' is not merged into HEAD — this flag only RECORDS an out-of-band merge that already happened (to actually merge: momentum lanes land ${id} --execute)`);
+      return 1;
+    }
+    const landed = state.updateLane(anchor, id, {
+      status: 'landed',
+      landedAt: new Date().toISOString(),
+      note: `${lane.note ? lane.note + '; ' : ''}marked landed out-of-band (--mark-landed)`,
+    });
+    const others = state.listLanes(anchor).filter((l) => l.id !== id && l.status === 'open');
+    for (const other of others) {
+      writeAdvisorySignal(anchor, other.id,
+        `lane '${id}' landed on ${currentBranch} — rebase your lane before landing (git rebase ${currentBranch})`,
+        currentBranch);
+    }
+    console.log(`✓ lane '${id}' marked landed (${landed.landedAt}) — bookkeeping only, the merge was already in HEAD`);
+    if (others.length) {
+      console.log(`ℹ advisory rebase signal sent to ${others.length} open lane(s): ${others.map((l) => l.id).join(', ')}`);
+    }
+    return 0;
+  }
+
   const checks = [];
   let ok = true;
 
@@ -158,7 +233,7 @@ function cmdLand(cwd, argv) {
   }
 
   // 4. graded gate
-  const gate = gateCheck(repoRoot, lane);
+  const gate = gateCheck(cwd, repoRoot, lane);
   checks.push(`${gate.ok ? '✓' : '✗'} gate[${lane.grade}]: ${gate.detail}`);
   if (!gate.ok) ok = false;
 

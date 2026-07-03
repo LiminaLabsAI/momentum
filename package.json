@@ -1,6 +1,6 @@
 {
   "name": "@avinash-singh-io/momentum",
-  "version": "0.25.1",
+  "version": "0.25.2",
   "description": "Agent-agnostic, specs-driven development framework — single project or multi-project ecosystem",
   "homepage": "https://trymomentum.github.io",
   "bin": {

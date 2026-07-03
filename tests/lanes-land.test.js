@@ -191,3 +191,116 @@ test('--execute merges --no-ff, marks landed, and nudges other open lanes via in
     rmrf(container);
   }
 });
+
+// ─── ENH-048: gate reads evidence from the lane branch ───────────────────
+
+test('ENH-048: quick-task record committed only on the lane branch — gate passes, --execute lands without collision', () => {
+  const { container, dir } = makeRepo();
+  try {
+    // Record committed ON the lane branch (the real-lanes pattern) —
+    // NOT present in the invoking worktree before the merge.
+    git(dir, 'checkout', '-q', '-b', 'fix/c');
+    write(path.join(dir, 'c.txt'), 'fix/c\n');
+    write(path.join(dir, 'specs', 'adhoc', 'fix-c', 'record.md'), '# fix-c\nevidence\n');
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '--no-verify', '-m', 'fix: c with record');
+    git(dir, 'checkout', '-q', 'main');
+    assert.ok(!fs.existsSync(path.join(dir, 'specs', 'adhoc', 'fix-c', 'record.md')),
+      'precondition: record absent from the invoking worktree');
+
+    assert.equal(lanes(dir, 'open', 'fix/c', '--no-worktree').status, 0);
+    assert.equal(lanes(dir, 'done', 'fix-c').status, 0);
+
+    const validate = lanes(dir, 'land', 'fix-c');
+    assert.equal(validate.status, 0, validate.stderr);
+    assert.match(validate.stdout, /✓ gate\[quick-task\]: .*read from the lane branch/);
+
+    // The today-failure: with the gate satisfied from the branch, no
+    // untracked record copy exists to collide with the incoming file.
+    const res = lanes(dir, 'land', 'fix-c', '--execute');
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /✓ lane 'fix-c' landed on 'main'/);
+    assert.ok(fs.existsSync(path.join(dir, 'specs', 'adhoc', 'fix-c', 'record.md')),
+      'record arrived WITH the merge');
+  } finally {
+    rmrf(container);
+  }
+});
+
+test('ENH-048: phase retrospective committed only on the lane branch passes the gate', () => {
+  const { container, dir } = makeRepo();
+  try {
+    git(dir, 'checkout', '-q', '-b', 'phase-6-y');
+    write(path.join(dir, 'y.txt'), 'phase-6-y\n');
+    write(path.join(dir, 'specs', 'phases', 'phase-6-y', 'retrospective.md'),
+      '# retro\n\n## Verification Evidence\n\nsuite 12/12 green\n');
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '--no-verify', '-m', 'docs: retro on the lane');
+    git(dir, 'checkout', '-q', 'main');
+    assert.ok(!fs.existsSync(path.join(dir, 'specs', 'phases', 'phase-6-y', 'retrospective.md')),
+      'precondition: retrospective absent from the invoking worktree');
+
+    assert.equal(lanes(dir, 'open', 'phase-6-y', '--no-worktree').status, 0);
+    assert.equal(lanes(dir, 'done', 'phase-6-y').status, 0);
+
+    const res = lanes(dir, 'land', 'phase-6-y');
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /✓ gate\[phase\]: retrospective Verification Evidence present \(\d+ chars, read from the lane branch\)/);
+  } finally {
+    rmrf(container);
+  }
+});
+
+// ─── ENH-048: --mark-landed bookkeeping ──────────────────────────────────
+
+test('ENH-048: --mark-landed records an out-of-band merge and nudges open lanes', () => {
+  const { container, dir } = makeRepo();
+  try {
+    makeBranchWithCommit(dir, 'feat/oob', 'oob.txt');
+    makeBranchWithCommit(dir, 'feat/watcher', 'w.txt');
+    assert.equal(lanes(dir, 'open', 'feat/oob', '--no-worktree', '--grade', 'spike').status, 0);
+    assert.equal(lanes(dir, 'open', 'feat/watcher', '--no-worktree', '--grade', 'spike').status, 0);
+    assert.equal(lanes(dir, 'done', 'feat-oob').status, 0);
+
+    // Merge happens OUT-OF-BAND (not via lanes land --execute).
+    git(dir, 'merge', '--no-ff', 'feat/oob', '-m', 'merge: out of band');
+
+    const res = lanes(dir, 'land', 'feat-oob', '--mark-landed');
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /✓ lane 'feat-oob' marked landed .*bookkeeping only/);
+    assert.match(res.stdout, /advisory rebase signal sent to 1 open lane\(s\): feat-watcher/);
+
+    const anchor = state.resolveAnchor(dir);
+    const manifest = state.readManifest(anchor, 'feat-oob');
+    assert.equal(manifest.status, 'landed');
+    assert.ok(manifest.landedAt, 'landedAt recorded');
+    assert.equal(state.unreadCount(anchor, 'feat-watcher'), 1, 'bystander got the advisory nudge');
+    assert.match(state.unreadSignals(anchor, 'feat-watcher')[0].text, /rebase your lane/);
+  } finally {
+    rmrf(container);
+  }
+});
+
+test('ENH-048: --mark-landed refused when the lane is not done, and when the branch is not merged', () => {
+  const { container, dir } = makeRepo();
+  try {
+    makeBranchWithCommit(dir, 'feat/nope', 'n.txt');
+    assert.equal(lanes(dir, 'open', 'feat/nope', '--no-worktree', '--grade', 'spike').status, 0);
+
+    // status 'open' → refused
+    const notDone = lanes(dir, 'land', 'feat-nope', '--mark-landed');
+    assert.equal(notDone.status, 1);
+    assert.match(notDone.stderr, /--mark-landed requires status 'done' \(lane 'feat-nope' is 'open'\)/);
+
+    // done but NOT merged into HEAD → refused
+    assert.equal(lanes(dir, 'done', 'feat-nope').status, 0);
+    const notMerged = lanes(dir, 'land', 'feat-nope', '--mark-landed');
+    assert.equal(notMerged.status, 1);
+    assert.match(notMerged.stderr, /'feat\/nope' is not merged into HEAD/);
+
+    const anchor = state.resolveAnchor(dir);
+    assert.equal(state.readManifest(anchor, 'feat-nope').status, 'done', 'manifest untouched on refusal');
+  } finally {
+    rmrf(container);
+  }
+});

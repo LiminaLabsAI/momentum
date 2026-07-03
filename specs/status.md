@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-07-03
 > **Current Phase**: _none active_ (Phase 22 — Reach is next)
-> **Latest Release**: v0.25.1 — BUG-014 + BUG-015 patch, fixed via parallel lanes (npm latest = 0.25.1)
+> **Latest Release**: v0.25.2 — BUG-013 + ENH-048 patch, parallel lanes round two (npm latest = 0.25.2)
 > **Health**: On Track
 
 ## Summary
@@ -54,6 +54,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | v0.20.3 | 2026-06-15 | patch | BUG-006 fix (CLAUDE.md project-name substitution) — moved here from Completed Phases (was a `—` row) |
 | v0.22.3 | 2026-06-20 | bugfix/patch | BUG-011 — `init`/`upgrade` git-hook install made additive/self-healing (was skipping entirely when `core.hooksPath` ≠ `.githooks`, leaving repos with zero enforcement). Picked up via `/continue` handoff-001 from cerebrio-sapience. |
 | v0.25.1 | 2026-07-03 | bugfix/patch | BUG-014 (upgrade neutralizes legacy `.momentum/` gitignore rule so the D1 lock commits) + BUG-015 (commit-msg bypass accepts the house `merge: ` style — also unblocked `lanes land` on hook-enforced repos). **Fixed as two concurrent `momentum lanes`** — the first real parallel-bugfix dogfood; ENH-048 filed en route. Records in `specs/adhoc/fix-BUG-01{4,5}-*/`. |
+| v0.25.2 | 2026-07-03 | bugfix/patch | BUG-013 (site `postbuild` gate fails builds on empty page bodies + CI headless-shell install) + ENH-048 (`lanes land` gate reads evidence from the lane branch; `--mark-landed` bookkeeping). Parallel lanes round two — BUG-013's landing was the new gate's first production use: one `lanes land --execute`, no workarounds. Records in `specs/adhoc/fix-{BUG-013,ENH-048}-*/`. |
 
 ## Active Phase
 

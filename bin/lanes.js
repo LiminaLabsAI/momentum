@@ -228,7 +228,9 @@ Usage:
   momentum lanes queue                    Landing order + gate grades
   momentum lanes signal <id> <pause|resume|redirect|kill|message> [text]
   momentum lanes inbox <id> [--ack <n>|--ack-all]
-  momentum lanes land <id> [--into <ref>] [--execute] [--force]
+  momentum lanes land <id> [--into <ref>] [--execute] [--force] [--mark-landed]
+      --mark-landed      bookkeeping only: record an out-of-band merge that
+                         already happened (done + merged lane → landed)
 
 State lives at <git-common-dir>/momentum/lanes — shared by all worktrees,
 untracked, no daemon. Substrate: plain git worktrees by default; treehouse
