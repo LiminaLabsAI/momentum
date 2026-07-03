@@ -146,7 +146,7 @@ Four verbs the agent composes per task — not a pipeline. They're how the agent
 
 ## Parallel workstreams
 
-One repo, several features in flight, each in its own agent session — momentum models each as a **lane**: a branch (usually in its own worktree) bound to one phase, with its own session. Each session resolves its phase from its branch, writes only its own lane's tracking, and finished lanes land on `main` **one at a time** with the suite green between landings. Isolation substrate is yours to pick — plain `git worktree` works out of the box; treehouse pools or GitButler virtual branches light up extra speed. momentum recommends, never requires.
+One repo, several features in flight, each in its own agent session — momentum models each as a **lane**: a branch (usually in its own worktree) bound to one phase, with its own session. Each session resolves its phase from its branch, writes only its own lane's tracking, and finished lanes land on `main` **one at a time** with the suite green between landings. `momentum lanes` is the mechanism: open lanes (worktree created for you), see the ambient board with queue pressure from any session, signal other lanes, and land through a merge queue with graded evidence gates. Isolation substrate is yours to pick — plain `git worktree` works out of the box; treehouse pools or GitButler virtual branches light up extra speed. momentum recommends, never requires.
 
 [Read the parallel workstreams guide →](https://trymomentum.github.io/parallel-work/)
 

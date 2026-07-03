@@ -1,0 +1,14 @@
+# D8 dogfood — lanes opened by the new CLI (2026-07-03 10:21:26)
+
+$ momentum lanes open phase-21b-lanes-run-g3 ...
+✓ worktree created at /Users/avinash/Workspace/Projects/cerebrio/momentum.lanes/phase-21b-lanes-run-g3
+✓ lane 'phase-21b-lanes-run-g3' open — branch phase-21b-lanes-run-g3, plan node phase:phase-21b-lanes-run-g3, grade quick-task
+  note: specs/phases/phase-21b-lanes-run-g3/ does not exist yet — sessions will fall back to status.md until it does
+
+$ momentum lanes open phase-21b-lanes-run-g4 ...
+✓ worktree created at /Users/avinash/Workspace/Projects/cerebrio/momentum.lanes/phase-21b-lanes-run-g4
+✓ lane 'phase-21b-lanes-run-g4' open — branch phase-21b-lanes-run-g4, plan node phase:phase-21b-lanes-run-g4, grade quick-task
+  note: specs/phases/phase-21b-lanes-run-g4/ does not exist yet — sessions will fall back to status.md until it does
+
+$ momentum lanes   (board not shipped yet — staged delivery visible)
+✗ 'momentum lanes' subcommand backed by core/lanes/lib/board.js is not shipped yet
