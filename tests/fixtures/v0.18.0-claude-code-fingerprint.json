@@ -1,8 +1,8 @@
 {
   "meta": {
     "captured": "2026-07-03",
-    "capturedFrom": "phase-21b-lanes-run",
-    "note": "Phase 21b G6: /lanes recipe ships to all adapters (claude-code command, codex skill, antigravity workflow); CLAUDE.md template Rule 15 gains the momentum-lanes mechanism pointer"
+    "capturedFrom": "phase-21c-lanes-fly",
+    "note": "Phase 21c G4: lanes recipe gains the momentum-waves planning section (waves feed lanes)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -16,7 +16,7 @@
     ".claude/commands/handoff.md": "c4decc3095a5322402ff637e1dd3f7c29badf5eab71fdb7cf452cd24bcba3a7d",
     ".claude/commands/hotfix.md": "2699a61bdf5b219f2297a6c1ca95d25e3d63a44e37ed77ffdab88077c4715b12",
     ".claude/commands/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
-    ".claude/commands/lanes.md": "c7f56ba9e7a4a388b49b8f8c83e84fe0ecaf2224718478b41955e0f9c34abe3b",
+    ".claude/commands/lanes.md": "2fa6e0abc816d474d744b1bafd1b12523ff8bc4b1dfe215dab20adb682af6463",
     ".claude/commands/log.md": "ef5f70ee60e8393615129df13b8eb75b31af31d5b0356b4e7a3f245220d6a608",
     ".claude/commands/migrate.md": "bc90f868f34429874ac70456f411eb5b2985835e7d63d385bbf9fd4836fcec0d",
     ".claude/commands/review-code.md": "63b331a1849dc468fe6f652ac943f2543798ffacdbf0c7d97f2c4924290f3c20",

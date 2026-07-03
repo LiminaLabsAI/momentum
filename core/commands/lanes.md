@@ -27,6 +27,18 @@ The board footer always shows **queue pressure** (done-but-unlanded lanes
 + oldest wait). Rising pressure means landings — the human-attention step
 — are the bottleneck; surface it to the user rather than opening more lanes.
 
+### Plan waves first (N ideas → N lanes)
+
+```bash
+momentum waves            # phase-scale waves from index.json "deps"
+momentum waves --tasks    # group waves for the phase bound to your branch
+```
+
+Dependencies are annotations in the plans themselves (`(deps: G0, G1)`
+group-heading suffix; `"deps"` arrays in `specs/phases/index.json`).
+Wave-1 nodes are safe to open as lanes NOW; later waves unblock as their
+dependencies land.
+
 ### Open a lane
 
 ```bash
