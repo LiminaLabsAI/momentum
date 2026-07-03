@@ -2,7 +2,7 @@
 
 > **Last Updated**: 2026-07-03
 > **Current Phase**: _none active_ (Phase 22 — Reach is next)
-> **Latest Release**: v0.25.0 — Phase 21c: Parallel Lanes Fly (family complete; npm publish ×3 pending `npm login` — Next Actions #1)
+> **Latest Release**: v0.25.0 — Phase 21c: Parallel Lanes Fly (family complete; npm latest = 0.25.0)
 > **Health**: On Track
 
 ## Summary
@@ -99,14 +99,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **npm publish ×3 (needs `npm login` — everything else released 2026-07-03).** Tags v0.23.0/v0.24.0/v0.25.0 are on main with GitHub Releases live (v0.25.0 = Latest); `npm publish` failed ENEEDAUTH (expired session, the ENH-019 friction). After `npm login`:
-   ```bash
-   git checkout v0.23.0 && npm publish --access public
-   git checkout v0.24.0 && npm publish --access public
-   git checkout v0.25.0 && npm publish --access public   # becomes npm "latest"
-   git checkout main && npm view @avinash-singh-io/momentum version   # expect 0.25.0
-   ```
-   Then: (a) `momentum upgrade .` on this repo (self-installs git hooks + syncs installed copies); (b) lane-state contract publication decision (ADR-0003 §5 — recommend after multi-week dogfood).
+1. **Post-family follow-ups.** v0.23.0/v0.24.0/v0.25.0 are fully released (main + tags + GitHub Releases + npm; `latest` = 0.25.0, published 2026-07-03 with a scoped 30-day automation token). Remaining: (a) `momentum upgrade .` on this repo — self-installs the git hooks (currently absent) and syncs installed copies; (b) lane-state contract publication decision (ADR-0003 §5 — recommend after multi-week `momentum lanes` dogfood); (c) revoke or let expire the npm token in `~/.npmrc` when done; ENH-019 (CI auto-publish on tag) is the durable fix.
 
 2. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
