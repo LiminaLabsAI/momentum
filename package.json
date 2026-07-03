@@ -1,6 +1,6 @@
 {
   "name": "@avinash-singh-io/momentum",
-  "version": "0.25.2",
+  "version": "0.26.0",
   "description": "Agent-agnostic, specs-driven development framework — single project or multi-project ecosystem",
   "homepage": "https://trymomentum.github.io",
   "bin": {
@@ -23,6 +23,7 @@
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.js",
     "capture-evidence": "MOMENTUM_CAPTURE_EVIDENCE=1 node --test --test-concurrency=1 tests/swarm-e2e-scenarios.test.js tests/swarm-portability-e2e.test.js",
+    "generate-instructions": "node scripts/generate-instructions.js",
     "prepublishOnly": "npm test"
   },
   "engines": {

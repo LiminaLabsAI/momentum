@@ -20,7 +20,10 @@ test('npm tarball shape — includes required runtime adapter files and no repo 
   for (const required of [
     'bin/momentum.js',
     'core/commands/brainstorm-phase.md',
-    'core/agent-rules/project.md',
+    'core/instructions/rules-body.md',
+    'core/instructions/navigation.md',
+    'core/instructions/legacy-project-md-hashes.json',
+    'adapters/codex/instructions/surfaces.md',
     'core/scripts/check-history-reminder.sh',
     'core/specs-templates/README.md',
     'core/specs-templates/specs/status.md',

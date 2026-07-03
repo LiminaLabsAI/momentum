@@ -25,7 +25,6 @@ If no diff exists, report "no changes to review" and stop.
 
 Before dispatching reviewers, read:
 - `AGENTS.md` (primary instructions)
-- `.agent/rules/project.md` (condensed rules)
 - `specs/status.md` (current phase context)
 
 This ensures each reviewer scores the diff against THIS project's rules, not generic best practices alone.

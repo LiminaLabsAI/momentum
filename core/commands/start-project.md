@@ -57,7 +57,7 @@ Turns a settled concept into a fully spec-driven project: vision, roadmap, Phase
    - For monorepo: `specs/architecture/` first-pass architecture doc
    - `specs/planning/roadmap.md`
    - `specs/phases/phase-0-shortname/{overview,plan,tasks,history}.md`
-   - `CLAUDE.md` (from `.agent/rules/project.md` template)
+   - `CLAUDE.md` (the primary instruction file — full rules included)
    - `specs/phases/index.json`, `specs/decisions/impact-map.json`
    - `specs/status.md`, `specs/backlog/backlog.md`
    - `specs/decisions/0000-template.md`, `specs/decisions/README.md`

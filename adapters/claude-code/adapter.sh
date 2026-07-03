@@ -91,14 +91,8 @@ run_install() {
     echo "     Merge hooks manually from: $src/adapters/claude-code/settings.json"
   fi
 
-  # .agent/rules/
-  echo "→ Installing agent rules..."
-  mkdir -p "$target/.agent/rules"
-  if [ ! -f "$target/.agent/rules/project.md" ]; then
-    cp "$src/core/agent-rules/project.md" "$target/.agent/rules/"
-  else
-    echo "  ⚠️  .agent/rules/project.md already exists — skipping (not overwriting)."
-  fi
+  # .agent/rules/project.md is retired (Phase 23 / ADR-0004) — the full rules
+  # ride CLAUDE.md now. Nothing to install here.
 
   # Adapter overlay — per-agent commands/agent-rules/scripts (additive)
   _overlay_copy "$adapter_dir" "$target"

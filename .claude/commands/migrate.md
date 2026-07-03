@@ -15,7 +15,6 @@ This command fills gaps without overwriting anything the project already has.
    | Decisions dir | `specs/decisions/` | |
    | Planning dir | `specs/planning/` | |
    | Changelog dir | `specs/changelog/` | |
-   | Agent rules | `.agent/rules/project.md` | |
    | Hook script | `scripts/check-history-reminder.sh` | |
    | Claude commands | `.claude/commands/` | |
 
@@ -34,7 +33,6 @@ This command fills gaps without overwriting anything the project already has.
    Will skip (already exist):
      - specs/status.md
      - specs/backlog/backlog.md
-     - .agent/rules/project.md
    ```
    Ask the user to confirm before proceeding.
 
@@ -42,7 +40,6 @@ This command fills gaps without overwriting anything the project already has.
    - Copy any missing momentum template files from `specs-templates/` — never overwrite
      files the project already has
    - Add any missing momentum commands to `.claude/commands/` — skip ones already present
-   - Add `.agent/rules/project.md` if absent
    - Add `scripts/check-history-reminder.sh` if absent (and chmod +x)
 
 4. **Phase index reconciliation** — if `specs/phases/index.json` is missing or its

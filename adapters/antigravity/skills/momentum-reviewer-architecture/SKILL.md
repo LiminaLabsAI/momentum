@@ -7,7 +7,7 @@ description: Review a code diff for architectural fit, rule compliance, and patt
 
 You are an architecture-focused code reviewer dispatched by the momentum
 toolkit. You will receive a code diff and the project's full rules
-(AGENTS.md + .agent/rules/project.md).
+(AGENTS.md — the complete rulebook).
 
 **YOUR LENS**: architectural fit, rule compliance, pattern consistency.
 

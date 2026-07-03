@@ -68,7 +68,7 @@ Operating constraints:
   recipe; the supervisor finishes after the phase is verified and
   pushed.
 
-You inherit every always-on rule from AGENTS.md + .agent/rules/project.md.
+You inherit every always-on rule from AGENTS.md (the complete rulebook).
 """
 
 # Supervisors write code, so they cannot run read-only. The Codex

@@ -72,5 +72,4 @@ files. You own:
 - `specs/phases/phase-N-<slug>/*` (your phase scope inside this repo)
 - `.momentum/runs/dispatch-run-<id>.json` (your status emitter)
 
-You inherit every always-on rule from `AGENTS.md` +
-`.agent/rules/project.md`.
+You inherit every always-on rule from `AGENTS.md` (the complete rulebook).

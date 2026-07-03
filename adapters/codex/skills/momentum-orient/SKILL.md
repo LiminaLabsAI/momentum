@@ -11,7 +11,7 @@ work on something new), read these files in order before any other action:
 1. `specs/status.md` — current phase, blockers, P0 items, next actions
 2. `specs/backlog/backlog.md` — P0/P1 items that may block the current task
 3. `specs/phases/<active-phase>/tasks.md` — what's done / in flight / blocked
-4. `AGENTS.md` and `.agent/rules/project.md` — project rules and constraints
+4. `AGENTS.md` — project rules and constraints (the complete rulebook)
 
 Then proceed with the user's request, framing any output in terms of:
 - which phase is active
@@ -19,8 +19,7 @@ Then proceed with the user's request, framing any output in terms of:
 - any existing tasks or history entries that already cover the request
 
 This skill is shipped by the momentum toolkit. It codifies Rule 1 (Orient
-First) from the project rules. See `.agent/rules/project.md` for the full
-set of 12 rules.
+First) from the project rules. See `AGENTS.md` for the full set of rules.
 
 ## When NOT to apply this skill
 

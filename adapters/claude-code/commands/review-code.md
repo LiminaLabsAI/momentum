@@ -36,8 +36,7 @@ If no diff exists, report "no changes to review" and stop.
 ### Step 2 — Read the rules of the project
 
 Before dispatching reviewers, read:
-- `CLAUDE.md` (rules and constraints)
-- `.agent/rules/project.md` (condensed rules)
+- `CLAUDE.md` (rules and constraints — the complete rulebook)
 - `specs/status.md` (current phase context)
 
 This ensures every reviewer scores the diff against THIS project's rules,
@@ -119,7 +118,7 @@ Prompt template:
 >
 > Full rules:
 > ```
-> <paste CLAUDE.md (rules section) and .agent/rules/project.md>
+> <paste CLAUDE.md (rules section)>
 > ```
 >
 > For each change, ask:

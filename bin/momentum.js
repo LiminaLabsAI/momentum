@@ -295,6 +295,53 @@ function refreshGitignore(srcRoot, targetDir) {
   return 'updated';
 }
 
+/**
+ * Migrate the retired `.agent/rules/project.md` (Phase 23 / ADR-0004).
+ * Pristine — content sha256 matches a shipped historical revision (see
+ * core/instructions/legacy-project-md-hashes.json) — is removed (the rules
+ * now ride the primary instruction file). Anything else is user-customized:
+ * kept in place with a deprecation warning, and shielded from orphan
+ * cleanup by the caller. Manifest-independent, so pre-Phase-20 installs
+ * (no lock file) migrate too.
+ * Returns 'absent' | 'removed' | 'would-remove' | 'kept-customized'.
+ */
+function migrateAgentRules(srcRoot, target, dests) {
+  const relParts = [...(dests['agent-rules'] || ['.agent', 'rules']), 'project.md'];
+  const rel = relParts.join('/');
+  const abs = path.join(target, ...relParts);
+  if (!fileExists(abs)) return 'absent';
+
+  const crypto = require('crypto');
+  const manifest = JSON.parse(
+    fs.readFileSync(
+      path.join(srcRoot, 'core', 'instructions', 'legacy-project-md-hashes.json'),
+      'utf8'
+    )
+  );
+  // Trailing-whitespace-normalized: an editor-added extra final newline is
+  // not "customization" (proved by the self-repo dogfood). Every shipped
+  // revision ends with exactly one \n, so the manifest hashes are already
+  // in normalized form.
+  const normalized = fs.readFileSync(abs, 'utf8').replace(/\s+$/, '') + '\n';
+  const hash = crypto.createHash('sha256').update(normalized).digest('hex');
+
+  if (manifest.sha256.includes(hash)) {
+    if (_dryRun) {
+      console.log(`  ✋ would remove: ${rel} (pristine — rules now live in the primary instruction file)`);
+      return 'would-remove';
+    }
+    fs.rmSync(abs);
+    try { fs.rmdirSync(path.dirname(abs)); } catch { /* dir not empty — fine */ }
+    console.log(`  🗑  removed: ${rel} (pristine — rules now live in the primary instruction file)`);
+    return 'removed';
+  }
+
+  console.log(`  ⚠️  kept: ${rel} — customized content detected. This file is retired (ADR-0004);`);
+  console.log(`     no agent auto-loads it. Move your customizations into the '## Project Extensions'`);
+  console.log(`     section of the primary instruction file, then delete it.`);
+  return 'kept-customized';
+}
+
 function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   if (!prevManifest || !Array.isArray(prevManifest.managedFiles)) return [];
   const currentRel = new Set(
@@ -305,6 +352,10 @@ function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   const removed = [];
   for (const entry of prevManifest.managedFiles) {
     if (currentRel.has(entry.path)) continue; // still managed → keep
+    if (opts.keepRel && opts.keepRel.has(entry.path)) {
+      console.log(`  ⚠️  kept (not orphan-cleaned): ${entry.path} — user-owned now`);
+      continue;
+    }
     const abs = path.join(targetDir, entry.path);
     if (!fileExists(abs)) continue; // already gone
     removed.push(entry.path);
@@ -857,17 +908,9 @@ function init(targetDir, agent, opts = {}) {
     );
   }
 
-  // .agent/rules/project.md
-  console.log('→ Installing agent rules...');
-  const rulesDest = path.join(target, ...dests['agent-rules'], 'project.md');
-  if (!fileExists(rulesDest)) {
-    copyFile(
-      path.join(src, 'core', 'agent-rules', 'project.md'),
-      rulesDest
-    );
-  } else {
-    console.log('  ⚠️  .agent/rules/project.md already exists — skipping (not overwriting).');
-  }
+  // .agent/rules/project.md is retired (Phase 23 / ADR-0004): the full rules
+  // now ride each adapter's auto-loaded primary instruction file. Fresh
+  // installs ship nothing here; `upgrade` migrates existing copies.
 
   // specs/ skeleton (root instruction file is adapter-owned)
   console.log('→ Scaffolding project specs...');
@@ -992,14 +1035,11 @@ function upgrade(targetDir, agent, opts = {}) {
     );
   }
 
-  // Upgrade agent rules — marker-aware (preserves Project Extensions block)
-  console.log('→ Upgrading agent rules...');
-  agentRulesResult = upgradeMarkedFile(
-    path.join(src, 'core', 'agent-rules', 'project.md'),
-    path.join(target, ...dests['agent-rules'], 'project.md'),
-    'agent-rules',
-    target
-  );
+  // Agent rules — retired surface (Phase 23 / ADR-0004). Migrate any
+  // installed copy: pristine (matches a shipped historical revision) →
+  // remove; customized → keep with a deprecation warning.
+  console.log('→ Migrating agent rules (retired surface)...');
+  agentRulesResult = migrateAgentRules(src, target, dests);
 
   // Upgrade adapter-owned root instruction file
   primaryInstructionResult = upgradePrimaryInstruction(
@@ -1022,7 +1062,13 @@ function upgrade(targetDir, agent, opts = {}) {
   // Orphan cleanup — remove files a prior version installed but this one
   // no longer ships (uses the snapshot taken before writes). Only ever
   // touches files we previously recorded as managed.
-  orphans = removeOrphans(target, prevManifest, _managedCollector, { dryRun: _dryRun });
+  orphans = removeOrphans(target, prevManifest, _managedCollector, {
+    dryRun: _dryRun,
+    // A customized project.md is user-owned now — never orphan-clean it.
+    keepRel: agentRulesResult === 'kept-customized'
+      ? new Set([[...dests['agent-rules'], 'project.md'].join('/')])
+      : undefined,
+  });
 
   // Lock file — rewrite the version-of-record + managed-file set (Phase 20)
   writeInstalledManifest(target, { version: pkg.version, agent, files: _managedCollector, dryRun: _dryRun });

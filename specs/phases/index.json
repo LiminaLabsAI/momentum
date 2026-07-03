@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-07-03-phase-21c-complete",
+  "updated": "2026-07-04-phase-23-complete",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -616,6 +616,24 @@
         "adr-0003",
         "feat-028",
         "v0-25-0"
+      ]
+    },
+    "phase-23-rules-unification": {
+      "status": "complete",
+      "topics": [
+        "instructions",
+        "agent-rules",
+        "rules-body",
+        "generation",
+        "templates",
+        "adapters",
+        "claude-code",
+        "codex",
+        "antigravity",
+        "migration",
+        "upgrade",
+        "fingerprints",
+        "primary-instruction"
       ]
     }
   }

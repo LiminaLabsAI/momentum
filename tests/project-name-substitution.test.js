@@ -27,7 +27,7 @@ test('init: substitutes <Project Name> with directory name when no package.json'
     assert.equal(r.status, 0, `stderr: ${r.stderr}\nstdout: ${r.stdout}`);
     const claudeMd = read(path.join(projectDir, 'CLAUDE.md'));
     assert.equal(
-      claudeMd.split('\n')[0],
+      claudeMd.split('\n').find((l) => l.startsWith('# Project Rules:')),
       '# Project Rules: my-cool-project',
       'first line should have substituted directory name'
     );
@@ -54,7 +54,7 @@ test('init: substitutes <Project Name> with package.json name field', () => {
     assert.equal(r.status, 0, `stderr: ${r.stderr}\nstdout: ${r.stdout}`);
     const claudeMd = read(path.join(projectDir, 'CLAUDE.md'));
     assert.equal(
-      claudeMd.split('\n')[0],
+      claudeMd.split('\n').find((l) => l.startsWith('# Project Rules:')),
       '# Project Rules: real-name-from-pkg',
       'first line should use package.json name, not dir name'
     );
@@ -76,7 +76,7 @@ test('init: strips @scope/ prefix from scoped package.json name', () => {
     assert.equal(r.status, 0, `stderr: ${r.stderr}\nstdout: ${r.stdout}`);
     const claudeMd = read(path.join(projectDir, 'CLAUDE.md'));
     assert.equal(
-      claudeMd.split('\n')[0],
+      claudeMd.split('\n').find((l) => l.startsWith('# Project Rules:')),
       '# Project Rules: cool-tool',
       'scope prefix should be stripped'
     );
@@ -94,7 +94,7 @@ test('init --agent codex: substitutes <Project Name> in AGENTS.md', () => {
     assert.equal(r.status, 0, `stderr: ${r.stderr}\nstdout: ${r.stdout}`);
     const agentsMd = read(path.join(projectDir, 'AGENTS.md'));
     assert.equal(
-      agentsMd.split('\n')[0],
+      agentsMd.split('\n').find((l) => l.startsWith('# Project Rules:')),
       '# Project Rules: codex-project',
       'AGENTS.md first line should be substituted for codex adapter'
     );
@@ -132,7 +132,7 @@ test('upgrade: replaces stale <Project Name> placeholder in CLAUDE.md', () => {
       'upgrade should have substituted the placeholder away'
     );
     assert.equal(
-      upgraded.split('\n')[0],
+      upgraded.split('\n').find((l) => l.startsWith('# Project Rules:')),
       '# Project Rules: upgrade-target',
       'first line should be the resolved project name post-upgrade'
     );

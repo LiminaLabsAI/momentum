@@ -51,7 +51,7 @@ ls -la .momentum/brainstorm-active && rm .momentum/brainstorm-active
 
 ## Repo Layout
 
-- `core/` — tool-agnostic logic (commands, agent-rules, scripts, specs-templates)
+- `core/` — tool-agnostic logic (commands, instructions, scripts, specs-templates)
 - `adapters/<agent>/` — per-agent overlays (e.g. `adapters/claude-code/commands/review-code.md`, `adapters/claude-code/scripts/brainstorm-gate.sh`)
 - `bin/momentum.js` — zero-dependency Node.js CLI
 - `tests/` — Node's `node:test` runner; serial via `--test-concurrency=1`
