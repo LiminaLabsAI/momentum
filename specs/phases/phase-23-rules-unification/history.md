@@ -31,3 +31,18 @@ Affects-specs: specs/planning/roadmap.md#phase-22
 Detail: Reach adds new adapters; unifying the instruction architecture first means they are born single-source instead of inheriting the two-tier pattern and immediately becoming migration debt. Operator-approved 2026-07-03.
 
 ---
+### [DECISION] 2026-07-04 — G0: ADR-0004 accepted; assembly order and vars placement fixed
+Topics: instructions, agent-rules, generation, adapters
+Affects-phases: phase-23-rules-unification
+Affects-specs: specs/decisions/0004-single-source-instruction-generation.md
+Detail: ADR-0004 (single-source instruction generation) written and accepted. Assembly order fixed as header → navigation → surfaces → rules-body → Project Extensions tail, with `core/instructions/navigation.md` split out as a shared fragment so the nav table stays near the top of every output. Placeholder values live in `adapters/<agent>/instructions/vars.json` (JSON, not frontmatter — zero-dependency parsing); only two vars needed: TASK_TOOL, TASK_TOOL_NAME. Inventory of agent-specific wording in the old template: exactly the two TodoWrite mentions (Rule 2) — everything else was already agent-neutral.
+
+---
+
+### [NOTE] 2026-07-04 — G0: Antigravity layout table drops the .agent/rules/ row
+Topics: antigravity, agent-rules, surfaces
+Affects-phases: phase-23-rules-unification
+Affects-specs: none
+Detail: The antigravity surfaces fragment omits the `.agent/rules/` row from the native-layout table — that surface is retired this phase, and its claimed "auto-loaded by agy" behavior is exactly what the 2026-07-03 live failure disproved. No other content edits were made during extraction (non-goal: no rule rewrites).
+
+---

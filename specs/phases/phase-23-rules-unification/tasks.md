@@ -4,12 +4,12 @@
 > fresh verification output in-session).
 
 ## Group 0 — Canonical sources + ADR
-- [ ] ADR "Single-source instruction generation" written and accepted
-- [ ] `core/instructions/rules-body.md` extracted (Rules 1–15, full Red Flags + anti-rationalization)
-- [ ] Rule 13 (TDD) folded in from `core/agent-rules/project.md`
-- [ ] Agent-specific wording neutralized into `{{VAR}}` placeholders (inventory recorded)
-- [ ] Three per-adapter `instructions/header.md` files written
-- [ ] Per-adapter generator vars placed + recorded in history
+- [x] ADR "Single-source instruction generation" written and accepted
+- [x] `core/instructions/rules-body.md` extracted (Rules 1–15, full Red Flags + anti-rationalization)
+- [x] Rule 13 (TDD) folded in from `core/agent-rules/project.md`
+- [x] Agent-specific wording neutralized into `{{VAR}}` placeholders (inventory recorded)
+- [x] Three per-adapter `instructions/header.md` files written
+- [x] Per-adapter generator vars placed + recorded in history
 
 ## Group 1 — Generator + drift guard
 - [ ] `scripts/generate-instructions.js` (+ `--check` mode, deterministic, GENERATED marker)
