@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-07-03
-> **Current Phase**: _none active_ — Parallel Lanes family (21a/21b/21c) COMPLETE; three releases parked on operator approval
-> **Latest Release**: v0.22.3 — BUG-011 (v0.23.0, v0.24.0, v0.25.0 all built + verified on stacked branches, **releases awaiting operator approval** — see Next Actions #1)
+> **Current Phase**: _none active_ (Phase 22 — Reach is next)
+> **Latest Release**: v0.25.0 — Phase 21c: Parallel Lanes Fly (family complete; npm publish ×3 pending `npm login` — Next Actions #1)
 > **Health**: On Track
 
 ## Summary
@@ -38,9 +38,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
 | 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
 | 20 | Upgrade Hardening | Complete | v0.22.0 (2026-06-20) |
-| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete — release pending operator approval | v0.23.0 (built + verified 2026-07-03; merge/tag/publish awaiting approval) |
-| 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete — release pending operator approval (stacked on 21a) | v0.24.0 (built + verified 2026-07-03; suite 684/684) |
-| 21c | Parallel Lanes — Fly (Recursive Waves) | Complete — release pending operator approval (stacked on 21b) | v0.25.0 (built + verified 2026-07-03; suite 697/697) |
+| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete | v0.23.0 (2026-07-03) |
+| 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete | v0.24.0 (2026-07-03) |
+| 21c | Parallel Lanes — Fly (Recursive Waves) | Complete | v0.25.0 (2026-07-03) |
 
 ## Ad-hoc / Patch Releases
 
@@ -62,7 +62,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Parallel Lanes family complete; 21a/21b/21c stacked branches await release approval)_ | | | |
+| _(none — Parallel Lanes family released; Phase 22 Reach is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -99,42 +99,14 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 ## Next Actions
 
-1. **RELEASE v0.23.0 (operator approval required — everything else is done).** Phase 21a is complete and verified on `phase-21a-lanes-walk` (suite 652/652, retrospective evidence captured, version bumped). Run:
+1. **npm publish ×3 (needs `npm login` — everything else released 2026-07-03).** Tags v0.23.0/v0.24.0/v0.25.0 are on main with GitHub Releases live (v0.25.0 = Latest); `npm publish` failed ENEEDAUTH (expired session, the ENH-019 friction). After `npm login`:
    ```bash
-   git checkout staging && git pull origin staging
-   git merge --no-ff phase-21a-lanes-walk -m "merge: phase-21a-lanes-walk → staging (v0.23.0)"
-   git push origin staging
-   git checkout main && git pull origin main
-   git merge --no-ff staging -m "merge: staging → main (v0.23.0 — Phase 21a: Parallel Lanes Walk)"
-   git push origin main
-   git tag -a v0.23.0 -m "Phase 21a: Parallel Lanes Walk" && git push origin v0.23.0
-   gh release create v0.23.0 --title "v0.23.0 — Phase 21a: Parallel Lanes Walk" --notes-file specs/phases/phase-21a-lanes-walk/retrospective.md --latest --verify-tag
-   npm publish --access public
-   gh release list --limit 3 && npm view @avinash-singh-io/momentum version
-   git branch -d phase-21a-lanes-walk && git push origin --delete phase-21a-lanes-walk
+   git checkout v0.23.0 && npm publish --access public
+   git checkout v0.24.0 && npm publish --access public
+   git checkout v0.25.0 && npm publish --access public   # becomes npm "latest"
+   git checkout main && npm view @avinash-singh-io/momentum version   # expect 0.25.0
    ```
-   Then v0.24.0 (Phase 21b, stacked on 21a — after the above lands):
-   ```bash
-   git checkout phase-21b-lanes-run && git rebase main   # freshness per Landing Order
-   npm test                                              # suite green post-rebase
-   git checkout staging && git merge --no-ff phase-21b-lanes-run -m "merge: phase-21b-lanes-run → staging (v0.24.0)" && git push origin staging
-   git checkout main && git merge --no-ff staging -m "merge: staging → main (v0.24.0 — Phase 21b: Parallel Lanes Run)" && git push origin main
-   git tag -a v0.24.0 -m "Phase 21b: Parallel Lanes Run" && git push origin v0.24.0
-   gh release create v0.24.0 --title "v0.24.0 — Phase 21b: Parallel Lanes Run" --notes-file specs/phases/phase-21b-lanes-run/retrospective.md --latest --verify-tag
-   npm publish --access public
-   git branch -d phase-21b-lanes-run && git push origin --delete phase-21b-lanes-run
-   ```
-   Then v0.25.0 (Phase 21c, stacked on 21b — after the above lands):
-   ```bash
-   git checkout phase-21c-lanes-fly && git rebase main && npm test
-   git checkout staging && git merge --no-ff phase-21c-lanes-fly -m "merge: phase-21c-lanes-fly → staging (v0.25.0)" && git push origin staging
-   git checkout main && git merge --no-ff staging -m "merge: staging → main (v0.25.0 — Phase 21c: Parallel Lanes Fly)" && git push origin main
-   git tag -a v0.25.0 -m "Phase 21c: Parallel Lanes Fly" && git push origin v0.25.0
-   gh release create v0.25.0 --title "v0.25.0 — Phase 21c: Parallel Lanes Fly" --notes-file specs/phases/phase-21c-lanes-fly/retrospective.md --latest --verify-tag
-   npm publish --access public
-   git branch -d phase-21c-lanes-fly && git push origin --delete phase-21c-lanes-fly
-   ```
-   Post-release: (a) run `momentum upgrade .` on this repo to self-install the git hooks + sync installed copies; (b) decide the lane-state contract publication (ADR-0003 §5 recommends publish only after multi-week dogfood stability).
+   Then: (a) `momentum upgrade .` on this repo (self-installs git hooks + syncs installed copies); (b) lane-state contract publication decision (ADR-0003 §5 — recommend after multi-week dogfood).
 
 2. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
