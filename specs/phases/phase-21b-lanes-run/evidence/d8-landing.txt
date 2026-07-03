@@ -1,0 +1,41 @@
+# D8/FEAT-027 landing evidence (2026-07-03 10:31:10)
+
+$ momentum lanes   (board before landings — conductor worktree, 21b branch)
+✗ 'momentum lanes' subcommand backed by core/lanes/lib/board.js is not shipped yet
+
+$ momentum lanes land phase-21b-lanes-run-g4   (validate, pre-rebase — expect freshness refusal)
+landing checklist for 'phase-21b-lanes-run-g4' → phase-21b-lanes-run:
+  ✓ status: done (since 2026-07-03T04:56:47.402Z)
+  ✓ turn: head of the landing queue
+  ✗ freshness: 'phase-21b-lanes-run-g4' does not contain 'phase-21b-lanes-run' — rebase the lane first (git rebase phase-21b-lanes-run); freshness is never forceable
+  ✓ gate[quick-task]: ad-hoc record present (specs/adhoc/phase-21b-lanes-run-g4/record.md)
+✗ lane 'phase-21b-lanes-run-g4' is not landable
+
+$ momentum lanes land phase-21b-lanes-run-g4 --execute   (post-rebase)
+landing checklist for 'phase-21b-lanes-run-g4' → phase-21b-lanes-run:
+  ✓ status: done (since 2026-07-03T04:56:47.402Z)
+  ✓ turn: head of the landing queue
+  ✓ freshness: 'phase-21b-lanes-run' is contained in 'phase-21b-lanes-run-g4'
+  ✓ gate[quick-task]: ad-hoc record present (specs/adhoc/phase-21b-lanes-run-g4/record.md)
+✓ lane 'phase-21b-lanes-run-g4' landed on 'phase-21b-lanes-run' (2026-07-03T05:01:28.708Z)
+ℹ run the suite on the updated branch before the next landing (Rule 6 Landing Order)
+
+$ momentum lanes land phase-21b-lanes-run-g3 --execute   (post-rebase)
+landing checklist for 'phase-21b-lanes-run-g3' → phase-21b-lanes-run:
+  ✓ status: done (since 2026-07-03T04:58:00.285Z)
+  ✓ turn: head of the landing queue
+  ✓ freshness: 'phase-21b-lanes-run' is contained in 'phase-21b-lanes-run-g3'
+  ✓ gate[quick-task]: ad-hoc record present (specs/adhoc/phase-21b-lanes-run-g3/record.md)
+✓ lane 'phase-21b-lanes-run-g3' landed on 'phase-21b-lanes-run' (2026-07-03T05:05:08.469Z)
+ℹ run the suite on the updated branch before the next landing (Rule 6 Landing Order)
+
+$ momentum lanes   (board after both landings — now rendered by the landed G3 module)
+● phase-21b-lanes-run-g3  phase:phase-21b-lanes-run-g3  quick-task  landed  13m ✉1
+● phase-21b-lanes-run-g4  phase:phase-21b-lanes-run-g4  quick-task  landed  13m
+queue: empty — nothing awaiting landing
+
+$ close + cleanup
+✓ worktree removed: /Users/avinash/Workspace/Projects/cerebrio/momentum.lanes/phase-21b-lanes-run-g3
+✓ lane 'phase-21b-lanes-run-g3' closed
+✓ worktree removed: /Users/avinash/Workspace/Projects/cerebrio/momentum.lanes/phase-21b-lanes-run-g4
+✓ lane 'phase-21b-lanes-run-g4' closed

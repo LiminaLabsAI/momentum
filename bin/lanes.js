@@ -251,6 +251,10 @@ function dispatch(argv, cwd) {
   const delegate = (module, exportName, args) => {
     if (lazy(module, exportName)(cwd, args) === 1) failed = true;
   };
+  // A leading flag (e.g. `momentum lanes --json`) means the default board.
+  if (sub && sub.startsWith('--') && sub !== '--help') {
+    return delegate('board', 'cmdBoard', argv);
+  }
   switch (sub) {
     case undefined:
     case 'board':

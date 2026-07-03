@@ -28,9 +28,9 @@
 - [x] `tests/lanes-signals.test.js` green (6/6, incl. cross-worktree read+ack; no regression: lanes-state + lanes-open-close 13/13)
 
 ## Group 5 — Landing (FEAT-027 + ENH-047 close-out)
-- [ ] G3/G4 lanes landed per Rule 6 (evidence for D8)
-- [ ] `momentum lanes land` (turn, freshness, graded gates, overlap warnings, --execute)
-- [ ] `tests/lanes-land.test.js` green
+- [x] G3/G4 lanes landed per Rule 6 VIA `momentum lanes land --execute` — freshness refusal → rebase → land, quick-task gates fed by `specs/adhoc/<id>/record.md`; suite green after each landing (677/677, then 684/684); evidence at `evidence/d8-landing.txt`
+- [x] `momentum lanes land` (turn, freshness, graded gates, overlap warnings, --execute; advisory rebase nudges to open lanes) — pre-built while lanes ran (order swap logged)
+- [x] `tests/lanes-land.test.js` green (6/6); dispatcher nit fixed (`momentum lanes --json` now routes to the board)
 
 ## Group 6 — Docs + verification + release prep
 - [ ] `core/commands/lanes.md` recipe; template Rule 15 pointer
