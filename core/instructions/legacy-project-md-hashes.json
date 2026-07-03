@@ -1,0 +1,12 @@
+{
+  "description": "SHA-256 of every historically shipped revision of core/agent-rules/project.md (retired by Phase 23 / ADR-0004). Used by `momentum upgrade` to distinguish a pristine installed copy (delete) from a user-customized one (keep + deprecation warning). Harvested 2026-07-04 via: git log --all --format=%H -- core/agent-rules/project.md | while read c; do git ls-tree $c -- core/agent-rules/project.md; done | awk '{print $3}' | sort -u | xargs -I{} sh -c 'git cat-file blob {} | shasum -a 256'",
+  "sha256": [
+    "42956f18f619aaa2a666326b3873ca41d8aa6c530d3eff2240f12592bdcf1916",
+    "e9e99f7b4230bfdb95a44fe967d5d7559eec7d7f559158dca3e822887b77988a",
+    "59117d0f582f1f387a9851dc322b91e97d6eba19d091de2b2a258238ad6f4629",
+    "bd41b8a1369f88ffaaee13f7d441c845b2ab30789695c8460b7a2d1f7acadfd7",
+    "175bc78d3370130c195fb0a5c4b1cc151c5594e8c7eb1c759db0906abaa4b8ee",
+    "1d3815740b5956e9524ab8f3acf3cccfe11c20560c08d7f1d0aef2ca0a0f14a9",
+    "e35fd7461cab76fb61b8bf601c837ac278b476507d9d56319281a9a332038313"
+  ]
+}
