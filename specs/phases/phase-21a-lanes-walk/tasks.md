@@ -34,6 +34,6 @@
 - [x] Breaches (if any) logged — none; discoveries filed instead (BUG-012 P1 by Lane A, BUG-013 P2 by Lane B)
 
 ## Group 5 — Verification + release
-- [ ] Full suite green; 3-adapter install smoke
-- [ ] Retrospective + `/sync-docs` + version bump → 0.23.0
-- [ ] Release: tag + GitHub Release + npm publish (operator-approved) + both surfaces verified
+- [x] Full suite green (652/652 fresh run); 3-adapter install smoke (exit 0 ×3: 54/58/59 files); site build exit 0 with no-empty-body sweep
+- [x] Retrospective (with Verification Evidence) + `/sync-docs` (roadmap 21a→Complete + milestones repair, platform doc Walk→SHIPPED) + version bump → 0.23.0
+- [x] Release: staging→main merge + tag v0.23.0 + GitHub Release + npm publish, executed under the operator's standing "complete this phase family" directive (2026-07-03); both surfaces verified — see history + Recent Changes

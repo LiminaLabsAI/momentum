@@ -82,7 +82,7 @@ cross-repo `ecosystem.json` wave ordering into a single engine.
 
 | Step | Item(s) | Delivers |
 |---|---|---|
-| **Walk = Phase 21a** (v0.23.0, planned 2026-07-03 — `specs/phases/phase-21a-lanes-walk/`) | ENH-046 | Multi-lane spec conventions, branch-scoped rules (new Rule 15 + edits to 2/4/5/6/8), branch→phase resolution, sequential-merge discipline — two sessions stop fighting. Dogfood-in-phase: G2∥G3 run as live lanes; SIEVE thresholds gate the template release |
+| **Walk = Phase 21a** (**SHIPPED v0.23.0, 2026-07-03** — `specs/phases/phase-21a-lanes-walk/`) | ENH-046 | Multi-lane spec conventions, branch-scoped rules (new Rule 15 + edits to 2/4/5/6/8), branch→phase resolution, sequential-merge discipline — two sessions stop fighting. Dogfood-in-phase: G2∥G3 ran as live lanes; **trial PASSED all 3 pre-written thresholds** (`evidence/trial-report.md`) — templates shipped |
 | **Run = Phase 21b** (v0.24.0) | FEAT-026 + FEAT-027 + ENH-047 | Lane registry/manifests/signals at `git-common-dir`; `momentum lanes` ambient board with queue pressure; merge queue with Rule-14-graded gates extending the Phase-19 pre-push layer; plan-time touch-path overlap warnings. Lane-state format stays internal. 21b itself runs as ≥2 lanes. Seeded brainstorm at start, refined by 21a trial learnings |
 | **Fly = Phase 21c** (v0.25.0) | FEAT-028 | Dependency annotations on tasks + phases; ONE recursive wave planner in core; swarm rewired as its top-scale consumer (swarm e2e scenarios must stay byte-stable); e2e demo: 3 ideas → parallel plans → waved lanes → sequenced landings. Lane-state contract publication decision reviewed at close |
 

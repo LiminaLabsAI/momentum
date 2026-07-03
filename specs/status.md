@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-07-03
-> **Current Phase**: Phase 21a — Parallel Lanes Walk (Concurrent Workstreams)
-> **Latest Release**: v0.22.3 — BUG-011: additive/self-healing git-hook install
+> **Current Phase**: _none active_ (Phase 21b — Parallel Lanes Run is next)
+> **Latest Release**: v0.23.0 — Phase 21a: Parallel Lanes Walk (concurrent workstreams)
 > **Health**: On Track
 
 ## Summary
@@ -38,6 +38,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 18 | Swarm Parity (Codex + Antigravity) | Complete | v0.20.4 (2026-06-15) |
 | 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
 | 20 | Upgrade Hardening | Complete | v0.22.0 (2026-06-20) |
+| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete | v0.23.0 (2026-07-03) |
 
 ## Ad-hoc / Patch Releases
 
@@ -59,7 +60,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 21a — Parallel Lanes Walk (Concurrent Workstreams) | `phase-21a-lanes-walk` | In Progress (target v0.23.0) | G0–G4 ✓ (trial PASSED 3/3 thresholds) → G5 verification + release |
+| _(none — Phase 21a shipped v0.23.0; Phase 21b "Parallel Lanes Run" is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -120,6 +121,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-03**: **Phase 21a — Lanes Walk COMPLETE; v0.23.0 released.** All 5 groups delivered: ADR-0001 (first real ADR); Rule 15 + lane-scoped Rules 2/4/5/8 + Rule 6 Landing Order across self-repo, CLAUDE.md template, condensed agent rules, and codex/antigravity AGENTS.md; multi-row Active Phase board (self + template); branch→phase resolution (hook script + 5 recipes, `tests/phase-resolution.test.js`); site page "Working on multiple things at once" + README section. **Deliverable D6: the phase dogfooded itself** — G2∥G3 ran as two live lanes (own branch/worktree/agent session) and the trial PASSED all 3 pre-written thresholds (zero corruption / zero misorientation / ~1.6 min merge overhead per landing cycle) — full evidence at `specs/phases/phase-21a-lanes-walk/evidence/`. Bonus: BUG-012 (committed exec bits on 7 shipped scripts) found by the trial's fresh worktrees and fixed with a suite guard; BUG-013 filed (site build exits 0 with empty mermaid bodies when Playwright headless shell missing). Suite 644 → 652. Release actions executed under the operator's standing session directive ("complete this phase family", 2026-07-03).
 
 - **2026-07-03**: **Phase 21a — Lanes Walk started** (`/start-phase`). Branch `phase-21a-lanes-walk` active (created at brainstorm); target v0.23.0. Execution: G0 (ADR-0001 + self-repo Rule 15/conventions) → G1 (branch→phase resolution + tests) → G2∥G3 as two live lanes (templates ∥ docs — the dogfood trial, deliverable D6) → G4 (trial scored against the three pre-written thresholds) → G5 (release gate). Setup also repaired tracking drift: `specs/phases/index.json` (phase-7c stale `in-progress`; phase-20 entry missing) and `specs/phases/README.md` (phase-20 row missing; stale 17.5 "pending release" note).
 
