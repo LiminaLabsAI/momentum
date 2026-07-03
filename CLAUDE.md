@@ -1,6 +1,6 @@
 # Project Rules: momentum
 
-> Claude Code configuration for developing the momentum toolkit itself.
+> Claude Code configuration for this project.
 > Agent rules live in `.agent/rules/project.md`.
 
 ## Navigation (Where to Find Things)

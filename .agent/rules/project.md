@@ -21,9 +21,9 @@ Before ANY work, read `specs/status.md`.
 
 ### Rule 2: Auto-Update Tracking After Changes
 After completing ANY meaningful work, automatically update:
-1. Active phase `tasks.md` — `[x]` complete, `[/]` in-progress
-2. `specs/status.md` — if phase progress, blockers, or P0 items changed
-3. `specs/changelog/YYYY-MM.md` — log what changed (one line per change)
+1. Your phase's `tasks.md` (the phase bound to your branch — Rule 15) — `[x]` complete, `[/]` in-progress
+2. `specs/status.md` — if phase progress, blockers, or P0 items changed (touch only your own lane's row — Rule 15)
+3. `specs/changelog/YYYY-MM.md` — log what changed (one line per change, append-only)
 
 **Red Flags (STOP and update now):**
 - "I'll batch tracking at the end" — context fades; log now
@@ -41,23 +41,27 @@ Before starting a new phase, scan backlog for P0/P1 bugs.
 ### Rule 5: Phase Boundary Awareness
 When completing the last task: prompt user to run `/complete-phase`.
 
-### Rule 6: Git Lifecycle (Automatic)
+### Rule 6: Git Lifecycle
 - Before ANY code change: check branch; auto-create feature branch if on main/staging
-- Auto-commit after each logical unit with conventional commits (`feat`/`fix`/`docs`/`refactor`/`chore`/`infra`)
+- Auto-commit after each logical unit with conventional commits (`feat`/`fix`/`docs`/`refactor`/`chore`/`infra`/`test`/`perf`/`build`/`ci`/`style`/`revert`)
 - Never auto-merge to staging or main — always ask user
 - Delete merged feature branches once confirmed merged
+- **Enforced by installed git hooks** (not just convention): `commit-msg`
+  validates the message; `pre-push` blocks direct pushes to main/staging without
+  the single-use `.momentum/merge-approved` sentinel and blocks release tags
+  lacking verification evidence. Emergency bypass: `MOMENTUM_SKIP_HOOKS=1`.
 
 **Red Flags (STOP and switch branches):**
 - "Just one commit to main" — branch first, decide later
 - "I'll create the branch after these edits" — branch is non-optional
-- "--no-verify just this once" — fix the underlying check
+- "--no-verify just this once" — the hooks are real; use auditable `MOMENTUM_SKIP_HOOKS=1` only for genuine emergencies
 - "Force push is fine" — `--force-with-lease` minimum
 
 ### Rule 7: Plan Before Implementing
 For non-trivial work: use `/brainstorm-phase` first.
 
 ### Rule 8: Record Phase History
-Append to `specs/phases/<active-phase>/history.md` after meaningful changes.
+Append meaningful changes to the history.md of the phase bound to your branch — `specs/phases/<phase-bound-to-your-branch>/history.md` (Rule 15).
 
 **Trigger → Entry type:**
 - ADR created/changed → `[DECISION]`
@@ -150,6 +154,30 @@ If enabled in the project rules extensions (under `## Project Extensions` in thi
 - "I will write the tests at the end" — writing tests post-facto is not TDD and leads to confirmation bias.
 - "The change is too simple to warrant a test-first approach" — simple changes are excellent TDD candidates to establish correct wiring.
 
+### Rule 14: Work-Type Escalation — Pick the Lightest Type That Fits
+Not every change is a phase. Three work types (see `specs/adhoc/README.md`):
+- `phase` — net-new features / cross-cutting / architectural work → `/brainstorm-phase` → `/start-phase` → … → `/complete-phase`.
+- `quick-task` — a bounded bugfix / chore / audit / dep bump → `/hotfix`: an ad-hoc record (`specs/adhoc/<id>/record.md`) + the Rule 12 gate, no phase scaffold.
+- `spike` — time-boxed throwaway exploration → `/hotfix --spike`: declared, gate-exempt, record what was learned.
+
+**Pick the lightest type that fits; escalate only when scope/risk justifies it.** A quick-task MUST become a phase when it touches >~5 files of production code, modifies `specs/architecture/`, needs an ADR, changes a public contract, or displaces a planned phase.
+
+**Red Flags:**
+- "This `/hotfix` is growing" — if it now touches architecture or many files, escalate to a phase.
+- "I'll spin up a whole phase for a one-line fix" — over-ceremony; a `/hotfix` quick-task is right.
+
+### Rule 15: Concurrent Workstreams — Lanes
+Multiple workstreams may be active in one repo at once (see ADR-0001 in `specs/decisions/`). A **lane** = one branch (usually in its own worktree) bound to one phase or ad-hoc record.
+- Your phase is the phase bound to your branch: `phase-N-shortname` ↔ `specs/phases/phase-N-shortname/`. `specs/status.md`'s Active Phase table (one row per lane) is the fallback and the cross-lane overview — not the binding.
+- Write only your own phase's artifacts (`tasks.md`, `history.md`, `evidence/`). Shared tracking files (`status.md`, `backlog.md`, `changelog/`) are append / own-row-touch only — never rewrite other lanes' entries.
+- Landing order (Rule 6): lanes land on `main` one at a time; suite green on updated `main` between landings; remaining lanes rebase.
+- Brainstorms and spikes are off-lane — they never touch the Active Phase table.
+
+**Red Flags (STOP and re-scope to your lane):**
+- "I'll fix that other lane's tasks.md while I'm here" — another lane's artifact; leave it and flag it.
+- "Which phase am I on? I'll take status.md's first row" — your branch decides; status.md is the overview.
+- "Both lanes are done, merge them together" — one at a time, suite green in between.
+
 ---
 
 ## Naming Conventions
@@ -164,7 +192,7 @@ Priorities (with SLA):
 
 Branches: `phase-N-name` | `feat/desc` | `fix/desc` | `refactor/desc` | `infra/desc`
 
-Commits: `feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:` (CI/build/deploy/tooling)
+Commits: `feat:` | `fix:` | `docs:` | `refactor:` | `chore:` | `infra:` (CI/build/deploy/tooling) — plus `test:` `perf:` `build:` `ci:` `style:` `revert:` (all accepted by the `commit-msg` hook)
 
 ---
 
