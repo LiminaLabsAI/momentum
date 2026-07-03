@@ -17,9 +17,9 @@
 - [x] `tests/waves-cli.test.js` green (5/5)
 
 ## Group 3 — 3-ideas e2e demo + contract decision
-- [ ] `tests/waves-e2e-demo.test.js` green (waves → lanes → queue landings)
-- [ ] `evidence/three-ideas-demo.txt` captured via one-shot script (not rewritten by npm test)
-- [ ] Lane-state contract decision recorded (history + ADR-0003)
+- [x] `tests/waves-e2e-demo.test.js` green (1/1: waves → lanes → stale-refusal → rebase → sequenced landings → next wave unblocks)
+- [x] `evidence/three-ideas-demo.txt` captured via `scripts/capture-three-ideas-demo.sh` (env-gated sink; npm test never rewrites it)
+- [x] Lane-state contract decision recorded: stays INTERNAL, publication handed to the operator (history + ADR-0003 §5)
 
 ## Group 4 — Docs + verification + release prep
 - [ ] Site parallel-work Fly section → shipped; lanes recipe waves mention; fingerprints re-baselined
