@@ -23,9 +23,9 @@
 - [ ] `tests/lanes-board.test.js` green
 
 ## Group 4 — Signals + inbox (LANE)
-- [ ] `momentum lanes signal` (5 types) + `momentum lanes inbox --ack`
-- [ ] Board unread badge
-- [ ] `tests/lanes-signals.test.js` green
+- [x] `momentum lanes signal` (5 types) + `momentum lanes inbox --ack` (`core/lanes/lib/signals.js`; monotonic seqs across ack history; live cross-lane signal G4→G3 sent on this repo)
+- [x] Board unread badge — data side: the badge counts exactly these inbox files via `state.unreadCount` (G4 writes/acks them); badge *rendering* ships with G3's board
+- [x] `tests/lanes-signals.test.js` green (6/6, incl. cross-worktree read+ack; no regression: lanes-state + lanes-open-close 13/13)
 
 ## Group 5 — Landing (FEAT-027 + ENH-047 close-out)
 - [ ] G3/G4 lanes landed per Rule 6 (evidence for D8)
