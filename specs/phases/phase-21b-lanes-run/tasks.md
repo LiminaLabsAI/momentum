@@ -5,12 +5,12 @@
 > → G5 → G6.
 
 ## Group 0 — Scaffold + ADR-0002
-- [ ] Phase files + tracking (status row, changelog, index.json)
-- [ ] ADR-0002 `specs/decisions/0002-lane-state-and-graded-gates.md`
+- [x] Phase files + tracking (status row, changelog, index.json) — commit 9a450bf
+- [x] ADR-0002 `specs/decisions/0002-lane-state-and-graded-gates.md`
 
 ## Group 1 — State layer
-- [ ] `core/lanes/lib/state.js` (anchor, registry, manifests, locks, plan-node inference)
-- [ ] `tests/lanes-state.test.js` green
+- [x] `core/lanes/lib/state.js` (anchor, registry, manifests, locks, plan-node inference)
+- [x] `tests/lanes-state.test.js` green (6/6 — incl. cross-worktree anchor + 6-process lock stress)
 
 ## Group 2 — open / done / close
 - [ ] `bin/lanes.js` open/done/close + momentum.js dispatch + help
