@@ -18,9 +18,9 @@
 - [x] `tests/lanes-open-close.test.js` green (7/7); shared inbox read-helpers pre-landed in state.js (13/13 combined)
 
 ## Group 3 — Board + queue (LANE)
-- [ ] `momentum lanes` board + queue pressure footer
-- [ ] `momentum lanes queue` + `--json`
-- [ ] `tests/lanes-board.test.js` green
+- [x] `momentum lanes` board + queue pressure footer
+- [x] `momentum lanes queue` + `--json`
+- [x] `tests/lanes-board.test.js` green (7/7; state+open-close regression 13/13)
 
 ## Group 4 — Signals + inbox (LANE)
 - [x] `momentum lanes signal` (5 types) + `momentum lanes inbox --ack` (`core/lanes/lib/signals.js`; monotonic seqs across ack history; live cross-lane signal G4→G3 sent on this repo)
