@@ -22,6 +22,6 @@
 - [x] Lane-state contract decision recorded: stays INTERNAL, publication handed to the operator (history + ADR-0003 §5)
 
 ## Group 4 — Docs + verification + release prep
-- [ ] Site parallel-work Fly section → shipped; lanes recipe waves mention; fingerprints re-baselined
-- [ ] Full suite + 3-adapter smoke + site build green
-- [ ] Retrospective + version bump 0.25.0 + parked release runbook
+- [x] Site parallel-work Fly section → shipped (`momentum waves` ×3 in dist); lanes recipe waves section (+self mirror); fingerprints re-baselined ×3 (recipe drift only)
+- [x] Full suite 697/697; 3-adapter smoke exit 0 (55/59/60); site build exit 0 (13 pages)
+- [x] Retrospective (with Verification Evidence) + version bump 0.25.0 + parked release runbook (status.md Next Actions #1); plan.md pointer added for structure canonicality

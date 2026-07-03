@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-07-03-phase-21c-started",
+  "updated": "2026-07-03-phase-21c-complete",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -596,7 +596,7 @@
       ]
     },
     "phase-21c-lanes-fly": {
-      "status": "in-progress",
+      "status": "complete",
       "topics": [
         "phase-21c",
         "waves",

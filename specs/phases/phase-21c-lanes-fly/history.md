@@ -24,3 +24,10 @@ Affects-specs: none
 Detail: tests/waves-e2e-demo.test.js drives the full FEAT-028 UX on a synthetic repo: `momentum waves` plans (wave 1: auth+api; wave 2: ui[deps both]) → lanes opened per wave-1 node by the CLI → work + done → sequential landings through the queue (second lane correctly refused stale, rebased, landed) → wave-1 phases complete → next `waves` run unblocks ui with a lane suggestion. Evidence at evidence/three-ideas-demo.txt captured by the one-shot scripts/capture-three-ideas-demo.sh (env-gated sink — npm test never rewrites it, per the TD-006 lesson).
 
 ---
+### [NOTE] 2026-07-03 — G4: docs + verification + v0.25.0 release prep (parked); FAMILY COMPLETE
+Topics: waves, site-docs, verification, release
+Affects-phases: phase-21c-lanes-fly
+Affects-specs: specs/planning/roadmap.md#Timeline, specs/planning/platform-parallel-lanes.md
+Detail: Site parallel-work Fly section shipped; lanes recipe gains the waves planning section (fingerprints re-baselined; only intended drift). Fresh verification: suite 697/697, smoke ×3, site build green. Version 0.25.0. This closes the Parallel Lanes family — Walk (conventions) → Run (mechanism) → Fly (planner) — all three built + verified on stacked branches; releases land in order on operator approval per the runbook in status.md Next Actions #1.
+
+---
