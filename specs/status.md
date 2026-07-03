@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-07-04
-> **Current Phase**: Phase 23 — Rules Unification (Phase 22 — Reach follows)
-> **Latest Release**: v0.25.2 — BUG-013 + ENH-048 patch, parallel lanes round two (npm latest = 0.25.2)
+> **Current Phase**: _none active_ (Phase 22 — Reach is next)
+> **Latest Release**: v0.26.0 — Phase 23 Rules Unification (npm latest = 0.26.0)
 > **Health**: On Track
 
 ## Summary
@@ -41,6 +41,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete | v0.23.0 (2026-07-03) |
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete | v0.24.0 (2026-07-03) |
 | 21c | Parallel Lanes — Fly (Recursive Waves) | Complete | v0.25.0 (2026-07-03) |
+| 23 | Rules Unification (single-source agent instructions) | Complete | v0.26.0 (2026-07-04) |
 
 ## Ad-hoc / Patch Releases
 
@@ -64,7 +65,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 23 — Rules Unification | `phase-23-rules-unification` | All groups complete (733/733) | Awaiting landing + release approval; 1 operator task deferred (Antigravity size check) |
+| _(none — Phase 23 released; Phase 22 Reach is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
