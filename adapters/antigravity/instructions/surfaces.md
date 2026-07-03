@@ -120,4 +120,11 @@ reusable shell scripts to `scripts/` and references them:
 |---|---|---|---|
 | `PreToolUse` | `run_command\|view_file\|.*write.*\|apply_patch` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
 | `PostToolUse` | `run_command\|apply_patch\|.*write.*` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during phase work — resolved to the phase bound to the current branch (fallback: `status.md`) (Rule 8). |
-| `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | Auto-greets with any pending handoff banner + ecosystem context. (Fully supported via the agy CLI wrapper.) |
+| `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | When `agy` fires SessionStart, auto-greets with any pending handoff banner + ecosystem context. (SessionStart vendor support pending VAL-002.) |
+
+### SessionStart fallback
+
+If `agy`'s SessionStart event isn't yet supported, the handoff pickup
+hint also lives in this AGENTS.md primary-instruction text below: if a
+`.momentum/inbox/handoff-NNN.md` file exists at session start, read it
+and acknowledge before continuing.

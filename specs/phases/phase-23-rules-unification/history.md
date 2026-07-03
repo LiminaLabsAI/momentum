@@ -68,3 +68,10 @@ Affects-specs: none
 Detail: Beyond the ~8 planned files, the repo-wide sweep surfaced: `adapters/claude-code/adapter.sh` (the shell installer also installed project.md — install block retired), two codex subagent TOMLs (`momentum-reviewer-architecture`, `swarm-supervisor`), the antigravity swarm-supervisor SKILL.md, `adapters/antigravity/workflows/scout.md`, and `docs/developer-guide.md`. All repointed to the primary instruction file. Live migration smoke: fresh install ships no `.agent/rules/`; pristine historical copy removed; customized copy kept with warning — all three paths verified against the real CLI.
 
 ---
+### [DISCOVERY] 2026-07-04 — Lane was silently based on an unlanded branch; rebased mid-phase (ENH-050 filed)
+Topics: lanes, rebase, contamination, instructions
+Affects-phases: phase-23-rules-unification
+Affects-specs: none
+Detail: `momentum lanes open` branched this lane from the primary worktree's HEAD, which was sitting on the rejected VAL-002 branch — the lane inherited its full diff, 5 failing environment-dependent tests, and one contaminated line in the extracted antigravity surfaces fragment (the unearned "Fully supported via the agy CLI wrapper" SessionStart claim). Fixed by `git rebase --onto main <bad-base>` (single changelog conflict), restoring the truthful SessionStart row + fallback subsection in surfaces.md, and regenerating — drift guard green. Filed ENH-050 (P1): lanes open should default `--from` to the default branch. Suite failures attributable to the foreign base (agy wrapper ×3, doctor, antigravity fingerprint) disappeared with the rebase.
+
+---
