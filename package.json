@@ -23,6 +23,7 @@
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.js",
     "capture-evidence": "MOMENTUM_CAPTURE_EVIDENCE=1 node --test --test-concurrency=1 tests/swarm-e2e-scenarios.test.js tests/swarm-portability-e2e.test.js",
+    "generate-instructions": "node scripts/generate-instructions.js",
     "prepublishOnly": "npm test"
   },
   "engines": {

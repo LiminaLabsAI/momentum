@@ -46,3 +46,10 @@ Affects-specs: none
 Detail: The antigravity surfaces fragment omits the `.agent/rules/` row from the native-layout table — that surface is retired this phase, and its claimed "auto-loaded by agy" behavior is exactly what the 2026-07-03 live failure disproved. No other content edits were made during extraction (non-goal: no rule rewrites).
 
 ---
+### [NOTE] 2026-07-04 — G1: generation live; outputs verified surgically clean
+Topics: instructions, generation, tests
+Affects-phases: phase-23-rules-unification
+Affects-specs: none
+Detail: Generator + drift guard shipped. Regenerated CLAUDE.md diff vs the previous hand-maintained template contains exactly the intended changes (marker comment added, two `.agent/rules/project.md` pointer lines removed, Rule 13 expanded) — zero other churn, proving the extraction was lossless. Codex AGENTS.md 248 → 691 lines, Antigravity 167 → 608: the full rulebook now rides every auto-loaded surface. Targeted tests 4/4.
+
+---

@@ -12,10 +12,10 @@
 - [x] Per-adapter generator vars placed + recorded in history
 
 ## Group 1 — Generator + drift guard
-- [ ] `scripts/generate-instructions.js` (+ `--check` mode, deterministic, GENERATED marker)
-- [ ] npm script wired; suite verifies via drift test (never regenerates — TD-006)
-- [ ] Three templates regenerated + committed
-- [ ] `tests/instruction-generation.test.js` (byte-drift + invariants) green
+- [x] `scripts/generate-instructions.js` (+ `--check` mode, deterministic, GENERATED marker)
+- [x] npm script wired; suite verifies via drift test (never regenerates — TD-006)
+- [x] Three templates regenerated + committed
+- [x] `tests/instruction-generation.test.js` (byte-drift + invariants) green
 
 ## Group 2 — Install/upgrade retirement + migration
 - [ ] Agent-rules install block removed from init + upgrade
