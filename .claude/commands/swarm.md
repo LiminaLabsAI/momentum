@@ -100,6 +100,116 @@ When inboxes are pending, prompt: "Run `/swarm verify <id>` to surface the quest
 
 ---
 
+### `/swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]`
+
+> Phase 17.5 / v0.20.2 — multi-session ownership primitive.
+
+Claim ownership of `<repo>` inside `<swarm-id>` for the current session. The conductor library uses this whenever a session needs authority to write to a repo's manifest entry — `/swarm focus`, `/swarm join`, and a co-conductor taking a wave all compose `claim` under the hood.
+
+```bash
+momentum swarm claim <swarm-id> <repo> [--session <id>] [--lease-hours 24]
+```
+
+Claim succeeds when:
+- the repo is `_unclaimed` or `_focusing` (sentinel — anyone may claim), OR
+- the current owner's `lease_expires_at` is in the past (takeover; audit logs both `claim` and `lease-takeover`).
+
+Claim is rejected when the current owner's lease is still valid; the CLI writes a `claim-request` signal so the existing owner sees the request on their next conductor poll. Exit code 1 on rejection.
+
+On success the manifest sets `owner = <session>`, refreshes `lease_renewed_at`, and sets `lease_expires_at = now + <lease-hours>`. The board cache is refreshed.
+
+---
+
+### `/swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]`
+
+> Phase 17.5 / v0.20.2 — split one repo off the swarm into a side-session.
+
+Issue a single-use focus token for `<repo>` and hand control to a second Claude Code session. Use when one repo needs sustained one-on-one attention without halting the rest of the swarm. The original conductor keeps every other repo; the new side-session takes `<repo>` and drives its phase to completion. Reunite via `/swarm absorb`.
+
+```bash
+momentum swarm focus <swarm-id> <repo> [--session <id>] [--expires-min 60]
+```
+
+Behavior:
+1. Asserts the caller currently owns `<repo>` (rejected with exit 1 if not).
+2. Issues an opaque focus token at `<eco>/swarms/<id>/tokens/<token>.json` (single-use, 1-hour default expiry).
+3. Flips `repos[<repo>].owner` to the `_focusing` sentinel — anyone with the token may claim.
+4. Writes a `focus-request` signal carrying the token + repo.
+5. Audit-logs `focus`.
+6. Prints a spawn directive — run `claude --bg --cwd <eco>` in a second terminal, then inside that session call `momentum swarm join <swarm-id> --token <token>`.
+
+The token is single-use: consuming it (via `/swarm join --token`) deletes the file and atomically flips ownership to the receiver. If the token expires before consumption, run `/swarm claim <repo>` against the FOCUSING sentinel to recover.
+
+---
+
+### `/swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]`
+
+> Phase 17.5 / v0.20.2 — register a session with an existing swarm.
+
+Attach the current session to `<swarm-id>` as a co-conductor. Adds the session to `sessions[]` (idempotent — touch on re-join), auto-renews any repos the session already owns, and optionally consumes a transfer token or claims a specific repo.
+
+```bash
+momentum swarm join <swarm-id> [--token <token>] [--claim <repo>] [--session <id>]
+```
+
+Three shapes:
+
+| Form | Result |
+|---|---|
+| `join <id>` | Registration only. Adds the session; renews any owned leases. |
+| `join <id> --token <token>` | Consumes the token. If `kind=focus`, claims the token's `target_repo` automatically. If `kind=join`, registers only (equivalent to plain join). |
+| `join <id> --claim <repo>` | Explicit claim — bound by the same lease rules as `/swarm claim`. Exits 1 if rejected. |
+
+Exit codes:
+- 0 on success.
+- 1 if the swarm doesn't exist, the token is missing/expired, or the claim is rejected (`EOWNERSHIP`).
+
+Audit log gets a `join` entry detailing the route — `registration only` / `via token kind=…` / `with --claim …`.
+
+---
+
+### `/swarm absorb <target-swarm-id> <source-swarm-id> [--yes] [--session <id>]`
+
+> Phase 17.5 / v0.20.2 — converge two swarms back into one.
+
+Merge `<source-swarm-id>` into `<target-swarm-id>` (the caller's swarm). Use to reunite after a `/swarm focus` split, or to absorb work from a peer swarm that's now done.
+
+```bash
+momentum swarm absorb <target-swarm-id> <source-swarm-id> [--yes] [--session <id>]
+```
+
+Behavior:
+1. Loads both manifests. If either is missing → exit 1.
+2. Detects contract conflicts: for every shared `surface` in both swarms' `contracts`, the `owner` must match and the `content_hash` (when present) must match. Mismatches abort cleanly — both swarms left untouched — with a printed diff for each conflict.
+3. Without `--yes`, prints a dry-run plan (repos to add, overlap, contract status) and exits 0 without writing. Re-run with `--yes` to proceed.
+4. On commit:
+   - `repos`: union; target wins on overlap (so a repo already in flight in target is not regressed by source's state)
+   - `waves`: recomputed via the wave-ordering library over the union of repos, against `ecosystem.json` dependencies
+   - `sessions[]`: union by `session_id` (earliest `first_seen`, latest `last_seen`)
+   - `contracts`: union; target's version kept on overlap (we verified compatibility above)
+   - `audit[]`: concat + sort by timestamp; append an `absorb` entry
+   - `inbox/`: source's pending items copied into target with bumped ids
+5. Archives the source swarm directory to `<eco>/swarms/.absorbed/<source-id>/`. Forensics preserved.
+6. Refreshes target's `board.json`.
+
+JSON output (`--json`) returns `{ absorbed, into, reposAdded, reposOverlapped, inboxMoved, archivedTo }`.
+
+---
+
+### `/swarm release <swarm-id> <repo> [--session <id>]`
+
+> Phase 17.5 / v0.20.2 — multi-session ownership primitive.
+
+Release the current session's ownership of `<repo>`. Sets `owner = _unclaimed`, clears the lease, and audit-logs `release`. Idempotent — releasing an already-unclaimed repo is a no-op.
+
+```bash
+momentum swarm release <swarm-id> <repo> [--session <id>]
+```
+
+Only the current owner may release. Attempting to release a repo you don't own exits 1 (you'd need `/swarm claim` against an expired lease, or the owner to release first).
+
+---
+
 ### `/swarm cancel <swarm-id> [--reason "<text>"]`
 
 Graceful halt. Halts every supervisor, marks the swarm `cancelled` in the manifest, preserves all artifacts for forensics.
