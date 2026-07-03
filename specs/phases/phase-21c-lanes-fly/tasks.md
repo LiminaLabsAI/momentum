@@ -12,9 +12,9 @@
 - [x] `tests/waves-engine.test.js` green (7/7 incl. swarm-parity pin); swarm e2e scenarios 8/8 unchanged
 
 ## Group 2 — Annotations + `momentum waves` CLI
-- [ ] tasks.md `(deps: …)` heading parser + index.json phase `deps`
-- [ ] `bin/waves.js` + dispatch: task scale (branch-bound default) + phase scale + wave-1 lane suggestions + `--json`
-- [ ] `tests/waves-cli.test.js` green
+- [x] tasks.md `(deps: …)` heading parser + index.json phase `deps` (`core/waves/lib/plan-graph.js`; all-[x] groups + complete phases = satisfied)
+- [x] `bin/waves.js` + dispatch: task scale (branch-bound default per Rule 15, status.md fallback) + phase scale + wave-1 lane suggestions + `--json` unstable
+- [x] `tests/waves-cli.test.js` green (5/5)
 
 ## Group 3 — 3-ideas e2e demo + contract decision
 - [ ] `tests/waves-e2e-demo.test.js` green (waves → lanes → queue landings)
