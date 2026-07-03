@@ -18,18 +18,18 @@
 - [x] `tests/instruction-generation.test.js` (byte-drift + invariants) green
 
 ## Group 2 — Install/upgrade retirement + migration
-- [ ] Agent-rules install block removed from init + upgrade
-- [ ] `core/instructions/legacy-project-md-hashes.json` harvested from git history
-- [ ] Migration: pristine → deleted (logged); customized → kept + deprecation warning
-- [ ] `destinations['agent-rules']` fate decided + recorded
-- [ ] `core/agent-rules/project.md` removed from tree
+- [x] Agent-rules install block removed from init + upgrade
+- [x] `core/instructions/legacy-project-md-hashes.json` harvested from git history
+- [x] Migration: pristine → deleted (logged); customized → kept + deprecation warning
+- [x] `destinations['agent-rules']` fate decided + recorded
+- [x] `core/agent-rules/project.md` removed from tree
 
 ## Group 3 — Reference cleanup
-- [ ] momentum-orient SKILL.md ×2 repointed
-- [ ] review-code recipes repointed
-- [ ] `/migrate` + `/start-project` texts updated
-- [ ] Parity matrix + capabilities doc updated
-- [ ] Repo-wide sweep: no non-historical `agent-rules` references remain
+- [x] momentum-orient SKILL.md ×2 repointed
+- [x] review-code recipes repointed
+- [x] `/migrate` + `/start-project` texts updated
+- [x] Parity matrix + capabilities doc updated
+- [x] Repo-wide sweep: no non-historical `agent-rules` references remain
 
 ## Group 4 — Tests + fingerprints
 - [ ] upgrade/tarball/installed-manifest test expectations updated

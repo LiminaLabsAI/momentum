@@ -15,7 +15,7 @@ From the target repo, read these in order (skip silently if any is missing):
 1. `specs/status.md`
 2. `specs/backlog/backlog.md` (just the open P0/P1 lines)
 3. `specs/phases/<active-phase>/tasks.md` (just the in-flight rows)
-4. `AGENTS.md` and `.agent/rules/project.md` (only if the user asked about rules)
+4. `AGENTS.md` (only if the user asked about rules)
 
 ### 3. Synthesize the scout result
 

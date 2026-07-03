@@ -53,3 +53,18 @@ Affects-specs: none
 Detail: Generator + drift guard shipped. Regenerated CLAUDE.md diff vs the previous hand-maintained template contains exactly the intended changes (marker comment added, two `.agent/rules/project.md` pointer lines removed, Rule 13 expanded) — zero other churn, proving the extraction was lossless. Codex AGENTS.md 248 → 691 lines, Antigravity 167 → 608: the full rulebook now rides every auto-loaded surface. Targeted tests 4/4.
 
 ---
+### [DECISION] 2026-07-04 — G2: destinations['agent-rules'] contract key stays reserved
+Topics: adapters, contract, agent-rules
+Affects-phases: phase-23-rules-unification
+Affects-specs: core/adapter-parity-matrix.md#overlay
+Detail: No adapter ships an `agent-rules/` overlay directory (verified by glob), so retiring the shipped file requires no contract change — the `destinations['agent-rules']` key stays reserved for future per-adapter rule overlays, matching the "declared but unused" pattern already used for workflows/skills on some adapters. Parity matrix row updated to "retired".
+
+---
+
+### [DISCOVERY] 2026-07-04 — G3 sweep found 6 unplanned reference sites
+Topics: agent-rules, cleanup, adapters
+Affects-phases: phase-23-rules-unification
+Affects-specs: none
+Detail: Beyond the ~8 planned files, the repo-wide sweep surfaced: `adapters/claude-code/adapter.sh` (the shell installer also installed project.md — install block retired), two codex subagent TOMLs (`momentum-reviewer-architecture`, `swarm-supervisor`), the antigravity swarm-supervisor SKILL.md, `adapters/antigravity/workflows/scout.md`, and `docs/developer-guide.md`. All repointed to the primary instruction file. Live migration smoke: fresh install ships no `.agent/rules/`; pristine historical copy removed; customized copy kept with warning — all three paths verified against the real CLI.
+
+---

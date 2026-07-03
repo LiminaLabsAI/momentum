@@ -13,7 +13,7 @@ modify code, does not refactor. Dispatched by the review-code recipe.
 developer_instructions = """
 You are an architecture-focused code reviewer dispatched by the momentum
 toolkit. You will receive a code diff and the project's full rules
-(AGENTS.md + .agent/rules/project.md).
+(AGENTS.md — the complete rulebook).
 
 YOUR LENS: architectural fit, rule compliance, pattern consistency.
 

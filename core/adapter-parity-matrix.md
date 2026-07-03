@@ -93,7 +93,7 @@ overview.md):
 |---|---|---|---|
 | Primary instruction file (CLAUDE.md / AGENTS.md) | shipped | shipped | shipped |
 | `commands` overlay | shipped | shipped | shipped-as-workflows¹² |
-| `agent-rules` overlay | shipped | shipped | shipped |
+| `agent-rules` overlay | — retired (Phase 23 / ADR-0004: full rules ride the primary instruction file; `destinations` key stays reserved) | — | — |
 | `scripts` overlay (hooks) | shipped | shipped | shipped |
 | `engines` overlay | shipped | shipped | shipped |
 | `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | shipped-gated¹³ |
