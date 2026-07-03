@@ -1,7 +1,7 @@
 # Project Status
 
 > **Last Updated**: 2026-07-03
-> **Current Phase**: _none active_ (Phase 21b — Parallel Lanes Run is next)
+> **Current Phase**: Phase 21b — Parallel Lanes Run (stacked lane; 21a release parked on approval)
 > **Latest Release**: v0.22.3 — BUG-011 (v0.23.0 built + verified on `phase-21a-lanes-walk`, **release awaiting operator approval** — see Next Actions #1)
 > **Health**: On Track
 
@@ -60,7 +60,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 21a shipped v0.23.0; Phase 21b "Parallel Lanes Run" is next)_ | | | |
+| 21b — Parallel Lanes Run (Registry/Board/Signals/Queue) | `phase-21b-lanes-run` (stacked on `phase-21a-lanes-walk`) | In Progress (target v0.24.0) | G0 of G0→G1→G2→(G3∥G4)→G5→G6 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -70,7 +70,6 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 21b | Parallel Lanes — Run | Not Started (target v0.24.0) | FEAT-026 lanes/board/signals; FEAT-027 merge queue + graded gates; ENH-047 overlap warnings. Scope: `specs/planning/platform-parallel-lanes.md` |
 | 21c | Parallel Lanes — Fly | Not Started (target v0.25.0) | FEAT-028 recursive wave planner (absorbs old "dependency-aware tasks"); swarm as top-scale consumer; lane-state contract decision |
 | 22 | Reach | Not Started (target v0.26.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
 | 23 | Intelligence | Not Started (target v0.27.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |

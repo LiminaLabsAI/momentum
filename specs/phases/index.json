@@ -96,6 +96,10 @@
       "status": "complete",
       "topics": ["phase-20", "upgrade-hardening", "lock-file", "installed-json", "orphan-cleanup", "clean-tree-gate", "dry-run", "backup", "bak-files", "idempotent-init", "bug-008", "enh-040", "upgrade-safety", "momentum-upgrade", "ecosystem-upgrade", "v0-22-0"]
     },
+    "phase-21b-lanes-run": {
+      "status": "in-progress",
+      "topics": ["phase-21b", "lanes", "lane-registry", "board", "queue-pressure", "signals", "inbox", "merge-queue", "graded-gates", "landing", "rebase-freshness", "overlap-warnings", "touch-paths", "git-common-dir", "worktrees", "substrate-detection", "preflight", "momentum-lanes-cli", "adr-0002", "feat-026", "feat-027", "enh-047", "v0-24-0"]
+    },
     "phase-21a-lanes-walk": {
       "status": "complete",
       "topics": ["phase-21a", "lanes", "concurrent-workstreams", "multi-active-phase", "lane-binding", "branch-phase-resolution", "rule-15", "lane-scoped-rules", "merge-discipline", "sequential-landing", "rebase-onto-main", "stacked-lanes", "off-lane", "brainstorms", "spikes", "status-multi-row", "active-phase-table", "adr-0001", "dogfood-in-phase", "trial-thresholds", "worktrees", "treehouse", "gitbutler", "templates", "agent-rules", "fingerprint-snapshot", "check-history-reminder", "site-docs", "enh-046", "v0-23-0"]

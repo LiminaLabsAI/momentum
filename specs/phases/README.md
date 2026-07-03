@@ -24,7 +24,8 @@
 | 18 | Swarm Parity (Codex + Antigravity) | Complete (v0.20.4) | [phase-18-swarm-parity/](phase-18-swarm-parity/) |
 | 19 | Lifecycle Hardening | Complete (v0.21.0) | [phase-19-lifecycle-hardening/](phase-19-lifecycle-hardening/) |
 | 20 | Upgrade Hardening | Complete (v0.22.0) | [phase-20-upgrade-hardening/](phase-20-upgrade-hardening/) |
-| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete (v0.23.0) | [phase-21a-lanes-walk/](phase-21a-lanes-walk/) |
+| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete (v0.23.0 — release parked on approval) | [phase-21a-lanes-walk/](phase-21a-lanes-walk/) |
+| 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | In Progress (target v0.24.0) | [phase-21b-lanes-run/](phase-21b-lanes-run/) |
 
 ## Phase Structure
 
