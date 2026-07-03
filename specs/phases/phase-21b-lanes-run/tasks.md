@@ -13,9 +13,9 @@
 - [x] `tests/lanes-state.test.js` green (6/6 — incl. cross-worktree anchor + 6-process lock stress)
 
 ## Group 2 — open / done / close
-- [ ] `bin/lanes.js` open/done/close + momentum.js dispatch + help
-- [ ] Substrate detection + preflight warnings
-- [ ] `tests/lanes-open-close.test.js` green
+- [x] `bin/lanes.js` open/done/close + momentum.js dispatch + help (lazy routes for G3/G4/G5 modules — lanes stay file-disjoint)
+- [x] Substrate detection (worktree create/reuse, treehouse hint) + preflight warnings (BUG-012-class exec bits, node engines)
+- [x] `tests/lanes-open-close.test.js` green (7/7); shared inbox read-helpers pre-landed in state.js (13/13 combined)
 
 ## Group 3 — Board + queue (LANE)
 - [ ] `momentum lanes` board + queue pressure footer

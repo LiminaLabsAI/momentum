@@ -1147,6 +1147,11 @@ Swarm — sustained parallel multi-project feature delivery (Phase 17+, Claude C
                                        verify | complete | resume | cancel | budget |
                                        claim | release | focus | join | absorb
 
+Lanes — concurrent workstreams in ONE repo (Phase 21b, Rule 15):
+  momentum lanes                      Board: every active lane + queue pressure
+  momentum lanes <sub> [...]          Subcommands: open | done | close | queue |
+                                       signal | inbox | land (see: momentum lanes help)
+
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
@@ -1492,6 +1497,14 @@ async function main() {
     try {
       const { runSwarm } = require('./swarm');
       runSwarm(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'lanes') {
+    try {
+      const { runLanes } = require('./lanes');
+      exitCode = runLanes(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

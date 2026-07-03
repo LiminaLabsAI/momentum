@@ -224,6 +224,80 @@ function updateLane(anchor, id, patch) {
   });
 }
 
+// ─── inbox reads (writes live in signals.js — G4) ────────────────────────
+
+const INBOX = 'inbox';
+const PROCESSED = 'processed';
+const SIGNAL_TYPES = Object.freeze(['pause', 'resume', 'redirect', 'kill', 'message']);
+
+function inboxDir(anchor, id) {
+  return path.join(laneDir(anchor, id), INBOX);
+}
+
+function processedDir(anchor, id) {
+  return path.join(inboxDir(anchor, id), PROCESSED);
+}
+
+/** Unread signal files for a lane, oldest first. [{file, seq, type, ...body}] */
+function unreadSignals(anchor, id) {
+  const dir = inboxDir(anchor, id);
+  let names;
+  try {
+    names = fs.readdirSync(dir);
+  } catch {
+    return [];
+  }
+  return names
+    .filter((n) => n.endsWith('.json'))
+    .sort()
+    .map((n) => {
+      const body = readJson(path.join(dir, n)) || {};
+      return { file: n, ...body };
+    });
+}
+
+function unreadCount(anchor, id) {
+  return unreadSignals(anchor, id).length;
+}
+
+// ─── touch-path overlap (ENH-047, advisory) ─────────────────────────────
+
+/** Normalize a touch glob to a comparable path prefix. */
+function touchPrefix(glob) {
+  return String(glob)
+    .replace(/\*+.*$/, '') // drop from the first wildcard
+    .replace(/\/+$/, '');
+}
+
+/** True when two touch declarations plausibly overlap (prefix containment). */
+function touchesOverlap(a, b) {
+  const pa = touchPrefix(a);
+  const pb = touchPrefix(b);
+  if (pa === '' || pb === '') return true; // bare '**' overlaps everything
+  return pa === pb || pa.startsWith(pb + '/') || pb.startsWith(pa + '/');
+}
+
+/**
+ * Overlap report between one lane's touches and every other active lane.
+ * Returns [{ laneId, mine, theirs }].
+ */
+function overlapWarnings(anchor, id, touches) {
+  const warnings = [];
+  if (!touches || touches.length === 0) return warnings;
+  for (const other of listLanes(anchor)) {
+    if (other.id === id) continue;
+    if (other.status === 'closed' || other.status === 'landed') continue;
+    for (const mine of touches) {
+      for (const theirs of other.touches || []) {
+        if (touchesOverlap(mine, theirs)) {
+          warnings.push({ laneId: other.id, mine, theirs });
+        }
+      }
+    }
+  }
+  return warnings;
+}
+
 module.exports = {
   STATE_VERSION,
   STATUSES,
@@ -241,4 +315,11 @@ module.exports = {
   createLane,
   updateLane,
   laneDir,
+  touchesOverlap,
+  overlapWarnings,
+  SIGNAL_TYPES,
+  inboxDir,
+  processedDir,
+  unreadSignals,
+  unreadCount,
 };
