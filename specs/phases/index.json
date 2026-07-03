@@ -1,108 +1,599 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-07-03-phase-21a-started",
+  "updated": "2026-07-03-phase-21b-complete",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
       "status": "complete",
-      "topics": ["install", "template", "distribution", "commands", "hook", "agent-rules", "spec-structure"]
+      "topics": [
+        "install",
+        "template",
+        "distribution",
+        "commands",
+        "hook",
+        "agent-rules",
+        "spec-structure"
+      ]
     },
     "phase-1-tool-agnostic": {
       "status": "complete",
-      "topics": ["dip", "core", "adapters", "claude-code", "coding-agent", "install", "restructure"]
+      "topics": [
+        "dip",
+        "core",
+        "adapters",
+        "claude-code",
+        "coding-agent",
+        "install",
+        "restructure"
+      ]
     },
     "phase-2-npx-cli": {
       "status": "complete",
-      "topics": ["npm", "npx", "cli", "node", "distribution", "package", "init"]
+      "topics": [
+        "npm",
+        "npx",
+        "cli",
+        "node",
+        "distribution",
+        "package",
+        "init"
+      ]
     },
     "phase-3-gap-fixes": {
       "status": "complete",
-      "topics": ["specs-templates", "scaffold", "copyDir", "coding-agent", "adapter", "npmignore", "track", "brainstorm-idea", "start-project", "commands"]
+      "topics": [
+        "specs-templates",
+        "scaffold",
+        "copyDir",
+        "coding-agent",
+        "adapter",
+        "npmignore",
+        "track",
+        "brainstorm-idea",
+        "start-project",
+        "commands"
+      ]
     },
     "phase-4-enhanced-commands": {
       "status": "complete",
-      "topics": ["upgrade", "cli", "validate", "migrate", "commands", "health-check", "conflict-resolution"]
+      "topics": [
+        "upgrade",
+        "cli",
+        "validate",
+        "migrate",
+        "commands",
+        "health-check",
+        "conflict-resolution"
+      ]
     },
     "phase-5-rules-and-upgrade": {
       "status": "complete",
-      "topics": ["rules", "persuasion-hardening", "claude-md", "project-extensions", "marker", "upgrade", "agent-flag", "breaking-change", "rule-10", "rule-11", "evaluator", "history-log", "naming-conventions"]
+      "topics": [
+        "rules",
+        "persuasion-hardening",
+        "claude-md",
+        "project-extensions",
+        "marker",
+        "upgrade",
+        "agent-flag",
+        "breaking-change",
+        "rule-10",
+        "rule-11",
+        "evaluator",
+        "history-log",
+        "naming-conventions"
+      ]
     },
     "phase-6-overlay-and-verify": {
       "status": "complete",
-      "topics": ["adapter", "overlay", "contract", "conflict-detection", "verification", "rule-12", "verify-before-claim", "complete-phase", "evidence", "review-code", "subagent", "claude-code", "cross-repo", "rule-9", "tests"]
+      "topics": [
+        "adapter",
+        "overlay",
+        "contract",
+        "conflict-detection",
+        "verification",
+        "rule-12",
+        "verify-before-claim",
+        "complete-phase",
+        "evidence",
+        "review-code",
+        "subagent",
+        "claude-code",
+        "cross-repo",
+        "rule-9",
+        "tests"
+      ]
     },
     "phase-7a-planning-contracts": {
       "status": "complete",
-      "topics": ["phase-7a", "brainstorm-gate", "autonomous-execution", "contract", "sentinel", "pre-tool-use-hook", "claude-code", "start-phase", "brainstorm-phase", "brainstorm-idea", "start-project", "write-discipline", "gitignore", "appledouble", "test-glob", "filemode"]
+      "topics": [
+        "phase-7a",
+        "brainstorm-gate",
+        "autonomous-execution",
+        "contract",
+        "sentinel",
+        "pre-tool-use-hook",
+        "claude-code",
+        "start-phase",
+        "brainstorm-phase",
+        "brainstorm-idea",
+        "start-project",
+        "write-discipline",
+        "gitignore",
+        "appledouble",
+        "test-glob",
+        "filemode"
+      ]
     },
     "phase-7b-agent-runtime-compat": {
       "status": "complete",
-      "topics": ["phase-7b", "adapter-contract-v3", "agent-runtime", "compatibility", "codex", "agents-md", "codex-hooks", "commands", "claude-code", "adapter-metadata", "tarball-shape", "npm-pack"]
+      "topics": [
+        "phase-7b",
+        "adapter-contract-v3",
+        "agent-runtime",
+        "compatibility",
+        "codex",
+        "agents-md",
+        "codex-hooks",
+        "commands",
+        "claude-code",
+        "adapter-metadata",
+        "tarball-shape",
+        "npm-pack"
+      ]
     },
     "phase-7c-autonomous-tdd": {
       "status": "complete",
-      "topics": ["phase-7c", "autonomous-execution", "tdd", "rule-13", "retry-budget", "antigravity", "systematic-debug", "subagent"]
+      "topics": [
+        "phase-7c",
+        "autonomous-execution",
+        "tdd",
+        "rule-13",
+        "retry-budget",
+        "antigravity",
+        "systematic-debug",
+        "subagent"
+      ]
     },
     "phase-9-ecosystem-tier1": {
       "status": "complete",
-      "topics": ["phase-9", "ecosystem", "multi-repo", "cross-repo", "manifest", "initiative", "session-log", "track", "post-tool-use-hook", "additive", "tier-1", "tier-2"]
+      "topics": [
+        "phase-9",
+        "ecosystem",
+        "multi-repo",
+        "cross-repo",
+        "manifest",
+        "initiative",
+        "session-log",
+        "track",
+        "post-tool-use-hook",
+        "additive",
+        "tier-1",
+        "tier-2"
+      ]
     },
     "phase-10-ecosystem-activation": {
       "status": "complete",
-      "topics": ["phase-10", "ecosystem-activation", "dual-mode", "entry-exit", "join", "leave", "doctor", "init-ecosystem", "auto-detect", "single-project-invariant", "phase-9-followup", "session-log-race", "location-agnostic", "max-parent-walk", "sibling-walk", "readme-rewrite", "product-positioning", "decision-tree", "supported-agents-matrix", "adapter-smoke-matrix", "capability-flag-audit", "adapter-capabilities", "realpath-normalization"]
+      "topics": [
+        "phase-10",
+        "ecosystem-activation",
+        "dual-mode",
+        "entry-exit",
+        "join",
+        "leave",
+        "doctor",
+        "init-ecosystem",
+        "auto-detect",
+        "single-project-invariant",
+        "phase-9-followup",
+        "session-log-race",
+        "location-agnostic",
+        "max-parent-walk",
+        "sibling-walk",
+        "readme-rewrite",
+        "product-positioning",
+        "decision-tree",
+        "supported-agents-matrix",
+        "adapter-smoke-matrix",
+        "capability-flag-audit",
+        "adapter-capabilities",
+        "realpath-normalization"
+      ]
     },
     "phase-11-orchestration-handover": {
       "status": "complete",
-      "topics": ["phase-11", "orchestration", "scout", "dispatch", "handoff", "continue", "context-handover", "sessionstart-hook", "auto-greet", "inbox", "capability-routing", "graceful-degradation", "cli-floor", "natural-language-inference", "three-doors", "live-narration", "event-stream", "tracking-contract", "meaningful-context", "no-orchestration-noise", "synthesis", "parallel-fanout", "sequential-fallback", "enh-023", "enh-024", "capability-flag-unification"]
+      "topics": [
+        "phase-11",
+        "orchestration",
+        "scout",
+        "dispatch",
+        "handoff",
+        "continue",
+        "context-handover",
+        "sessionstart-hook",
+        "auto-greet",
+        "inbox",
+        "capability-routing",
+        "graceful-degradation",
+        "cli-floor",
+        "natural-language-inference",
+        "three-doors",
+        "live-narration",
+        "event-stream",
+        "tracking-contract",
+        "meaningful-context",
+        "no-orchestration-noise",
+        "synthesis",
+        "parallel-fanout",
+        "sequential-fallback",
+        "enh-023",
+        "enh-024",
+        "capability-flag-unification"
+      ]
     },
     "phase-12-public-site": {
       "status": "complete",
-      "topics": ["phase-12", "public-site", "github-pages", "astro", "starlight", "landing-page", "docs-site", "site", "brand", "identity", "logo", "favicon", "og-cards", "self-hosted-font", "color-palette", "illustrated-hero", "lighthouse", "deployment", "github-actions", "gh-pages", "pagefind", "homepage", "npm-metadata", "metadata-bump", "roadmap-renumber", "ide-support", "skills-reference", "rules-reference", "ecosystem-mode", "faq", "about", "philosophy"]
+      "topics": [
+        "phase-12",
+        "public-site",
+        "github-pages",
+        "astro",
+        "starlight",
+        "landing-page",
+        "docs-site",
+        "site",
+        "brand",
+        "identity",
+        "logo",
+        "favicon",
+        "og-cards",
+        "self-hosted-font",
+        "color-palette",
+        "illustrated-hero",
+        "lighthouse",
+        "deployment",
+        "github-actions",
+        "gh-pages",
+        "pagefind",
+        "homepage",
+        "npm-metadata",
+        "metadata-bump",
+        "roadmap-renumber",
+        "ide-support",
+        "skills-reference",
+        "rules-reference",
+        "ecosystem-mode",
+        "faq",
+        "about",
+        "philosophy"
+      ]
     },
     "phase-13-site-polish": {
       "status": "complete",
-      "topics": ["phase-13", "site-polish", "content-depth", "augment-in-place", "mermaid", "custom-svg", "diagrams", "landing-rewrite", "agentic-ai", "positioning", "feature-pillars", "phase-flow", "animated-hero", "topology", "ecosystem-rewrite", "orchestration-page", "scout", "dispatch", "handoff", "continue", "multi-repo-coordination", "concepts-deepening", "skills-examples", "rules-full-text", "tutorial", "end-to-end-walkthrough", "ide-support-deep", "faq-expansion", "word-count-baseline", "rehype-mermaid"]
+      "topics": [
+        "phase-13",
+        "site-polish",
+        "content-depth",
+        "augment-in-place",
+        "mermaid",
+        "custom-svg",
+        "diagrams",
+        "landing-rewrite",
+        "agentic-ai",
+        "positioning",
+        "feature-pillars",
+        "phase-flow",
+        "animated-hero",
+        "topology",
+        "ecosystem-rewrite",
+        "orchestration-page",
+        "scout",
+        "dispatch",
+        "handoff",
+        "continue",
+        "multi-repo-coordination",
+        "concepts-deepening",
+        "skills-examples",
+        "rules-full-text",
+        "tutorial",
+        "end-to-end-walkthrough",
+        "ide-support-deep",
+        "faq-expansion",
+        "word-count-baseline",
+        "rehype-mermaid"
+      ]
     },
     "phase-14-site-refinement": {
       "status": "complete",
-      "topics": ["phase-14", "site-refinement", "positioning-pivot", "agentic-ai", "remark-heading-id", "anchor-syntax", "mermaid-dark-mode", "phaseflow-animation", "ecosystem-mdx", "state-layer", "action-layer", "state-action-layers", "ecosystem-orchestration-clarity", "repo-to-project", "multi-project", "terminology-shift", "two-tone-logo", "concentric-arcs", "velocity-arrow-retired", "readme-rewrite", "github-readme", "release-checklist", "gh-release-create", "v0-17-0"]
+      "topics": [
+        "phase-14",
+        "site-refinement",
+        "positioning-pivot",
+        "agentic-ai",
+        "remark-heading-id",
+        "anchor-syntax",
+        "mermaid-dark-mode",
+        "phaseflow-animation",
+        "ecosystem-mdx",
+        "state-layer",
+        "action-layer",
+        "state-action-layers",
+        "ecosystem-orchestration-clarity",
+        "repo-to-project",
+        "multi-project",
+        "terminology-shift",
+        "two-tone-logo",
+        "concentric-arcs",
+        "velocity-arrow-retired",
+        "readme-rewrite",
+        "github-readme",
+        "release-checklist",
+        "gh-release-create",
+        "v0-17-0"
+      ]
     },
     "phase-15-ecosystem-discoverability": {
       "status": "complete",
-      "topics": ["phase-15", "ecosystem", "agent-discoverability", "orchestration", "managed-claude-md", "pointer-block", "pointer-version", "session-start-hook", "ecosystem-context-banner", "dispatch-cli", "degraded-mode", "mode-notice", "initiative-create-cli", "enh-025", "v0-18-0"]
+      "topics": [
+        "phase-15",
+        "ecosystem",
+        "agent-discoverability",
+        "orchestration",
+        "managed-claude-md",
+        "pointer-block",
+        "pointer-version",
+        "session-start-hook",
+        "ecosystem-context-banner",
+        "dispatch-cli",
+        "degraded-mode",
+        "mode-notice",
+        "initiative-create-cli",
+        "enh-025",
+        "v0-18-0"
+      ]
     },
     "phase-16-adapter-rework": {
       "status": "complete",
-      "topics": ["phase-16", "adapter-rework", "native-idiom", "codex", "antigravity", "claude-code-zero-regression", "recipes-vs-personas-vs-subagents", "workflows", "skills", "agents-md-recipes", "apply-patch-matcher", "run-command-matcher", "agent-workflows-directory", "dot-agents-skills-shared", "toml-subagents-codex", "sandbox-mode-read-only", "brainstorm-gate-generalization", "fingerprint-snapshot", "parity-matrix", "val-001", "val-002", "v0-19-0"]
+      "topics": [
+        "phase-16",
+        "adapter-rework",
+        "native-idiom",
+        "codex",
+        "antigravity",
+        "claude-code-zero-regression",
+        "recipes-vs-personas-vs-subagents",
+        "workflows",
+        "skills",
+        "agents-md-recipes",
+        "apply-patch-matcher",
+        "run-command-matcher",
+        "agent-workflows-directory",
+        "dot-agents-skills-shared",
+        "toml-subagents-codex",
+        "sandbox-mode-read-only",
+        "brainstorm-gate-generalization",
+        "fingerprint-snapshot",
+        "parity-matrix",
+        "val-001",
+        "val-002",
+        "v0-19-0"
+      ]
     },
     "phase-17-swarm": {
       "status": "complete",
-      "topics": ["phase-17", "swarm", "single-session-multi-project", "parallel-supervisors", "conductor-supervisor-architecture", "files-as-channels", "stateless-agents", "wave-ordering", "manifest", "board-cache", "indexing-strategies", "git-sha-invalidation", "incremental-log", "supervisor-context-isolation", "intervention-modes", "autopilot-checkpoint", "inbox-protocol", "context-push", "broadcast", "contract-verifier", "saga-records", "portability-schema-hooks", "swarm-brief-frontmatter", "claude-code-only-v0-20-0", "codex-antigravity-deferred", "synthetic-ecosystem-fixtures", "v0-20-0"]
+      "topics": [
+        "phase-17",
+        "swarm",
+        "single-session-multi-project",
+        "parallel-supervisors",
+        "conductor-supervisor-architecture",
+        "files-as-channels",
+        "stateless-agents",
+        "wave-ordering",
+        "manifest",
+        "board-cache",
+        "indexing-strategies",
+        "git-sha-invalidation",
+        "incremental-log",
+        "supervisor-context-isolation",
+        "intervention-modes",
+        "autopilot-checkpoint",
+        "inbox-protocol",
+        "context-push",
+        "broadcast",
+        "contract-verifier",
+        "saga-records",
+        "portability-schema-hooks",
+        "swarm-brief-frontmatter",
+        "claude-code-only-v0-20-0",
+        "codex-antigravity-deferred",
+        "synthetic-ecosystem-fixtures",
+        "v0-20-0"
+      ]
     },
     "phase-17-5-swarm-portability": {
       "status": "complete",
-      "topics": ["phase-17-5", "swarm-portability", "multi-session-coordination", "files-as-channels", "lease-enforcement", "signal-protocol", "tokens", "sessions-registry", "swarm-focus", "swarm-join", "swarm-absorb", "swarm-claim", "swarm-release", "manifest-write-chokepoint", "mkdir-lock", "opaque-tokens", "single-use-tokens", "absorb-merge", "contract-verify", "synthetic-two-session-scenarios", "claude-code-only", "v0-20-2"]
+      "topics": [
+        "phase-17-5",
+        "swarm-portability",
+        "multi-session-coordination",
+        "files-as-channels",
+        "lease-enforcement",
+        "signal-protocol",
+        "tokens",
+        "sessions-registry",
+        "swarm-focus",
+        "swarm-join",
+        "swarm-absorb",
+        "swarm-claim",
+        "swarm-release",
+        "manifest-write-chokepoint",
+        "mkdir-lock",
+        "opaque-tokens",
+        "single-use-tokens",
+        "absorb-merge",
+        "contract-verify",
+        "synthetic-two-session-scenarios",
+        "claude-code-only",
+        "v0-20-2"
+      ]
     },
     "phase-18-swarm-parity": {
       "status": "complete-on-branch",
-      "topics": ["phase-18", "swarm-parity", "codex", "antigravity", "adapter-contract", "spawn", "adapter-spawn", "claude-code-refactor", "swarm-supervisor-toml", "mcp-cwd-shim", "swarm-conductor-workflow", "swarm-supervisor-skill", "agent-manager", "parallel-subagents", "session-start-hook", "val-001", "val-002", "live-dogfood", "capability-flips", "multi-adapter-e2e", "fingerprint-snapshot", "adapter-parity-matrix", "v0-20-4"]
+      "topics": [
+        "phase-18",
+        "swarm-parity",
+        "codex",
+        "antigravity",
+        "adapter-contract",
+        "spawn",
+        "adapter-spawn",
+        "claude-code-refactor",
+        "swarm-supervisor-toml",
+        "mcp-cwd-shim",
+        "swarm-conductor-workflow",
+        "swarm-supervisor-skill",
+        "agent-manager",
+        "parallel-subagents",
+        "session-start-hook",
+        "val-001",
+        "val-002",
+        "live-dogfood",
+        "capability-flips",
+        "multi-adapter-e2e",
+        "fingerprint-snapshot",
+        "adapter-parity-matrix",
+        "v0-20-4"
+      ]
     },
     "phase-19-lifecycle-hardening": {
       "status": "complete",
-      "topics": ["phase-19", "lifecycle-hardening", "git-enforcement", "git-hooks", "commit-msg-hook", "pre-push-hook", "conventional-commits", "core-hookspath", "githooks", "zero-dependency", "no-husky", "escape-hatch", "merge-approved-sentinel", "verify-evidence-gate", "rule-12-enforcement", "rule-6-honesty", "rule-14-escalation", "ad-hoc-work", "hotfix", "spike-mode", "work-types", "specs-adhoc", "phase-optional", "log", "sync-docs", "validate-no-phase", "ad-hoc-releases", "forge-neutral", "vendor-agnostic", "dip", "branch-protection-docs", "branch-cleanup", "stale-branches", "gitignore-worktrees", "phase-8-close", "td-007", "td-008", "warn-not-clobber", "v0-21-0"]
+      "topics": [
+        "phase-19",
+        "lifecycle-hardening",
+        "git-enforcement",
+        "git-hooks",
+        "commit-msg-hook",
+        "pre-push-hook",
+        "conventional-commits",
+        "core-hookspath",
+        "githooks",
+        "zero-dependency",
+        "no-husky",
+        "escape-hatch",
+        "merge-approved-sentinel",
+        "verify-evidence-gate",
+        "rule-12-enforcement",
+        "rule-6-honesty",
+        "rule-14-escalation",
+        "ad-hoc-work",
+        "hotfix",
+        "spike-mode",
+        "work-types",
+        "specs-adhoc",
+        "phase-optional",
+        "log",
+        "sync-docs",
+        "validate-no-phase",
+        "ad-hoc-releases",
+        "forge-neutral",
+        "vendor-agnostic",
+        "dip",
+        "branch-protection-docs",
+        "branch-cleanup",
+        "stale-branches",
+        "gitignore-worktrees",
+        "phase-8-close",
+        "td-007",
+        "td-008",
+        "warn-not-clobber",
+        "v0-21-0"
+      ]
     },
     "phase-20-upgrade-hardening": {
       "status": "complete",
-      "topics": ["phase-20", "upgrade-hardening", "lock-file", "installed-json", "orphan-cleanup", "clean-tree-gate", "dry-run", "backup", "bak-files", "idempotent-init", "bug-008", "enh-040", "upgrade-safety", "momentum-upgrade", "ecosystem-upgrade", "v0-22-0"]
+      "topics": [
+        "phase-20",
+        "upgrade-hardening",
+        "lock-file",
+        "installed-json",
+        "orphan-cleanup",
+        "clean-tree-gate",
+        "dry-run",
+        "backup",
+        "bak-files",
+        "idempotent-init",
+        "bug-008",
+        "enh-040",
+        "upgrade-safety",
+        "momentum-upgrade",
+        "ecosystem-upgrade",
+        "v0-22-0"
+      ]
     },
     "phase-21b-lanes-run": {
-      "status": "in-progress",
-      "topics": ["phase-21b", "lanes", "lane-registry", "board", "queue-pressure", "signals", "inbox", "merge-queue", "graded-gates", "landing", "rebase-freshness", "overlap-warnings", "touch-paths", "git-common-dir", "worktrees", "substrate-detection", "preflight", "momentum-lanes-cli", "adr-0002", "feat-026", "feat-027", "enh-047", "v0-24-0"]
+      "status": "complete",
+      "topics": [
+        "phase-21b",
+        "lanes",
+        "lane-registry",
+        "board",
+        "queue-pressure",
+        "signals",
+        "inbox",
+        "merge-queue",
+        "graded-gates",
+        "landing",
+        "rebase-freshness",
+        "overlap-warnings",
+        "touch-paths",
+        "git-common-dir",
+        "worktrees",
+        "substrate-detection",
+        "preflight",
+        "momentum-lanes-cli",
+        "adr-0002",
+        "feat-026",
+        "feat-027",
+        "enh-047",
+        "v0-24-0"
+      ]
     },
     "phase-21a-lanes-walk": {
       "status": "complete",
-      "topics": ["phase-21a", "lanes", "concurrent-workstreams", "multi-active-phase", "lane-binding", "branch-phase-resolution", "rule-15", "lane-scoped-rules", "merge-discipline", "sequential-landing", "rebase-onto-main", "stacked-lanes", "off-lane", "brainstorms", "spikes", "status-multi-row", "active-phase-table", "adr-0001", "dogfood-in-phase", "trial-thresholds", "worktrees", "treehouse", "gitbutler", "templates", "agent-rules", "fingerprint-snapshot", "check-history-reminder", "site-docs", "enh-046", "v0-23-0"]
+      "topics": [
+        "phase-21a",
+        "lanes",
+        "concurrent-workstreams",
+        "multi-active-phase",
+        "lane-binding",
+        "branch-phase-resolution",
+        "rule-15",
+        "lane-scoped-rules",
+        "merge-discipline",
+        "sequential-landing",
+        "rebase-onto-main",
+        "stacked-lanes",
+        "off-lane",
+        "brainstorms",
+        "spikes",
+        "status-multi-row",
+        "active-phase-table",
+        "adr-0001",
+        "dogfood-in-phase",
+        "trial-thresholds",
+        "worktrees",
+        "treehouse",
+        "gitbutler",
+        "templates",
+        "agent-rules",
+        "fingerprint-snapshot",
+        "check-history-reminder",
+        "site-docs",
+        "enh-046",
+        "v0-23-0"
+      ]
     }
   }
 }

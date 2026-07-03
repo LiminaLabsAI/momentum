@@ -380,6 +380,11 @@ worktree) bound to one phase or ad-hoc record.
 Lanes integrate per the Rule 6 **Landing Order** — one lane at a time, suite
 green on updated `main` between landings, remaining lanes rebase.
 
+**Mechanism:** `momentum lanes` — open/board/queue/signal/inbox/done/land
+(see the `/lanes` recipe). The board shows every lane + queue pressure from
+any session; `lanes land` enforces turn, rebase-freshness, and the
+Rule-14-graded evidence gate before merging.
+
 #### Off-lane work
 
 Brainstorms and spikes are **off-lane** — zero tracking contention by

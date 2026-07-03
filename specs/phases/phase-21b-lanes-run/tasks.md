@@ -33,7 +33,7 @@
 - [x] `tests/lanes-land.test.js` green (6/6); dispatcher nit fixed (`momentum lanes --json` now routes to the board)
 
 ## Group 6 — Docs + verification + release prep
-- [ ] `core/commands/lanes.md` recipe; template Rule 15 pointer
-- [ ] Site + README updates; fingerprints re-baselined
-- [ ] Full suite + 3-adapter smoke + site build green
-- [ ] Retrospective + version bump 0.24.0 + parked release runbook
+- [x] `core/commands/lanes.md` recipe (+ self-repo `.claude/commands/` mirror); Rule 15 mechanism pointer in self CLAUDE.md + template
+- [x] Site parallel-work.md Run-shipped section + README mechanism sentence; fingerprints re-baselined ×3 (drift = lanes recipe + template pointer only)
+- [x] Full suite 684/684; 3-adapter smoke exit 0 (55/59/60 files); site build exit 0 (13 pages, content probe ×3)
+- [x] Retrospective (with Verification Evidence) + version bump 0.24.0 + stacked release runbook parked in status.md Next Actions #1

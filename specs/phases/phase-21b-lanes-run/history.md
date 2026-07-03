@@ -40,3 +40,10 @@ Affects-specs: none
 Detail: `momentum lanes land` landed its own phase's G4 then G3 lanes: the pre-rebase validate correctly refused on freshness ("never forceable"), each lane rebased (G3's rebase = the usual keep-both tracking appends), quick-task gates read the lanes' `specs/adhoc/<id>/record.md`, `--execute` merged --no-ff and stamped `landed`, board showed the queue draining to empty, suite green after each landing (677/677 → 684/684). land.js itself was pre-built while the lanes ran (file-disjoint; order swap within G5 noted). Dispatcher nit from G3's report fixed (`momentum lanes --json` → board). Evidence: `evidence/d8-landing.txt` + `evidence/d8-lane-open.txt`.
 
 ---
+### [NOTE] 2026-07-03 — G6: docs + verification + v0.24.0 release prep (parked, stacked behind 21a)
+Topics: lanes, site-docs, verification, release
+Affects-phases: phase-21b-lanes-run
+Affects-specs: specs/planning/roadmap.md#Timeline, specs/planning/platform-parallel-lanes.md
+Detail: /lanes recipe shipped to all three adapters (fingerprints re-baselined; drift = recipe + template Rule 15 mechanism pointer only); site parallel-work page's "What's coming in Run" replaced with the shipped momentum-lanes section; README updated. Verification fresh: suite 684/684, 3-adapter smoke exit 0, site build exit 0 with content probes. Version bumped to 0.24.0. Release parked on operator approval, stacked behind v0.23.0 — the two-step runbook (rebase-onto-updated-main per Landing Order, suite, merge, tag, gh release, npm publish) recorded in status.md Next Actions #1.
+
+---
