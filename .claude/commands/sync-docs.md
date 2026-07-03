@@ -1,11 +1,22 @@
 Sync all relevant documents based on the active phase's history log.
 Token-efficient: reads history + 2 tiny indexes first, then only targeted files.
 
+> **Which phase is yours (Rule 15):** the phase bound to your branch — sync
+> from YOUR lane's history log. `status.md` is the fallback and the
+> cross-lane overview. Never sync another active lane's history from here.
+
 ## Steps
 
 ### Step 1: Load history and indexes (cheap reads)
-- Read `specs/status.md` → identify active phase
-- Read `specs/phases/<active-phase>/history.md` → extract all entries
+- Resolve your phase from the current branch: a `phase-*` branch with a
+  matching `specs/phases/<branch>/` directory binds to that phase; fallback =
+  the `specs/status.md` Active Phase table
+- Read the history log → extract all entries:
+  - **Phase lane**: `specs/phases/<phase-bound-to-your-branch>/history.md`
+  - **No active phase** (ad-hoc work just shipped): the relevant
+    `specs/adhoc/<id>/record.md` (and `specs/adhoc/history.md` if present).
+    If there is no phase and no ad-hoc record, there is nothing to sync —
+    report "nothing to sync" and stop.
 - Read `specs/phases/index.json` (~2KB)
 - Read `specs/decisions/impact-map.json` (~3KB)
 

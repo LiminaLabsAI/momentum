@@ -1,7 +1,7 @@
 # Phase 17 Swarm — Scenario B-BRANCHED
 
 Captured: 2026-06-12 (Phase 17 G4)
-Ecosystem: momentum-test-vV9QtE
+Ecosystem: momentum-test-0ttv7D
 Swarm: 0001-feature
 
 ## Metrics
@@ -38,7 +38,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "7ac58fc77cfcda7f5e5f77d0acb6c0532d2ac676"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "mid-a": {
       "wave": 2,
@@ -55,7 +55,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "7ac58fc77cfcda7f5e5f77d0acb6c0532d2ac676"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "mid-b": {
       "wave": 2,
@@ -72,7 +72,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "7ac58fc77cfcda7f5e5f77d0acb6c0532d2ac676"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "leaf": {
       "wave": 3,
@@ -89,7 +89,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "7ac58fc77cfcda7f5e5f77d0acb6c0532d2ac676"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     }
   },
   "waves": [
@@ -152,7 +152,7 @@ Swarm: 0001-feature
       "detail": "Wave 3 complete"
     },
     {
-      "ts": "2026-06-19T15:54:55Z",
+      "ts": "2026-07-02T18:55:28Z",
       "actor": "conductor",
       "event": "complete",
       "detail": "4/4 repos complete"
@@ -171,7 +171,7 @@ Swarm: 0001-feature
   "version": 1,
   "saga_id": "sg_1osc7d9",
   "mode": "autopilot",
-  "rendered_at": "2026-06-19T15:54:55Z",
+  "rendered_at": "2026-07-02T18:55:28Z",
   "status": "complete",
   "active_wave": 3,
   "repos": [
@@ -215,7 +215,7 @@ Swarm: 0001-feature
   "inbox_count": 0,
   "recent_activity": [
     {
-      "ts": "15:54",
+      "ts": "18:55",
       "msg": "4/4 repos complete"
     },
     {
@@ -248,7 +248,7 @@ Swarm: 0001-feature
 - Mode: autopilot
 - Status: complete
 - Repos: 4/4 complete
-- Completed at: 2026-06-19T15:54:55Z
+- Completed at: 2026-07-02T18:55:28Z
 
 ## Per-repo contributions
 

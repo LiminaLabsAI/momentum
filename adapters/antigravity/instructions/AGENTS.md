@@ -138,7 +138,7 @@ reusable shell scripts to `scripts/` and references them:
 | Event | Matcher | Script | Purpose |
 |---|---|---|---|
 | `PreToolUse` | `run_command\|view_file\|.*write.*\|apply_patch` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
-| `PostToolUse` | `run_command\|apply_patch\|.*write.*` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `PostToolUse` | `run_command\|apply_patch\|.*write.*` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during phase work — resolved to the phase bound to the current branch (fallback: `status.md`) (Rule 8). |
 | `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | When `agy` fires SessionStart, auto-greets with any pending handoff banner + ecosystem context. (SessionStart vendor support pending VAL-002.) |
 
 ### SessionStart fallback
@@ -161,7 +161,7 @@ rules:
 5. Stop at phase boundaries and ask before completion/release.
 6. Use feature branches, atomic commits, and user approval before merges.
 7. Plan before non-trivial implementation.
-8. Append meaningful decisions/discoveries to active phase `history.md`.
+8. Append meaningful decisions/discoveries to the `history.md` of the phase bound to your branch (fallback: `status.md`).
 9. Sync docs at phase completion, not mid-phase.
 10. Treat architecture specs as stable during phase work.
 11. Lock evaluators before optimization loops.

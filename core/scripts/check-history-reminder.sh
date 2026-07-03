@@ -24,7 +24,46 @@ if [ -n "$FILE_PATH" ]; then
   esac
 
   if [ "$SIGNIFICANT" = "true" ]; then
-    echo "HISTORY REMINDER: '$FILE_PATH' was modified — if this reflects a decision, scope change, or discovery, append an entry to the active phase history file (specs/phases/<active-phase>/history.md), or — when no phase is active — to the ad-hoc record (specs/adhoc/<id>/record.md) or specs/adhoc/history.md."
+    # ── Lane binding (Rule 15): resolve the phase from the current branch.
+    # phase-* branch with a matching specs/phases/<branch>/ dir wins;
+    # non-phase branch → ad-hoc sink; detached HEAD or no match → fall back
+    # to the status.md Active Phase table (first row with an existing dir).
+    BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+    PHASE_DIR=""
+    PHASE_SOURCE=""
+    if [ -n "$BRANCH" ]; then
+      case "$BRANCH" in
+        phase-*)
+          if [ -d "specs/phases/$BRANCH" ]; then
+            PHASE_DIR="specs/phases/$BRANCH"
+            PHASE_SOURCE="branch"
+          fi
+          ;;
+        *)
+          PHASE_SOURCE="adhoc"
+          ;;
+      esac
+    fi
+    if [ -z "$PHASE_DIR" ] && [ "$PHASE_SOURCE" != "adhoc" ] && [ -f "specs/status.md" ]; then
+      while IFS= read -r candidate; do
+        if [ -d "specs/phases/$candidate" ]; then
+          PHASE_DIR="specs/phases/$candidate"
+          PHASE_SOURCE="status"
+          break
+        fi
+      done < <(awk '/^## Active Phase/{f=1;next} /^## /{f=0} f' specs/status.md \
+        | grep -E '^\|' | grep -oE '\`phase-[A-Za-z0-9._-]+\`' | tr -d '\`' || true)
+    fi
+
+    if [ "$PHASE_SOURCE" = "branch" ]; then
+      echo "HISTORY REMINDER: '$FILE_PATH' was modified — if this reflects a decision, scope change, or discovery, append an entry to your lane's history file ($PHASE_DIR/history.md — the phase bound to branch '$BRANCH', Rule 15)."
+    elif [ "$PHASE_SOURCE" = "status" ]; then
+      echo "HISTORY REMINDER: '$FILE_PATH' was modified — if this reflects a decision, scope change, or discovery, append an entry to the active phase history ($PHASE_DIR/history.md — resolved from the status.md Active Phase table; the current branch does not bind to a phase directory)."
+    elif [ "$PHASE_SOURCE" = "adhoc" ]; then
+      echo "HISTORY REMINDER: '$FILE_PATH' was modified on non-phase branch '$BRANCH' — if this reflects a decision, scope change, or discovery, append an entry to the ad-hoc record (specs/adhoc/<id>/record.md) or specs/adhoc/history.md."
+    else
+      echo "HISTORY REMINDER: '$FILE_PATH' was modified — if this reflects a decision, scope change, or discovery, append an entry to the active phase history file (specs/phases/<active-phase>/history.md), or — when no phase is active — to the ad-hoc record (specs/adhoc/<id>/record.md) or specs/adhoc/history.md."
+    fi
   fi
 fi
 

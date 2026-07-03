@@ -39,7 +39,7 @@ The shipped recipe set (one skill per recipe, all under
 | sync-docs | Propagate history entries to other spec docs |
 | track | Track a backlog item (bug / feature / tech debt / enhancement) |
 | review | Review and groom the backlog between phases |
-| log | Append a manual narrative entry to the active phase history |
+| log | Append a manual narrative entry to the history of the phase bound to your branch (fallback: status.md) |
 | migrate | Onboard an existing project into momentum |
 | validate | Check spec structure health |
 | ecosystem | Cross-repo ecosystem coordination |
@@ -95,7 +95,7 @@ shell scripts to `scripts/` and references them from this file:
 | Event | Matcher | Script | Purpose |
 |---|---|---|---|
 | `PreToolUse` | `apply_patch\|Bash` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
-| `PostToolUse` | `apply_patch\|Bash` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during an active phase (Rule 8). |
+| `PostToolUse` | `apply_patch\|Bash` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during phase work — resolved to the phase bound to the current branch (fallback: `status.md`) (Rule 8). |
 | `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | Auto-greets with any pending handoff banner + ecosystem context. |
 
 > Matcher uses `Bash` (not `shell`) because that's the canonical
@@ -235,7 +235,7 @@ as the durable project rule source. The most important operating rules:
 5. Stop at phase boundaries and ask before completion/release.
 6. Use feature branches, atomic commits, and user approval before merges.
 7. Plan before non-trivial implementation.
-8. Append meaningful decisions/discoveries to active phase `history.md`.
+8. Append meaningful decisions/discoveries to the `history.md` of the phase bound to your branch (fallback: `status.md`).
 9. Sync docs at phase completion, not mid-phase.
 10. Treat architecture specs as stable during phase work.
 11. Lock evaluators before optimization loops.

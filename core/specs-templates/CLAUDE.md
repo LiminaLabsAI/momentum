@@ -31,9 +31,9 @@ Before ANY work, read `specs/status.md`. This tells you:
 
 After completing ANY meaningful work, automatically update:
 
-1. **Active phase `tasks.md`** — mark completed `[x]`, in-progress `[/]`
-2. **`specs/status.md`** — if phase progress, blockers, or P0 items changed
-3. **`specs/changelog/YYYY-MM.md`** — log what changed (one line per change)
+1. **Your phase's `tasks.md`** (the phase bound to your branch — Rule 15) — mark completed `[x]`, in-progress `[/]`
+2. **`specs/status.md`** — if phase progress, blockers, or P0 items changed (touch only your own lane's row — Rule 15)
+3. **`specs/changelog/YYYY-MM.md`** — log what changed (one line per change, append-only)
 
 Use the built-in **TodoWrite** tool to track in-session task progress. Do NOT wait for the user to ask you to update tracking.
 
@@ -69,11 +69,16 @@ Before starting work on a new phase:
 - If any exist, recommend addressing them first
 - Present: "N open bugs (X critical), recommend fixing before proceeding"
 
+Starting a phase while other lanes are active is normal (Rule 15) — the bug
+check still runs per phase start.
+
 ### Rule 5: Phase Boundary Awareness
 
 When completing the last task in a phase:
 - Prompt the user: "All tasks in Phase N are complete. Run `/complete-phase` to verify and release?"
 - Do NOT auto-complete a phase without user confirmation
+- "Complete" means the phase bound to YOUR branch (Rule 15); landing it on
+  `main` follows the Rule 6 landing order when other lanes are in flight
 
 ### Rule 6: Git Lifecycle
 
@@ -117,6 +122,20 @@ When completing the last task in a phase:
 | Merge to `staging`/`main` | No | **Yes** | `pre-push` **blocks** without `.momentum/merge-approved` |
 | Tag a release | No | **Yes** | `pre-push` **blocks** without verification evidence |
 
+#### Landing Order — Concurrent Lanes (Rule 15)
+
+When more than one lane is in flight, `main` is the runway — lanes land
+**one at a time**:
+
+1. One lane merges (with its approval gate above).
+2. The full suite runs green on the updated `main` **before** the next landing.
+3. Remaining lanes **rebase onto the updated `main`** before they land.
+4. Stacked (dependent) lanes land parent-first; a child rebases onto its
+   parent until the parent lands, then onto `main`.
+
+Never land two lanes back-to-back without the suite passing in between — a
+green suite on each lane's branch does not prove the *combination* is green.
+
 #### Why
 Direct commits to `main` bypass review, history, and rollback. A single rushed commit on `main` is harder to revert than ten commits on a branch. The branch convention is the cheapest possible insurance against catastrophic mistakes.
 
@@ -143,7 +162,7 @@ For any non-trivial implementation (new feature, architectural change):
 
 ### Rule 8: Record Phase History
 
-During any active phase, append meaningful changes to `specs/phases/<active-phase>/history.md`.
+While working on a phase, append meaningful changes to that phase's history log — `specs/phases/<phase-bound-to-your-branch>/history.md` (Rule 15; each lane writes only its own history).
 
 #### What counts as "meaningful"
 
@@ -328,6 +347,67 @@ changes a public contract/interface, or displaces a planned phase.
 | "This `/hotfix` is growing — I'll just keep going" | If it now touches architecture or many files, it's a phase. Escalate. |
 | "I'll spin up a whole phase for this one-line fix" | Over-ceremony. A `/hotfix` quick-task is the right size. |
 | "It's exploratory but I'll ship it straight to main" | A spike is gate-exempt *because* it's throwaway. Harden it as a quick-task first. |
+
+### Rule 15: Concurrent Workstreams — Lanes
+
+Multiple workstreams may be active in one repo at the same time (see
+ADR-0001). A **lane** is one workstream: a branch (usually in its own
+worktree) bound to one phase or ad-hoc record.
+
+#### Lane binding — which phase is yours
+
+- Your phase is **the phase bound to your branch**: branch
+  `phase-N-shortname` ↔ directory `specs/phases/phase-N-shortname/`.
+- `specs/status.md`'s Active Phase table is the **fallback and the
+  cross-lane overview** — read it to see what else is in flight, not to
+  decide which phase is yours.
+- Non-phase branches (`fix/*`, `chore/*`, `feat/*`) bind to the ad-hoc lane
+  (`specs/adhoc/`, Rule 14). Detached HEAD → fall back to `status.md`.
+
+#### Lane-scoped tracking
+
+- Write ONLY your own phase's artifacts (`tasks.md`, `history.md`,
+  `evidence/`) — these are parallel-safe by construction.
+- Shared tracking files (`status.md`, `backlog.md`, `changelog/`) are
+  **append / own-row-touch only** from a lane: add or edit your own
+  row/line; never reformat, renumber, or rewrite other lanes' entries.
+- The Active Phase table holds **one row per active lane**
+  (Phase | Branch | Status | Progress). Add your row at phase start; update
+  only your row; mark it at completion.
+
+#### Landing
+
+Lanes integrate per the Rule 6 **Landing Order** — one lane at a time, suite
+green on updated `main` between landings, remaining lanes rebase.
+
+#### Off-lane work
+
+Brainstorms and spikes are **off-lane** — zero tracking contention by
+design. `/brainstorm-idea` writes no files; a spike writes only its own
+`specs/adhoc/<id>/` record. Neither touches the Active Phase table.
+
+#### Why
+Two concurrent sessions cannot both be right about "the active phase" when
+the spec layer models exactly one. Binding phase to branch makes each
+session's context unambiguous, and append-only discipline on shared files
+keeps N lanes trivially mergeable. Git isolation (worktrees) was never the
+problem — the spec layer was.
+
+#### Red Flags — STOP and re-scope to your lane
+
+| If you find yourself thinking… | …STOP |
+|---|---|
+| "I'll just fix this line in the other phase's tasks.md while I'm here" | That's another lane's artifact. Leave it; tell the user or file a backlog item. |
+| "status.md is stale for that other lane, I'll update their row" | Their session owns that row. Touch only your own. |
+| "I'll reformat the Active Phase table while adding my row" | Reformatting rewrites every lane's row — append yours, change nothing else. |
+| "Which phase am I on? I'll take status.md's first row" | Your branch decides your phase. status.md is the overview, not the binding. |
+| "Both lanes are done, I'll merge them together to save a suite run" | One at a time; suite green between landings (Rule 6 Landing Order). |
+
+#### Anti-Rationalization Counters
+
+- "The other lane's edit is tiny and obviously right" — cross-lane edits are how tracking corrupts; smallness is irrelevant.
+- "Rebasing my lane again is wasted work" — rebasing is the price of a green runway; a stale lane landing on moved `main` is how combination bugs ship.
+- "There's only one lane active right now, Rule 15 doesn't apply" — a single lane is the N=1 case; the binding still defines which phase is yours.
 
 ---
 

@@ -2,14 +2,19 @@ Check the spec structure health of the current momentum project.
 
 Run with no arguments for a fast index-first check, or pass `--deep` for a full scan.
 
+> **Which phase is yours (Rule 15):** the phase bound to your branch;
+> `status.md` is the fallback and the cross-lane overview. Validation checks
+> the whole board, not just your lane.
+
 ## Default Mode (index-first)
 
 1. Read `specs/status.md` — verify required fields are present:
    - `Last Updated`, `Current Phase`, `Latest Release`, `Health`
    - Active Phase table exists. **"No active phase" is a VALID state** — a
      single row reading `_(none)_` / `no active phase` (e.g. between phases, or
-     during ad-hoc `/hotfix` work) is NOT a failure. Only flag a structurally
-     missing/empty table.
+     during ad-hoc `/hotfix` work) is NOT a failure. **Multiple rows are also
+     valid** — one row per active lane (Rule 15, concurrent workstreams). Only
+     flag a structurally missing/empty table.
    - Report any missing fields as failures
 
 2. Read `specs/backlog/backlog.md` — verify all 4 section tables present:
@@ -23,7 +28,9 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
 
 4. Cross-check active phase consistency:
    - If an active phase is named, it must be listed in `index.json` and its
-     directory must exist — report mismatch as a failure.
+     directory must exist — report mismatch as a failure. With multiple active
+     lanes (Rule 15), check EVERY row: each row's branch must bind to an
+     existing phase directory listed in `index.json`.
    - If `Current Phase` is "none" / no active phase, **skip this check** (valid
      between-phases state).
 

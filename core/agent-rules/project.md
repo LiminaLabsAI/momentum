@@ -21,9 +21,9 @@ Before ANY work, read `specs/status.md`.
 
 ### Rule 2: Auto-Update Tracking After Changes
 After completing ANY meaningful work, automatically update:
-1. Active phase `tasks.md` — `[x]` complete, `[/]` in-progress
-2. `specs/status.md` — if phase progress, blockers, or P0 items changed
-3. `specs/changelog/YYYY-MM.md` — log what changed (one line per change)
+1. Your phase's `tasks.md` (the phase bound to your branch — Rule 15) — `[x]` complete, `[/]` in-progress
+2. `specs/status.md` — if phase progress, blockers, or P0 items changed (touch only your own lane's row — Rule 15)
+3. `specs/changelog/YYYY-MM.md` — log what changed (one line per change, append-only)
 
 **Red Flags (STOP and update now):**
 - "I'll batch tracking at the end" — context fades; log now
@@ -61,7 +61,7 @@ When completing the last task: prompt user to run `/complete-phase`.
 For non-trivial work: use `/brainstorm-phase` first.
 
 ### Rule 8: Record Phase History
-Append to `specs/phases/<active-phase>/history.md` after meaningful changes.
+Append meaningful changes to the history.md of the phase bound to your branch — `specs/phases/<phase-bound-to-your-branch>/history.md` (Rule 15).
 
 **Trigger → Entry type:**
 - ADR created/changed → `[DECISION]`
@@ -165,6 +165,18 @@ Not every change is a phase. Three work types (see `specs/adhoc/README.md`):
 **Red Flags:**
 - "This `/hotfix` is growing" — if it now touches architecture or many files, escalate to a phase.
 - "I'll spin up a whole phase for a one-line fix" — over-ceremony; a `/hotfix` quick-task is right.
+
+### Rule 15: Concurrent Workstreams — Lanes
+Multiple workstreams may be active in one repo at once (see ADR-0001 in `specs/decisions/`). A **lane** = one branch (usually in its own worktree) bound to one phase or ad-hoc record.
+- Your phase is the phase bound to your branch: `phase-N-shortname` ↔ `specs/phases/phase-N-shortname/`. `specs/status.md`'s Active Phase table (one row per lane) is the fallback and the cross-lane overview — not the binding.
+- Write only your own phase's artifacts (`tasks.md`, `history.md`, `evidence/`). Shared tracking files (`status.md`, `backlog.md`, `changelog/`) are append / own-row-touch only — never rewrite other lanes' entries.
+- Landing order (Rule 6): lanes land on `main` one at a time; suite green on updated `main` between landings; remaining lanes rebase.
+- Brainstorms and spikes are off-lane — they never touch the Active Phase table.
+
+**Red Flags (STOP and re-scope to your lane):**
+- "I'll fix that other lane's tasks.md while I'm here" — another lane's artifact; leave it and flag it.
+- "Which phase am I on? I'll take status.md's first row" — your branch decides; status.md is the overview.
+- "Both lanes are done, merge them together" — one at a time, suite green in between.
 
 ---
 
