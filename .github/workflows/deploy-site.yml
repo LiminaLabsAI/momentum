@@ -8,9 +8,12 @@
 # repo's Actions secrets. The token only needs `Contents: Read and write`
 # on the single target repo.
 #
-# GitHub Pages on the target repo must be configured to serve from
-# `Deploy from a branch → main / root` (NOT "GitHub Actions" — the build
-# happens here, the target just hosts the static output).
+# GitHub Pages on the target repo is configured as `Source: GitHub
+# Actions`: a minimal `Publish Pages` workflow in the target repo uploads
+# main/ verbatim via actions/deploy-pages on every push. (Switched
+# 2026-07-03 — the legacy "Deploy from a branch" pipeline began failing
+# every build with a detail-less "Page build failed"; the Actions path
+# serves the pushed files without the legacy Jekyll builder.)
 #
 # Site URL: https://trymomentum.github.io/
 
