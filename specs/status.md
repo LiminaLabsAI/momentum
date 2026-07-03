@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-07-03
-> **Current Phase**: _none active_ (Phase 21b — Parallel Lanes Run is next)
-> **Latest Release**: v0.22.3 — BUG-011 (v0.23.0 built + verified on `phase-21a-lanes-walk`, **release awaiting operator approval** — see Next Actions #1)
+> **Current Phase**: Phase 21c — Parallel Lanes Fly (stacked lane; 21a+21b releases parked on approval)
+> **Latest Release**: v0.22.3 — BUG-011 (v0.23.0 AND v0.24.0 built + verified on their stacked branches, **releases awaiting operator approval** — see Next Actions #1)
 > **Health**: On Track
 
 ## Summary
@@ -39,6 +39,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 19 | Lifecycle Hardening | Complete | v0.21.0 (2026-06-19) |
 | 20 | Upgrade Hardening | Complete | v0.22.0 (2026-06-20) |
 | 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete — release pending operator approval | v0.23.0 (built + verified 2026-07-03; merge/tag/publish awaiting approval) |
+| 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete — release pending operator approval (stacked on 21a) | v0.24.0 (built + verified 2026-07-03; suite 684/684) |
 
 ## Ad-hoc / Patch Releases
 
@@ -60,7 +61,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 21a shipped v0.23.0; Phase 21b "Parallel Lanes Run" is next)_ | | | |
+| 21c — Parallel Lanes Fly (Recursive Waves) | `phase-21c-lanes-fly` (stacked on `phase-21b-lanes-run`) | In Progress (target v0.25.0) | starting |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -70,8 +71,6 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 21b | Parallel Lanes — Run | Not Started (target v0.24.0) | FEAT-026 lanes/board/signals; FEAT-027 merge queue + graded gates; ENH-047 overlap warnings. Scope: `specs/planning/platform-parallel-lanes.md` |
-| 21c | Parallel Lanes — Fly | Not Started (target v0.25.0) | FEAT-028 recursive wave planner (absorbs old "dependency-aware tasks"); swarm as top-scale consumer; lane-state contract decision |
 | 22 | Reach | Not Started (target v0.26.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
 | 23 | Intelligence | Not Started (target v0.27.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 24 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
@@ -113,7 +112,18 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
    gh release list --limit 3 && npm view @avinash-singh-io/momentum version
    git branch -d phase-21a-lanes-walk && git push origin --delete phase-21a-lanes-walk
    ```
-   (If 21b/21c are also complete by then — they stack on this branch — release them in order the same way: rebase each onto updated main first per the Rule 6 Landing Order.)
+   Then v0.24.0 (Phase 21b, stacked on 21a — after the above lands):
+   ```bash
+   git checkout phase-21b-lanes-run && git rebase main   # freshness per Landing Order
+   npm test                                              # suite green post-rebase
+   git checkout staging && git merge --no-ff phase-21b-lanes-run -m "merge: phase-21b-lanes-run → staging (v0.24.0)" && git push origin staging
+   git checkout main && git merge --no-ff staging -m "merge: staging → main (v0.24.0 — Phase 21b: Parallel Lanes Run)" && git push origin main
+   git tag -a v0.24.0 -m "Phase 21b: Parallel Lanes Run" && git push origin v0.24.0
+   gh release create v0.24.0 --title "v0.24.0 — Phase 21b: Parallel Lanes Run" --notes-file specs/phases/phase-21b-lanes-run/retrospective.md --latest --verify-tag
+   npm publish --access public
+   git branch -d phase-21b-lanes-run && git push origin --delete phase-21b-lanes-run
+   ```
+   (Same pattern afterwards for 21c/v0.25.0 if its branch is complete — each stacked branch rebases onto updated main, suite green, then lands.)
 
 2. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
@@ -137,6 +147,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-03**: **Phase 21b — Lanes Run COMPLETE; v0.24.0 built + verified (release parked behind 21a's).** FEAT-026: lane registry/manifests/inbox at `git-common-dir/momentum/lanes` (internal stateVersion 1) + `momentum lanes` CLI (open with worktree substrate + preflight, done, close, board with queue-pressure footer, queue, signal ×5 types, inbox --ack). FEAT-027: `lanes land` — FIFO turn, never-forceable rebase-freshness, Rule-14-graded gates, advisory rebase nudges. ENH-047: touch-path overlap warnings (open/board/land). ADR-0002; `/lanes` recipe to all 3 adapters; site + README updated. **The mechanism dogfooded itself (D8): G3∥G4 built inside CLI-opened lanes, exchanged a live cross-session signal pre-merge, and were landed BY `lanes land` through the real queue.** Suite 652 → 684; smoke ×3; site build green. Evidence: `specs/phases/phase-21b-lanes-run/evidence/`.
 
 - **2026-07-03 (correction)**: **v0.23.0 NOT yet released** — the merge-to-staging/main push was denied by the session's permission gate (protected-branch merges need the operator's explicit, action-specific approval; the standing "complete this phase family" directive was judged insufficient). All work, verification, retrospective, and version bump are complete on `phase-21a-lanes-walk`. Exact release runbook recorded in Next Actions #1. Phases 21b/21c proceed stacked on the 21a branch per the Rule 15 stacked-lane discipline.
 

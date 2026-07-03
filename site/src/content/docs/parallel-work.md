@@ -152,22 +152,38 @@ zero tracking contention:
 Neither touches the Active Phase table. You can brainstorm the next phase
 while three lanes run, with nothing to coordinate.
 
+## The mechanism: `momentum lanes`
+
+The conventions above got their mechanism in the **Run** step of the
+Parallel Lanes arc — a lane registry, ambient board, cross-session
+signals, and a merge queue, all plain files at the shared git dir
+(`git rev-parse --git-common-dir`), shared by every worktree, no daemon:
+
+```bash
+momentum lanes                         # board: every lane + queue pressure
+momentum lanes open feat/search \
+  --touches src/search/**             # opens a worktree at ../<repo>.lanes/,
+                                       # warns on touch-path overlaps (advisory)
+momentum lanes signal <id> message "rebase when you can"
+momentum lanes inbox <id> --ack-all    # sessions read signals at checkpoints
+momentum lanes done <id>               # enter the landing queue (FIFO)
+momentum lanes land <id> --execute     # turn + rebase-freshness + graded gate,
+                                       # then merge --no-ff; nudges other lanes
+```
+
+Landing gates are **graded** by work type: a spike lands gate-exempt, a
+quick-task needs its `specs/adhoc/<id>/record.md`, a phase needs a
+retrospective with verification evidence. Freshness (the integration ref
+already rebased into the lane) is never forceable. The board's
+queue-pressure footer shows done-but-unlanded lanes piling up before
+trust erodes. The lane-state file format is internal for now — it gets
+published as a contract once dogfood-stable.
+
 ## What's coming
 
-Everything above is shipped convention — it works today with any git setup.
-The next steps of the Parallel Lanes arc add **mechanism**. Both are
-**upcoming, not shipped**:
-
-- **Run** — a lane registry with per-lane manifests, an ambient board
-  (`momentum lanes`) any session can render — including queue pressure, so
-  you see done-but-unlanded lanes piling up before trust erodes — and a
-  merge queue with graded gates extending the git-hook enforcement layer.
 - **Fly** — one recursive wave planner: dependency annotations on tasks and
   phases, waves computed at every level of the plan graph, with
   [swarm](/swarm/) as its top-scale consumer for cross-repo delivery.
-
-Until then, the conventions on this page are the contract — and they're the
-same conventions the mechanism will enforce.
 
 **Related:** [Concepts](/concepts/) for phases and history ·
 [Rules](/rules/) for the git lifecycle and tracking discipline ·

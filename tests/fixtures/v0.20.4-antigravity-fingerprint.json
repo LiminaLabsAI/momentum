@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-07-02",
-    "capturedFrom": "phase-21a-lanes-walk-g2",
+    "captured": "2026-07-03",
+    "capturedFrom": "phase-21b-lanes-run",
     "adapter": "antigravity",
-    "note": "Phase 21a G2 (Lane A): multi-lane spec conventions — Rule 15 + lane-scoped rule edits in CLAUDE.md/AGENTS.md templates + condensed agent rules; template status.md multi-row Active Phase board"
+    "note": "Phase 21b G6: /lanes recipe ships to all adapters (claude-code command, codex skill, antigravity workflow); CLAUDE.md template Rule 15 gains the momentum-lanes mechanism pointer"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -17,6 +17,7 @@
     ".agent/workflows/handoff.md": "6493635ed74539ec8ed221225643db3f29c5af1ff5214525a5a86a794daf03b2",
     ".agent/workflows/hotfix.md": "2699a61bdf5b219f2297a6c1ca95d25e3d63a44e37ed77ffdab88077c4715b12",
     ".agent/workflows/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
+    ".agent/workflows/lanes.md": "c7f56ba9e7a4a388b49b8f8c83e84fe0ecaf2224718478b41955e0f9c34abe3b",
     ".agent/workflows/log.md": "ef5f70ee60e8393615129df13b8eb75b31af31d5b0356b4e7a3f245220d6a608",
     ".agent/workflows/migrate.md": "bc90f868f34429874ac70456f411eb5b2985835e7d63d385bbf9fd4836fcec0d",
     ".agent/workflows/review-code.md": "8d3b6ffac46eb78a6e879029bd9a4802b1f4dc6ccbdbe226eb431b0cc9aa4bb6",
