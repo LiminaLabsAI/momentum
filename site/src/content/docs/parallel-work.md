@@ -201,6 +201,105 @@ now, `lanes open` gives each its worktree, and finished lanes land
 sequentially through the queue — when a wave completes, the next `waves`
 run unblocks its dependents.
 
+## Walkthrough: two features in parallel, start to finish
+
+Everything below is real command output (trimmed). Say you have two
+features and one follow-up that needs them both.
+
+**1. Declare the dependencies and plan the waves.** Add `"deps"` to
+`specs/phases/index.json` (or `(deps: …)` on task-group headings), then:
+
+```bash
+$ momentum waves
+phase waves (non-complete phases; index.json "deps"):
+wave 1: phase-1-auth  phase-2-api
+wave 2: phase-3-ui
+
+wave 1 can start now — open a lane per node:
+  momentum lanes open phase-1-auth
+  momentum lanes open phase-2-api
+```
+
+**2. Open a lane per wave-1 node.** Each gets its own worktree —
+a separate directory on its own branch, ready for its own agent session:
+
+```bash
+$ momentum lanes open phase-1-auth --touches src/auth/**
+✓ worktree created at ../myapp.lanes/phase-1-auth
+✓ lane 'phase-1-auth' open — branch phase-1-auth, plan node phase:phase-1-auth, grade phase
+```
+
+Open your agent sessions inside those directories. Each session knows
+which phase is its own (branch binding), and preflight warnings surface
+fresh-worktree traps (missing exec bits, wrong node version) at open time.
+
+**3. Check the board from anywhere.** Any session, any worktree, same
+answer — no daemon, it's computed from files:
+
+```bash
+$ momentum lanes
+● phase-1-auth  phase:phase-1-auth  phase  open  2h ✉1
+● phase-2-api   phase:phase-2-api   phase  done  2h
+queue: 1 done awaiting landing — oldest waiting 10m
+```
+
+The `✉1` is an unread signal; the footer is queue pressure — done lanes
+waiting on you to land them. Message a session from outside it:
+
+```bash
+$ momentum lanes signal phase-1-auth message "api landed first — rebase when you can"
+$ momentum lanes inbox phase-1-auth --ack-all     # (from inside that lane)
+```
+
+**4. Mark done and land, one at a time.** `land` validates before it
+touches anything — turn, freshness, and the evidence gate for the lane's
+work type:
+
+```bash
+$ momentum lanes done phase-2-api
+✓ lane 'phase-2-api' marked done — position 1 of 1 in the landing queue
+
+$ momentum lanes land phase-2-api --execute
+landing checklist for 'phase-2-api' → main:
+  ✓ status: done
+  ✓ turn: head of the landing queue
+  ✓ freshness: 'main' is contained in 'phase-2-api'
+  ✓ gate[phase]: retrospective Verification Evidence present
+✓ lane 'phase-2-api' landed on 'main'
+ℹ advisory rebase signal sent to 1 open lane(s): phase-1-auth
+```
+
+If a lane hasn't rebased onto the updated `main`, `land` refuses —
+freshness is never forceable. Run your suite on the updated `main`, then
+land the next lane the same way, and `close --rm-worktree` when finished.
+
+**5. The next wave unblocks itself.** Once wave-1 phases are complete,
+`momentum waves` shows `phase-3-ui` in wave 1 with its own
+`lanes open` suggestion. That's the whole loop: plan → fan out → land in
+order → repeat.
+
+## How it works under the hood
+
+- **State is plain files at the shared git dir** — `git rev-parse
+  --git-common-dir` resolves to the same `.git` from every worktree, so
+  the registry, per-lane manifests, and inboxes under
+  `<git-common-dir>/momentum/lanes/` are shared by all sessions,
+  untracked by construction (git never tracks `.git` contents), and gone
+  when the repo is. Nothing to commit, nothing to gitignore.
+- **No daemon, no watcher.** Every command computes its answer from
+  files at the moment you run it. Concurrent writes go through a
+  lock; reads are lock-free.
+- **The conventions and the mechanism are the same thing.** Rule 15
+  (branch↔phase binding, own-row tracking, sequential landings) is what
+  agents follow; `lanes`/`waves` make it observable and enforced. The
+  toolkit dogfooded this — the board and signals modules were built
+  inside lanes opened by the CLI itself and landed through its own
+  merge queue.
+- **Uninstall = delete the files**, same as everything else in momentum.
+  The lane-state format is internal today (`stateVersion: 1`) and will be
+  published as a small contract once it's dogfood-stable, so external
+  dashboards can render momentum lanes without owning them.
+
 **Related:** [Concepts](/concepts/) for phases and history ·
 [Rules](/rules/) for the git lifecycle and tracking discipline ·
 [Swarm](/swarm/) for multi-repo parallel delivery.
