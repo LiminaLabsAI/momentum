@@ -1,12 +1,11 @@
 {
   "meta": {
     "captured": "2026-07-03",
-    "capturedFrom": "fix/BUG-015-merge-style-bypass",
-    "note": "BUG-015: commit-msg bypass accepts the house 'merge: ' subject style"
+    "capturedFrom": "phase-23-rules-unification",
+    "note": "phase-23: single-source instructions — project.md retired, primaries generated from core/instructions (ADR-0004)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
-    ".agent/rules/project.md": "bd41b8a1369f88ffaaee13f7d441c845b2ab30789695c8460b7a2d1f7acadfd7",
     ".claude/commands/brainstorm-idea.md": "9208587d39dd579e28565c0459650bf269130da2b1049ed31065acab054c7787",
     ".claude/commands/brainstorm-phase.md": "e97e5525d4edd4276e91e7d80f18a27b16dc5676795e0a1262c936c89f889dbe",
     ".claude/commands/complete-phase.md": "e978ee364b7588715982cbd031de1deb8f423daf325f0b068dce21c6118f3c4a",
@@ -18,13 +17,13 @@
     ".claude/commands/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
     ".claude/commands/lanes.md": "2fa6e0abc816d474d744b1bafd1b12523ff8bc4b1dfe215dab20adb682af6463",
     ".claude/commands/log.md": "ef5f70ee60e8393615129df13b8eb75b31af31d5b0356b4e7a3f245220d6a608",
-    ".claude/commands/migrate.md": "bc90f868f34429874ac70456f411eb5b2985835e7d63d385bbf9fd4836fcec0d",
-    ".claude/commands/review-code.md": "63b331a1849dc468fe6f652ac943f2543798ffacdbf0c7d97f2c4924290f3c20",
+    ".claude/commands/migrate.md": "8679a9cd91d1c97ef0b80acae5abe209d8ef89d77a57b155adeb91ba9022beb0",
+    ".claude/commands/review-code.md": "88fa556908d8ccbe008805b97225f9e70bf2e29e064147d0c541d502d663c841",
     ".claude/commands/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
     ".claude/commands/scout.md": "d17142b3c0ba2e2b8bb3a061aa0ac890b5734bbaa7a048eba7564fdead2960df",
     ".claude/commands/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
     ".claude/commands/start-phase.md": "538b2e2c9e3ef78e7b4ee4e1b92feec75ce26174dc52f56af89977ab0c156138",
-    ".claude/commands/start-project.md": "9a9144898f31d3be8959ddadcfef553856acb14988adf5cc44d3c9e48e684213",
+    ".claude/commands/start-project.md": "d2d0594120d8cbbba101e3c83e488251c5a2dde7883af2c7b8ed6459cfbc5f6b",
     ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7",
     ".claude/commands/sync-docs.md": "e0252ddc818266b94999a77f38099bf4788aee58263c365f4c7c3b66c17af696",
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
@@ -36,7 +35,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "CLAUDE.md": "4513d370584c9ad14ad8e5c7df10812978e10b2d71aeff8d51c297ab2fa849cf",
+    "CLAUDE.md": "4ec01739c75d869e4dfb825778f47ab88042a36583a351dd705439750cd23e82",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

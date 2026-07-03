@@ -32,10 +32,10 @@
 - [x] Repo-wide sweep: no non-historical `agent-rules` references remain
 
 ## Group 4 — Tests + fingerprints
-- [ ] upgrade/tarball/installed-manifest test expectations updated
-- [ ] `tests/agent-rules-migration.test.js` green (fresh/pristine/customized paths)
-- [ ] 3 fingerprint fixtures re-baselined with note; only instruction files drifted
-- [ ] Full suite green
+- [x] upgrade/tarball/installed-manifest test expectations updated
+- [x] `tests/agent-rules-migration.test.js` green (fresh/pristine/customized paths)
+- [x] 3 fingerprint fixtures re-baselined with note; only instruction files drifted
+- [x] Full suite green
 
 ## Group 5 — Verification + dogfood
 - [ ] Fresh-install smoke ×3 adapters (complete rules present; no `.agent/rules/`)

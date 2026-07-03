@@ -59,7 +59,7 @@ test('init — managed set excludes user-owned specs, includes tool files', () =
     // tool-owned files must be tracked
     assert.ok(paths.includes('CLAUDE.md'), 'CLAUDE.md (marker-managed) tracked');
     assert.ok(paths.some((p) => p.startsWith('.claude/commands/')), 'commands tracked');
-    assert.ok(paths.includes('.agent/rules/project.md'), 'agent rules tracked');
+    assert.ok(!paths.includes('.agent/rules/project.md'), 'retired agent-rules file must not be managed (Phase 23)');
   } finally {
     rmrf(target);
   }

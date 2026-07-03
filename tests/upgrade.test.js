@@ -14,7 +14,7 @@ test('upgrade — no-op on freshly-installed project reports unchanged', () => {
     const res = runCli(['upgrade', target]);
     assert.equal(res.status, 0, `upgrade failed: ${res.stderr}`);
     assert.match(res.stdout, /CLAUDE\.md:\s+unchanged/);
-    assert.match(res.stdout, /agent-rules:\s+unchanged/);
+    assert.match(res.stdout, /agent-rules:\s+absent/);
   } finally { rmrf(target); }
 });
 
@@ -58,7 +58,7 @@ test('upgrade — pre-marker file gets backed up and migrated', () => {
     assert.match(upgraded, /legacy content from before v0\.6\.0/);
     assert.match(upgraded, /migrated from pre-marker version/);
     // Marker appears exactly once (regression guard)
-    const markerCount = (upgraded.match(/## Project Extensions/g) || []).length;
+    const markerCount = (upgraded.match(/^## Project Extensions$/gm) || []).length;
     assert.equal(markerCount, 1);
   } finally { rmrf(target); }
 });

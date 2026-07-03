@@ -31,11 +31,12 @@ test('init — fresh install produces all expected files', () => {
     const mode = fs.statSync(hook).mode & 0o777;
     assert.ok((mode & 0o111) !== 0, `hook script not executable: ${mode.toString(8)}`);
 
-    // CLAUDE.md + agent rules
+    // CLAUDE.md ships; .agent/rules/project.md is retired (Phase 23 / ADR-0004)
     assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), true);
     assert.equal(
       fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')),
-      true
+      false,
+      'retired agent-rules file must not be installed'
     );
 
     // specs/ skeleton
@@ -84,7 +85,7 @@ test('init — codex install produces AGENTS.md, hooks, and recipe skills', () =
     );
     assert.equal(fs.existsSync(path.join(target, '.codex', 'commands')), false,
       'legacy .codex/commands/ should be removed after the skill transform');
-    assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), false, 'retired (Phase 23)');
     assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
     assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.claude')), false);
@@ -117,7 +118,7 @@ test('init — antigravity install produces AGENTS.md and command recipes', () =
     assert.equal(fs.existsSync(path.join(target, '.agent', 'workflows', 'brainstorm-phase.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.agent', 'workflows', 'start-phase.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.antigravity')), false, '.antigravity/ should not be created — Phase 16 Rework rewires to .agent/workflows/');
-    assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), false, 'retired (Phase 23)');
     assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
     assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);
     assert.equal(fs.existsSync(path.join(target, '.claude')), false);
@@ -143,7 +144,7 @@ test('init — CLAUDE.md ships all 12 rules', () => {
   } finally { rmrf(target); }
 });
 
-test('init — skip-if-exists preserves user content in agent-rules/project.md', () => {
+test('init — leaves a pre-existing agent-rules/project.md untouched (retired surface)', () => {
   const target = mktmp();
   try {
     // Pre-create a custom project.md
@@ -154,9 +155,8 @@ test('init — skip-if-exists preserves user content in agent-rules/project.md',
     assert.equal(
       read(path.join(target, '.agent', 'rules', 'project.md')),
       custom,
-      'init should not overwrite existing agent-rules/project.md'
+      'init must not touch a user-owned project.md (retired surface — migration is upgrade-time)'
     );
-    assert.match(res.stdout, /already exists/);
   } finally { rmrf(target); }
 });
 

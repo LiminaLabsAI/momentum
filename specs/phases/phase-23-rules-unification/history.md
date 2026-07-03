@@ -75,3 +75,10 @@ Affects-specs: none
 Detail: `momentum lanes open` branched this lane from the primary worktree's HEAD, which was sitting on the rejected VAL-002 branch — the lane inherited its full diff, 5 failing environment-dependent tests, and one contaminated line in the extracted antigravity surfaces fragment (the unearned "Fully supported via the agy CLI wrapper" SessionStart claim). Fixed by `git rebase --onto main <bad-base>` (single changelog conflict), restoring the truthful SessionStart row + fallback subsection in surfaces.md, and regenerating — drift guard green. Filed ENH-050 (P1): lanes open should default `--from` to the default branch. Suite failures attributable to the foreign base (agy wrapper ×3, doctor, antigravity fingerprint) disappeared with the rebase.
 
 ---
+### [NOTE] 2026-07-04 — G4: suite 732/732; fingerprint drift audited as exactly the phase surface
+Topics: tests, fingerprints, migration
+Affects-phases: phase-23-rules-unification
+Affects-specs: none
+Detail: Fingerprint check-mode audit before re-baselining showed drift in precisely the intended files across all three adapters (primary instructions regenerated, project.md removed, the G3-repointed recipes/skills/TOMLs) — nothing unexpected. New migration tests cover pristine-removal, customized-keep (incl. the Phase-20 orphan-cleanup shield via the new removeOrphans keepRel option), and dry-run. One real bug caught by the existing suite: the pre-marker migration guard counted `## Project Extensions` as a substring — the generated marker comment and Rule 13 text now mention it inline; guard tightened to line-anchored (partitionByMarker itself was always line-safe). Suite 728 → 732 green.
+
+---
