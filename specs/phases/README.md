@@ -26,6 +26,7 @@
 | 20 | Upgrade Hardening | Complete (v0.22.0) | [phase-20-upgrade-hardening/](phase-20-upgrade-hardening/) |
 | 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete (v0.23.0 — release parked on approval) | [phase-21a-lanes-walk/](phase-21a-lanes-walk/) |
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete (v0.24.0 — release parked on approval) | [phase-21b-lanes-run/](phase-21b-lanes-run/) |
+| 21c | Parallel Lanes — Fly (Recursive Waves) | In Progress (target v0.25.0) | [phase-21c-lanes-fly/](phase-21c-lanes-fly/) |
 
 ## Phase Structure
 

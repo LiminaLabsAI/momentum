@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-07-03-phase-21b-complete",
+  "updated": "2026-07-03-phase-21c-started",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -593,6 +593,29 @@
         "site-docs",
         "enh-046",
         "v0-23-0"
+      ]
+    },
+    "phase-21c-lanes-fly": {
+      "status": "in-progress",
+      "topics": [
+        "phase-21c",
+        "waves",
+        "wave-planner",
+        "recursive-plan-graph",
+        "dependency-annotations",
+        "deps",
+        "kahn-layering",
+        "topological-sort",
+        "task-groups",
+        "phase-deps",
+        "momentum-waves-cli",
+        "swarm-rewire",
+        "byte-stable",
+        "three-ideas-demo",
+        "lane-state-contract",
+        "adr-0003",
+        "feat-028",
+        "v0-25-0"
       ]
     }
   }
