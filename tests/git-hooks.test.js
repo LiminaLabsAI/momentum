@@ -20,7 +20,7 @@ const { spawnSync } = require('node:child_process');
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { mktmp, rmrf, runCli, REPO_ROOT } = require('./_helpers');
+const { mktmp, rmrf, runCli, read, REPO_ROOT } = require('./_helpers');
 
 function git(repo, args, opts = {}) {
   return spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8', ...opts });
@@ -262,4 +262,27 @@ test('pre-push: escape hatch bypasses all checks', () => {
   } finally {
     rmrf(tmp);
   }
+});
+
+test("BUG-015: commit-msg accepts the house 'merge: ' subject style alongside git's default", () => {
+  const { tmp, repo } = setupInstalledRepo();
+  try {
+    const house = git(repo, ['commit', '--allow-empty', '-m', 'merge: a → b (v0.25.0)']);
+    assert.equal(house.status, 0, `house 'merge: ' subject should pass: ${house.stderr}`);
+
+    const gitDefault = git(repo, ['commit', '--allow-empty', '-m', "Merge branch 'x'"]);
+    assert.equal(gitDefault.status, 0, `git-default Merge subject should still pass: ${gitDefault.stderr}`);
+
+    const bad = git(repo, ['commit', '--allow-empty', '-m', 'merged stuff']);
+    assert.notEqual(bad.status, 0, "'merged stuff' must still be rejected");
+    assert.match(bad.stderr, /Conventional Commit/);
+  } finally {
+    rmrf(tmp);
+  }
+});
+
+test('self-repo .githooks/contract.js mirrors the core copy byte-for-byte', () => {
+  const core = read(path.join(REPO_ROOT, 'core', 'git-hooks', 'contract.js'));
+  const mirrored = read(path.join(REPO_ROOT, '.githooks', 'contract.js'));
+  assert.equal(mirrored, core, 'self-repo mirror drifted from core/git-hooks/contract.js');
 });

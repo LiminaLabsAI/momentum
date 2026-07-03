@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-03",
-    "capturedFrom": "phase-21c-lanes-fly",
+    "capturedFrom": "fix/BUG-015-merge-style-bypass",
     "adapter": "codex",
-    "note": "Phase 21c G4: lanes recipe gains the momentum-waves planning section (waves feed lanes)"
+    "note": "BUG-015: commit-msg bypass accepts the house 'merge: ' subject style"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -37,7 +37,7 @@
     ".codex/agents/swarm-supervisor.toml": "0cbeade0ea9d4a3351b4371a82d656c5984ba21a03a528b7ce6352eb4c6dbe40",
     ".codex/hooks.json": "e374fbbee01ce2989c19057e2b40c272457deacdcde802d055aa188b130e1474",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
-    ".githooks/contract.js": "e4fcdd241c3be85ac53135c1c093c7066391898c211e4be28c3cb9cdd50f2c88",
+    ".githooks/contract.js": "1eaba39ce9c4dac98ef85625371325eee553c70c942927c213d487610ec8ed0c",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",

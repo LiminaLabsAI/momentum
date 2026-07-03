@@ -49,7 +49,9 @@ const CONTRACT = {
 };
 
 // Subjects that bypass type validation (git-generated or WIP markers).
-const COMMIT_SUBJECT_BYPASS = /^(Merge |Revert "|fixup!|squash!|amend!|Initial commit$)/;
+// 'merge: ' covers the house merge style `merge: x → y` alongside git's
+// default `Merge ` (BUG-015 — CLAUDE.md Naming Conventions + repo history).
+const COMMIT_SUBJECT_BYPASS = /^(Merge |merge: |Revert "|fixup!|squash!|amend!|Initial commit$)/;
 
 /**
  * True when the emergency bypass env var is set to a truthy value.
