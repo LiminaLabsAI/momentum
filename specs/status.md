@@ -1,8 +1,8 @@
 # Project Status
 
 > **Last Updated**: 2026-07-03
-> **Current Phase**: Phase 21c — Parallel Lanes Fly (stacked lane; 21a+21b releases parked on approval)
-> **Latest Release**: v0.22.3 — BUG-011 (v0.23.0 AND v0.24.0 built + verified on their stacked branches, **releases awaiting operator approval** — see Next Actions #1)
+> **Current Phase**: _none active_ — Parallel Lanes family (21a/21b/21c) COMPLETE; three releases parked on operator approval
+> **Latest Release**: v0.22.3 — BUG-011 (v0.23.0, v0.24.0, v0.25.0 all built + verified on stacked branches, **releases awaiting operator approval** — see Next Actions #1)
 > **Health**: On Track
 
 ## Summary
@@ -40,6 +40,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 20 | Upgrade Hardening | Complete | v0.22.0 (2026-06-20) |
 | 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete — release pending operator approval | v0.23.0 (built + verified 2026-07-03; merge/tag/publish awaiting approval) |
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete — release pending operator approval (stacked on 21a) | v0.24.0 (built + verified 2026-07-03; suite 684/684) |
+| 21c | Parallel Lanes — Fly (Recursive Waves) | Complete — release pending operator approval (stacked on 21b) | v0.25.0 (built + verified 2026-07-03; suite 697/697) |
 
 ## Ad-hoc / Patch Releases
 
@@ -61,7 +62,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 21c — Parallel Lanes Fly (Recursive Waves) | `phase-21c-lanes-fly` (stacked on `phase-21b-lanes-run`) | In Progress (target v0.25.0) | starting |
+| _(none — Parallel Lanes family complete; 21a/21b/21c stacked branches await release approval)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -79,7 +80,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Name | Stub | Notes |
 |------|------|-------|
-| **Parallel Lanes Platform** | `specs/planning/platform-parallel-lanes.md` | **Direction adopted 2026-07-02** (operator brainstorm): momentum = coordination & trust plane for parallel agent development — Lanes / Waves / Board / Gates / Queue over a recursive plan graph (ecosystem ⊃ repos ⊃ phases ⊃ tasks). Walk = ENH-046 (conventions), Run = FEAT-026/027 (+ENH-047), Fly = FEAT-028 (absorbs Phase-23 "dependency-aware tasks"). Substrate delegated by detection (plain git default; treehouse/GitButler optional). Landscape evidence: `research-parallel-agent-landscape.md`. **Walk step scheduled as Phase 21 (decided 2026-07-02, Next Action #9); Run/Fly remain unscheduled until Walk ships.** |
+| **Parallel Lanes Platform** | `specs/planning/platform-parallel-lanes.md` | **Direction adopted 2026-07-02** (operator brainstorm): momentum = coordination & trust plane for parallel agent development — Lanes / Waves / Board / Gates / Queue over a recursive plan graph (ecosystem ⊃ repos ⊃ phases ⊃ tasks). Walk = ENH-046 (conventions), Run = FEAT-026/027 (+ENH-047), Fly = FEAT-028 (absorbs Phase-23 "dependency-aware tasks"). Substrate delegated by detection (plain git default; treehouse/GitButler optional). Landscape evidence: `research-parallel-agent-landscape.md`. **Family COMPLETE 2026-07-03: Walk v0.23.0 / Run v0.24.0 / Fly v0.25.0 all built + verified; releases parked on operator approval.** |
 | Hardening & Activation | `specs/planning/unscheduled-hardening-activation.md` | Originally Phase 10. Displaced 2026-06-07. Scope: full systematic-debugging skill; SessionStart auto-activation; persuasion-hardening Rules 1/3/4/5/7/9; ENH-017. Pickable any time. |
 | ~~Parallel Stream Development~~ | `specs/planning/unscheduled-parallel-streams.md` | **CLOSED won't-do (Phase 19, TD-008)** — native Claude Code `--worktree` + the swarm subsystem now cover single-repo parallel isolation; `phase-8-parallel-worktrees` branch deleted. Kept in this table only as a pointer to the closure record. |
 | Context Economy | `specs/planning/future-context-economy.md` | Trigger-gated. Pulled off the shelf only when concrete size/behaviour thresholds fire. |
@@ -123,7 +124,17 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
    npm publish --access public
    git branch -d phase-21b-lanes-run && git push origin --delete phase-21b-lanes-run
    ```
-   (Same pattern afterwards for 21c/v0.25.0 if its branch is complete — each stacked branch rebases onto updated main, suite green, then lands.)
+   Then v0.25.0 (Phase 21c, stacked on 21b — after the above lands):
+   ```bash
+   git checkout phase-21c-lanes-fly && git rebase main && npm test
+   git checkout staging && git merge --no-ff phase-21c-lanes-fly -m "merge: phase-21c-lanes-fly → staging (v0.25.0)" && git push origin staging
+   git checkout main && git merge --no-ff staging -m "merge: staging → main (v0.25.0 — Phase 21c: Parallel Lanes Fly)" && git push origin main
+   git tag -a v0.25.0 -m "Phase 21c: Parallel Lanes Fly" && git push origin v0.25.0
+   gh release create v0.25.0 --title "v0.25.0 — Phase 21c: Parallel Lanes Fly" --notes-file specs/phases/phase-21c-lanes-fly/retrospective.md --latest --verify-tag
+   npm publish --access public
+   git branch -d phase-21c-lanes-fly && git push origin --delete phase-21c-lanes-fly
+   ```
+   Post-release: (a) run `momentum upgrade .` on this repo to self-install the git hooks + sync installed copies; (b) decide the lane-state contract publication (ADR-0003 §5 recommends publish only after multi-week dogfood stability).
 
 2. **Cerebrio dogfood — COMPLETE; full fleet upgraded to v0.22.1 (2026-06-20).** First validated Phase 20's clean-tree gate (infra upgraded none → 0.22.0, lock file git-trackable — D1 holds in the wild), then shipped **`--autostash` (v0.22.1)** to clear the dirty-repo blocker and swept the whole fleet: `momentum ecosystem upgrade --autostash` brought **all 7 members to lock 0.22.1 with ZERO work lost.** 3 clean autostash restores (sapience/frontend/infra); 4 repos (py/cli/open-guard/open-shield-python) had uncommitted work overlapping momentum-owned files → autostash conflict, work preserved in each repo's `momentum-autostash` stash. **Closes the long-standing "all validation is synthetic fixtures" gap.** **Operator follow-ups:** (a) in py/cli/open-guard/open-shield-python, `git stash pop` + resolve to restore in-flight work; (b) review + commit each member's upgrade diff (`git add .claude/ .agent/ scripts/ .githooks/ .momentum/ CLAUDE.md`); (c) optionally run `/swarm` against a real cross-repo workstream (still synthetic-only). **BUG-010 filed:** open-guard + osp reported `failed` mid-sweep (upgrade threw mid-write under autostash; completed on re-run; no data loss; not synthetically reproducible). **Note:** stale member `.gitignore`s predate the Phase-20 template (lack `.momentum/*` + negation) — `upgrade` leaves user-owned `.gitignore` untouched, so a refresh is operator-discretion.
 2. ~~**Phase 18 — Swarm Parity (Codex + Antigravity)**~~ — ✅ **DONE**, shipped **v0.20.4** (2026-06-15). See Completed Phases.
@@ -147,6 +158,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-03**: **Phase 21c — Lanes Fly COMPLETE; v0.25.0 built + verified (release parked). THE PARALLEL LANES FAMILY IS DONE.** FEAT-028: one recursive wave engine (`core/waves`) with swarm rewired byte-stable as its top-scale consumer (parity test; e2e scenarios 8/8 unchanged); dependency annotations as data (tasks.md `(deps: …)` heading suffix, index.json phase `deps`); `momentum waves` CLI at task+phase scale with wave-1 lane suggestions; 3-ideas e2e demo (waves → lanes → stale-refusal/rebase → sequenced landings → next wave unblocks) with committed evidence; lane-state contract stays INTERNAL (publication decision handed to the operator, ADR-0003 §5). Suite 684 → 697. The family: Walk (Rule 15 conventions) → Run (`momentum lanes`) → Fly (`momentum waves`) — the coordination & trust plane of the platform direction, shipped in one arc.
 
 - **2026-07-03**: **Phase 21b — Lanes Run COMPLETE; v0.24.0 built + verified (release parked behind 21a's).** FEAT-026: lane registry/manifests/inbox at `git-common-dir/momentum/lanes` (internal stateVersion 1) + `momentum lanes` CLI (open with worktree substrate + preflight, done, close, board with queue-pressure footer, queue, signal ×5 types, inbox --ack). FEAT-027: `lanes land` — FIFO turn, never-forceable rebase-freshness, Rule-14-graded gates, advisory rebase nudges. ENH-047: touch-path overlap warnings (open/board/land). ADR-0002; `/lanes` recipe to all 3 adapters; site + README updated. **The mechanism dogfooded itself (D8): G3∥G4 built inside CLI-opened lanes, exchanged a live cross-session signal pre-merge, and were landed BY `lanes land` through the real queue.** Suite 652 → 684; smoke ×3; site build green. Evidence: `specs/phases/phase-21b-lanes-run/evidence/`.
 

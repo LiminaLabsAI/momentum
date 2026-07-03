@@ -1,0 +1,68 @@
+# Three ideas → waves → lanes → sequenced landings (FEAT-028 e2e demo)
+> Captured by scripts/capture-three-ideas-demo.sh (tmp paths sanitized).
+
+$ momentum waves
+phase waves (non-complete phases; index.json "deps"):
+wave 1: phase-1-auth  phase-2-api
+wave 2: phase-3-ui
+
+wave 1 can start now — open a lane per node:
+  momentum lanes open phase-1-auth
+  momentum lanes open phase-2-api
+
+$ momentum lanes open phase-1-auth --grade spike
+✓ worktree created at /private<tmp>/app.lanes/phase-1-auth
+✓ lane 'phase-1-auth' open — branch phase-1-auth, plan node phase:phase-1-auth, grade spike
+  note: specs/phases/phase-1-auth/ does not exist yet — sessions will fall back to status.md until it does
+
+$ momentum lanes open phase-2-api --grade spike
+✓ worktree created at /private<tmp>/app.lanes/phase-2-api
+✓ lane 'phase-2-api' open — branch phase-2-api, plan node phase:phase-2-api, grade spike
+  note: specs/phases/phase-2-api/ does not exist yet — sessions will fall back to status.md until it does
+
+$ momentum lanes done phase-1-auth
+✓ lane 'phase-1-auth' marked done — position 1 of 1 in the landing queue
+
+$ momentum lanes done phase-2-api
+✓ lane 'phase-2-api' marked done — position 2 of 2 in the landing queue
+
+$ momentum lanes
+● phase-1-auth  phase:phase-1-auth  spike  done  0m
+● phase-2-api  phase:phase-2-api  spike  done  0m
+queue: 2 done awaiting landing — oldest waiting 0m
+
+$ momentum lanes land phase-1-auth --execute
+landing checklist for 'phase-1-auth' → main:
+  ✓ status: done (since 2026-07-03T05:19:27.070Z)
+  ✓ turn: head of the landing queue
+  ✓ freshness: 'main' is contained in 'phase-1-auth'
+  ✓ gate[spike]: spike — gate-exempt by declaration
+✓ lane 'phase-1-auth' landed on 'main' (2026-07-03T05:19:27.233Z)
+ℹ run the suite on the updated branch before the next landing (Rule 6 Landing Order)
+
+$ momentum lanes land phase-2-api --execute
+landing checklist for 'phase-2-api' → main:
+  ✓ status: done (since 2026-07-03T05:19:27.122Z)
+  ✓ turn: head of the landing queue
+  ✗ freshness: 'phase-2-api' does not contain 'main' — rebase the lane first (git rebase main); freshness is never forceable
+  ✓ gate[spike]: spike — gate-exempt by declaration
+✗ lane 'phase-2-api' is not landable
+
+$ git -C <lane-worktree> rebase main
+Successfully rebased
+
+$ momentum lanes land phase-2-api --execute
+landing checklist for 'phase-2-api' → main:
+  ✓ status: done (since 2026-07-03T05:19:27.122Z)
+  ✓ turn: head of the landing queue
+  ✓ freshness: 'main' is contained in 'phase-2-api'
+  ✓ gate[spike]: spike — gate-exempt by declaration
+✓ lane 'phase-2-api' landed on 'main' (2026-07-03T05:19:27.372Z)
+ℹ run the suite on the updated branch before the next landing (Rule 6 Landing Order)
+
+$ momentum waves   (after wave-1 landings)
+phase waves (non-complete phases; index.json "deps"):
+wave 1: phase-3-ui
+
+wave 1 can start now — open a lane per node:
+  momentum lanes open phase-3-ui

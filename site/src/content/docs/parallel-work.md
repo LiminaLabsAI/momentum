@@ -179,11 +179,27 @@ queue-pressure footer shows done-but-unlanded lanes piling up before
 trust erodes. The lane-state file format is internal for now — it gets
 published as a contract once dogfood-stable.
 
-## What's coming
+## Planning waves: `momentum waves`
 
-- **Fly** — one recursive wave planner: dependency annotations on tasks and
-  phases, waves computed at every level of the plan graph, with
-  [swarm](/swarm/) as its top-scale consumer for cross-repo delivery.
+The **Fly** step ships one recursive wave planner — the same engine at
+every level of the plan graph, with [swarm](/swarm/) as its top-scale
+consumer for cross-repo delivery. Declare dependencies where the plans
+already live:
+
+- task groups: `## Group 2 — CLI (deps: G0, G1)` in `tasks.md`
+  (fully-checked groups count as satisfied);
+- phases: `"deps": ["phase-1-auth"]` in `specs/phases/index.json`
+  (complete phases count as satisfied).
+
+```bash
+momentum waves                 # phase-scale waves + wave-1 lane suggestions
+momentum waves --tasks         # group waves for the phase bound to your branch
+```
+
+Three ideas become three planned lanes: `waves` computes which can start
+now, `lanes open` gives each its worktree, and finished lanes land
+sequentially through the queue — when a wave completes, the next `waves`
+run unblocks its dependents.
 
 **Related:** [Concepts](/concepts/) for phases and history ·
 [Rules](/rules/) for the git lifecycle and tracking discipline ·

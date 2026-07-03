@@ -1152,6 +1152,11 @@ Lanes — concurrent workstreams in ONE repo (Phase 21b, Rule 15):
   momentum lanes <sub> [...]          Subcommands: open | done | close | queue |
                                        signal | inbox | land (see: momentum lanes help)
 
+Waves — wave plan from dependency annotations (Phase 21c, one engine every scale):
+  momentum waves                      Phase-scale waves (index.json "deps")
+  momentum waves --tasks [ref]        Task-group waves for a tasks.md
+                                       (default: the phase bound to your branch)
+
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
                                       Available: ${formatAvailableAgents()}
@@ -1505,6 +1510,14 @@ async function main() {
     try {
       const { runLanes } = require('./lanes');
       exitCode = runLanes(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'waves') {
+    try {
+      const { runWaves } = require('./waves');
+      exitCode = runWaves(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
