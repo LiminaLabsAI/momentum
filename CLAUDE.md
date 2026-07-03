@@ -1,7 +1,10 @@
+<!-- momentum-managed (generated) — regenerate with `npm run generate-instructions`
+     in the momentum repo; sources: core/instructions/ + adapters/<agent>/instructions/.
+     Everything above '## Project Extensions' may be replaced by `momentum upgrade`. -->
+
 # Project Rules: momentum
 
 > Claude Code configuration for this project.
-> Agent rules live in `.agent/rules/project.md`.
 
 ## Navigation (Where to Find Things)
 
@@ -318,8 +321,21 @@ If a verification command does not exist for the task, write one before marking 
 
 ---
 
-> Rule 13 (Test-Driven Development, opt-in) is defined in the condensed agent
-> rules at `.agent/rules/project.md`.
+### Rule 13: Test-Driven Development (TDD) — Opt-in
+
+If enabled in the project rules extensions (under `## Project Extensions` in this file), follow a strict test-first development loop:
+
+1. **Red**: Write a unit or integration test that specifies the new behavior *before* writing any application code.
+2. **Verify Failure**: Run the test runner and verify that the newly added test fails. Do not write any implementation code until you have seen the test fail.
+3. **Green**: Write the minimal application code necessary to make the test pass.
+4. **Refactor**: Clean up and optimize the code while keeping all tests green.
+
+#### Red Flags — STOP and write the test first
+
+| If you find yourself thinking… | …STOP |
+|---|---|
+| "I will write the tests at the end" | Post-facto tests are not TDD — they inherit confirmation bias from the implementation. |
+| "The change is too simple to warrant a test-first approach" | Simple changes are excellent TDD candidates to establish correct wiring. |
 
 ### Rule 14: Work-Type Escalation — Pick the Lightest Type That Fits
 

@@ -58,6 +58,21 @@ test('upgrade — pristine historical project.md is removed (rules ride the prim
   } finally { rmrf(target); }
 });
 
+test('upgrade — pristine copy with an extra trailing newline still counts as pristine', () => {
+  const target = mktmp();
+  try {
+    initProject(target);
+    const rulesPath = path.join(target, '.agent', 'rules', 'project.md');
+    fs.mkdirSync(path.dirname(rulesPath), { recursive: true });
+    fs.writeFileSync(rulesPath, historicalProjectMd() + '\n\n');
+
+    const res = runCli(['upgrade', target]);
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /agent-rules:\s+removed/);
+    assert.ok(!fs.existsSync(rulesPath), 'whitespace-only difference is not customization');
+  } finally { rmrf(target); }
+});
+
 test('upgrade — customized project.md is kept with a deprecation warning', () => {
   const target = mktmp();
   try {

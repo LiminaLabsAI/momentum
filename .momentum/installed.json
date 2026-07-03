@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "momentumVersion": "0.25.0",
+  "momentumVersion": "0.25.2",
   "agent": "claude-code",
   "installedAt": "2026-07-03",
   "updatedAt": "2026-07-03",
@@ -8,10 +8,6 @@
     {
       "path": ".agent/engines/subagent-dispatch.md",
       "sha256": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb"
-    },
-    {
-      "path": ".agent/rules/project.md",
-      "sha256": "a3dafe4fc1771cb9e4ccfb4d85f28addacfc5cb6274f1e23870b79056b8f51c9"
     },
     {
       "path": ".claude/commands/brainstorm-idea.md",
@@ -59,11 +55,11 @@
     },
     {
       "path": ".claude/commands/migrate.md",
-      "sha256": "bc90f868f34429874ac70456f411eb5b2985835e7d63d385bbf9fd4836fcec0d"
+      "sha256": "8679a9cd91d1c97ef0b80acae5abe209d8ef89d77a57b155adeb91ba9022beb0"
     },
     {
       "path": ".claude/commands/review-code.md",
-      "sha256": "63b331a1849dc468fe6f652ac943f2543798ffacdbf0c7d97f2c4924290f3c20"
+      "sha256": "88fa556908d8ccbe008805b97225f9e70bf2e29e064147d0c541d502d663c841"
     },
     {
       "path": ".claude/commands/review.md",
@@ -83,7 +79,7 @@
     },
     {
       "path": ".claude/commands/start-project.md",
-      "sha256": "9a9144898f31d3be8959ddadcfef553856acb14988adf5cc44d3c9e48e684213"
+      "sha256": "d2d0594120d8cbbba101e3c83e488251c5a2dde7883af2c7b8ed6459cfbc5f6b"
     },
     {
       "path": ".claude/commands/swarm.md",
@@ -115,7 +111,7 @@
     },
     {
       "path": ".githooks/contract.js",
-      "sha256": "e4fcdd241c3be85ac53135c1c093c7066391898c211e4be28c3cb9cdd50f2c88"
+      "sha256": "1eaba39ce9c4dac98ef85625371325eee553c70c942927c213d487610ec8ed0c"
     },
     {
       "path": ".githooks/pre-push",
@@ -127,7 +123,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "sha256": "f0e80908e258ea3f79fa96119a9b5445e7a84a7e3e48f6f5cb76f95637d15edd"
+      "sha256": "e2bf5a6c09a91324bf197138bfc54ad52db70d0da5243c66938fdb472aea0c5e"
     },
     {
       "path": "scripts/brainstorm-gate.sh",

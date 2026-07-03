@@ -64,7 +64,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 23 — Rules Unification | `phase-23-rules-unification` | In Progress | Setup complete; G0 starting |
+| 23 — Rules Unification | `phase-23-rules-unification` | All groups complete (733/733) | Awaiting landing + release approval; 1 operator task deferred (Antigravity size check) |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

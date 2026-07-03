@@ -318,10 +318,12 @@ function migrateAgentRules(srcRoot, target, dests) {
       'utf8'
     )
   );
-  const hash = crypto
-    .createHash('sha256')
-    .update(fs.readFileSync(abs))
-    .digest('hex');
+  // Trailing-whitespace-normalized: an editor-added extra final newline is
+  // not "customization" (proved by the self-repo dogfood). Every shipped
+  // revision ends with exactly one \n, so the manifest hashes are already
+  // in normalized form.
+  const normalized = fs.readFileSync(abs, 'utf8').replace(/\s+$/, '') + '\n';
+  const hash = crypto.createHash('sha256').update(normalized).digest('hex');
 
   if (manifest.sha256.includes(hash)) {
     if (_dryRun) {

@@ -38,7 +38,7 @@
 - [x] Full suite green
 
 ## Group 5 — Verification + dogfood
-- [ ] Fresh-install smoke ×3 adapters (complete rules present; no `.agent/rules/`)
-- [ ] Self-repo `momentum upgrade` dogfood + `evidence/self-upgrade.txt`
-- [ ] Antigravity `<user_rules>` size check (operator) recorded
-- [ ] Retrospective with `## Verification Evidence`
+- [x] Fresh-install smoke ×3 adapters (complete rules present; no `.agent/rules/`)
+- [x] Self-repo `momentum upgrade` dogfood + `evidence/self-upgrade.txt`
+- [/] Antigravity `<user_rules>` size check — DEFERRED to operator (needs live IDE; fallback pre-agreed in ADR-0004)
+- [x] Retrospective with `## Verification Evidence`

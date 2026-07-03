@@ -82,3 +82,10 @@ Affects-specs: none
 Detail: Fingerprint check-mode audit before re-baselining showed drift in precisely the intended files across all three adapters (primary instructions regenerated, project.md removed, the G3-repointed recipes/skills/TOMLs) — nothing unexpected. New migration tests cover pristine-removal, customized-keep (incl. the Phase-20 orphan-cleanup shield via the new removeOrphans keepRel option), and dry-run. One real bug caught by the existing suite: the pre-marker migration guard counted `## Project Extensions` as a substring — the generated marker comment and Rule 13 text now mention it inline; guard tightened to line-anchored (partitionByMarker itself was always line-safe). Suite 728 → 732 green.
 
 ---
+### [NOTE] 2026-07-04 — G5: dogfood drove a whitespace-tolerant pristine check; phase verified end-to-end
+Topics: migration, dogfood, verification
+Affects-phases: phase-23-rules-unification
+Affects-specs: none
+Detail: The self-repo upgrade first took the kept-customized path on a copy that differed from the last shipped revision by ONE trailing newline — safe direction, but wrong classification. Pristine check made trailing-whitespace-tolerant (manifest hashes already normalized — all shipped revisions end with a single \n); rerun removed the file and pruned the dir. Root CLAUDE.md regenerated with extensions preserved. Fresh-install smokes ×3 adapters: 15 rules / 9 Red Flags / 0 agent-rules files each. Final suite 733/733. Antigravity <user_rules> size check deferred to operator (live IDE required; ADR-0004 pre-agrees the fallback).
+
+---
