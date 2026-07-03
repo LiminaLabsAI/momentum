@@ -54,11 +54,13 @@ jobs:
 
       # Phase 13 (v0.16.0+) renders Mermaid blocks to inline SVG at
       # build time via rehype-mermaid + Playwright + headless Chromium.
-      # Install Chromium with OS deps so the build doesn't fail on a
-      # fresh Ubuntu runner.
+      # Install Chromium AND chromium-headless-shell with OS deps: the
+      # headless shell is a separate download, and without it mermaid
+      # pages render EMPTY while the build still exits 0 (BUG-013; the
+      # site's postbuild content gate now catches that case).
       - name: Install Playwright Chromium
         working-directory: site
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium chromium-headless-shell
 
       - name: Build site
         working-directory: site
