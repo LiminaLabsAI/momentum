@@ -57,10 +57,15 @@ test('init — refuses to install the project scaffold into an ecosystem root', 
     assert.notEqual(res.status, 0, 'init in a coordination root must exit non-zero');
     assert.match(res.stderr, /coordination root of ecosystem "eco"/);
     assert.match(res.stderr, /momentum ecosystem upgrade/);
-    // Nothing from the project scaffold landed.
+    // Nothing from the project scaffold landed. (`.claude/commands/` itself
+    // legitimately exists since ENH-049 — ecosystem init ships the
+    // coordination surface — so assert on project-only markers instead.)
     assert.ok(!fs.existsSync(path.join(root, 'specs')), 'specs/ must not be scaffolded');
-    assert.ok(!fs.existsSync(path.join(root, '.claude')), '.claude/ must not be scaffolded');
     assert.ok(!fs.existsSync(path.join(root, '.githooks')), '.githooks/ must not be scaffolded');
+    assert.ok(
+      !fs.existsSync(path.join(root, '.claude', 'commands', 'start-phase.md')),
+      'project-layer commands must not be scaffolded',
+    );
     // The ecosystem instruction surface is untouched.
     assert.match(
       fs.readFileSync(path.join(root, 'CLAUDE.md'), 'utf8'),
