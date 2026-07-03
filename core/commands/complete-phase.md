@@ -1,5 +1,11 @@
 Verify, finalize, and release a completed phase.
 
+> **Which phase is yours (Rule 15):** the phase bound to your branch — that
+> is the phase this command completes. `status.md`'s Active Phase table is
+> the fallback and the cross-lane overview. When other lanes are in flight,
+> landing follows the Rule 6 **Landing Order**: one lane at a time, full
+> suite green on updated `main` between landings, remaining lanes rebase.
+
 ## Steps
 
 ### Verify
@@ -44,7 +50,9 @@ Verify, finalize, and release a completed phase.
 
 7. Update all tracking:
    - `specs/phases/README.md` → mark `Complete`
-   - `specs/status.md` → update current phase to next, add release version
+   - `specs/status.md` → remove this lane's row from the Active Phase table
+     (leave other lanes' rows untouched — Rule 15), update current phase,
+     add release version
    - `specs/planning/roadmap.md` → update phase status
    - `specs/changelog/YYYY-MM.md` → add release entry
 
@@ -70,7 +78,12 @@ Verify, finalize, and release a completed phase.
    ```
    Wait for a single "yes" before running any of the following steps.
 
-10. On approval, execute all three steps in sequence:
+10. On approval, execute all three steps in sequence.
+
+    **Landing Order (Rule 6/15):** if another lane landed on `main` since
+    this branch last rebased, rebase this branch onto updated `main` and
+    re-run the suite BEFORE merging. Never land two lanes back-to-back
+    without the suite passing in between.
 
     ```bash
     # step 1 — phase branch → staging

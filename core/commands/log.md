@@ -1,11 +1,19 @@
 Record a manual entry in the active phase history file — or, when no phase is
 active, in the ad-hoc work record (off-phase decisions are never dropped).
 
+> **Which phase is yours (Rule 15):** the phase bound to your branch — branch
+> `phase-N-shortname` ↔ `specs/phases/phase-N-shortname/`. `status.md`'s
+> Active Phase table is the fallback (detached HEAD, no matching directory)
+> and the cross-lane overview, not the binding.
+
 ## Steps
 
-1. Read `specs/status.md` to identify the active phase (`Current Phase`).
+1. Resolve your phase from the current branch (`git branch --show-current`):
+   a `phase-*` branch with a matching `specs/phases/<branch>/` directory binds
+   to that phase. Fallback: the `specs/status.md` Active Phase table. A
+   non-phase branch (`fix/*`, `chore/*`, `feat/*`) is ad-hoc work — see below.
 2. Find the history file:
-   - **Active phase**: `specs/phases/<active-phase>/history.md`
+   - **Phase lane**: `specs/phases/<phase-bound-to-your-branch>/history.md`
    - **No active phase** (between phases, or `/hotfix` quick-task / spike work):
      the `specs/adhoc/<id>/record.md` you are working in, else
      `specs/adhoc/history.md` (create it from the same entry format if absent).

@@ -1,7 +1,7 @@
 # Phase 17 Swarm — Scenario C-WIDE
 
 Captured: 2026-06-12 (Phase 17 G4)
-Ecosystem: momentum-test-e8HDuG
+Ecosystem: momentum-test-XksgBq
 Swarm: 0001-feature
 
 ## Metrics
@@ -38,7 +38,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "72457198b4fbac2d863193a1b7ad5902c63b7e18"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "leaf-one": {
       "wave": 2,
@@ -55,7 +55,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "72457198b4fbac2d863193a1b7ad5902c63b7e18"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "leaf-two": {
       "wave": 2,
@@ -72,7 +72,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "72457198b4fbac2d863193a1b7ad5902c63b7e18"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "leaf-three": {
       "wave": 2,
@@ -89,7 +89,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "72457198b4fbac2d863193a1b7ad5902c63b7e18"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     },
     "leaf-four": {
       "wave": 2,
@@ -106,7 +106,7 @@ Swarm: 0001-feature
       "tokens_budget": 300000,
       "inbox_count": 0,
       "commits": 2,
-      "last_seen_sha": "72457198b4fbac2d863193a1b7ad5902c63b7e18"
+      "last_seen_sha": "84845eac97d48bfa27cdfa404c0e406adb3b4c64"
     }
   },
   "waves": [
@@ -157,7 +157,7 @@ Swarm: 0001-feature
       "detail": "Wave 2 complete"
     },
     {
-      "ts": "2026-06-19T15:54:56Z",
+      "ts": "2026-07-02T18:55:28Z",
       "actor": "conductor",
       "event": "complete",
       "detail": "5/5 repos complete"
@@ -176,7 +176,7 @@ Swarm: 0001-feature
   "version": 1,
   "saga_id": "sg_1osc7d9",
   "mode": "autopilot",
-  "rendered_at": "2026-06-19T15:54:56Z",
+  "rendered_at": "2026-07-02T18:55:28Z",
   "status": "complete",
   "active_wave": 2,
   "repos": [
@@ -229,7 +229,7 @@ Swarm: 0001-feature
   "inbox_count": 0,
   "recent_activity": [
     {
-      "ts": "15:54",
+      "ts": "18:55",
       "msg": "5/5 repos complete"
     },
     {
@@ -258,7 +258,7 @@ Swarm: 0001-feature
 - Mode: autopilot
 - Status: complete
 - Repos: 5/5 complete
-- Completed at: 2026-06-19T15:54:56Z
+- Completed at: 2026-07-02T18:55:28Z
 
 ## Per-repo contributions
 
