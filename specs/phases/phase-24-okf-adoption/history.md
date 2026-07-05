@@ -102,3 +102,18 @@ tests incl. cross-format parity (identical wave layers + lane suggestions).
 Verification: 28/28 across waves-cli, waves-e2e-demo, frontmatter, okf-types.
 
 ---
+
+### [NOTE] 2026-07-05 — G2 complete: migration engine + `momentum okf` CLI
+Topics: okf, migration, upgrade, okf-check, okf-index
+Affects-phases: phase-24-okf-adoption
+Affects-specs: none (spec updates at /sync-docs)
+Detail: core/lib/okf-migrate.js ships migrate() (index.json distribution incl.
+dir-less "ghost" entries recreated so no data is lost; impact-map table
+conversion; byte-preserving frontmatter sweep; run-stable index generation;
+idempotent), generateIndexes(), check(). Wired into `momentum upgrade` after
+adapter delegation — specs/ writes deliberately NOT recorded as managed files
+so orphan cleanup can never touch user specs. New `momentum okf check|index`
+(bin/okf.js). Verification: 13/13 new tests + 20/20 upgrade/install/ecosystem
+regression suites.
+
+---

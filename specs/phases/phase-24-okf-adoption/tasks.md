@@ -13,10 +13,10 @@
 - [x] fixture re-point + fallback + parity tests
 
 ## Group 2 — Migration + okf CLI (deps: G0)
-- [ ] okf-migrate.js (distribute / convert / inject / index / delete / idempotent)
-- [ ] upgrade wiring + output line
-- [ ] momentum okf check + okf index
-- [ ] migration e2e + check tests
+- [x] okf-migrate.js (distribute / convert / inject / index / delete / idempotent)
+- [x] upgrade wiring + output line
+- [x] momentum okf check + okf index
+- [x] migration e2e + check tests
 
 ## Group 3 — Templates + instructions (deps: G0)
 - [ ] specs-templates frontmatter + JSON→MD template swap + index.md templates
