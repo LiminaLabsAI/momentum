@@ -1,46 +1,32 @@
 /*
- * Mermaid diagram styling — Phase 14 rewrite.
+ * Mermaid diagram styling.
  *
- * rehype-mermaid renders Mermaid blocks to inline SVG at build time
- * with brand-tinted neutral colors (see mermaidConfig.themeVariables
- * in astro.config.mjs). The SVG renders IDENTICALLY in light + dark
- * modes — what changes is only the container surface around it.
+ * rehype-mermaid (strategy: inline-svg) renders each ```mermaid block to a
+ * bare inline <svg role="graphics-document" aria-roledescription="…"> at build
+ * time — there is no wrapper element, so we target the SVG directly.
  *
- * Why: previously we used `filter: invert(0.88) hue-rotate(180deg)`
- * to "auto-darkmode" the Mermaid output. That inverted the arrow
- * markers' near-white fill to near-black on a near-black background,
- * making arrows + message labels disappear in dark mode entirely.
- * The fix is structural: keep the SVG colors fixed (slate-900 text
- * + slate-600 lines), and give the container a light-enough surface
- * even in dark mode so the contents stay readable.
+ * The SVG colours are baked in (cobalt node fills, dark text, mid-slate lines
+ * — see mermaidConfig.themeVariables in astro.config.mjs) and render
+ * identically in light + dark. We sit it on a light rounded surface so it
+ * stays legible even on the dark docs theme.
  */
 
-/* ── Container — light mode ────────────────────────────────────── */
-
-.mermaid {
-	display: flex;
-	justify-content: center;
-	padding: 1.5rem 1rem;
-	margin: 1.5rem 0;
-	background: var(--brand-surface-subtle);
-	border: 1px solid var(--brand-border);
-	border-radius: 12px;
-	overflow-x: auto;
-}
-
-.mermaid svg {
+.mm-docs .doc svg[aria-roledescription] {
+	display: block;
 	max-width: 100%;
 	height: auto;
+	margin: 1.5rem auto;
+	padding: 1.25rem 1rem;
+	background: #ffffff;
+	border: 1px solid var(--bd-2);
+	border-radius: 12px;
+	box-shadow: var(--shadow-sm);
 }
 
-/* ── Container — dark mode ─────────────────────────────────────── */
-
-[data-theme='dark'] .mermaid {
-	/* Keep the surface light so the Mermaid SVG (slate-900 text,
-	 * slate-600 arrows, indigo-50 node fills) stays legible. The
-	 * border gets a stronger tone for visual separation from the
-	 * dark page bg. */
-	background: #F1F5F9;       /* slate-100 — still light, slight cool tone */
-	border-color: #CBD5E1;     /* slate-300 — visible separator */
-	box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.04);
+[data-theme='dark'] .mm-docs .doc svg[aria-roledescription] {
+	/* Keep the surface light so the baked-in dark text + slate arrows stay
+	 * readable against the diagram, with a stronger border for separation
+	 * from the dark page. */
+	background: #f1f2f7;
+	border-color: #cbd5e1;
 }

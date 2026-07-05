@@ -1,0 +1,448 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Icon } from 'astro-icon/components';
+
+const title = 'momentum \u2014 the right context for your coding agent';
+const description =
+	"Momentum keeps your project's memory and state as Markdown files in the repo \u2014 so every session your agent retrieves the right context, hallucinates less, and turns a vague request into a well-grounded plan.";
+---
+
+<BaseLayout title={title} description={description} theme="light" bodyClass="mm-home">
+<!-- ===================== NAV ===================== -->
+<div style="position:sticky;top:0;z-index:50;padding:14px 0">
+  <div style="max-width:1180px;margin:0 auto;padding:0 24px">
+    <nav style="display:flex;align-items:center;gap:28px;padding:10px 12px 10px 18px;border-radius:999px;background:var(--glass-std);backdrop-filter:var(--glass-blur-std);-webkit-backdrop-filter:var(--glass-blur-std);border:1px solid var(--glass-std-bd);box-shadow:var(--shadow-glass)">
+      <a href="#top" style="display:flex;align-items:center;gap:9px;text-decoration:none">
+        <span style="display:inline-flex;width:26px;height:26px;border-radius:8px;background:var(--brand-ink);align-items:center;justify-content:center;box-shadow:0 6px 14px -5px var(--brand-ink)"><Icon class="ic" name="lucide:chevrons-right" style="width:16px;height:16px;color:#fff" /></span>
+        <span style="font-weight:600;font-size:16px;letter-spacing:-0.02em;color:var(--fg-0)">momentum</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:22px;margin-left:8px">
+        <a class="navlink" href="#how">How it works</a><a class="navlink" href="#features">Features</a><a class="navlink" href="#commands">Commands</a><a class="navlink" href="#orchestration">Orchestration</a><a class="navlink" href="/getting-started/">Docs</a>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+        <a class="navlink" href="https://github.com/avinash-singh-io/momentum" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" style="flex:none"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>GitHub</a>
+        <a href="/getting-started/" style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 18px;border-radius:999px;background:var(--accent);color:#fff;font-size:13px;font-weight:500;text-decoration:none;box-shadow:0 10px 22px -9px color-mix(in oklab,var(--accent) 55%,transparent)">Get started<Icon class="ic" name="lucide:arrow-right" style="width:15px;height:15px" /></a>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<header id="top" style="position:relative;max-width:1180px;margin:0 auto;padding:64px 24px 40px">
+  <div style="position:absolute;inset:0;pointer-events:none;-webkit-mask-image:radial-gradient(60% 55% at 50% 40%,#000,transparent);mask-image:radial-gradient(60% 55% at 50% 40%,#000,transparent);background-image:radial-gradient(color-mix(in oklab,var(--fg-0) 10%,transparent) 1px,transparent 1px);background-size:18px 18px"></div>
+  <div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px">
+      <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent);font-size:12px;font-weight:600;letter-spacing:0.02em">
+        <span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:50%;background:var(--accent);animation:mmping 2.2s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span></span>
+        Open source · Works with any AI IDE
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:999px;background:var(--bg-1);border:1px solid var(--bd-2);color:var(--fg-1);font-size:12px;font-weight:600;letter-spacing:0.02em;box-shadow:var(--shadow-glass)">
+        <Icon class="ic" name="lucide:boxes" style="width:14px;height:14px;color:var(--accent)" />Written in Open Knowledge Format
+      </span>
+    </div>
+    <h1 style="margin:22px 0 0;font-size:62px;line-height:1.03;letter-spacing:-0.03em;font-weight:700;color:var(--fg-0);max-width:19ch">Your agent doesn’t need more context.<br>It needs the <span class="text-gradient-brand">right context</span>.</h1>
+    <p style="margin:22px 0 0;font-size:19px;line-height:1.6;color:var(--fg-2);max-width:64ch">Momentum keeps your project’s memory and state as <b style="color:var(--fg-1);font-weight:600">Markdown files</b> in the repo — so every session your agent retrieves the <b style="color:var(--fg-1);font-weight:600">right context</b>, hallucinates less, and turns a vague request into a plan that’s far better grounded: what to change, where, and how.</p>
+
+    <div id="install" style="margin-top:34px;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 22px;border-radius:999px;background:#0d1117;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 44px -18px rgba(0,18,96,.5);scroll-margin-top:90px">
+      <span style="font-family:var(--ff-mono);color:#6a7686;font-size:15px">$</span>
+      <span style="font-family:var(--ff-mono);color:#e6edf3;font-size:15px;letter-spacing:-0.01em">npx @avinash-singh-io/momentum@latest init</span>
+      <button type="button" class="copy-btn" data-cmd="npx @avinash-singh-io/momentum@latest init" style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 16px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-family:var(--ff-sans);font-size:13px;font-weight:500;cursor:pointer"><Icon class="ic" name="lucide:copy" style="width:14px;height:14px" />Copy</button>
+    </div>
+    <div style="margin-top:16px;display:flex;align-items:center;gap:16px;font-size:12.5px;color:var(--fg-3);flex-wrap:wrap;justify-content:center">
+      <span style="display:inline-flex;align-items:center;gap:6px"><Icon class="ic" name="lucide:check" style="width:14px;height:14px;color:var(--success)" />No daemon</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><Icon class="ic" name="lucide:check" style="width:14px;height:14px;color:var(--success)" />No lock-in</span>
+      <span style="display:inline-flex;align-items:center;gap:6px"><Icon class="ic" name="lucide:check" style="width:14px;height:14px;color:var(--success)" />Uninstall = delete the files</span>
+    </div>
+  </div>
+
+  <!-- IDE row -->
+  <div style="margin-top:52px;display:flex;flex-direction:column;align-items:center;gap:16px">
+    <span style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-3)">Same commands, same workflow — every agent</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px">
+      <div style="display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:terminal" style="width:16px;height:16px;color:var(--accent)" /><span style="font-size:13px;font-weight:500;color:var(--fg-0)">Claude Code</span><span style="font-family:var(--ff-mono);font-size:10.5px;color:var(--fg-3);background:var(--bg-3);padding:2px 6px;border-radius:5px">CLAUDE.md</span><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span></div>
+      <div style="display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:terminal" style="width:16px;height:16px;color:var(--accent)" /><span style="font-size:13px;font-weight:500;color:var(--fg-0)">Codex</span><span style="font-family:var(--ff-mono);font-size:10.5px;color:var(--fg-3);background:var(--bg-3);padding:2px 6px;border-radius:5px">AGENTS.md</span></div>
+      <div style="display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:orbit" style="width:16px;height:16px;color:var(--accent)" /><span style="font-size:13px;font-weight:500;color:var(--fg-0)">Antigravity</span><span style="font-family:var(--ff-mono);font-size:10.5px;color:var(--fg-3);background:var(--bg-3);padding:2px 6px;border-radius:5px">AGENTS.md</span></div>
+      <div style="display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;background:var(--bg-1);border:1px solid var(--bd-1);opacity:.62"><Icon class="ic" name="lucide:mouse-pointer-2" style="width:16px;height:16px;color:var(--fg-3)" /><span style="font-size:13px;font-weight:500;color:var(--fg-1)">Cursor</span><span style="font-size:10.5px;color:var(--fg-3)">Planned</span></div>
+      <div style="display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:12px;background:var(--bg-1);border:1px solid var(--bd-1);opacity:.62"><Icon class="ic" name="lucide:sparkles" style="width:16px;height:16px;color:var(--fg-3)" /><span style="font-size:13px;font-weight:500;color:var(--fg-1)">Gemini CLI</span><span style="font-size:10.5px;color:var(--fg-3)">Planned</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== VALUE PROP / PROBLEM ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:72px 24px 0">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center">
+    <div>
+      <span class="eyebrow">The problem</span>
+      <h2 style="margin:14px 0 0;font-size:40px;line-height:1.08;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Without the right context, your agent guesses.</h2>
+      <p style="margin:18px 0 0;font-size:16px;line-height:1.65;color:var(--fg-2);max-width:52ch">Ask an agent to fix a bug and it greps around, fills the gaps with assumptions, and drafts a plan on shaky ground — burning tokens rediscovering what your project already knew. Momentum hands it the project’s real state up front, so it reasons from facts instead of guesses.</p>
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:flex-start;gap:12px"><Icon class="ic" name="lucide:crosshair" style="width:19px;height:19px;color:var(--accent);flex:none;margin-top:1px" /><span style="font-size:14px;line-height:1.5;color:var(--fg-1)"><b style="font-weight:600;color:var(--fg-0)">Retrieves the right context.</b> From status, history, and decisions already on disk — not whatever a search happened to surface.</span></div>
+        <div style="display:flex;align-items:flex-start;gap:12px"><Icon class="ic" name="lucide:shield-check" style="width:19px;height:19px;color:var(--accent);flex:none;margin-top:1px" /><span style="font-size:14px;line-height:1.5;color:var(--fg-1)"><b style="font-weight:600;color:var(--fg-0)">Hallucinates less.</b> Fewer confident guesses, fewer wrong turns, fewer tokens spent re-deriving what was already known.</span></div>
+        <div style="display:flex;align-items:flex-start;gap:12px"><Icon class="ic" name="lucide:route" style="width:19px;height:19px;color:var(--accent);flex:none;margin-top:1px" /><span style="font-size:14px;line-height:1.5;color:var(--fg-1)"><b style="font-weight:600;color:var(--fg-0)">Plans with grounding.</b> A concrete action item — what to change, where, and how — anchored in real project state, not a blank-slate guess.</span></div>
+      </div>
+    </div>
+    <!-- before/after -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="padding:18px 20px;border-radius:16px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><Icon class="ic" name="lucide:brain-circuit" style="width:16px;height:16px;color:var(--danger)" /><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--danger)">Without momentum</span></div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--fg-2)">
+          <span style="display:inline-flex;gap:8px"><Icon class="ic" name="lucide:x" style="width:15px;height:15px;color:var(--danger);flex:none" />Greps the codebase, hopes it found the right files</span>
+          <span style="display:inline-flex;gap:8px"><Icon class="ic" name="lucide:x" style="width:15px;height:15px;color:var(--danger);flex:none" />Fills the gaps with assumptions — hallucinates</span>
+          <span style="display:inline-flex;gap:8px"><Icon class="ic" name="lucide:x" style="width:15px;height:15px;color:var(--danger);flex:none" />Plans on shaky ground, burns tokens rediscovering</span>
+        </div>
+      </div>
+      <div style="padding:18px 20px;border-radius:16px;background:var(--glass-std);backdrop-filter:var(--glass-blur-std);-webkit-backdrop-filter:var(--glass-blur-std);border:1px solid var(--accent-bd);box-shadow:0 0 32px color-mix(in oklab,var(--accent) 12%,transparent)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><Icon class="ic" name="lucide:brain-circuit" style="width:16px;height:16px;color:var(--accent)" /><span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent)">With momentum</span></div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--fg-1)">
+          <span style="display:inline-flex;gap:8px"><Icon class="ic" name="lucide:check" style="width:15px;height:15px;color:var(--success);flex:none" />Reads project state first — oriented in seconds</span>
+          <span style="display:inline-flex;gap:8px"><Icon class="ic" name="lucide:check" style="width:15px;height:15px;color:var(--success);flex:none" />Reasons from recorded decisions, not guesses</span>
+          <span style="display:inline-flex;gap:8px"><Icon class="ic" name="lucide:check" style="width:15px;height:15px;color:var(--success);flex:none" />Produces a well-grounded, actionable plan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- stats -->
+  <div style="margin-top:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+    <div style="padding:22px 24px;border-radius:16px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="font-family:var(--ff-mono);font-size:38px;font-weight:600;letter-spacing:-0.03em;color:var(--fg-0);font-variant-numeric:tabular-nums">13</div><div style="margin-top:4px;font-size:13px;color:var(--fg-2)">Autonomous agent rules</div></div>
+    <div style="padding:22px 24px;border-radius:16px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="font-family:var(--ff-mono);font-size:38px;font-weight:600;letter-spacing:-0.03em;color:var(--fg-0);font-variant-numeric:tabular-nums">15+</div><div style="margin-top:4px;font-size:13px;color:var(--fg-2)">Slash commands</div></div>
+    <div style="padding:22px 24px;border-radius:16px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="font-family:var(--ff-mono);font-size:38px;font-weight:600;letter-spacing:-0.03em;color:var(--accent);font-variant-numeric:tabular-nums">0</div><div style="margin-top:4px;font-size:13px;color:var(--fg-2)">Background processes</div></div>
+    <div style="padding:22px 24px;border-radius:16px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="font-family:var(--ff-mono);font-size:38px;font-weight:600;letter-spacing:-0.03em;color:var(--fg-0);font-variant-numeric:tabular-nums">~15<span style="font-size:20px">min</span></div><div style="margin-top:4px;font-size:13px;color:var(--fg-2)">Zero to a verified release</div></div>
+  </div>
+</section>
+
+<!-- ===================== OUTCOMES ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:88px 24px 0">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <span class="eyebrow">What changes</span>
+    <h2 style="margin:0;font-size:40px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Better context in. Better work out.</h2>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:var(--fg-2);max-width:58ch">The state lives with the project, so the agent starts every task already knowing what matters.</p>
+  </div>
+  <div style="margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+    <div class="glasscard" style="border-radius:16px;padding:28px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:brain-circuit" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 8px;font-size:17px;font-weight:600;color:var(--fg-0)">Less hallucination</h3><p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--fg-2)">Your agent reasons from recorded facts — status, decisions, history — instead of confident guesses. Fewer wrong turns, fewer retries.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:28px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:filter" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 8px;font-size:17px;font-weight:600;color:var(--fg-0)">Higher-signal context</h3><p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--fg-2)">The relevant history and prior decisions surface first — not whatever a blind search returned. Less noise in the window, less token waste.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:28px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:list-checks" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 8px;font-size:17px;font-weight:600;color:var(--fg-0)">Better-grounded plans</h3><p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--fg-2)">A vague ask becomes a concrete plan — what to change, where in the codebase, how to verify. Not infallible, but anchored in real project state instead of a guess.</p></div>
+  </div>
+  <p style="margin:20px 0 0;text-align:center;font-size:12.5px;color:var(--fg-3)">Based on hands-on use — momentum reduces guesswork and re-derivation. Your mileage will vary by project and agent.</p>
+</section>
+
+<!-- ===================== PHASE LOOP ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:88px 24px 0">
+  <div class="glasscard" style="border-radius:24px;padding:40px 36px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:30px">
+      <div>
+        <span class="eyebrow">The phase loop</span>
+        <h2 style="margin:12px 0 0;font-size:34px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">One repeatable unit of work</h2>
+        <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:var(--fg-2);max-width:56ch">Every phase moves through the same five stages. Your agent drives all of it — and stops only at the one gate that matters: the merge and release.</p>
+      </div>
+      <span style="display:inline-flex;align-items:center;gap:7px;font-family:var(--ff-mono);font-size:12px;color:var(--accent);padding:6px 12px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent-bd)"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent)"></span>Phase 13 · active</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative">
+      <div style="position:absolute;left:10%;right:10%;top:26px;height:2px;background:linear-gradient(90deg,var(--accent),color-mix(in oklab,var(--accent) 25%,transparent));z-index:0"></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px"><div style="width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--bg-1);border:1px solid var(--accent-bd);color:var(--accent);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:messages-square" style="width:24px;height:24px" /></div><div style="font-size:14px;font-weight:600;color:var(--fg-0)">Brainstorm</div><div style="font-size:11.5px;line-height:1.4;color:var(--fg-3)">Scope through dialogue. Disk writes gated.</div></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px"><div style="width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--bg-1);border:1px solid var(--accent-bd);color:var(--accent);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:clipboard-list" style="width:24px;height:24px" /></div><div style="font-size:14px;font-weight:600;color:var(--fg-0)">Plan</div><div style="font-size:11.5px;line-height:1.4;color:var(--fg-3)">Groups, tasks, acceptance criteria.</div></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px"><div style="width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--accent);border:1px solid var(--accent);color:#fff;box-shadow:0 12px 26px -10px color-mix(in oklab,var(--accent) 60%,transparent)"><Icon class="ic" name="lucide:play" style="width:23px;height:23px" /></div><div style="font-size:14px;font-weight:600;color:var(--fg-0)">Execute</div><div style="font-size:11.5px;line-height:1.4;color:var(--fg-3)">Commit per group. Push silently.</div></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px"><div style="width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--bg-1);border:1px solid var(--accent-bd);color:var(--accent);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:shield-check" style="width:24px;height:24px" /></div><div style="font-size:14px;font-weight:600;color:var(--fg-0)">Verify</div><div style="font-size:11.5px;line-height:1.4;color:var(--fg-3)">No completion without evidence.</div></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:0 8px"><div style="width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--bg-1);border:1px solid var(--accent-bd);color:var(--accent);box-shadow:var(--shadow-glass)"><Icon class="ic" name="lucide:tag" style="width:23px;height:23px" /></div><div style="font-size:14px;font-weight:600;color:var(--fg-0)">Release</div><div style="font-size:11.5px;line-height:1.4;color:var(--fg-3)">Tag &amp; publish — you approve the merge.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GOLDEN FEATURES ===================== -->
+<section id="features" style="max-width:1180px;margin:0 auto;padding:88px 24px 0;scroll-margin-top:80px">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <span class="eyebrow">What you get</span>
+    <h2 style="margin:0;font-size:40px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Open-source primitives that keep state coherent</h2>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:var(--fg-2);max-width:58ch">Across days, branches, and sessions — the building blocks your agent uses to never lose the thread.</p>
+  </div>
+  <div style="margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+    <div class="glasscard" style="border-radius:16px;padding:26px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:git-branch" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">Phases</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Plan, execute, verify, release. Every phase is a unit of work with its own brainstorm, plan, tasks, and history.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:list-checks" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">Backlog</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Bugs, features, tech debt, and enhancements — with priorities and per-item context the agent files itself.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:history" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">History</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Append-only log of decisions, discoveries, and scope changes. The “why” outlives any single session.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:scale" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">Rules</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Thirteen autonomous agent rules — orient first, verify before claim, log every decision. No enforcement overhead.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:slash-square" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">Skills</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Slash commands your agent runs automatically — start, complete, sync, review, validate.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:network" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">Ecosystem</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Coordinate multiple related projects from one agent session — opt-in, additive, zero extra setup by default.</p></div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section id="how" style="max-width:1180px;margin:0 auto;padding:88px 24px 0;scroll-margin-top:80px">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <span class="eyebrow">How it works — no daemon, no lock-in</span>
+    <h2 style="margin:0;font-size:40px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Markdown files your agent already knows how to read</h2>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:var(--fg-2);max-width:56ch">Momentum isn’t a framework or a service. It’s <span style="font-family:var(--ff-mono);font-size:13.5px;color:var(--fg-1)">.md</span> files and conventions your AI IDE picks up the moment it opens your repo.</p>
+  </div>
+  <div style="margin-top:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+    <div class="glasscard" style="border-radius:16px;padding:26px"><span style="font-family:var(--ff-mono);font-size:12px;color:var(--accent)">01</span><div style="margin-top:12px;display:inline-flex;width:42px;height:42px;border-radius:11px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:download" style="width:21px;height:21px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">init writes files</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Your agent’s instruction file, a <span style="font-family:var(--ff-mono);font-size:12.5px;color:var(--fg-1)">specs/</span> folder, rule &amp; command definitions, and git hooks — straight into your repo.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><span style="font-family:var(--ff-mono);font-size:12px;color:var(--accent)">02</span><div style="margin-top:12px;display:inline-flex;width:42px;height:42px;border-radius:11px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:book-open-text" style="width:21px;height:21px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">Your IDE reads it</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Your AI IDE already loads that instruction file every session. Momentum fills it with a structured workflow and a map of where state lives.</p></div>
+    <div class="glasscard" style="border-radius:16px;padding:26px"><span style="font-family:var(--ff-mono);font-size:12px;color:var(--accent)">03</span><div style="margin-top:12px;display:inline-flex;width:42px;height:42px;border-radius:11px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:refresh-cw" style="width:21px;height:21px" /></div><h3 style="margin:16px 0 6px;font-size:17px;font-weight:600;color:var(--fg-0)">The agent maintains it</h3><p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Reads <span style="font-family:var(--ff-mono);font-size:12.5px;color:var(--fg-1)">status.md</span> to orient, logs to <span style="font-family:var(--ff-mono);font-size:12.5px;color:var(--fg-1)">history.md</span>, tracks work in <span style="font-family:var(--ff-mono);font-size:12.5px;color:var(--fg-1)">backlog.md</span>. Automatically.</p></div>
+  </div>
+  <div style="margin-top:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:14px;background:var(--accent-soft);border:1px solid var(--accent-bd)">
+    <Icon class="ic" name="lucide:boxes" style="width:20px;height:20px;color:var(--accent);flex:none" />
+    <p style="margin:0;flex:1;min-width:280px;font-size:13.5px;line-height:1.55;color:var(--fg-1)">Every file is Markdown in the <b style="font-weight:600">Open Knowledge Format (OKF)</b> — so your project’s context stays portable, human-readable, and interoperable across tools instead of locked to one vendor.</p>
+    <span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--accent);padding:6px 12px;border-radius:999px;background:var(--bg-1);border:1px solid var(--accent-bd)"><Icon class="ic" name="lucide:check" style="width:14px;height:14px" />Fully compatible</span>
+  </div>
+</section>
+
+<!-- ===================== LIVE TERMINAL ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:88px 24px 0">
+  <div style="display:grid;grid-template-columns:1fr 0.82fr;gap:28px;align-items:center">
+    <div style="border-radius:16px;overflow:hidden;border:1px solid #1f2530;background:#0d1117;box-shadow:0 34px 70px -28px rgba(0,18,96,.5)">
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 15px;background:#161b22;border-bottom:1px solid #1f2530">
+        <span style="width:11px;height:11px;border-radius:50%;background:#e5484d"></span><span style="width:11px;height:11px;border-radius:50%;background:#e8a019"></span><span style="width:11px;height:11px;border-radius:50%;background:#19b574"></span>
+        <span style="margin-left:8px;font-family:var(--ff-mono);font-size:11.5px;color:#8b949e">claude-code — my-project</span>
+        <span style="margin-left:auto;font-family:var(--ff-mono);font-size:10.5px;color:#6a7686">phase-13</span>
+      </div>
+      <pre style="margin:0;padding:20px;font-family:var(--ff-mono);font-size:12.5px;line-height:1.8;color:#e6edf3;background:#0d1117;overflow:auto;tab-size:2">
+<span style="color:#7ea2ff">&gt; /start-phase</span>
+
+<span style="color:#8b949e">Creating branch</span> phase-13-site-polish<span style="color:#8b949e">...</span>
+<span style="color:#8b949e">Updating</span> status.md <span style="color:#8b949e">→ Current Phase 13</span>
+
+Group 0  Mermaid tooling + baseline      <span style="color:#19b574">✓</span>
+Group 1  Landing rewrite                 <span style="color:#19b574">✓</span>
+Group 2  Docs deepening                  <span style="color:#19b574">✓</span>
+
+<span style="color:#8b949e">history.md</span>  <span style="color:#7ea2ff">[DECISION]</span> glass hero over flat
+<span style="color:#8b949e">tasks.md</span>    12/12 <span style="color:#19b574">[x]</span>   <span style="color:#8b949e">push → origin</span>
+
+<span style="color:#e8a019">STOP</span> — merge + release gate. Awaiting your OK.
+<span style="color:#7ea2ff">&gt; _</span></pre>
+    </div>
+    <div>
+      <span class="eyebrow">Watch the discipline land</span>
+      <h2 style="margin:12px 0 0;font-size:34px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">It narrates. You stay in control.</h2>
+      <p style="margin:14px 0 0;font-size:15px;line-height:1.65;color:var(--fg-2);max-width:46ch">The agent proceeds silently unless interrupted — but every group commits cleanly, every decision lands in history, and the only hard stop is the merge and publish. Those are yours to approve.</p>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:flex-start;gap:11px"><Icon class="ic" name="lucide:git-commit-horizontal" style="width:18px;height:18px;color:var(--accent);flex:none;margin-top:1px" /><span style="font-size:13.5px;line-height:1.5;color:var(--fg-1)">Clean conventional commits, per group</span></div>
+        <div style="display:flex;align-items:flex-start;gap:11px"><Icon class="ic" name="lucide:file-check-2" style="width:18px;height:18px;color:var(--accent);flex:none;margin-top:1px" /><span style="font-size:13.5px;line-height:1.5;color:var(--fg-1)">Tasks marked done only with passing evidence</span></div>
+        <div style="display:flex;align-items:flex-start;gap:11px"><Icon class="ic" name="lucide:git-pull-request" style="width:18px;height:18px;color:var(--accent);flex:none;margin-top:1px" /><span style="font-size:13.5px;line-height:1.5;color:var(--fg-1)">Merge to main never happens without your OK</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SLASH COMMANDS ===================== -->
+<section id="commands" style="max-width:1180px;margin:0 auto;padding:88px 24px 0;scroll-margin-top:80px">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <span class="eyebrow">15+ slash commands</span>
+    <h2 style="margin:0;font-size:40px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Your agent already knows how to drive this</h2>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:var(--fg-2);max-width:56ch">Phases, backlog, history, doc-sync — all run as slash commands. The three you’ll reach for most:</p>
+  </div>
+  <div style="margin-top:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+    <div style="border-radius:14px;overflow:hidden;border:1px solid var(--bd-2);background:var(--bg-1);box-shadow:var(--shadow-glass)"><div style="padding:14px 16px;border-bottom:1px solid var(--bd-1);display:flex;align-items:center;gap:9px"><Icon class="ic" name="lucide:messages-square" style="width:16px;height:16px;color:var(--accent)" /><span style="font-family:var(--ff-mono);font-size:13px;font-weight:600;color:var(--fg-0)">/brainstorm-phase</span></div><p style="margin:0;padding:16px;font-size:13px;line-height:1.55;color:var(--fg-2)">Plan the next phase through structured dialogue. Disk writes are physically blocked until you approve.</p></div>
+    <div style="border-radius:14px;overflow:hidden;border:1px solid var(--bd-2);background:var(--bg-1);box-shadow:var(--shadow-glass)"><div style="padding:14px 16px;border-bottom:1px solid var(--bd-1);display:flex;align-items:center;gap:9px"><Icon class="ic" name="lucide:play" style="width:16px;height:16px;color:var(--accent)" /><span style="font-family:var(--ff-mono);font-size:13px;font-weight:600;color:var(--fg-0)">/start-phase</span></div><p style="margin:0;padding:16px;font-size:13px;line-height:1.55;color:var(--fg-2)">Begin implementation. Autonomous execution per the contract — stops only at the merge + release gate.</p></div>
+    <div style="border-radius:14px;overflow:hidden;border:1px solid var(--bd-2);background:var(--bg-1);box-shadow:var(--shadow-glass)"><div style="padding:14px 16px;border-bottom:1px solid var(--bd-1);display:flex;align-items:center;gap:9px"><Icon class="ic" name="lucide:badge-check" style="width:16px;height:16px;color:var(--accent)" /><span style="font-family:var(--ff-mono);font-size:13px;font-weight:600;color:var(--fg-0)">/complete-phase</span></div><p style="margin:0;padding:16px;font-size:13px;line-height:1.55;color:var(--fg-2)">Verify, finalize, tag, publish. The Rule 12 evidence gets captured into retrospective.md.</p></div>
+  </div>
+</section>
+
+<!-- ===================== THE RULES ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:88px 24px 0">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <div>
+      <span class="eyebrow">The 13 rules</span>
+      <h2 style="margin:12px 0 0;font-size:34px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Discipline preserved — without enforcement overhead</h2>
+      <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:var(--fg-2);max-width:56ch">Thirteen autonomous behaviors your agent follows in the background. Three of the highest-leverage:</p>
+    </div>
+    <a class="navlink" href="/rules/" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:600">All 13 rules<Icon class="ic" name="lucide:arrow-right" style="width:15px;height:15px" /></a>
+  </div>
+  <div style="margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+    <div style="border-radius:16px;padding:24px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="display:flex;align-items:center;gap:10px"><span style="font-family:var(--ff-mono);font-size:11px;font-weight:600;color:var(--accent);padding:3px 8px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent-bd)">Rule 6</span><Icon class="ic" name="lucide:git-merge" style="width:17px;height:17px;color:var(--fg-3)" /></div><h3 style="margin:14px 0 6px;font-size:16px;font-weight:600;color:var(--fg-0)">Git Lifecycle</h3><p style="margin:0;font-size:13px;line-height:1.55;color:var(--fg-2)">Feature branch auto-created. Conventional commits. Push silently. Never merge to main without your explicit OK.</p></div>
+    <div style="border-radius:16px;padding:24px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="display:flex;align-items:center;gap:10px"><span style="font-family:var(--ff-mono);font-size:11px;font-weight:600;color:var(--accent);padding:3px 8px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent-bd)">Rule 8</span><Icon class="ic" name="lucide:history" style="width:17px;height:17px;color:var(--fg-3)" /></div><h3 style="margin:14px 0 6px;font-size:16px;font-weight:600;color:var(--fg-0)">Record Phase History</h3><p style="margin:0;font-size:13px;line-height:1.55;color:var(--fg-2)">Every meaningful decision, discovery, or scope change lands in history.md the moment it happens. The “why” outlives every session.</p></div>
+    <div style="border-radius:16px;padding:24px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="display:flex;align-items:center;gap:10px"><span style="font-family:var(--ff-mono);font-size:11px;font-weight:600;color:var(--accent);padding:3px 8px;border-radius:6px;background:var(--accent-soft);border:1px solid var(--accent-bd)">Rule 12</span><Icon class="ic" name="lucide:shield-check" style="width:17px;height:17px;color:var(--fg-3)" /></div><h3 style="margin:14px 0 6px;font-size:16px;font-weight:600;color:var(--fg-0)">Verify Before Claim</h3><p style="margin:0;font-size:13px;line-height:1.55;color:var(--fg-2)">No completion without evidence. Run the test, read the output, mark done only if it passes. Closes the “should work now” failure mode.</p></div>
+  </div>
+</section>
+<!-- ===================== ORCHESTRATION ===================== -->
+<section id="orchestration" style="max-width:1180px;margin:0 auto;padding:88px 24px 0;scroll-margin-top:80px">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <span class="eyebrow">When one repo isn’t enough</span>
+    <h2 style="margin:0;font-size:40px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">Orchestration across your projects</h2>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:var(--fg-2);max-width:60ch">Single-project is the default — zero extra setup. When related repos need to coordinate, three layers let one agent session work across all of them.</p>
+  </div>
+  <div style="margin-top:40px;display:flex;flex-direction:column;gap:14px;max-width:900px;margin-left:auto;margin-right:auto">
+    <!-- swarm -->
+    <div class="glasscard" style="border-radius:18px;padding:24px 26px;border:1px solid var(--accent-bd)">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="display:inline-flex;width:46px;height:46px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent);color:#fff;flex:none;box-shadow:0 10px 22px -9px color-mix(in oklab,var(--accent) 60%,transparent)"><Icon class="ic" name="lucide:waypoints" style="width:23px;height:23px" /></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:18px;font-weight:600;color:var(--fg-0)">Swarm</h3><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);padding:2px 8px;border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent-bd)">Sustained delivery</span></div>
+          <p style="margin:8px 0 0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Drive a whole cross-project feature end-to-end from one session. Conductor + per-project supervisors, wave-ordered, multi-hour. Survives session kill via disk-only resume.</p>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--fg-3);font-size:11.5px;font-family:var(--ff-mono)"><Icon class="ic" name="lucide:arrow-down" style="width:14px;height:14px" />reads + writes</div>
+    <!-- actions -->
+    <div class="glasscard" style="border-radius:18px;padding:24px 26px">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="display:inline-flex;width:46px;height:46px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent);flex:none"><Icon class="ic" name="lucide:git-fork" style="width:23px;height:23px" /></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:18px;font-weight:600;color:var(--fg-0)">Cross-project actions</h3><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);padding:2px 8px;border-radius:999px;background:var(--bg-3);border:1px solid var(--bd-1)">One-shot moves</span></div>
+          <p style="margin:8px 0 10px;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Four single-step verbs the agent runs per task. One move and done — no persistent state, no waves.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--fg-1);padding:4px 10px;border-radius:999px;background:var(--bg-3);border:1px solid var(--bd-1)">scout</span>
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--fg-1);padding:4px 10px;border-radius:999px;background:var(--bg-3);border:1px solid var(--bd-1)">dispatch</span>
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--fg-1);padding:4px 10px;border-radius:999px;background:var(--bg-3);border:1px solid var(--bd-1)">handoff</span>
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--fg-1);padding:4px 10px;border-radius:999px;background:var(--bg-3);border:1px solid var(--bd-1)">continue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--fg-3);font-size:11.5px;font-family:var(--ff-mono)"><Icon class="ic" name="lucide:arrow-down" style="width:14px;height:14px" />reads + writes</div>
+    <!-- ecosystem -->
+    <div style="border-radius:18px;padding:24px 26px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="display:inline-flex;width:46px;height:46px;border-radius:12px;align-items:center;justify-content:center;background:var(--bg-3);border:1px solid var(--bd-2);color:var(--fg-1);flex:none"><Icon class="ic" name="lucide:database" style="width:22px;height:22px" /></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:18px;font-weight:600;color:var(--fg-0)">Ecosystem</h3><span style="font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);padding:2px 8px;border-radius:999px;background:var(--bg-3);border:1px solid var(--bd-1)">Foundation — shared data</span></div>
+          <p style="margin:8px 0 0;font-size:13.5px;line-height:1.55;color:var(--fg-2)">Durable substrate both tiers above read and write: <span style="font-family:var(--ff-mono);font-size:12.5px">ecosystem.json</span> members + dependency edges, <span style="font-family:var(--ff-mono);font-size:12.5px">initiatives/</span> feature tracking, and a daily session log.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PERSONAS ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:88px 24px 0">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+    <span class="eyebrow">Built for the way you work</span>
+    <h2 style="margin:0;font-size:40px;letter-spacing:-0.025em;font-weight:700;color:var(--fg-0)">One discipline, every role</h2>
+  </div>
+  <div style="margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+    <div style="border-radius:16px;padding:28px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:user" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 8px;font-size:17px;font-weight:600;color:var(--fg-0)">Solo builder</h3><p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--fg-2)">Your project doesn’t forget what it was building when you stepped away for a week. Pick up exactly where you left off, with the agent already oriented.</p></div>
+    <div style="border-radius:16px;padding:28px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:users" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 8px;font-size:17px;font-weight:600;color:var(--fg-0)">Tech lead</h3><p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--fg-2)">Bring discipline to agentic AI work across your team. Every decision logged, every phase planned, every release tagged — without enforcement overhead.</p></div>
+    <div style="border-radius:16px;padding:28px;background:var(--bg-1);border:1px solid var(--bd-2);box-shadow:var(--shadow-glass)"><div style="display:inline-flex;width:44px;height:44px;border-radius:12px;align-items:center;justify-content:center;background:var(--accent-soft);border:1px solid var(--accent-bd);color:var(--accent)"><Icon class="ic" name="lucide:compass" style="width:22px;height:22px" /></div><h3 style="margin:16px 0 8px;font-size:17px;font-weight:600;color:var(--fg-0)">PM exploring agentic AI</h3><p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--fg-2)">Read the why behind every decision your engineers’ agents make. Phases, decisions, and history are first-class artifacts — not lost in chat transcripts.</p></div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section style="max-width:1180px;margin:0 auto;padding:88px 24px 0">
+  <div style="position:relative;overflow:hidden;border-radius:26px;padding:56px 40px;text-align:center;background:var(--glass-heavy);backdrop-filter:var(--glass-blur-heavy);-webkit-backdrop-filter:var(--glass-blur-heavy);border:1px solid var(--accent-bd);box-shadow:0 0 60px color-mix(in oklab,var(--accent) 14%,transparent)">
+    <div style="position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:420px;height:280px;border-radius:50%;background:color-mix(in oklab,var(--accent) 16%,transparent);filter:blur(70px);pointer-events:none"></div>
+    <div style="position:relative">
+      <h2 style="margin:0;font-size:44px;letter-spacing:-0.03em;font-weight:700;color:var(--fg-0);line-height:1.05">Give your agent a memory<br>that outlives the session.</h2>
+      <p style="margin:16px auto 0;font-size:16px;line-height:1.6;color:var(--fg-2);max-width:52ch">One install, and your agent drives the whole loop from files it already knows how to read. Open source, free, no lock-in.</p>
+      <div style="margin-top:28px;display:inline-flex;align-items:center;gap:10px;padding:8px 8px 8px 22px;border-radius:999px;background:#0d1117;border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 44px -18px rgba(0,18,96,.5)">
+        <span style="font-family:var(--ff-mono);color:#6a7686;font-size:15px">$</span>
+        <span style="font-family:var(--ff-mono);color:#e6edf3;font-size:15px">npx @avinash-singh-io/momentum@latest init</span>
+        <button type="button" class="copy-btn" data-cmd="npx @avinash-singh-io/momentum@latest init" style="display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 16px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-family:var(--ff-sans);font-size:13px;font-weight:500;cursor:pointer"><Icon class="ic" name="lucide:copy" style="width:14px;height:14px" />Copy</button>
+      </div>
+      <div style="margin-top:22px;display:flex;align-items:center;justify-content:center;gap:14px">
+        <a href="/getting-started/" style="display:inline-flex;align-items:center;gap:7px;height:46px;padding:0 24px;border-radius:999px;background:var(--accent);color:#fff;font-size:14px;font-weight:500;text-decoration:none;box-shadow:0 12px 26px -10px color-mix(in oklab,var(--accent) 55%,transparent)">Read the docs<Icon class="ic" name="lucide:arrow-right" style="width:16px;height:16px" /></a>
+        <a href="https://github.com/avinash-singh-io/momentum" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 22px;border-radius:999px;background:var(--bg-1);border:1px solid var(--bd-2);color:var(--fg-0);font-size:14px;font-weight:500;text-decoration:none"><Icon class="ic" name="lucide:star" style="width:16px;height:16px" />Star on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer style="max-width:1180px;margin:64px auto 0;padding:40px 24px 48px;border-top:1px solid var(--bd-1)">
+  <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px">
+    <div>
+      <div style="display:flex;align-items:center;gap:9px"><span style="display:inline-flex;width:26px;height:26px;border-radius:8px;background:var(--brand-ink);align-items:center;justify-content:center"><Icon class="ic" name="lucide:chevrons-right" style="width:16px;height:16px;color:#fff" /></span><span style="font-weight:600;font-size:16px;letter-spacing:-0.02em;color:var(--fg-0)">momentum</span></div>
+      <p style="margin:14px 0 0;font-size:13px;line-height:1.6;color:var(--fg-3);max-width:34ch">Spec-driven development for agentic AI. Durable state that outlives any single session.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-3)">Product</span><a class="navlink" href="#how">How it works</a><a class="navlink" href="#features">Features</a><a class="navlink" href="#commands">Commands</a><a class="navlink" href="#orchestration">Orchestration</a></div>
+    <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-3)">Docs</span><a class="navlink" href="/getting-started/">Getting started</a><a class="navlink" href="/concepts/">Concepts</a><a class="navlink" href="/rules/">Rules</a><a class="navlink" href="/ide-support/">IDE support</a></div>
+    <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-3)">Community</span><a class="navlink" href="https://github.com/avinash-singh-io/momentum">GitHub</a><a class="navlink" href="https://www.npmjs.com/package/@avinash-singh-io/momentum">npm</a><a class="navlink" href="/faq/">FAQ</a><a class="navlink" href="/about/">About</a></div>
+  </div>
+  <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--bd-1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <span style="font-size:12px;color:var(--fg-3)">© 2026 momentum · Open source, MIT</span>
+    <span style="font-family:var(--ff-mono);font-size:12px;color:var(--fg-3)">npx @avinash-singh-io/momentum@latest init</span>
+  </div>
+</footer>
+</BaseLayout>
+
+<style is:global>
+	/* Home-specific classes + keyframes (scoped under .mm-home so they never
+	   collide with the docs shell). Kept global so inline animation names and
+	   ::before pseudos resolve verbatim. */
+	.mm-home .navlink {
+		font-size: 13.5px;
+		color: var(--fg-2);
+		text-decoration: none;
+		font-weight: 500;
+		transition: color 0.15s;
+	}
+	.mm-home .navlink:hover { color: var(--fg-0); }
+	.mm-home .glasscard {
+		position: relative;
+		overflow: hidden;
+		background: var(--glass-std);
+		backdrop-filter: var(--glass-blur-std);
+		-webkit-backdrop-filter: var(--glass-blur-std);
+		border: 1px solid var(--glass-std-bd);
+		box-shadow: var(--shadow-glass);
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+	}
+	.mm-home .glasscard:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-glass-hover);
+	}
+	.mm-home .glasscard::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 55%);
+		pointer-events: none;
+	}
+	.mm-home .glasscard > * { position: relative; }
+	.mm-home .copy-btn { font-family: var(--ff-sans); }
+	@keyframes mmping {
+		0% { transform: scale(1); opacity: 0.7; }
+		70%, 100% { transform: scale(2.4); opacity: 0; }
+	}
+	@keyframes mmfloat {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-7px); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mm-home *, .mm-home *::before { animation: none !important; }
+	}
+
+	/* Responsive: collapse the desktop-first inline grids + scale the hero. */
+	@media (max-width: 920px) {
+		.mm-home [style*="grid-template-columns:repeat(3,1fr)"],
+		.mm-home [style*="grid-template-columns:repeat(4,1fr)"],
+		.mm-home [style*="grid-template-columns:1fr 1fr"],
+		.mm-home [style*="grid-template-columns:1fr 0.82fr"] {
+			grid-template-columns: 1fr !important;
+		}
+		.mm-home [style*="grid-template-columns:repeat(5,1fr)"] {
+			grid-template-columns: repeat(2, 1fr) !important;
+		}
+		.mm-home [style*="grid-template-columns:1.6fr 1fr 1fr 1fr"] {
+			grid-template-columns: 1fr 1fr !important;
+		}
+		.mm-home [style*="font-size:62px"] { font-size: 42px !important; }
+		.mm-home nav > div[style*="gap:22px"] { display: none !important; }
+		.mm-home nav a[href*="github.com"] { display: none !important; }
+	}
+	@media (max-width: 560px) {
+		.mm-home [style*="grid-template-columns:repeat(5,1fr)"],
+		.mm-home [style*="grid-template-columns:1.6fr 1fr 1fr 1fr"] {
+			grid-template-columns: 1fr !important;
+		}
+		.mm-home [style*="font-size:62px"] { font-size: 33px !important; }
+		.mm-home [style*="font-size:44px"] { font-size: 30px !important; }
+		.mm-home [style*="font-size:40px"] { font-size: 28px !important; }
+		.mm-home [style*="padding:8px 8px 8px 22px"] {
+			flex-wrap: wrap !important;
+			padding: 12px !important;
+			border-radius: 16px !important;
+		}
+	}
+</style>
+
+<script>
+	// Copy-to-clipboard for the install command pills (progressive; no-op
+	// without clipboard support).
+	for (const btn of document.querySelectorAll('.copy-btn')) {
+		btn.addEventListener('click', () => {
+			const cmd = btn.getAttribute('data-cmd') || '';
+			navigator.clipboard?.writeText(cmd);
+			const prev = btn.innerHTML;
+			btn.innerHTML = '<span>Copied</span>';
+			window.setTimeout(() => { btn.innerHTML = prev; }, 1300);
+		});
+	}
+</script>

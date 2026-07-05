@@ -1,14 +1,21 @@
-import { defineCollection } from 'astro:content';
-import { docsLoader } from '@astrojs/starlight/loaders';
-import { docsSchema } from '@astrojs/starlight/schema';
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
-export const collections = {
-	docs: defineCollection({
-		// Exclude macOS AppleDouble sidecar files (`._foo.md`) that the
-		// T7 Shield external drive generates next to every real file.
-		// Without this, Starlight tries to read them as content entries
-		// and fails because they don't have valid frontmatter.
-		loader: docsLoader({ pattern: ['**/[^_]*.{md,mdx}', '**/*.{md,mdx}', '!**/._*'] }),
-		schema: docsSchema(),
+// Plain Astro content collection for the docs (post-Starlight). Each entry's
+// id is its path under src/content/docs without the extension, e.g.
+// `getting-started`, and is served at `/{id}/` by src/pages/[...slug].astro.
+//
+// The `!**/._*` glob excludes macOS AppleDouble sidecar files (`._foo.md`)
+// that some external drives generate next to every real file.
+const docs = defineCollection({
+	loader: glob({
+		pattern: ['**/[^_]*.{md,mdx}', '!**/._*'],
+		base: './src/content/docs',
 	}),
-};
+	schema: z.object({
+		title: z.string(),
+		description: z.string().optional(),
+	}),
+});
+
+export const collections = { docs };

@@ -1,0 +1,97 @@
+---
+/**
+ * BaseLayout — the single HTML shell for the whole site (home + docs).
+ *
+ * Owns <html>/<head>/<body>, self-hosted Geist fonts, the design-system
+ * tokens, SEO + Open Graph meta, the favicon, and the fixed ambient cobalt
+ * wash that shows through every glass surface.
+ *
+ * Theme: `light` / `dark` pin data-theme on <html>. `auto` (docs) reads the
+ * persisted preference before paint (no flash) and lets the topbar toggle it.
+ */
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '../styles/tokens.css';
+
+interface Props {
+	title: string;
+	description?: string;
+	/** Pin the theme, or `auto` for a persisted, toggleable preference (docs). */
+	theme?: 'light' | 'dark' | 'auto';
+	/** Extra class on the content wrapper. */
+	bodyClass?: string;
+	/** Absolute OG image URL; defaults to the shared card. */
+	ogImage?: string;
+}
+
+const {
+	title,
+	description = 'Spec-driven development for agentic AI. Durable project state — phases, decisions, history, backlog — as Markdown your agent reads every session.',
+	theme = 'light',
+	bodyClass = '',
+	ogImage,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://trymomentum.github.io');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImageUrl = ogImage ?? new URL('/og/default.png', site).href;
+const htmlThemeAttr = theme === 'auto' ? undefined : theme;
+
+// Pre-paint theme resolution for `auto` pages (docs). Kept as a string and
+// injected via set:html — an inline `<script>{`…`}</script>` would have its
+// braces parsed as Astro expressions.
+const themeInit =
+	"(function(){try{var t=localStorage.getItem('mm-theme');document.documentElement.dataset.theme=(t==='dark'||t==='light')?t:'light';}catch(e){document.documentElement.dataset.theme='light';}})();";
+---
+
+<!doctype html>
+<html lang="en" data-theme={htmlThemeAttr}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="canonical" href={canonical} />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
+
+		{theme === 'auto' && <script is:inline set:html={themeInit} />}
+	</head>
+	<body>
+		<div class="ambient-layer" aria-hidden="true"></div>
+		<div class:list={['page', bodyClass]}><slot /></div>
+	</body>
+</html>
+
+<style is:global>
+	body {
+		min-height: 100vh;
+		overflow-x: hidden;
+	}
+	.ambient-layer {
+		position: fixed;
+		inset: 0;
+		background: var(--ambient);
+		pointer-events: none;
+		z-index: 0;
+	}
+	.page {
+		position: relative;
+		z-index: 1;
+	}
+	:focus-visible {
+		outline: none;
+		box-shadow: var(--focus-ring);
+		border-radius: 4px;
+	}
+</style>

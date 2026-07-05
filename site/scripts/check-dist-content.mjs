@@ -19,8 +19,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const DIST = resolve(ROOT, 'dist');
 
-// The landing page is a custom splash without an `sl-markdown-content`
-// div — for it we just require a non-trivial <body>.
+// The landing page is a custom splash without a `.doc` article — for it we
+// just require a non-trivial <body>.
 const SPLASH_MIN_BODY_CHARS = 1000;
 
 /** Recursively collect every index.html under dir. */
@@ -35,19 +35,12 @@ async function findPages(dir) {
 	return pages.sort();
 }
 
-/** Inner HTML of the first `sl-markdown-content` div, balancing nested divs; null if absent. */
+/** Inner HTML of the rendered `<article class="doc">`; null if absent. */
 function extractMarkdownContent(html) {
-	const open = html.search(/<div[^>]*\bsl-markdown-content\b[^>]*>/);
-	if (open === -1) return null;
-	const start = html.indexOf('>', open) + 1;
-	const tag = /<div\b|<\/div>/g;
-	tag.lastIndex = start;
-	let depth = 1;
-	for (let m; (m = tag.exec(html)) !== null; ) {
-		depth += m[0] === '</div>' ? -1 : 1;
-		if (depth === 0) return html.slice(start, m.index);
-	}
-	return html.slice(start);
+	const m = /<article[^>]*\bclass="[^"]*\bdoc\b[^"]*"[^>]*>([\s\S]*?)<\/article>/.exec(
+		html,
+	);
+	return m ? m[1] : null;
 }
 
 /** Visible text length: strip tags, collapse whitespace. */
@@ -91,12 +84,12 @@ for (const page of pages) {
 
 	const content = extractMarkdownContent(html);
 	if (content === null) {
-		failures.push({ rel, reason: 'no sl-markdown-content div found' });
+		failures.push({ rel, reason: 'no <article class="doc"> found' });
 		continue;
 	}
 	const size = textLength(content);
 	if (size === 0) {
-		failures.push({ rel, reason: 'sl-markdown-content body is empty/whitespace' });
+		failures.push({ rel, reason: 'doc article body is empty/whitespace' });
 	} else {
 		minBody = Math.min(minBody, size);
 	}

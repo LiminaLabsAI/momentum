@@ -100,13 +100,12 @@ of work).
 gives your projects that property. Each phase is a delta; the work
 accumulates; the project never starts cold.
 
-The mark — a swooping arc ending in a forward arrowhead — is that idea in
-one shape. The arc carries the eye left to right; the arrowhead resolves
-into a forward direction. Acceleration that's been earned, not assumed.
+The mark — a forward chevron (»), the fast-forward glyph — is that idea in
+one shape: the eye is already moving right. Acceleration that's been
+earned, not assumed, set in a cobalt tile.
 
-The wordmark sets the brand at any size. The arc-only mark works as a
-favicon. Both use `currentColor` so light and dark themes inherit
-contrast automatically.
+The wordmark pairs it with the Geist typeface; the chevron alone works as
+the favicon.
 
 ## A note on positioning
 
@@ -144,6 +143,6 @@ Momentum, applied to the toolkit's own development.
 
 ---
 
-Built with [Astro Starlight](https://starlight.astro.build/), the
-[Inter Variable](https://rsms.me/inter/) typeface, and the conviction that
+Built with [Astro](https://astro.build/), the
+[Geist](https://vercel.com/font) typeface, and the conviction that
 the project's state matters as much as its code.
