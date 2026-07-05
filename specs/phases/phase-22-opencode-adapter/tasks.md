@@ -2,50 +2,53 @@
 
 > Execution: `G0 → (G1 + G2 + G3 in parallel) → G4 → G5`
 > Mark `[/]` in-progress, `[x]` complete (only with fresh verification output — Rule 12).
+>
+> **Re-slice note (2026-07-05, G0):** the suite's contract-audit tests
+> (spawn contract, capability audit, parity-matrix column coverage) couple
+> ALL adapter surfaces to the existence of `adapter.js` — so G0 grew to ship
+> every file surface (commands, skills, agents, plugin, spawn, doc columns)
+> to keep the suite green at the G0 commit. G1–G3 retain their *test/transform*
+> work. Logged as `[NOTE]` in history.md.
 
-## Group 0 — Adapter skeleton + contracts (sequential)
+## Group 0 — Adapter skeleton + contracts + surfaces (sequential)
 
-- [ ] Install `opencode-ai` CLI; capture `opencode --version` → `evidence/g0-opencode-version.txt`
-- [ ] `adapters/opencode/adapter.js`: destinations, marker-aware primaryInstruction, configFiles (plugin), capabilities + roadmap blocks
-- [ ] `adapters/opencode/instructions/header.md`
-- [ ] `adapters/opencode/instructions/vars.json`
-- [ ] `adapters/opencode/instructions/surfaces.md`
-- [ ] Wire into `scripts/generate-instructions.js`; generate `AGENTS.md`; drift-guard green
-- [ ] tmp-dir `init --agent opencode` smoke passes
+- [x] Install `opencode-ai` CLI (1.17.13); evidence at `evidence/g0-opencode-version.txt`
+- [x] `adapters/opencode/adapter.js`: destinations, marker-aware primaryInstruction, configFiles (plugin), capabilities + roadmap blocks, runInstall/runUpgrade, spawn()
+- [x] `adapters/opencode/instructions/{header.md,vars.json,surfaces.md}`
+- [x] Wired into `scripts/generate-instructions.js`; `AGENTS.md` generated; drift-guard green
+- [x] Overlay commands ported (continue/dispatch/handoff/scout/swarm from codex + review-code from claude-code, opencode-idiom adapted)
+- [x] `.opencode/plugins/momentum.js` (gate + reminder + banner) — shipped; unit tests in G2
+- [x] `momentum-orient` skill + 4 agents (3 read-only reviewers + swarm-supervisor) — shipped; shape tests in G1/G3
+- [x] Command frontmatter transform (`ensureCommandFrontmatter`) in runInstall/runUpgrade
+- [x] `package.json` files += `adapters/**/plugins/**`
+- [x] Capability matrix + parity matrix opencode columns (footnotes 17–19; booleans evidence-gated per capability discipline)
+- [x] Verification: full suite 734/734; tmp-dir `init --agent opencode` smoke (23 commands w/ frontmatter, 4 agents, plugin, skill, AGENTS.md substituted)
 - [ ] Commit G0
 
-## Group 1 — Native commands + skills (parallel)
+## Group 1 — Command + skill shape tests (parallel)
 
-- [ ] ~20 core recipes → `.opencode/commands/*.md` with `description` frontmatter + `$ARGUMENTS`
-- [ ] Momentum skills → `.opencode/skills/<name>/SKILL.md` (name-regex compliant)
-- [ ] `tests/adapter-opencode-commands.test.js` (command + skill shape)
+- [ ] `tests/adapter-opencode-commands.test.js`: every installed command has description frontmatter; skill name-regex + frontmatter validation; 23-command count pin
 - [ ] Commit G1
 
-## Group 2 — Enforcement plugin (parallel)
+## Group 2 — Plugin unit tests (parallel)
 
-- [ ] `.opencode/plugins/momentum.js`: `tool.execute.before` brainstorm gate
-- [ ] `tool.execute.after` history reminder
-- [ ] `session.created` handoff banner
-- [ ] `tests/adapter-opencode-plugin.test.js` (node-only unit tests)
+- [ ] `tests/adapter-opencode-plugin.test.js` (node-only, dynamic import): gate blocks specs/ write while sentinel exists; allows without sentinel; allows non-specs writes; bash heuristic; reminder throttle + stamp; banner detects pending handoffs
 - [ ] Commit G2
 
-## Group 3 — Agents + spawn (parallel)
+## Group 3 — Agents + spawn tests (parallel)
 
-- [ ] 3 reviewer subagents (`mode: subagent`, `permission: edit: deny`)
-- [ ] `swarm-supervisor.md` agent
-- [ ] `adapter.spawn(directive)` → `opencode run --dir --agent swarm-supervisor`
-- [ ] Spawn contract + agent shape tests
+- [ ] Agent shape tests: frontmatter (description, mode, permission edit deny on reviewers)
+- [ ] Spawn arg-shape test: OPENCODE_BIN override → `run --dir <path> --agent swarm-supervisor` args, canonical -1 on missing binary
 - [ ] Commit G3
 
 ## Group 4 — Wiring + regression (sequential)
 
-- [ ] `runInstall` / `runUpgrade` with managed-file records
 - [ ] opencode install fingerprint snapshot test
-- [ ] Existing-adapter fingerprints byte-identical
-- [ ] Tarball-shape globs + test (`adapters/opencode/**`)
-- [ ] Capability-audit row; synthetic swarm e2e opencode fixture
-- [ ] Upgrade idempotence test
-- [ ] Full suite green (baseline 733)
+- [ ] Existing-adapter fingerprints byte-identical (verify against suite)
+- [ ] Tarball-shape test covers `adapters/opencode/**` (npm pack dry-run)
+- [ ] Synthetic swarm e2e opencode fixture
+- [ ] Upgrade idempotence test on an opencode fixture
+- [ ] Full suite green
 - [ ] Commit G4
 
 ## Group 5 — Live validation + docs + release prep (sequential)
@@ -57,8 +60,7 @@
 - [ ] Live check 5: reviewer subagent invocation
 - [ ] Live check 6: `opencode run --dir --agent` spawn
 - [ ] Live check 7: multi-adapter skills coexistence
-- [ ] Finalize `parallelSubagents` / `sessionStartHook` / `skills` booleans from evidence
-- [ ] `core/adapter-capabilities.md` + `core/adapter-parity-matrix.md` columns
+- [ ] Finalize `parallelSubagents` / `sessionStartHook` / `skills` booleans from evidence (+ parity cells 17/19 gated→shipped as earned)
 - [ ] README + site adapter mention
 - [ ] Roadmap repair (Rules Unification row; Reach = opencode v0.27.0; Intelligence → v0.28.0)
 - [ ] Retrospective with Verification Evidence; version bump → 0.27.0

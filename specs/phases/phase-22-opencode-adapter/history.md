@@ -41,3 +41,18 @@ Affects-specs: none
 Detail: Docs research (opencode.ai/docs — rules/commands/agents/plugins/config/permissions/skills/mcp/cli) confirms every momentum capability maps to a first-class opencode surface: commands (`.opencode/commands/`), blocking plugin hooks (`tool.execute.before` throws), subagents with per-agent permission frontmatter, `session.created` event, and native project-level skills (`.opencode/skills/` — plus discovery of momentum's existing `.agents/skills/` path). Spawn contract: `opencode run --dir <repo> --agent swarm-supervisor`. Ship no `opencode.json`; all surfaces auto-load from directories. Forward notes: `opencode serve --attach` for cheap swarm spawns; plugin-defined custom tools.
 
 ---
+### [NOTE] 2026-07-05 — G0 re-sliced: contract-audit tests couple all surfaces to adapter.js existence
+Topics: opencode-adapter, adapter-contract, test-architecture
+Affects-phases: phase-22-opencode-adapter
+Affects-specs: none
+Detail: The moment `adapters/opencode/adapter.js` exists, the suite's audit tests (spawn contract, capability audit, parity-matrix column coverage) demand the FULL adapter surface — so per-group suite-green commits are impossible under the planned G0–G3 slicing. G0 expanded to ship every file surface (commands, skills, agents, plugin, spawn, doc columns); G1–G3 retain their test/transform work. Suite 734/734 at the G0 commit; init smoke verified (23 frontmattered commands, 4 agents, plugin, skill, substituted AGENTS.md).
+
+---
+
+### [DECISION] 2026-07-05 — Evidence-gated booleans: skills/parallelSubagents/sessionStartHook stay false until G5 live proof
+Topics: opencode-adapter, capability-flips, validation
+Affects-phases: phase-22-opencode-adapter
+Affects-specs: core/adapter-capabilities.md#matrix
+Detail: The brainstorm targeted `skills: true` on the native-surface basis, but the same-day VAL-002 adjudication (agy-wrapper closure rejected for unearned flips) hardened the standard: file presence + vendor docs ≠ observed runtime. G0 declares hooks/slashCommands/subagents true (shipped file surfaces), while skills, parallelSubagents, and sessionStartHook stay false with parity cells marked shipped-gated¹⁷/¹⁹ until G5 live evidence. Known degraded cells (ecosystem session banner + auto session log not yet in the plugin) footnoted as ¹⁹ with an in-phase follow-up.
+
+---

@@ -12,6 +12,7 @@
     "adapters/**/adapter.js",
     "adapters/**/settings.json",
     "adapters/**/hooks.json",
+    "adapters/**/plugins/**",
     "adapters/**/instructions/**",
     "adapters/**/commands/**",
     "adapters/**/agent-rules/**",

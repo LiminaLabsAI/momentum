@@ -38,77 +38,77 @@ overview.md):
 
 ### Recipes (phase + orchestration commands)
 
-| Recipe | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| `/brainstorm-idea` | shipped¹ | shipped² | shipped³ |
-| `/brainstorm-phase` | shipped¹ | shipped² | shipped³ |
-| `/start-project` | shipped¹ | shipped² | shipped³ |
-| `/start-phase` | shipped¹ | shipped² | shipped³ |
-| `/complete-phase` | shipped¹ | shipped² | shipped³ |
-| `/sync-docs` | shipped¹ | shipped² | shipped³ |
-| `/track` | shipped¹ | shipped² | shipped³ |
-| `/review` | shipped¹ | shipped² | shipped³ |
-| `/log` | shipped¹ | shipped² | shipped³ |
-| `/migrate` | shipped¹ | shipped² | shipped³ |
-| `/validate` | shipped¹ | shipped² | shipped³ |
-| `/ecosystem` | shipped¹ | shipped² | shipped³ |
-| `/initiative` | shipped¹ | shipped² | shipped³ |
-| `/session` | shipped¹ | shipped² | shipped³ |
-| `/systematic-debug` | shipped¹ | shipped² | shipped³ |
-| `/scout` | shipped¹ | shipped² | shipped³ |
-| `/dispatch` | shipped¹ | shipped-degraded⁴ | shipped³ |
-| `/handoff` | shipped¹ | shipped² | shipped³ |
-| `/continue` | shipped¹ | shipped² | shipped³ |
-| `/review-code` | shipped¹ | shipped² | shipped³ |
-| `/swarm` (Phase 17 + 17.5) | shipped¹ | shipped¹⁴ | shipped¹⁴ |
-| `/hotfix` (Phase 19) | shipped¹ | shipped² | shipped³ |
+| Recipe | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| `/brainstorm-idea` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/brainstorm-phase` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/start-project` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/start-phase` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/complete-phase` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/sync-docs` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/track` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/review` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/log` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/migrate` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/validate` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/ecosystem` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/initiative` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/session` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/systematic-debug` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/scout` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/dispatch` | shipped¹ | shipped-degraded⁴ | shipped³ | shipped¹⁷ |
+| `/handoff` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/continue` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/review-code` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/swarm` (Phase 17 + 17.5) | shipped¹ | shipped¹⁴ | shipped¹⁴ | shipped¹⁷ |
+| `/hotfix` (Phase 19) | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
 
 ### Personas (skills)
 
-| Skill | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| `momentum-orient` | not-applicable⁵ | shipped⁶ | shipped⁷ |
-| `momentum-reviewer-security` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ |
-| `momentum-reviewer-qa` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ |
-| `momentum-reviewer-architecture` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ |
+| Skill | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| `momentum-orient` | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped-gated¹⁷ |
+| `momentum-reviewer-security` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
+| `momentum-reviewer-qa` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
+| `momentum-reviewer-architecture` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
 
 ### Hooks
 
-| Hook | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
-| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
-| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
+| Hook | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-gated¹⁹ |
+| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-gated¹⁹ |
+| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-gated¹⁹ |
 
 ### Git-lifecycle hooks (Phase 19 — agent-agnostic)
 
-| Hook | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| `commit-msg` (Conventional Commits) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
-| `pre-push` (merge gate + verify-evidence) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
+| Hook | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| `commit-msg` (Conventional Commits) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
+| `pre-push` (merge gate + verify-evidence) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
 
 ### Overlay surfaces
 
-| Surface | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| Primary instruction file (CLAUDE.md / AGENTS.md) | shipped | shipped | shipped |
-| `commands` overlay | shipped | shipped | shipped-as-workflows¹² |
-| `agent-rules` overlay | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ |
-| `scripts` overlay (hooks) | shipped | shipped | shipped |
-| `engines` overlay | shipped | shipped | shipped |
-| `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | shipped-gated¹³ |
-| `skills` overlay (Phase 16) | not-applicable⁵ | shipped⁶ | shipped⁷ |
-| `agents` overlay (Phase 16) | not-applicable⁵ | shipped⁸ | not-applicable⁵ |
+| Surface | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| Primary instruction file (CLAUDE.md / AGENTS.md) | shipped | shipped | shipped | shipped |
+| `commands` overlay | shipped | shipped | shipped-as-workflows¹² | shipped¹⁷ |
+| `agent-rules` overlay | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ |
+| `scripts` overlay (hooks) | shipped | shipped | shipped | shipped |
+| `engines` overlay | shipped | shipped | shipped | shipped |
+| `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | shipped-gated¹³ | not-applicable⁵ |
+| `skills` overlay (Phase 16) | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped¹⁷ |
+| `agents` overlay (Phase 16) | not-applicable⁵ | shipped⁸ | not-applicable⁵ | shipped¹⁸ |
 
 ### Ecosystem features
 
-| Feature | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| `momentum init/upgrade` install | shipped | shipped | shipped |
-| Ecosystem manifest awareness (`ecosystem.json`) | shipped | shipped | shipped |
-| SessionStart ecosystem banner | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
-| Auto session log (PostToolUse) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ |
-| Managed `CLAUDE.md` / `AGENTS.md` on `ecosystem init` | shipped | shipped | shipped |
+| Feature | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| `momentum init/upgrade` install | shipped | shipped | shipped | shipped |
+| Ecosystem manifest awareness (`ecosystem.json`) | shipped | shipped | shipped | shipped |
+| SessionStart ecosystem banner | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-degraded¹⁹ |
+| Auto session log (PostToolUse) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-degraded¹⁹ |
+| Managed `CLAUDE.md` / `AGENTS.md` on `ecosystem init` | shipped | shipped | shipped | shipped |
 
 ## Footnotes
 
@@ -143,6 +143,12 @@ overview.md):
 15. **Git-lifecycle hooks (Phase 19, FEAT-018/019)** — vendor-neutral, *agent-agnostic* git hooks installed identically for all three adapters: `bin/momentum.js::installGitHooks()` copies `core/git-hooks/*` to the target's `.githooks/` and runs `git config core.hooksPath .githooks` (warn-not-clobber if husky / a custom hooks path exists). `commit-msg` validates Conventional Commits; `pre-push` blocks direct pushes to protected branches without the single-use `.momentum/merge-approved` sentinel and blocks release-tag pushes lacking a non-empty `## Verification Evidence` (Rule 12). Escape hatch: `MOMENTUM_SKIP_HOOKS=1`. These are git hooks, not agent tool-event hooks — the mechanism is identical regardless of agent; the per-column cells exist only for matrix uniformity. Forge-neutral by design (no GitHub/GitLab API); see `core/lifecycle-contract.md`.
 
 16. **`agent-rules` overlay retired (Phase 23 / ADR-0004)** — the condensed `.agent/rules/project.md` file is no longer shipped by any adapter: no agent auto-loaded it, and the full detailed rules (Red Flags + anti-rationalization + Rule 13) now ride each adapter's auto-loaded primary instruction file, generated from the single canonical source at `core/instructions/rules-body.md`. `momentum upgrade` migrates existing installs (pristine → removed; customized → kept + deprecation warning). The `destinations['agent-rules']` contract key stays reserved for future per-adapter rule overlays.
+
+17. **opencode recipes + skills (Phase 22)** — recipes install at `.opencode/commands/<name>.md` where each file registers natively as `/<name>` in the TUI ([opencode commands docs](https://opencode.ai/docs/commands/)); `runInstall` prepends `description` frontmatter for the command picker. Momentum skills install at `.opencode/skills/<name>/SKILL.md` (native surface, opencode ≥1.17; opencode also discovers the `.agents/skills/` path Codex/Antigravity use, so multi-adapter installs coexist). `momentum-orient` marked `shipped-gated` pending Phase 22 G5 live skill-tool discovery evidence — the `skills` capability boolean stays `false` until then.
+
+18. **opencode agents (Phase 22)** — reviewers + swarm supervisor at `.opencode/agents/<name>.md` (markdown agents, [opencode agents docs](https://opencode.ai/docs/agents/)). The three reviewers declare `mode: subagent` + `permission: edit: deny` (+ read-only bash allowlist) — true sandbox-level read-only, not just prompt-level. Spawn contract: `opencode run --dir <repoPath> --agent swarm-supervisor` (`--dir` pins cwd natively; no MCP shim needed, unlike Codex footnote 14).
+
+19. **opencode momentum plugin (Phase 22)** — one self-contained JS plugin at `.opencode/plugins/momentum.js` ([opencode plugins docs](https://opencode.ai/docs/plugins/)) wires all three enforcement hooks: brainstorm gate (`tool.execute.before` — throwing blocks the tool call), history reminder (`tool.execute.after`), pending-handoff banner (`session.created`). Reads the same `.momentum/` sentinels as the other adapters' shell hooks. Marked `shipped-gated` pending Phase 22 G5 live validation. Degraded ecosystem cells: the ecosystem SessionStart context banner and the auto session log are not yet wired through the plugin (use `/session` or the `momentum` CLI); in-phase follow-up tracked in the Phase 22 plan.
 
 ## Read this if you are…
 

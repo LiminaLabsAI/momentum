@@ -35,6 +35,7 @@ const TARGETS = [
   { agent: 'claude-code', target: ['core', 'specs-templates', 'CLAUDE.md'] },
   { agent: 'codex', target: ['adapters', 'codex', 'instructions', 'AGENTS.md'] },
   { agent: 'antigravity', target: ['adapters', 'antigravity', 'instructions', 'AGENTS.md'] },
+  { agent: 'opencode', target: ['adapters', 'opencode', 'instructions', 'AGENTS.md'] },
 ];
 
 const MARKER_COMMENT = [
