@@ -8,9 +8,9 @@
 - [x] core/lib/okf-types.js + tests
 
 ## Group 1 — Waves engine (deps: G0)
-- [ ] plan-graph.js frontmatter scan + index.json fallback + nudge
-- [ ] waves/momentum CLI text
-- [ ] fixture re-point + fallback + parity tests
+- [x] plan-graph.js frontmatter scan + index.json fallback + nudge
+- [x] waves/momentum CLI text
+- [x] fixture re-point + fallback + parity tests
 
 ## Group 2 — Migration + okf CLI (deps: G0)
 - [ ] okf-migrate.js (distribute / convert / inject / index / delete / idempotent)

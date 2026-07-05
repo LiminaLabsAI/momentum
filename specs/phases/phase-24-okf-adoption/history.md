@@ -89,3 +89,16 @@ and core/lib/okf-types.js (17-type taxonomy, first-match-wins, reserved
 index.md/log.md → null). Verification: node --test 18/18 pass.
 
 ---
+
+### [NOTE] 2026-07-05 — G1 complete: waves engine reads OKF frontmatter
+Topics: okf, waves, plan-graph, dual-read
+Affects-phases: phase-24-okf-adoption
+Affects-specs: none (spec updates at /sync-docs)
+Detail: phaseGraph() now prefers specs/phases/*/overview.md frontmatter
+(status/deps/tags; natural-sorted dir scan) and falls back to legacy
+index.json with a one-time stderr upgrade nudge; graph.source surfaces which
+path was used. Existing index.json fixtures became fallback coverage; 4 new
+tests incl. cross-format parity (identical wave layers + lane suggestions).
+Verification: 28/28 across waves-cli, waves-e2e-demo, frontmatter, okf-types.
+
+---

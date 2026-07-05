@@ -5,7 +5,8 @@
  * FEAT-028 — ADR-0003).
  *
  *   momentum waves                 phase scale: non-complete phases from
- *                                  specs/phases/index.json (`deps` arrays)
+ *                                  overview.md frontmatter (`deps:`, OKF
+ *                                  bundle) — legacy index.json fallback
  *   momentum waves --tasks [ref]   task scale: group waves for a tasks.md —
  *                                  ref = phase id or a tasks.md path;
  *                                  default = the phase bound to the current
@@ -88,7 +89,7 @@ function runWaves(argv, cwd = process.cwd()) {
   if (args[0] === '--help' || args[0] === '-h' || args[0] === 'help') {
     console.log(`momentum waves — wave plan from dependency annotations (one engine, every scale)
 
-  momentum waves                 phase scale (index.json "deps"; complete = satisfied)
+  momentum waves                 phase scale (overview.md frontmatter "deps"; complete = satisfied)
   momentum waves --tasks [ref]   task-group scale ("## Group N — t (deps: G0)" in tasks.md;
                                  fully-checked groups = satisfied); ref = phase id | path;
                                  default = the phase bound to your branch (Rule 15)
@@ -128,10 +129,10 @@ lanes land). Cross-repo waves: momentum swarm (same engine).`);
     }
     const graph = graphs.phaseGraph(root);
     if (!graph) {
-      console.error('✗ specs/phases/index.json not found or unreadable');
+      console.error('✗ no phase metadata found (specs/phases/*/overview.md frontmatter, or legacy specs/phases/index.json)');
       return 1;
     }
-    console.log('phase waves (non-complete phases; index.json "deps"):');
+    console.log(`phase waves (non-complete phases; ${graph.source} "deps"):`);
     const waves = graph.nodes.length
       ? computeWaveLayers(graph.nodes, graph.edges, { label: 'waves' })
       : [];

@@ -1274,7 +1274,7 @@ Lanes — concurrent workstreams in ONE repo (Phase 21b, Rule 15):
                                        signal | inbox | land (see: momentum lanes help)
 
 Waves — wave plan from dependency annotations (Phase 21c, one engine every scale):
-  momentum waves                      Phase-scale waves (index.json "deps")
+  momentum waves                      Phase-scale waves (overview.md frontmatter "deps")
   momentum waves --tasks [ref]        Task-group waves for a tasks.md
                                        (default: the phase bound to your branch)
 
