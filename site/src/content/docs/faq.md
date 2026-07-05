@@ -178,7 +178,7 @@ skill-authoring command is on the roadmap for Phase 16.
 Not yet. An MCP server is on the Phase 16 (Platform) roadmap — that would
 expose momentum's primitives as MCP tools so agents that speak MCP can
 invoke them without needing a slash-command surface. Until then, momentum
-ships as adapters per agent (Claude Code, Codex, Antigravity, Cursor,
+ships as adapters per agent (opencode, Claude Code, Codex, Antigravity, Cursor,
 Gemini CLI).
 
 ## Does momentum work with private GitHub repos?

@@ -313,8 +313,8 @@ project. `momentum upgrade` syncs the rules from the published template;
 anything under `## Project Extensions` is **preserved** so project-specific
 rules don't get clobbered on upgrade.
 
-The rules are referenced from the primary instruction file (`CLAUDE.md` for
-Claude Code, `AGENTS.md` for Codex and Antigravity). Agents load the
+The rules are referenced from the primary instruction file (`AGENTS.md` for
+opencode, Codex, and Antigravity; `CLAUDE.md` for Claude Code). Agents load the
 instruction file at session start, which in turn references the rules file.
 
 [→ canonical source on GitHub](https://github.com/avinash-singh-io/momentum/blob/main/.agent/rules/project.md)
