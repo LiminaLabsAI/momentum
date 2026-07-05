@@ -34,6 +34,7 @@ type: Guide
 | 22 | Reach: opencode Adapter | Complete (v0.27.0) | [phase-22-opencode-adapter/](phase-22-opencode-adapter/) |
 | 23 | Rules Unification (single-source agent instructions) | Complete (v0.26.0) | [phase-23-rules-unification/](phase-23-rules-unification/) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete (v0.27.0) | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
+| 22b | Antigravity 2.0 Full Adoption | In Progress (target v0.28.0) | [phase-22b-antigravity-2-adoption/](phase-22b-antigravity-2-adoption/) |
 
 ## Phase Structure
 
