@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "momentumVersion": "0.27.0",
+  "momentumVersion": "0.29.0",
   "agent": "claude-code",
   "installedAt": "2026-07-03",
   "updatedAt": "2026-07-05",
