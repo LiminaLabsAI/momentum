@@ -1,3 +1,7 @@
+---
+type: Decision
+---
+
 # NNNN — Decision Title
 
 > **Status**: proposed | accepted | superseded | deprecated

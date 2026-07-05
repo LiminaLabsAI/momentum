@@ -1,3 +1,7 @@
+---
+type: Roadmap
+---
+
 # Roadmap
 
 > **Last Updated**: YYYY-MM-DD

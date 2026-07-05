@@ -128,3 +128,29 @@ test('upgrade --dry-run previews the migration without touching the JSON files',
     rmrf(dir);
   }
 });
+
+test('fresh `momentum init` scaffolds a conformant OKF bundle (Phase 24 G3)', () => {
+  const tmpRoot = mktmp('momentum-okf-init-');
+  const dir = path.join(tmpRoot, 'fresh-project');
+  require('node:fs').mkdirSync(dir);
+  try {
+    const res = runCli(['init', dir, '--agent', 'claude-code'], { timeout: 60000 });
+    assert.equal(res.status, 0, res.stderr);
+    assert.equal(exists(path.join(dir, 'specs', 'phases', 'index.json')), false, 'no legacy JSON in fresh scaffolds');
+    assert.equal(exists(path.join(dir, 'specs', 'decisions', 'impact-map.json')), false);
+    assert.match(read(path.join(dir, 'specs', 'index.md')), /^---\nokf_version: "0\.1"\n---\n/);
+    assert.match(read(path.join(dir, 'specs', 'decisions', 'impact-map.md')), /type: Impact Map/);
+
+    const check = runCli(['okf', 'check', dir]);
+    assert.equal(check.status, 0, check.stdout);
+    assert.match(check.stdout, /conformant bundle/);
+
+    // The scaffolded indexes are exactly what `okf index` would regenerate —
+    // template listings and the generator can never drift apart.
+    const idx = runCli(['okf', 'index', dir]);
+    assert.equal(idx.status, 0, idx.stderr);
+    assert.match(idx.stdout, /= bundle indexes up to date/);
+  } finally {
+    rmrf(tmpRoot);
+  }
+});

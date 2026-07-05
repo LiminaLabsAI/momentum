@@ -17,14 +17,14 @@ Token-efficient: reads history + 2 tiny indexes first, then only targeted files.
     `specs/adhoc/<id>/record.md` (and `specs/adhoc/history.md` if present).
     If there is no phase and no ad-hoc record, there is nothing to sync —
     report "nothing to sync" and stop.
-- Read `specs/phases/index.json` (~2KB)
-- Read `specs/decisions/impact-map.json` (~3KB)
+- Read the `tags:` frontmatter of each `specs/phases/*/overview.md` (OKF bundle)
+- Read `specs/decisions/impact-map.md` (~3KB)
 
 ### Step 2: Build targeted file list
 For each history entry:
   - Extract Topics list
-  - Look up each topic in index.json → collect affected phase tasks.md files
-  - Look up each topic in impact-map.json → collect affected spec files/sections
+  - Match each topic against phase `tags:` frontmatter → collect affected phase tasks.md files
+  - Look up each topic in the impact-map.md table → collect affected spec files/sections
   - Deduplicate the combined list
   - For monorepo: EXCLUDE files in `specs/architecture/`
     (constitution — never auto-synced, only amended via formal process)
@@ -57,9 +57,10 @@ For each file that needs updating:
   - Show the user what will change
   - Use the Edit tool to make the change
 
-### Step 6: Update phase index if scope changed
+### Step 6: Update phase metadata if scope changed
 If any [SCOPE_CHANGE] entries exist:
-  - Update `specs/phases/index.json` for the active phase's topic list
+  - Update the active phase's `overview.md` frontmatter `tags:` list
+  - Run `momentum okf index` to refresh the bundle listings
 
 ### Step 7: Commit all changes
 ```bash

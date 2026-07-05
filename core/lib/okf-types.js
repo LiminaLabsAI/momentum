@@ -35,7 +35,10 @@ const RULES = [
   [/^phases\/[^/]+\/retrospective\.md$/, 'Retrospective'],
   [/^phases\/[^/]+\/evidence\/.+\.md$/, 'Evidence'],
   [/^adhoc\/[^/]+\/record\.md$/, 'Ad-hoc Record'],
+  [/^adhoc\/_TEMPLATE\.md$/, 'Ad-hoc Record'], // scaffold template — copies become record.md
   [/^changelog\/.+\.md$/, 'Changelog'],
+  [/^architecture\/.+\.md$/, 'Architecture Spec'],
+  [/^vision\/.+\.md$/, 'Vision'],
   [/(^|\/)README\.md$/, 'Guide'],
 ];
 

@@ -19,10 +19,10 @@
 - [x] migration e2e + check tests
 
 ## Group 3 — Templates + instructions (deps: G0)
-- [ ] specs-templates frontmatter + JSON→MD template swap + index.md templates
-- [ ] 7 recipes + rules-body.md + CLAUDE.md template + decisions README sweep
-- [ ] /validate OKF section
-- [ ] fingerprint re-baseline with meta
+- [x] specs-templates frontmatter + JSON→MD template swap + index.md templates
+- [x] 7 recipes + rules-body.md + CLAUDE.md template + decisions README sweep
+- [x] /validate OKF section
+- [x] fingerprint re-baseline with meta
 
 ## Group 4 — Self-repo migration (deps: G1, G2, G3)
 - [ ] real-upgrade migration of this repo's specs/ + diff review

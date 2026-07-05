@@ -117,3 +117,20 @@ so orphan cleanup can never touch user specs. New `momentum okf check|index`
 regression suites.
 
 ---
+
+### [NOTE] 2026-07-05 — G3 complete: templates OKF-native, instruction sweep, fingerprints re-baselined
+Topics: okf, templates, recipes, fingerprints, taxonomy
+Affects-phases: phase-24-okf-adoption
+Affects-specs: none (spec updates at /sync-docs)
+Detail: core/specs-templates migrated BY the G2 engine itself (13 files gained
+frontmatter; index.json/impact-map.json templates → impact-map.md + 3 generated
+index.md listings, so scaffold and generator can never drift — asserted by the
+new fresh-init test). Taxonomy gained 3 additive rules (architecture/ →
+Architecture Spec, vision/ → Vision, adhoc/_TEMPLATE.md → Ad-hoc Record).
+Swept 7 recipes + rules-body.md (regenerated CLAUDE.md + both AGENTS.md) +
+decisions README; /validate gained step 4b delegating to `momentum okf check`.
+All 3 adapter fingerprints re-baselined with a phase-24 note. Verification:
+18/18 okf+fingerprint suites, 24/24 instruction/install/upgrade, tarball +
+agent-rules-migration green.
+
+---

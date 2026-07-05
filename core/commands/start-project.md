@@ -58,7 +58,7 @@ Turns a settled concept into a fully spec-driven project: vision, roadmap, Phase
    - `specs/planning/roadmap.md`
    - `specs/phases/phase-0-shortname/{overview,plan,tasks,history}.md`
    - `CLAUDE.md` (the primary instruction file — full rules included)
-   - `specs/phases/index.json`, `specs/decisions/impact-map.json`
+   - `specs/index.md` (OKF bundle root), `specs/decisions/impact-map.md`
    - `specs/status.md`, `specs/backlog/backlog.md`
    - `specs/decisions/0000-template.md`, `specs/decisions/README.md`
    - `specs/phases/README.md`, `specs/README.md`

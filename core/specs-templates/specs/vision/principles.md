@@ -1,3 +1,7 @@
+---
+type: Vision
+---
+
 # Principles
 
 > Guiding decisions throughout the project. When trade-offs arise, these resolve them.

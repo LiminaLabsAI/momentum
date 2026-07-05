@@ -1,3 +1,7 @@
+---
+type: Backlog
+---
+
 # Backlog
 
 > **Last Updated**: YYYY-MM-DD

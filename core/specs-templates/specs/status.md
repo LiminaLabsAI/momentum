@@ -1,3 +1,7 @@
+---
+type: Status
+---
+
 # Project Status
 
 > **Last Updated**: YYYY-MM-DD

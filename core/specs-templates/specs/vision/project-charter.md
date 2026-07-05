@@ -1,3 +1,7 @@
+---
+type: Vision
+---
+
 # Project Charter
 
 > **Project**: <Project Name>

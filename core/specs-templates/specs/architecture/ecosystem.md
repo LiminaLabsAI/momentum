@@ -1,3 +1,7 @@
+---
+type: Architecture Spec
+---
+
 # Ecosystem Layer — Reference
 
 > Single source of truth for how momentum models multi-repo
