@@ -63,3 +63,15 @@ The OKF adoption ADR is 0005; all four phase files written with the corrected
 number.
 
 ---
+
+### [DISCOVERY] 2026-07-05 — BUG-017: committed .githooks hooks lack exec bits
+Topics: git-hooks, lifecycle, lanes, exec-bits
+Affects-phases: none (bounded quick-task, not Phase 24 scope)
+Affects-specs: specs/backlog/backlog.md#bugs
+Detail: The Phase 24 brainstorm commit surfaced git's "hook was ignored — not
+set as executable" hint: `.githooks/commit-msg` + `pre-push` are committed
+100644, so Rule 6 enforcement is silently OFF in every lane worktree/fresh
+clone (primary checkout masked by local chmod). BUG-012 guard covers only
+`*.sh`. Four `.bak` twins also committed. Filed as BUG-017 (P1).
+
+---
