@@ -106,3 +106,8 @@ entry carries matching `Topics:`.
 | tier-2 | specs/planning/roadmap.md | Timeline |
 | instructions | specs/decisions/0004-single-source-instruction-generation.md | Decision |
 | instructions | specs/status.md | Summary |
+| opencode-adapter | core/adapter-capabilities.md | Matrix |
+| opencode-adapter | core/adapter-parity-matrix.md | (all) |
+| opencode-adapter | specs/planning/roadmap.md | Timeline |
+| opencode-adapter | README.md | Adapter Authors |
+| reach | specs/planning/roadmap.md | Timeline |
