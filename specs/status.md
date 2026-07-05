@@ -4,9 +4,9 @@ type: Status
 
 # Project Status
 
-> **Last Updated**: 2026-07-05
-> **Current Phase**: Phase 22b — Antigravity 2.0 Full Adoption (lane; opencode landed — see `momentum lanes`)
-> **Latest Release**: v0.27.0 — Phase 24 OKF Adoption (npm latest = 0.27.0)
+> **Last Updated**: 2026-07-06
+> **Current Phase**: Between phases — Phases 24 / 22 / 22b all landed + released (v0.27.0 → v0.29.0). Next up: Phase 25 Intelligence (target v0.30.0). Site redesign shipped as an ad-hoc lane.
+> **Latest Release**: v0.29.0 — Phase 22b Antigravity 2.0 Full Adoption (npm latest = 0.29.0; v0.28.0 shipped to GitHub but its npm artifact was lost to the release race — see changelog)
 > **Health**: On Track
 
 ## Summary
@@ -46,6 +46,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete | v0.24.0 (2026-07-03) |
 | 21c | Parallel Lanes — Fly (Recursive Waves) | Complete | v0.25.0 (2026-07-03) |
 | 22 | Reach: opencode Adapter | Complete | v0.28.0 (2026-07-05) |
+| 22b | Antigravity 2.0 Full Adoption | Complete | v0.29.0 (2026-07-05) |
 | 23 | Rules Unification (single-source agent instructions) | Complete | v0.26.0 (2026-07-04) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete | v0.27.0 (2026-07-05) |
 
@@ -71,8 +72,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| Phase 22 — Reach: opencode Adapter | `phase-22-opencode-adapter` | Complete on lane — landing queued (target v0.28.0, retargeted after OKF took v0.27.0) | All groups done |
-| 22b — Antigravity 2.0 Full Adoption | `phase-22b-antigravity-2-adoption` | Complete on lane — landing queued (target v0.29.0, retargeted) | All groups done; awaiting Rule 6 approval |
+| _(none — Phases 22 / 22b landed + released as v0.28.0 / v0.29.0; between phases)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -82,7 +82,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 25 | Intelligence | Not Started (target v0.29.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 25 | Intelligence | Not Started (target v0.30.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 26 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
 
 ## Unscheduled Future Work
@@ -132,6 +132,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-06**: **Release-tracking reconciliation.** Phases 24 (OKF), 22 (opencode) and 22b (Antigravity 2.0) all **landed on `main` and released on 2026-07-05** — git tags + GitHub Releases for v0.27.0 / v0.28.0 / v0.29.0, npm `latest = 0.29.0`, `package.json = 0.29.0` — but the summary docs still described them as "landing queued / awaiting approval." Reconciled the stale state: `status.md` header (Latest Release v0.27.0 → **v0.29.0**; Active Phase table cleared; 22b added to Completed Phases; Phase 25 Intelligence target v0.29.0 → **v0.30.0**), `specs/phases/README.md` (22 v0.27.0 → **v0.28.0**; 22b In Progress → **Complete v0.29.0**; 21a/b/c "release parked" → released), and `specs/planning/roadmap.md` (22/22b → Complete; opencode timeline row v0.27.0 → v0.28.0 Released; v0.29.0 row added). No code change — tracking only. The v0.28.0 npm-artifact loss (release race) is documented in the changelog; npm history is 0.27.0 → 0.29.0 (0.29.0 fully contains 0.28.0).
 
 - **2026-07-05**: **Site redesign COMPLETE on lane `feat-site-redesign` (landing + Pages deploy at operator gate).** Implemented the operator-provided design "Momentum Home.dc.html" (imported via the `claude_design`/DesignSync MCP) and rebuilt the **whole** site as **one pure-Astro stack** — Starlight dropped entirely — on the cerebrio cobalt/glass/**Geist** design system (Lucide inlined via `astro-icon`, no external CDN). New home (`pages/index.astro`, pixel-faithful, light-only) + docs (`pages/[...slug].astro` over a plain `docs` collection with sidebar / on-this-page / prev-next / ⌘K palette / light-dark toggle) share `BaseLayout` + `tokens.css`. Verified: `npm run build` 12 pages green + content gate pass; Playwright functional (theme persist, ⌘K, 0 console errors) + visual (light/dark) review. Docs URLs + content preserved. Record: `specs/adhoc/feat-site-redesign/record.md`. Operator directive captured: one consistent stack, no framework patchwork.
 

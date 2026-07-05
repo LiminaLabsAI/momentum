@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # MCP Servers (`mcp_config.json`)
 
 The Model Context Protocol (MCP) is an open standard that enables developers to

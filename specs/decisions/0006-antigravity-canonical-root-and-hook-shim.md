@@ -1,3 +1,7 @@
+---
+type: Decision
+---
+
 # ADR-0006: Antigravity canonical root `.agents/` + payload-adapter hook shim
 
 > **Status**: Accepted (2026-07-05, Phase 22b G1)

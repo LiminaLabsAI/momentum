@@ -6,4 +6,5 @@
 * [One recursive wave planner; annotations as data; lane-state stays internal](/decisions/0003-recursive-wave-planner.md)
 * [ADR-0004: Single-Source Instruction Generation](/decisions/0004-single-source-instruction-generation.md)
 * [ADR-0005: Adopt OKF v0.1 as the Specs Storage Format](/decisions/0005-adopt-okf.md)
+* [ADR-0006: Antigravity canonical root `.agents/` + payload-adapter hook shim](/decisions/0006-antigravity-canonical-root-and-hook-shim.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.

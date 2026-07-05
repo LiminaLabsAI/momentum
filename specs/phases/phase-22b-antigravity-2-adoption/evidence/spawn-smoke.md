@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # G2 live spawn smoke — 2026-07-05, agy 1.0.16
 
 ## Invocation (adapter.spawn, MOMENTUM_AGY_PRINT_TIMEOUT=60s)

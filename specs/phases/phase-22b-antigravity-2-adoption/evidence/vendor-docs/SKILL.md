@@ -1,4 +1,8 @@
 ---
+type: Evidence
+---
+
+---
 name: agy-customizations
 description: >-
   Comprehensive guide and reference for the Antigravity Customization System.

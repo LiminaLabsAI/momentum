@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Lifecycle Hooks (`hooks.json`)
 
 Lifecycle hooks allow you to execute external shell commands or scripts at

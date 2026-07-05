@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Plugins
 
 Plugins are namespaced, shareable bundles that package **Skills**, **Rules**,

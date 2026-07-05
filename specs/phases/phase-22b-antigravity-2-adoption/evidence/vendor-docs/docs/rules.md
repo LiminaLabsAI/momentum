@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Workspace Rules
 
 Rules are guidelines and constraints that the agent must follow when operating

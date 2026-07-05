@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 22b History
 
 > Append-only. Format per Rule 8.

@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # JSON Configuration Files
 
 JSON configuration files allow you to explicitly register and manage

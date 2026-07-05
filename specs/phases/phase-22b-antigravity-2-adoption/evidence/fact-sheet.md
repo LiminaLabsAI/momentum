@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Antigravity 2.x Fact Sheet — locked by live probes
 
 > **Pinned to**: `agy` CLI **1.0.16** (`agy-version.txt`) · IDE 2.1.1 installed ·
