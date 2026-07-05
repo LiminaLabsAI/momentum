@@ -27,20 +27,20 @@ If you add a new adapter, fill in **every** column. The audit test
 asserts every adapter declares the full capability surface that
 orchestration code depends on.
 
-## Matrix (as of 2026-06-14, post-Phase 17.5 G5)
+## Matrix (as of 2026-07-05, Phase 22 G0 — opencode column added)
 
-| Capability | Claude Code | Codex | Antigravity |
-|---|---|---|---|
-| `hooks` | ✅ | ✅ | ✅ |
-| `slashCommands` | ✅ | ✅ | ❌¹ |
-| `subagents` | ✅ | ✅² | ✅ |
-| `parallelSubagents` | ✅ | ❌² | ✅ |
-| `sessionStartHook` | ✅ | ✅ | ❌³ |
-| `skills` | ❌ | ❌⁴ | ❌ |
-| `browser` | ❌ | ❌⁴ | ❌ |
-| `computerUse` | ❌ | ❌⁴ | ❌ |
-| `artifacts` (adapter-specific) | — | — | ✅ |
-| `planningMode` (adapter-specific) | — | — | ✅ |
+| Capability | Claude Code | Codex | Antigravity | opencode |
+|---|---|---|---|---|
+| `hooks` | ✅ | ✅ | ✅ | ✅⁵ |
+| `slashCommands` | ✅ | ✅ | ❌¹ | ✅⁵ |
+| `subagents` | ✅ | ✅² | ✅ | ✅⁵ |
+| `parallelSubagents` | ✅ | ❌² | ✅ | ✅⁵ |
+| `sessionStartHook` | ✅ | ✅ | ❌³ | ❌⁵ |
+| `skills` | ❌ | ❌⁴ | ❌ | ✅⁵ |
+| `browser` | ❌ | ❌⁴ | ❌ | ❌ |
+| `computerUse` | ❌ | ❌⁴ | ❌ | ❌ |
+| `artifacts` (adapter-specific) | — | — | ✅ | — |
+| `planningMode` (adapter-specific) | — | — | ✅ | ✅ |
 
 ## Phase 17 (v0.20.0) + Phase 17.5 (v0.20.2) + Phase 18 (v0.20.4) — `/swarm` cross-adapter
 
@@ -79,6 +79,8 @@ conditions.
 2. **Codex `subagents` / `parallelSubagents`** — Codex declares a subagent surface, but parallel fan-out has not yet been validated by momentum smoke tests. The capability-routing helper treats Codex as sequential for `dispatch` until a future release proves parallel viability in CI. Subagent existence is `true`; parallel fan-out is `false`. Promote `parallelSubagents` to `true` once Codex parallel dispatch is exercised end-to-end.
 3. **Antigravity `sessionStartHook: false`** — Antigravity has no SessionStart hook surface today. The handoff inbox pickup hint surfaces via primary-instruction text in `AGENTS.md` instead. `/continue` and `momentum continue` still work; the user just doesn't get an automatic banner.
 4. **Codex `skills` / `browser` / `computerUse`** — declared `false` today; planned for a future Codex feature drop. When Codex ships those features, flip the boolean and remove the corresponding `roadmap` entry in the same PR.
+
+5. **opencode (Phase 22, LIVE-validated 2026-07-05)** — every boolean set from real-runtime evidence against opencode 1.17.13 with real model calls (free tier, zero credentials) — see `specs/phases/phase-22-opencode-adapter/evidence/val-opencode-live.txt`. `parallelSubagents: true` earned via overlapping task-tool timestamps; `skills: true` earned via a live skill-tool load of momentum-orient (**a momentum first — no other adapter has live-validated skills**); `sessionStartHook: false` because `session.created` was not observed in `opencode run` mode with a pending handoff (banner code ships and may fire in TUI sessions; promote only on observed evidence). Runtime caveat: a generic `event` bus hook hangs run-mode — momentum's plugin uses named hooks only.
 
 ## ENH-023 and ENH-024 closed (Phase 11 G0)
 

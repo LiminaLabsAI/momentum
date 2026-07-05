@@ -1,0 +1,106 @@
+# Phase 22 G5 — opencode live validation (VAL checklist)
+
+Captured: 2026-07-05
+Runtime:  opencode 1.17.13 (npm opencode-ai, /opt/homebrew/bin/opencode)
+Model:    opencode/deepseek-v4-flash-free (opencode free tier — ZERO credentials
+          configured; `opencode auth list` → 0 credentials). Every check below
+          ran against the REAL opencode runtime with real model calls.
+Project:  momentum init --agent opencode scaffold (scratch dir)
+
+## Check 1 — slash-command discovery + invocation ✅ PASS
+
+`opencode run "/validate"` EXECUTED the momentum validate recipe end-to-end:
+output shows the full spec-structure health check ("6/6 checks passed",
+".opencode/commands/ standard commands — All 11 required commands present").
+Commands at .opencode/commands/ are discovered and invocable in run-mode.
+
+## Check 2 — brainstorm gate blocks specs/ writes ✅ PASS
+
+With `.momentum/brainstorm-active` present, a real edit-tool call targeting
+specs/status.md was BLOCKED by the plugin's tool.execute.before throw. The
+model received and quoted the exact gate text:
+
+    [brainstorm-gate] Blocked: cannot write to specs/ during active brainstorm.
+    [brainstorm-gate] Path: .../specs/status.md
+    ...rm .momentum/brainstorm-active and retry the write.
+
+specs/status.md verified unchanged (grep GATE-TEST → 0 matches).
+NEGATIVE CONTROL: after `rm .momentum/brainstorm-active`, the same specs/
+edit succeeded (GATE-CLEAR appended) — the gate is sentinel-conditional.
+
+## Check 3 — history reminder fires ✅ PASS (after live-payload fix)
+
+FIRST ATTEMPT FAILED and exposed a real bug the synthetic tests missed:
+`tool.execute.after` does NOT carry tool args in the live runtime (only the
+before hook sees them), so the reminder never resolved the edited path.
+Fixed with callID correlation (args captured at before-time, consumed at
+after-time; bounded map; output.args fallback retained). After the fix, a
+real write-tool call creating src/reminder-check.js produced
+`.momentum/history-reminder-stamp` on disk. Unit tests updated to the
+live-confirmed payload shape.
+
+## Check 4 — session.created handoff banner ❌ NOT CONFIRMED
+
+With a pending `.momentum/inbox/handoff-001.md`, no banner appeared in run
+output or ~/.local/share/opencode/log during `opencode run`. A probe plugin
+confirmed `session.created` does not fire in non-interactive run-mode
+(probe file-log shows plugin load only, zero events). Additional finding:
+declaring a generic `event` bus hook HANGS `opencode run` (3-min timeout,
+reproduced twice; removing the probe restored normal runs) — momentum.js
+deliberately uses only named hooks and is unaffected (all other checks ran
+with it loaded). VERDICT: `sessionStartHook` stays FALSE. The banner code
+ships (harmless, may fire in TUI sessions) but the capability is not
+claimed without observed runtime evidence — the VAL-002 standard.
+
+## Check 5 — agent discovery ✅ PASS
+
+`opencode agent list` inside the scaffold (real runtime, no model call):
+
+    momentum-reviewer-architecture (subagent)
+    momentum-reviewer-qa (subagent)
+    momentum-reviewer-security (subagent)
+    swarm-supervisor (all)
+
+All four momentum agents discovered with the intended modes.
+
+## Check 6 — swarm spawn pattern ✅ PASS
+
+From a FOREIGN cwd (/tmp):
+`opencode run --dir <project> --agent swarm-supervisor "...reply SUPERVISOR-OK
+and your current working directory"` → session banner shows
+"swarm-supervisor · deepseek-v4-flash-free" and the reply was
+"SUPERVISOR-OK <project-path>" — agent selection AND cwd pinning both work
+exactly as adapter.spawn() shells them. No MCP shim needed.
+
+## Check 7 — skills: native discovery + multi-adapter coexistence ✅ PASS
+
+The skill tool live-loaded momentum-orient from .opencode/skills/ (tool
+event `Skill "momentum-orient"` in output; agent correctly reported the
+skill's first instruction file = specs/status.md). Coexistence: with a
+same-named copy at .agents/skills/momentum-orient/SKILL.md (the
+Codex/Antigravity path), the skill tool still loaded momentum-orient
+cleanly (SUCCESS, no duplicate error) — multi-adapter installs coexist.
+
+## Bonus — parallel task fan-out (parallelSubagents) ✅ PASS
+
+`opencode run --format json` with a two-subagent fan-out prompt. Task tool
+events (deduped by callID, timestamps in ms):
+
+    task 1: start 1783248474810  end 1783248477659  (completed)
+    task 2: start 1783248475105  end 1783248477713  (completed)
+
+Task 2 STARTED before task 1 ENDED — overlapping execution windows =
+genuine concurrent subagent execution.
+
+## Capability verdicts (from this evidence only)
+
+| Capability | Verdict |
+|---|---|
+| hooks | true (checks 2, 3) |
+| slashCommands | true (check 1) |
+| subagents | true (checks 5, 6, fan-out) |
+| parallelSubagents | **true — flipped on overlapping-timestamp evidence** |
+| sessionStartHook | **false — event not observed in run-mode (check 4)** |
+| skills | **true — flipped on live skill-tool load (check 7)** |
+
+skills:true is a momentum first — no other adapter has it live-validated.

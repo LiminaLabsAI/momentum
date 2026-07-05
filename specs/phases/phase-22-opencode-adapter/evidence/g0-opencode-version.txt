@@ -1,0 +1,8 @@
+# VAL evidence — G0 live probe (2026-07-05)
+$ opencode --version
+1.17.13
+
+$ which opencode
+/opt/homebrew/bin/opencode
+
+npm registry: opencode-ai@1.17.13
