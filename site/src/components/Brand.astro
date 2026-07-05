@@ -3,9 +3,15 @@
  * Brand — the momentum "fast-forward" mark (three chevrons as a speed trail)
  * + optional wordmark. Per the brand kit:
  *   - cobalt (#0023AE) on light, white on dark (via currentColor)
- *   - a single forward sweep on load, and again on hover — never looping
+ *   - one forward sweep on the first page load of a session, and again on
+ *     hover of the whole lockup (mark OR wordmark) — never looping
  *   - honours prefers-reduced-motion (the mark just appears)
- * Static raster/vector variants live in /public/brand/ (favicons, app icons).
+ *
+ * Triggers are JS-assisted for reliability (a CSS-only :hover duration swap
+ * does NOT restart a finished animation). Load-once-per-session is decided
+ * pre-paint in BaseLayout (adds `html.mm-swept` on later navigations); hover
+ * restarts via the `.mm-sweep` class below. Static raster/vector variants
+ * live in /public/brand/ (favicons, app icons).
  */
 interface Props {
 	/** Render the "momentum" wordmark next to the mark. */
@@ -37,7 +43,7 @@ const { wordmark = false, size = 28, href = '/', class: cls = '' } = Astro.props
 	<slot />
 </a>
 
-<style>
+<style is:global>
 	.mm-brand {
 		display: inline-flex;
 		align-items: center;
@@ -46,44 +52,62 @@ const { wordmark = false, size = 28, href = '/', class: cls = '' } = Astro.props
 		/* mark colour — the only brand hue; white on dark surfaces */
 		color: var(--brand-ink);
 	}
-	:global([data-theme='dark']) .mm-brand {
+	[data-theme='dark'] .mm-brand {
 		color: #fff;
 	}
-	.mm-word {
+	.mm-brand .mm-word {
 		font-weight: 600;
 		font-size: 16px;
 		letter-spacing: -0.03em;
 		line-height: 1;
 		color: var(--fg-0);
 	}
-	.mm-mark {
+	.mm-brand .mm-mark {
 		display: block;
 		flex: none;
 	}
-	.mm-mark .c {
+	.mm-brand .mm-mark .c {
 		stroke: currentColor;
 		stroke-width: 5;
 		stroke-linecap: round;
 		stroke-linejoin: round;
 		transform-box: fill-box;
 		transform-origin: center;
-		animation: mm-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		opacity: var(--b); /* resting speed-trail */
 	}
-	.mm-mark .c1 {
+	.mm-brand .mm-mark .c1 {
 		--b: 0.3;
 	}
-	.mm-mark .c2 {
+	.mm-brand .mm-mark .c2 {
 		--b: 0.6;
+	}
+	.mm-brand .mm-mark .c3 {
+		--b: 1;
+	}
+	/* Load sweep — only on the first page of a session; BaseLayout adds
+	   html.mm-swept (pre-paint) on later navigations so it stays static.
+	   :where() keeps the gate at zero specificity so the hover rule (below)
+	   always wins when .mm-sweep is present, even on the first page. */
+	:where(html:not(.mm-swept)) .mm-brand .mm-mark .c {
+		animation: mm-brand-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+	:where(html:not(.mm-swept)) .mm-brand .mm-mark .c2 {
 		animation-delay: 0.09s;
 	}
-	.mm-mark .c3 {
-		--b: 1;
+	:where(html:not(.mm-swept)) .mm-brand .mm-mark .c3 {
 		animation-delay: 0.18s;
 	}
-	.mm-brand:hover .mm-mark .c {
-		animation: mm-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	/* Hover sweep — JS toggles .mm-sweep on mouseenter for a reliable restart. */
+	.mm-brand.mm-sweep .mm-mark .c {
+		animation: mm-brand-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 	}
-	@keyframes mm-in {
+	.mm-brand.mm-sweep .mm-mark .c2 {
+		animation-delay: 0.09s;
+	}
+	.mm-brand.mm-sweep .mm-mark .c3 {
+		animation-delay: 0.18s;
+	}
+	@keyframes mm-brand-in {
 		from {
 			opacity: 0;
 			transform: translateX(-6px);
@@ -94,10 +118,32 @@ const { wordmark = false, size = 28, href = '/', class: cls = '' } = Astro.props
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.mm-mark .c,
-		.mm-brand:hover .mm-mark .c {
-			animation: none;
+		.mm-brand .mm-mark .c {
+			animation: none !important;
 			opacity: var(--b);
 		}
 	}
 </style>
+
+<script>
+	const html = document.documentElement;
+	// Once the first-session load sweep has played, mark <html> swept so the
+	// persistent load rule releases — otherwise it keeps the same-named
+	// animation on the mark and hover can't restart it. (Later navigations
+	// already get .mm-swept pre-paint from BaseLayout.)
+	if (!html.classList.contains('mm-swept')) {
+		window.setTimeout(() => html.classList.add('mm-swept'), 850);
+	}
+
+	// Hover sweep — replay on mouseenter of the whole lockup (mark OR
+	// wordmark). remove → reflow → re-add restarts the CSS animation reliably.
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+	for (const brand of document.querySelectorAll('.mm-brand')) {
+		brand.addEventListener('mouseenter', () => {
+			if (reduce.matches) return;
+			brand.classList.remove('mm-sweep');
+			void brand.getBoundingClientRect(); // force reflow so re-add restarts
+			brand.classList.add('mm-sweep');
+		});
+	}
+</script>
