@@ -28,13 +28,13 @@ type: Guide
 | 18 | Swarm Parity (Codex + Antigravity) | Complete (v0.20.4) | [phase-18-swarm-parity/](phase-18-swarm-parity/) |
 | 19 | Lifecycle Hardening | Complete (v0.21.0) | [phase-19-lifecycle-hardening/](phase-19-lifecycle-hardening/) |
 | 20 | Upgrade Hardening | Complete (v0.22.0) | [phase-20-upgrade-hardening/](phase-20-upgrade-hardening/) |
-| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete (v0.23.0 — release parked on approval) | [phase-21a-lanes-walk/](phase-21a-lanes-walk/) |
-| 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete (v0.24.0 — release parked on approval) | [phase-21b-lanes-run/](phase-21b-lanes-run/) |
-| 21c | Parallel Lanes — Fly (Recursive Waves) | Complete (v0.25.0 — release parked on approval) | [phase-21c-lanes-fly/](phase-21c-lanes-fly/) |
-| 22 | Reach: opencode Adapter | Complete (v0.27.0) | [phase-22-opencode-adapter/](phase-22-opencode-adapter/) |
+| 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete (v0.23.0) | [phase-21a-lanes-walk/](phase-21a-lanes-walk/) |
+| 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete (v0.24.0) | [phase-21b-lanes-run/](phase-21b-lanes-run/) |
+| 21c | Parallel Lanes — Fly (Recursive Waves) | Complete (v0.25.0) | [phase-21c-lanes-fly/](phase-21c-lanes-fly/) |
+| 22 | Reach: opencode Adapter | Complete (v0.28.0) | [phase-22-opencode-adapter/](phase-22-opencode-adapter/) |
+| 22b | Antigravity 2.0 Full Adoption | Complete (v0.29.0) | [phase-22b-antigravity-2-adoption/](phase-22b-antigravity-2-adoption/) |
 | 23 | Rules Unification (single-source agent instructions) | Complete (v0.26.0) | [phase-23-rules-unification/](phase-23-rules-unification/) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete (v0.27.0) | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
-| 22b | Antigravity 2.0 Full Adoption | In Progress (target v0.28.0) | [phase-22b-antigravity-2-adoption/](phase-22b-antigravity-2-adoption/) |
 
 ## Phase Structure
 

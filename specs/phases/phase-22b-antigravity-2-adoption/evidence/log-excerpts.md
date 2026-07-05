@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Log excerpts (raw *.log files are gitignored; these are the load-bearing lines)
 
 ## Healthy hook load + execution (probe-03.log, 15:58)

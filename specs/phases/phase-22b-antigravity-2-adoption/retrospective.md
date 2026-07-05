@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 22b Retrospective — Antigravity 2.0 Full Adoption
 
 > **Completed on lane**: 2026-07-05 (single session, ~4.5h wall clock)

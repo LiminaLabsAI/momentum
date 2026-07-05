@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # G3 plugin-pack live validation — 2026-07-05, agy 1.0.16
 
 ```

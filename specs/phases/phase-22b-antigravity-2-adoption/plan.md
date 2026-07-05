@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 22b Implementation Plan
 
 ```

@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # G0 Probe Battery — agy 1.0.16, 2026-07-05
 
 Reproducible probes against a fresh `momentum init --agent antigravity` fixture.

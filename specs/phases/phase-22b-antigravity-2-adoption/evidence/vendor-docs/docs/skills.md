@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Workspace Skills
 
 Skills are modular packages of knowledge and procedures that extend the agent's

@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 22b Tasks
 
 > Execution: G0 → G1 → (G2 ∥ G3) → G4 → G5
