@@ -22,3 +22,4 @@ node_modules/
 # Added by momentum upgrade — keep momentum + OS noise out of git
 .momentum/*
 !.momentum/installed.json
+.githooks/*.bak
