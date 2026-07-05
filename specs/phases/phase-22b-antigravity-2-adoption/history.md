@@ -79,3 +79,10 @@ Affects-specs: none
 Detail: G0 evidence (fact-sheet §7) found no documented or observed project-level subagent-definition surface in agy 1.0.16 — the planned "reviewers as native subagent defs" deliverable would have been Phase-18-style fiction, so it is dropped; reviewers stay skills (semantic activation IS the vendor mechanism). Shipped instead: `momentum antigravity plugin-pack [--global]` (plugin.json + 5 skills; live-validated with `agy plugin validate` → [ok]) and the `momentum doctor` advisory (lock-file-gated, official installer, never provisions — the ENH-051 supersession made real). Bonus discovery: the plugin validator recognizes undocumented `agents`/`commands` plugin subdirs — future surfaces. Suite 740 → 745.
 
 ---
+### [NOTE] 2026-07-05 — G4: truth-sync landed; VAL-002 resolved after 20 days blocked
+Topics: antigravity, val-002, backlog, capabilities
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: core/adapter-capabilities.md, core/adapter-parity-matrix.md, docs/swarm.md, specs/backlog/backlog.md, specs/planning/roadmap.md
+Detail: Every shipped surface now states the evidenced truth: hooks rows shipped/shipped-as-preinvocation (fire-verified vs agy 1.0.16), workflows overlay path locked, spawn rows on real flags, sessionStartHook false for the RIGHT reason. Backlog: VAL-002 resolved (filed 2026-06-11, blocked since 2026-06-15 — the official CLI dissolved the premise); ENH-051 closed-superseded; FEAT-008 closure recommended (operator sign-off at landing); ENH-053 filed for deferred 2.0 surfaces (scheduled tasks, Stop-hook Rule-12 nudge, undocumented plugin agents/commands subdirs, rules triggers).
+
+---

@@ -59,14 +59,14 @@ to every adapter:
 | Adapter | What ships in Phase 18 |
 |---|---|
 | Codex | `adapter.spawn()` shells `codex --cwd <repoPath> --agent swarm-supervisor`; supervisor TOML at `.codex/agents/swarm-supervisor.toml`; recipe → skill transform produces `.agents/skills/swarm/SKILL.md`; AGENTS.md gains `## Swarm — Lookup Pattern` and `## MCP cwd shim — Codex configuration` sections. |
-| Antigravity | `adapter.spawn()` shells `agy --cwd <repoPath> --skill swarm-supervisor`; workflow at `.agent/workflows/swarm.md` auto-registers as `/swarm`; supervisor skill at `.agents/skills/swarm-supervisor/SKILL.md`; AGENTS.md gains `## Swarm — Lookup Pattern` section. |
+| Antigravity | `adapter.spawn()` launches a DETACHED `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from `repoPath` (real 1.x flags — Phase 22b), logging to `.momentum/swarm-supervisor-<swarm>-w<wave>.log`; workflow at `.agents/workflows/swarm.md` auto-registers as `/swarm`; supervisor skill at `.agents/skills/swarm-supervisor/SKILL.md`; AGENTS.md gains `## Swarm — Lookup Pattern` section. |
 
 ### Capability flips — outcome of G4 live VAL evidence
 
 Phase 18 G4 live evidence (`specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`) concluded **neither flip lands**:
 
 - **Codex `parallelSubagents`** stays `false`. `codex features list` shows `enable_fanout: under development: false` at codex-cli 0.133.0. Flipping `parallelSubagents` requires `enable_fanout: stable: true` upstream.
-- **Antigravity `sessionStartHook`** stays `false`. No standalone `agy` CLI exists — Antigravity is an IDE-only product, so live event-firing cannot be confirmed via CLI. Operator-manual validation inside the IDE is the closure path.
+- **Antigravity `sessionStartHook`** stays `false` — but for a NEW reason (Phase 22b, VAL-002 resolved): a literal SessionStart event does not exist on Antigravity's five-event hook surface. The equivalent capability ships via the `momentum-session-context` PreInvocation hook (`ephemeralMessage` injection at `invocationNum 0`, ADR-0005); the flag flips once the injection round-trip is verified live (re-probe blocked by the intermittent agy 1.0.16 hook-runner hang, ENH-052). Evidence: `specs/phases/phase-22b-antigravity-2-adoption/evidence/fact-sheet.md` §5.
 
 The swarm subcommand row in the parity matrix flips to `shipped¹⁴` for
 both Codex + Antigravity — the surface is complete; only the two
@@ -77,7 +77,7 @@ conditions.
 
 1. **Antigravity `slashCommands: false`** — chat-driven UI. Orchestration primitives reach Antigravity users via natural-language inference (the main agent picks the primitive from the user's prose) plus the `momentum` CLI floor that works on every adapter.
 2. **Codex `subagents` / `parallelSubagents`** — Codex declares a subagent surface, but parallel fan-out has not yet been validated by momentum smoke tests. The capability-routing helper treats Codex as sequential for `dispatch` until a future release proves parallel viability in CI. Subagent existence is `true`; parallel fan-out is `false`. Promote `parallelSubagents` to `true` once Codex parallel dispatch is exercised end-to-end.
-3. **Antigravity `sessionStartHook: false`** — Antigravity has no SessionStart hook surface today. The handoff inbox pickup hint surfaces via primary-instruction text in `AGENTS.md` instead. `/continue` and `momentum continue` still work; the user just doesn't get an automatic banner.
+3. **Antigravity `sessionStartHook: false`** — a literal SessionStart event does not exist on Antigravity (five-event surface, Phase 22b/ADR-0005). The banner ships via the `momentum-session-context` PreInvocation hook (`ephemeralMessage` at `invocationNum 0`); AGENTS.md text keeps the fallback hint. Flag flips once the injection round-trip is verified live (ENH-052). `/continue` and `momentum continue` work regardless.
 4. **Codex `skills` / `browser` / `computerUse`** — declared `false` today; planned for a future Codex feature drop. When Codex ships those features, flip the boolean and remove the corresponding `roadmap` entry in the same PR.
 
 5. **opencode (Phase 22, LIVE-validated 2026-07-05)** — every boolean set from real-runtime evidence against opencode 1.17.13 with real model calls (free tier, zero credentials) — see `specs/phases/phase-22-opencode-adapter/evidence/val-opencode-live.txt`. `parallelSubagents: true` earned via overlapping task-tool timestamps; `skills: true` earned via a live skill-tool load of momentum-orient (**a momentum first — no other adapter has live-validated skills**); `sessionStartHook: false` because `session.created` was not observed in `opencode run` mode with a pending handoff (banner code ships and may fire in TUI sessions; promote only on observed evidence). Runtime caveat: a generic `event` bus hook hangs run-mode — momentum's plugin uses named hooks only.

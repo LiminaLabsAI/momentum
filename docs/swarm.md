@@ -175,7 +175,7 @@ adapter.spawn(directive)                 (adapters/<platform>/adapter.js)
 |---|---|---|---|
 | **Claude Code** | `claude --bg --cwd <repoPath>` | n/a (the spawned session becomes the supervisor) | `.claude/commands/swarm.md` |
 | **Codex** | `codex --cwd <repoPath> --agent swarm-supervisor` | `.codex/agents/swarm-supervisor.toml` (TOML subagent) | `.agents/skills/swarm/SKILL.md` (recipe → skill transform) |
-| **Antigravity** | `agy --cwd <repoPath> --skill swarm-supervisor` | `.agents/skills/swarm-supervisor/SKILL.md` (skill the agent BECOMES) | `.agent/workflows/swarm.md` (auto-registers as `/swarm`) |
+| **Antigravity** | detached `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from `repoPath` (Phase 22b — real 1.x flags; per-repo log under `.momentum/`) | `.agents/skills/swarm-supervisor/SKILL.md` (skill the agent BECOMES) | `.agents/workflows/swarm.md` (auto-registers as `/swarm`) |
 
 ### Codex MCP cwd shim
 
@@ -194,7 +194,7 @@ See AGENTS.md's `## MCP cwd shim — Codex configuration` for the full setup rec
 Phase 18 G4 captured live evidence; **neither capability flip lands in v0.20.4**:
 
 - **Codex `parallelSubagents`**: stays `false`. `codex features list` at codex-cli 0.133.0 shows `enable_fanout: under development: false` — parallel fan-out is not yet a stable Codex feature.
-- **Antigravity `sessionStartHook`**: stays `false`. No standalone `agy` CLI exists — Antigravity ships as an IDE-only product, so live event-firing cannot be confirmed via CLI. Operator-manual validation inside the IDE is the closure path.
+- **Antigravity `sessionStartHook`**: stays `false` — Phase 22b resolved VAL-002 and found the event does not exist on Antigravity's five-event hook surface; the equivalent ships via PreInvocation `ephemeralMessage` injection (ADR-0005). Flips once the injection round-trip is verified live (ENH-052).
 
 Full evidence at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`.
 

@@ -42,11 +42,11 @@
 
 ## Group 4 — Truth-sync (deps: G2, G3)
 
-- [ ] Capability flips with evidence citations; audit remaining flags vs 2.0
-- [ ] `adapter-capabilities.md` + `adapter-parity-matrix.md` antigravity rewrite; `slashCommands` contradiction fixed
-- [ ] Backlog: VAL-002 resolved · ENH-051 superseded · FEAT-008 closure rec (operator sign-off) · deferred-surface items filed
-- [ ] Roadmap row + FEAT-008 outcome
-- [ ] Site/README stale-claim grep + fix if hit
+- [x] Capability comments carry evidence citations; `sessionStartHook` stays false with the ACCURATE reason (event does not exist; PreInvocation equivalent shipped; flip gated on ENH-052 re-probe); no unearned flips
+- [x] Capabilities + parity matrix truth-synced: hooks rows shipped/shipped-as-preinvocation (fire-verified); workflows overlay shipped (path locked); footnotes 11/13/14 rewritten with evidence links; spawn rows on real flags
+- [x] Backlog: VAL-002 → resolved (evidence-linked) · ENH-051 → closed-superseded · FEAT-008 closure recommendation (operator sign-off pending) · ENH-053 filed (deferred 2.0 surfaces)
+- [x] Roadmap: Phase 22b row added (Timeline numbering drift noted); FEAT-008 outcome in backlog rec
+- [x] Stale-claim grep clean: zero "no CLI exists"/"no standalone"/"IDE-only product" across core/, docs/, README
 
 ## Group 5 — Verification + release (deps: G4)
 
