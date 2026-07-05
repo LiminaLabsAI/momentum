@@ -1,0 +1,13 @@
+{
+  "name": "momentum",
+  "short_name": "momentum",
+  "description": "Spec-driven development for agentic AI.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f4f8",
+  "theme_color": "#0023ae",
+  "icons": [
+    { "src": "/brand/png/momentum-app-256.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "/brand/png/momentum-app-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
