@@ -1,7 +1,7 @@
 # Project Status
 
-> **Last Updated**: 2026-07-04
-> **Current Phase**: _none active_ (Phase 22 — Reach is next)
+> **Last Updated**: 2026-07-05
+> **Current Phase**: Phase 24 — Open Knowledge Format (OKF v0.1) Adoption (lane `feat-open-knowledge-format`)
 > **Latest Release**: v0.26.0 — Phase 23 Rules Unification (npm latest = 0.26.0)
 > **Health**: On Track
 
@@ -65,7 +65,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 23 released; Phase 22 Reach is next)_ | | | |
+| 24 — Open Knowledge Format (OKF v0.1) Adoption | `feat/open-knowledge-format` | In Progress | G0 starting (0/6 groups) |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated": "2026-04-21",
-  "updated": "2026-07-04-phase-23-complete",
+  "updated": "2026-07-05-phase-24-start",
   "description": "Maps each phase to topic keywords. Used by /sync-docs.",
   "phases": {
     "phase-0-bootstrap": {
@@ -634,6 +634,28 @@
         "upgrade",
         "fingerprints",
         "primary-instruction"
+      ]
+    },
+    "phase-24-okf-adoption": {
+      "status": "in-progress",
+      "topics": [
+        "okf",
+        "open-knowledge-format",
+        "knowledge-format",
+        "frontmatter",
+        "yaml",
+        "specs-structure",
+        "phases-index",
+        "impact-map",
+        "migration",
+        "upgrade",
+        "templates",
+        "waves",
+        "okf-check",
+        "okf-index",
+        "adr-0005",
+        "distributed-metadata",
+        "v0-27-0"
       ]
     }
   }
