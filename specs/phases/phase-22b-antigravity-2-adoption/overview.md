@@ -2,7 +2,7 @@
 
 > **Status**: Planned (brainstormed 2026-07-05)
 > **Branch / lane**: `phase-22b-antigravity-2-adoption` (Reach family; parallel to `phase-22-opencode-adapter`)
-> **Target release**: v0.28.0 (opencode holds v0.27.0; Rule 6 Landing Order settles actual order)
+> **Target release**: v0.29.0 (opencode holds v0.27.0; Rule 6 Landing Order settles actual order)
 > **Backlog**: VAL-002 (closure), ENH-051 (supersession), FEAT-008 (closure recommendation)
 
 ## Goal

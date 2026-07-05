@@ -1,7 +1,7 @@
 ## Antigravity-native layout under `.agents/`
 
 Momentum installs every Antigravity-discoverable asset under the ONE
-canonical customization root, `.agents/`, at the project root (ADR-0005;
+canonical customization root, `.agents/`, at the project root (ADR-0006;
 Antigravity accepts four root spellings, and `.agents/` is the one all
 vendor examples and reference docs use):
 
@@ -135,7 +135,7 @@ When in planning mode or executing a phase, keep Antigravity's native artifacts 
 Antigravity hook wiring lives in `.agents/hooks.json` (named-group schema,
 five lifecycle events — there is NO SessionStart event on Antigravity).
 Hook commands run with CWD = `.agents/`, so momentum wires them through the
-boundary shim `scripts/antigravity-hook-adapter.sh` (ADR-0005), which
+boundary shim `scripts/antigravity-hook-adapter.sh` (ADR-0006), which
 translates Antigravity's camelCase payloads and response contract and
 delegates to the same shared scripts every adapter uses:
 

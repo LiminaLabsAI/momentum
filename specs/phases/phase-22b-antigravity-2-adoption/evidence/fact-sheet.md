@@ -177,3 +177,30 @@ Consequences for claims:
   can hang indefinitely, IGNORING `--print-timeout`, writing zero log lines.
   Every headless integration (spawn(), CI probes) MUST use an external
   watchdog + pacing. Filed to backlog in G4.
+
+## 11. Cross-surface coverage — CLI vs IDE vs Agent Manager (added post-G5)
+
+Antigravity ships one customization system over one shared agent engine
+across THREE user surfaces — `agy` CLI, the IDE (VS Code fork, 2.1.1
+installed here), and the Antigravity 2.0 Agent Manager. Vendor evidence for
+the sharing: the builtin hooks doc's common-fields note enumerates per-product
+artifact directories (CLI `antigravity-cli/`, 2.0 `antigravity/`, IDE
+`antigravity-ide/`) for the SAME payload contract (vendor-docs/docs/hooks.md);
+the CLI repo describes a "Shared Core Agent Engine"; the discovery/skills/
+plugins guides are surface-agnostic.
+
+| Claim | CLI (agy 1.0.16) | IDE 2.1.1 / Agent Manager |
+|---|---|---|
+| AGENTS.md hierarchical auto-load | LIVE-verified | vendor-doc shared (rules.md names both) |
+| Skills `<name>/SKILL.md` discovery | LIVE-verified | vendor-doc shared (tutorial covers IDE) |
+| Workflows → slash commands | LIVE-verified | IDE-heritage feature (originated there) — doc-shared |
+| hooks.json five-event contract | LIVE fire-verified | vendor-doc shared (per-product artifact dirs) |
+| PreInvocation banner injection | event LIVE-verified; injection doc-sourced | doc-shared |
+| spawn()/plugins | LIVE-verified | CLI-only surfaces by design |
+
+Residual: a ~10-minute operator observation pass inside the IDE + Agent
+Manager (filed as **VAL-003** with the checklist). No file layout changes are
+expected from it — the layout is the shared engine's; only observation is
+missing. The 2026-07-03 Agent Manager session state (~/.gemini/antigravity/
+brain/) was checked for free evidence: its logs only capture momentum's test
+suite output, not config loading — inconclusive, hence VAL-003.

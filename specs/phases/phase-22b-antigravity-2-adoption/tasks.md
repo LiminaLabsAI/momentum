@@ -17,11 +17,11 @@
 ## Group 1 — Core realignment (deps: G0)
 
 - [ ] Re-probe (stable env): deny semantics live + momentum-shipped-shape parse (fact-sheet §10 caveats)
-- [x] Destinations per fact sheet — consolidated to `.agents/` (ADR-0005; dual-path not needed, all four roots equivalent)
+- [x] Destinations per fact sheet — consolidated to `.agents/` (ADR-0006; dual-path not needed, all four roots equivalent)
 - [x] `hooks.json` regenerated: vendor named-group schema, five events, write-family matchers
 - [x] Hook commands relative to the hooks.json dir (`bash ../scripts/…`) — no templating needed (locked CWD rule)
 - [x] Boundary shim `adapters/antigravity/scripts/antigravity-hook-adapter.sh` (payload translation, decision JSON, notice queue, PreInvocation injection); core scripts BYTE-IDENTICAL to main (capture tool: claude-code/codex "no change")
-- [x] Session-start via `momentum-session-context` PreInvocation hook (invocationNum 0 → handoff banner ephemeralMessage); capability stays false pending live injection round-trip (ENH-052)
+- [x] Session-start via `momentum-session-context` PreInvocation hook (invocationNum 0 → handoff banner ephemeralMessage); capability stays false pending live injection round-trip (ENH-054)
 - [x] `surfaces.md` rewritten (canonical root, real hook table) + AGENTS.md regenerated; drift guard green in suite
 - [x] Antigravity fingerprint re-baselined ONCE (58→59 files; claude/codex no change); 10 new contract tests + path updates across 7 test files; suite 739/739
 
@@ -42,16 +42,16 @@
 
 ## Group 4 — Truth-sync (deps: G2, G3)
 
-- [x] Capability comments carry evidence citations; `sessionStartHook` stays false with the ACCURATE reason (event does not exist; PreInvocation equivalent shipped; flip gated on ENH-052 re-probe); no unearned flips
+- [x] Capability comments carry evidence citations; `sessionStartHook` stays false with the ACCURATE reason (event does not exist; PreInvocation equivalent shipped; flip gated on ENH-054 re-probe); no unearned flips
 - [x] Capabilities + parity matrix truth-synced: hooks rows shipped/shipped-as-preinvocation (fire-verified); workflows overlay shipped (path locked); footnotes 11/13/14 rewritten with evidence links; spawn rows on real flags
-- [x] Backlog: VAL-002 → resolved (evidence-linked) · ENH-051 → closed-superseded · FEAT-008 closure recommendation (operator sign-off pending) · ENH-053 filed (deferred 2.0 surfaces)
+- [x] Backlog: VAL-002 → resolved (evidence-linked) · ENH-051 → closed-superseded · FEAT-008 closure recommendation (operator sign-off pending) · ENH-055 filed (deferred 2.0 surfaces)
 - [x] Roadmap: Phase 22b row added (Timeline numbering drift noted); FEAT-008 outcome in backlog rec
 - [x] Stale-claim grep clean: zero "no CLI exists"/"no standalone"/"IDE-only product" across core/, docs/, README
 
 ## Group 5 — Verification + release (deps: G4)
 
-- [ ] Full suite ×3 adapters + smoke matrix + fingerprint guards green
-- [ ] Retrospective with `## Verification Evidence`
-- [ ] Version bump v0.28.0; `/sync-docs`
-- [ ] `lanes done` → `lanes land` in turn (rebase per Landing Order)
+- [x] Full suite ×3 adapters + smoke matrix + fingerprint guards green: 745/745; claude/codex fingerprints byte-identical
+- [x] Retrospective with fresh `## Verification Evidence` written
+- [x] Version bump v0.29.0 (sequential-order note for landing); truth-sync done in G4 (history Affects-specs all covered)
+- [/] `lanes done` entered; landing awaits operator approval (Rule 6 hard gate)
 - [ ] Release checklist: tag + GitHub Release + npm publish (operator approvals)

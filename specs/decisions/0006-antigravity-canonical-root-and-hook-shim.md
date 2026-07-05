@@ -1,4 +1,4 @@
-# ADR-0005: Antigravity canonical root `.agents/` + payload-adapter hook shim
+# ADR-0006: Antigravity canonical root `.agents/` + payload-adapter hook shim
 
 > **Status**: Accepted (2026-07-05, Phase 22b G1)
 > **Context**: Phase 22b Antigravity 2.0 Full Adoption — evidence at

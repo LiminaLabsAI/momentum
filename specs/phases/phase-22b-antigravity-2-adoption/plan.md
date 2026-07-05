@@ -51,7 +51,7 @@ Tasks:
 
 Tasks:
 1. Destinations in `adapters/antigravity/adapter.js` per fact sheet. If IDE
-   and CLI paths truly diverge → STOP, write ADR-0005 (dual-destination
+   and CLI paths truly diverge → STOP, write ADR-0006 (dual-destination
    adapter contract extension), then implement.
 2. `hooks.json` regenerated in the accepted schema; real tool-name matchers
    (drop `apply_patch`; verify `view_file`/`write_to_file` against payload
@@ -146,10 +146,10 @@ Tasks:
 1. Full suite ×3 adapters; smoke matrix; fingerprint guards (Claude Code +
    Codex byte-identical to baseline).
 2. Retrospective with non-empty `## Verification Evidence` (Rule 12 / land gate).
-3. Version bump v0.28.0; `/sync-docs` before `/complete-phase`.
+3. Version bump v0.29.0; `/sync-docs` before `/complete-phase`.
 4. Land via `momentum lanes done` + `lanes land` in turn (Rule 6 Landing
    Order; rebase over whatever landed first — likely opencode).
 5. Release checklist (Project Extensions): tag + `gh release create` +
    `npm publish` — each behind operator approval.
 
-**Commit:** `chore(release): v0.28.0 — Phase 22b Antigravity 2.0 adoption`
+**Commit:** `chore(release): v0.29.0 — Phase 22b Antigravity 2.0 adoption`

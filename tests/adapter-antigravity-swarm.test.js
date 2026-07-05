@@ -73,7 +73,7 @@ test('antigravity adapter.spawn — launches detached agy with the REAL 1.x flag
     const argv = lines.slice(1);
     assert.ok(argv.includes('--new-project'), 'isolation flag required (fact-sheet §7)');
     assert.ok(argv.includes('--dangerously-skip-permissions'), 'headless supervisors need permission bypass');
-    assert.ok(argv.includes('--print-timeout'), 'ENH-052: in-CLI bound required');
+    assert.ok(argv.includes('--print-timeout'), 'ENH-054: in-CLI bound required');
     assert.ok(argv.includes('-p'), 'headless print mode');
     assert.ok(!argv.includes('--cwd') && !argv.includes('--skill'), 'Phase 18 fictional flags must be gone');
     // The stub prints one argv entry per line; the multi-line -p prompt is

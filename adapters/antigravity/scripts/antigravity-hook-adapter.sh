@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # antigravity-hook-adapter.sh — Antigravity 2.x payload/response boundary shim.
 #
-# Phase 22b (ADR-0005). Antigravity's hook contract differs from Claude
+# Phase 22b (ADR-0006). Antigravity's hook contract differs from Claude
 # Code/Codex in payload shape (camelCase protojson, toolCall.args.*), response
 # channel (stdout decision JSON, ALWAYS exit 0), hook CWD (the directory
 # containing hooks.json — i.e. .agents/), and event set (five events, no
@@ -84,7 +84,7 @@ if tool == "run_command":
 elif tool and any(k in tool for k in ("write", "edit", "replace")):
     # Normalize the whole Antigravity write-tool family to the canonical
     # name the shared scripts already match — keeps core scripts untouched
-    # (byte-identical for Claude Code/Codex, ADR-0005).
+    # (byte-identical for Claude Code/Codex, ADR-0006).
     tool = "write_to_file"
 ti = {}
 if path:

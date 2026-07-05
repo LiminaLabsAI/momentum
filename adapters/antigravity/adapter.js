@@ -7,7 +7,7 @@
 // surface and discovers workflows/skills/hooks/plugins under the `.agents/`
 // customization root. Contract locked by live probes against agy 1.0.16 —
 // see specs/phases/phase-22b-antigravity-2-adoption/evidence/fact-sheet.md
-// and ADR-0005.
+// and ADR-0006.
 
 const fs = require('fs');
 const path = require('path');
@@ -17,7 +17,7 @@ module.exports = {
   displayName: 'Antigravity',
 
   destinations: {
-    // Phase 22b (ADR-0005): ONE canonical customization root — .agents/.
+    // Phase 22b (ADR-0006): ONE canonical customization root — .agents/.
     // agy 1.0.16 accepts .agents/.agent/_agents/_agent equally (fact-sheet §1);
     // .agents/ is what every vendor example, the builtin reference docs, and
     // the plugin layout use. Legacy .agent/ files are orphan-cleaned on
@@ -53,7 +53,7 @@ module.exports = {
     slashCommands: true,  // Phase 22b: workflows auto-register as /<name> — verified live incl. planted markers (fact-sheet §3)
     subagents: true,
     parallelSubagents: true,
-    sessionStartHook: false, // Phase 22b: no SessionStart event EXISTS (5-event surface). Equivalent ships via PreInvocation invocationNum==0 + injectSteps; flip gated on the live injection round-trip (ENH-052 hang blocks re-probe).
+    sessionStartHook: false, // Phase 22b: no SessionStart event EXISTS (5-event surface). Equivalent ships via PreInvocation invocationNum==0 + injectSteps; flip gated on the live injection round-trip (ENH-054 hang blocks re-probe).
     skills: true,         // Phase 22b: <name>/SKILL.md discovery verified live (fact-sheet §4)
     browser: false,
     computerUse: false,
@@ -63,7 +63,7 @@ module.exports = {
 
   roadmap: {
     sessionStartHook:
-      'Phase 22b (ADR-0005): SessionStart does not exist on Antigravity — the momentum-session-context PreInvocation hook injects the handoff banner + queued notices as ephemeralMessage at invocationNum 0. Capability flips true once the injection round-trip is verified live (re-probe blocked by the intermittent agy 1.0.16 hook-runner hang, ENH-052). AGENTS.md text carries the fallback handoff hint meanwhile.',
+      'Phase 22b (ADR-0006): SessionStart does not exist on Antigravity — the momentum-session-context PreInvocation hook injects the handoff banner + queued notices as ephemeralMessage at invocationNum 0. Capability flips true once the injection round-trip is verified live (re-probe blocked by the intermittent agy 1.0.16 hook-runner hang, ENH-054). AGENTS.md text carries the fallback handoff hint meanwhile.',
   },
 
   runInstall(targetDir, adapterDir, helpers) {
@@ -118,7 +118,7 @@ module.exports = {
   //   - --dangerously-skip-permissions: supervisors edit files headlessly,
   //   - --print-timeout as the in-CLI bound + detached launch with logs:
   //     print runs take minutes and can hang PAST their own timeout when
-  //     hooks are present (ENH-052) — the conductor monitors via the board
+  //     hooks are present (ENH-054) — the conductor monitors via the board
   //     and the per-repo log file; never block the conductor's session.
   spawn(directive) {
     if (!directive || directive.platform !== 'antigravity') {

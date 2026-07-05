@@ -2,7 +2,7 @@
 
 // momentum antigravity <subcommand> — Antigravity-specific utilities.
 //
-// Phase 22b G3 (ADR-0005). The only subcommand today is `plugin-pack`:
+// Phase 22b G3 (ADR-0006). The only subcommand today is `plugin-pack`:
 // assembles momentum's skills into a native Antigravity PLUGIN bundle
 // (`plugins/<name>/plugin.json` + `skills/`, per the vendor plugin layout —
 // fact-sheet §6). Two targets:

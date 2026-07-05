@@ -65,7 +65,7 @@ test('antigravity install ships hooks.json at .agents/hooks.json', () => {
     const hooksPath = path.join(target, '.agents', 'hooks.json');
     assert.equal(exists(hooksPath), true, `expected ${hooksPath}`);
     const hooks = JSON.parse(fs.readFileSync(hooksPath, 'utf8'));
-    // Phase 22b (ADR-0005): vendor named-group schema, five-event surface.
+    // Phase 22b (ADR-0006): vendor named-group schema, five-event surface.
     assert.ok(Array.isArray(hooks['momentum-brainstorm-gate'].PreToolUse));
     assert.ok(Array.isArray(hooks['momentum-history-reminder'].PostToolUse));
     assert.ok(Array.isArray(hooks['momentum-session-context'].PreInvocation));

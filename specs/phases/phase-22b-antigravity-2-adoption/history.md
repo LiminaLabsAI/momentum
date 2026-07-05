@@ -55,10 +55,10 @@ Detail: `evidence/fact-sheet.md` locks the Antigravity 2.x contract against agy 
 Topics: antigravity, hooks, spawn, reliability
 Affects-phases: phase-22b-antigravity-2-adoption
 Affects-specs: none
-Detail: During the probe battery, hook-ful headless runs hung indefinitely 6/10 times — ignoring --print-timeout, writing ZERO log lines — while hook-less runs passed 3/3 and the same configs passed minutes before/after (fact-sheet §9–10). Not attributable to config shape; working hypothesis is an intermittent hook-runner stdin/deadlock in agy 1.0.16. Consequences: momentum's shipped hooks.json shape stays UNVERIFIED (moot — G1 adopts the documented vendor schema); deny semantics remain doc-sourced pending a stable re-probe; every headless integration (spawn(), CI probes) MUST wrap agy in an external watchdog with pacing. Filed as ENH-052; upstream report drafted in G4.
+Detail: During the probe battery, hook-ful headless runs hung indefinitely 6/10 times — ignoring --print-timeout, writing ZERO log lines — while hook-less runs passed 3/3 and the same configs passed minutes before/after (fact-sheet §9–10). Not attributable to config shape; working hypothesis is an intermittent hook-runner stdin/deadlock in agy 1.0.16. Consequences: momentum's shipped hooks.json shape stays UNVERIFIED (moot — G1 adopts the documented vendor schema); deny semantics remain doc-sourced pending a stable re-probe; every headless integration (spawn(), CI probes) MUST wrap agy in an external watchdog with pacing. Filed as ENH-054; upstream report drafted in G4.
 
 ---
-### [ARCH_CHANGE] 2026-07-05 — G1: adapter realigned to the locked 2.x contract (ADR-0005)
+### [ARCH_CHANGE] 2026-07-05 — G1: adapter realigned to the locked 2.x contract (ADR-0006)
 Topics: antigravity, adapters, hooks, instructions
 Affects-phases: phase-22b-antigravity-2-adoption
 Affects-specs: specs/decisions/0005-antigravity-canonical-root-and-hook-shim.md
@@ -69,7 +69,7 @@ Detail: All destinations consolidated to the canonical `.agents/` root (legacy `
 Topics: antigravity, spawn, swarm
 Affects-phases: phase-22b-antigravity-2-adoption
 Affects-specs: none
-Detail: adapter.spawn(directive) now launches a DETACHED `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from directive.repoPath (spawnSync cwd replaces the fictional --cwd; skill engagement by name replaces the fictional --skill), logs to .momentum/swarm-supervisor-<swarm>-w<wave>.log, and returns the contract tuple synchronously (missing binary detected up front with the official-installer hint). Detached-async replaces claude-code's 5s spawnSync shape because agy print runs take minutes and can hang past their own timeout (ENH-052) — the conductor must never block. Live smoke: real agy launched, log captured BOOT-OK (evidence/spawn-smoke.md). Suite 740/740.
+Detail: adapter.spawn(directive) now launches a DETACHED `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from directive.repoPath (spawnSync cwd replaces the fictional --cwd; skill engagement by name replaces the fictional --skill), logs to .momentum/swarm-supervisor-<swarm>-w<wave>.log, and returns the contract tuple synchronously (missing binary detected up front with the official-installer hint). Detached-async replaces claude-code's 5s spawnSync shape because agy print runs take minutes and can hang past their own timeout (ENH-054) — the conductor must never block. Live smoke: real agy launched, log captured BOOT-OK (evidence/spawn-smoke.md). Suite 740/740.
 
 ---
 ### [SCOPE_CHANGE] 2026-07-05 — G3: reviewer subagent definitions dropped (no such vendor surface); plugin packaging shipped
@@ -83,6 +83,20 @@ Detail: G0 evidence (fact-sheet §7) found no documented or observed project-lev
 Topics: antigravity, val-002, backlog, capabilities
 Affects-phases: phase-22b-antigravity-2-adoption
 Affects-specs: core/adapter-capabilities.md, core/adapter-parity-matrix.md, docs/swarm.md, specs/backlog/backlog.md, specs/planning/roadmap.md
-Detail: Every shipped surface now states the evidenced truth: hooks rows shipped/shipped-as-preinvocation (fire-verified vs agy 1.0.16), workflows overlay path locked, spawn rows on real flags, sessionStartHook false for the RIGHT reason. Backlog: VAL-002 resolved (filed 2026-06-11, blocked since 2026-06-15 — the official CLI dissolved the premise); ENH-051 closed-superseded; FEAT-008 closure recommended (operator sign-off at landing); ENH-053 filed for deferred 2.0 surfaces (scheduled tasks, Stop-hook Rule-12 nudge, undocumented plugin agents/commands subdirs, rules triggers).
+Detail: Every shipped surface now states the evidenced truth: hooks rows shipped/shipped-as-preinvocation (fire-verified vs agy 1.0.16), workflows overlay path locked, spawn rows on real flags, sessionStartHook false for the RIGHT reason. Backlog: VAL-002 resolved (filed 2026-06-11, blocked since 2026-06-15 — the official CLI dissolved the premise); ENH-051 closed-superseded; FEAT-008 closure recommended (operator sign-off at landing); ENH-055 filed for deferred 2.0 surfaces (scheduled tasks, Stop-hook Rule-12 nudge, undocumented plugin agents/commands subdirs, rules triggers).
+
+---
+### [NOTE] 2026-07-05 — G5: phase complete on lane; suite 745/745; landing queued behind the operator gate
+Topics: antigravity, release, verification
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: none
+Detail: Retrospective written with fresh verification evidence (suite 745/745; fingerprint capture tool: claude/codex "no change"; live BOOT-OK spawn smoke; live plugin validate [ok]). Version bumped to v0.28.0 with a sequential-ordering note (opencode lane holds v0.27.0 — whichever lands second adjusts at the release step). All six acceptance criteria met; two tracked caveats (ENH-054 re-probe for the sessionStartHook flip and deny-semantics live confirmation). Landing + release stop at the Rule 6 operator gate.
+
+---
+### [DISCOVERY] 2026-07-05 — Cross-surface coverage codified; VAL-003 filed (operator question: "every product should work")
+Topics: antigravity, validation, ide, agent-manager
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: specs/backlog/backlog.md
+Detail: Operator asked whether the phase covers the IDE and Agent Manager, not just the CLI. Answer codified in fact-sheet §11: one shared engine + one customization system across all three surfaces per vendor docs (per-product artifact dirs in the hooks contract; shared discovery guide), live evidence CLI-scoped. VAL-003 filed with a 10-minute IDE/Agent-Manager observation checklist; Agent Manager July-3 session state checked for free evidence — inconclusive (logs captured test output only).
 
 ---

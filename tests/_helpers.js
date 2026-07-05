@@ -66,7 +66,7 @@ function fakeToolEvent({ hooksFile, event, toolName, payload, cwd }) {
   const { spawnSync } = require('node:child_process');
   const config = JSON.parse(fs.readFileSync(hooksFile, 'utf8'));
 
-  // Two schemas (Phase 22b, ADR-0005):
+  // Two schemas (Phase 22b, ADR-0006):
   //  - legacy wrapper  {hooks: {Event: [...]}}          (Claude Code, Codex)
   //  - vendor named groups {name: {Event: [...]}, ...}  (Antigravity 2.x)
   // Antigravity runs hook commands with CWD = the hooks.json directory and

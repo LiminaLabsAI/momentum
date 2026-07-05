@@ -2,7 +2,7 @@
 
 /**
  * Phase 22b — Antigravity hook execution against the REAL 2.x contract
- * (ADR-0005; payload shapes captured live from agy 1.0.16 — see
+ * (ADR-0006; payload shapes captured live from agy 1.0.16 — see
  * specs/phases/phase-22b-antigravity-2-adoption/evidence/fact-sheet.md §5).
  *
  * The shim `scripts/antigravity-hook-adapter.sh` receives camelCase
@@ -38,7 +38,7 @@ test('antigravity hooks.json uses the vendor named-group schema with no SessionS
   const dir = setupAntigravityProject();
   try {
     const config = JSON.parse(fs.readFileSync(hooksFileOf(dir), 'utf8'));
-    assert.ok(!config.hooks, 'legacy {hooks:{...}} wrapper must be gone (ADR-0005)');
+    assert.ok(!config.hooks, 'legacy {hooks:{...}} wrapper must be gone (ADR-0006)');
     assert.ok(config['momentum-brainstorm-gate'], 'named group momentum-brainstorm-gate');
     assert.ok(config['momentum-history-reminder'], 'named group momentum-history-reminder');
     assert.ok(config['momentum-session-context'], 'named group momentum-session-context');

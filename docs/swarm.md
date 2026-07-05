@@ -194,7 +194,7 @@ See AGENTS.md's `## MCP cwd shim — Codex configuration` for the full setup rec
 Phase 18 G4 captured live evidence; **neither capability flip lands in v0.20.4**:
 
 - **Codex `parallelSubagents`**: stays `false`. `codex features list` at codex-cli 0.133.0 shows `enable_fanout: under development: false` — parallel fan-out is not yet a stable Codex feature.
-- **Antigravity `sessionStartHook`**: stays `false` — Phase 22b resolved VAL-002 and found the event does not exist on Antigravity's five-event hook surface; the equivalent ships via PreInvocation `ephemeralMessage` injection (ADR-0005). Flips once the injection round-trip is verified live (ENH-052).
+- **Antigravity `sessionStartHook`**: stays `false` — Phase 22b resolved VAL-002 and found the event does not exist on Antigravity's five-event hook surface; the equivalent ships via PreInvocation `ephemeralMessage` injection (ADR-0006). Flips once the injection round-trip is verified live (ENH-054).
 
 Full evidence at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`.
 
