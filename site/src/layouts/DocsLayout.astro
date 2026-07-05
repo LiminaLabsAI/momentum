@@ -28,7 +28,6 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const { group, prev, next } = navContext(slug);
 
 const REPO = 'https://github.com/avinash-singh-io/momentum';
-const editUrl = `${REPO}/edit/main/site/src/content/docs/${slug}.md`;
 
 // Command-palette data: every page (title + group) + this page's headings.
 const navData = {
@@ -47,6 +46,7 @@ const navData = {
 >
 	<!-- TOPBAR -->
 	<header class="tb">
+		<nav class="tb-pillbar">
 		<Brand href="/" wordmark size={24} class="tb-brand">
 			<span class="tb-pill">docs</span>
 		</Brand>
@@ -69,6 +69,7 @@ const navData = {
 				>
 			</a>
 		</div>
+		</nav>
 	</header>
 
 	<div class="docs-grid" id="top">
@@ -103,10 +104,7 @@ const navData = {
 				</div>
 				<div class="doc-head">
 					<h1>{title}</h1>
-					<a class="kbtn accent" href="https://claude.ai/new" target="_blank" rel="noopener">
-						<Icon class="ic" name="lucide:sparkles" />Open in Claude
-					</a>
-				</div>
+									</div>
 				{description && <p class="doc-lead">{description}</p>}
 
 				<article class="doc"><slot /></article>
@@ -151,10 +149,7 @@ const navData = {
 								{h.text}
 							</a>
 						))}
-						<a class="toc-edit" href={editUrl} target="_blank" rel="noopener">
-							<Icon class="ic" name="lucide:pencil" />Edit this page
-						</a>
-					</div>
+											</div>
 				)
 			}
 		</aside>
@@ -178,7 +173,8 @@ const navData = {
 <style is:global>
 	/* ============================ docs shell ============================ */
 	.mm-docs {
-		--tb-h: 56px;
+		--tb-pill-h: 56px;
+		--tb-h: 84px; /* pill + 14px float above/below — sticky offsets key off this */
 	}
 
 	/* ---- topbar ---- */
@@ -186,15 +182,21 @@ const navData = {
 		position: sticky;
 		top: 0;
 		z-index: 40;
+		padding: 14px clamp(14px, 2.5vw, 24px);
+		background: transparent;
+	}
+	.mm-docs .tb-pillbar {
 		display: flex;
 		align-items: center;
 		gap: 16px;
-		height: var(--tb-h);
-		padding: 0 22px;
+		height: var(--tb-pill-h);
+		padding: 0 12px 0 18px;
+		border-radius: 999px;
 		background: var(--glass-std);
 		backdrop-filter: var(--glass-blur-std);
 		-webkit-backdrop-filter: var(--glass-blur-std);
-		border-bottom: 1px solid var(--glass-std-bd);
+		border: 1px solid var(--glass-std-bd);
+		box-shadow: var(--shadow-glass);
 	}
 	.mm-docs .tb-brand {
 		display: flex;
@@ -312,13 +314,13 @@ const navData = {
 		margin-bottom: 16px;
 	}
 	.mm-docs .side-label {
-		font-size: 10px;
+		font-size: 14px;
 		font-weight: 700;
-		letter-spacing: 0.1em;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: var(--fg-3);
+		color: var(--fg-1);
 		padding: 0 10px;
-		margin: 0 0 6px;
+		margin: 0 0 8px;
 	}
 	.mm-docs .side-link {
 		display: block;
@@ -379,35 +381,6 @@ const navData = {
 		letter-spacing: -0.03em;
 		color: var(--fg-0);
 		line-height: 1.1;
-	}
-	.mm-docs .kbtn {
-		display: inline-flex;
-		align-items: center;
-		gap: 7px;
-		height: 32px;
-		padding: 0 12px;
-		border-radius: 8px;
-		font-size: 12px;
-		font-weight: 500;
-		color: var(--fg-1);
-		background: var(--bg-1);
-		border: 1px solid var(--bd-2);
-		cursor: pointer;
-		text-decoration: none;
-		white-space: nowrap;
-		transition: background 0.12s;
-	}
-	.mm-docs .kbtn:hover {
-		background: var(--bg-3);
-	}
-	.mm-docs .kbtn.accent {
-		color: var(--accent);
-		border-color: var(--accent-bd);
-		background: var(--accent-soft);
-	}
-	.mm-docs .kbtn svg {
-		width: 14px;
-		height: 14px;
 	}
 	.mm-docs .doc-lead {
 		font-size: 16.5px;
@@ -670,24 +643,6 @@ const navData = {
 		color: var(--accent);
 		border-left-color: var(--accent);
 		font-weight: 500;
-	}
-	.mm-docs .toc-edit {
-		display: inline-flex;
-		align-items: center;
-		gap: 6px;
-		font-size: 12px;
-		color: var(--fg-3);
-		text-decoration: none;
-		margin-top: 18px;
-		padding-top: 14px;
-		border-top: 1px solid var(--bd-1);
-	}
-	.mm-docs .toc-edit:hover {
-		color: var(--fg-1);
-	}
-	.mm-docs .toc-edit svg {
-		width: 13px;
-		height: 13px;
 	}
 
 	/* ---- command palette ---- */
