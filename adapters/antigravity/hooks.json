@@ -1,35 +1,38 @@
 {
-  "hooks": {
+  "momentum-brainstorm-gate": {
     "PreToolUse": [
       {
-        "matcher": "run_command|view_file|.*write.*|apply_patch",
+        "matcher": "write_to_file|run_command|.*write.*|.*edit.*|.*replace.*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/brainstorm-gate.sh"
+            "command": "bash ../scripts/antigravity-hook-adapter.sh pre-tool",
+            "timeout": 15
           }
         ]
       }
-    ],
+    ]
+  },
+  "momentum-history-reminder": {
     "PostToolUse": [
       {
-        "matcher": "run_command|apply_patch|.*write.*",
+        "matcher": "write_to_file|run_command|.*write.*|.*edit.*|.*replace.*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/check-history-reminder.sh"
+            "command": "bash ../scripts/antigravity-hook-adapter.sh post-tool",
+            "timeout": 15
           }
         ]
       }
-    ],
-    "SessionStart": [
+    ]
+  },
+  "momentum-session-context": {
+    "PreInvocation": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash scripts/sessionstart-handoff.sh"
-          }
-        ]
+        "type": "command",
+        "command": "bash ../scripts/antigravity-hook-adapter.sh pre-invocation",
+        "timeout": 15
       }
     ]
   }

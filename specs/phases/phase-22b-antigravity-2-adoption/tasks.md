@@ -17,13 +17,13 @@
 ## Group 1 — Core realignment (deps: G0)
 
 - [ ] Re-probe (stable env): deny semantics live + momentum-shipped-shape parse (fact-sheet §10 caveats)
-- [ ] Destinations per fact sheet (ADR-0005 first if dual-path required)
-- [ ] `hooks.json` regenerated: accepted schema + real matchers
-- [ ] Install/upgrade-time absolute-path templating for hook commands
-- [ ] Hook scripts (`brainstorm-gate.sh`, `check-history-reminder.sh`, `sessionstart-handoff.sh`): real payload + response contract; Claude/Codex behavior unchanged
-- [ ] SessionStart wiring per evidence; capability flip only with fire transcript
-- [ ] `surfaces.md` fragments updated + regenerated; drift guard green
-- [ ] Fingerprint re-baseline (once, with meta); hook/workflow/skill tests updated
+- [x] Destinations per fact sheet — consolidated to `.agents/` (ADR-0005; dual-path not needed, all four roots equivalent)
+- [x] `hooks.json` regenerated: vendor named-group schema, five events, write-family matchers
+- [x] Hook commands relative to the hooks.json dir (`bash ../scripts/…`) — no templating needed (locked CWD rule)
+- [x] Boundary shim `adapters/antigravity/scripts/antigravity-hook-adapter.sh` (payload translation, decision JSON, notice queue, PreInvocation injection); core scripts BYTE-IDENTICAL to main (capture tool: claude-code/codex "no change")
+- [x] Session-start via `momentum-session-context` PreInvocation hook (invocationNum 0 → handoff banner ephemeralMessage); capability stays false pending live injection round-trip (ENH-052)
+- [x] `surfaces.md` rewritten (canonical root, real hook table) + AGENTS.md regenerated; drift guard green in suite
+- [x] Antigravity fingerprint re-baselined ONCE (58→59 files; claude/codex no change); 10 new contract tests + path updates across 7 test files; suite 739/739
 
 ## Group 2 — Spawn + swarm rewrite (deps: G1)
 

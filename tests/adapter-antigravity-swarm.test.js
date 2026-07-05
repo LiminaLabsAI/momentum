@@ -6,7 +6,7 @@
 //   1. adapter.spawn(directive) dispatches to `agy` with the expected
 //      arguments (uses AGY_BIN env stub).
 //   2. `momentum init --agent antigravity` lays down:
-//        - .agent/workflows/swarm.md           (auto-registers as /swarm)
+//        - .agents/workflows/swarm.md           (auto-registers as /swarm)
 //        - .agents/skills/swarm-supervisor/SKILL.md (supervisor persona)
 //   3. AGENTS.md contains the new `## Swarm — Lookup Pattern` section.
 
@@ -58,13 +58,13 @@ test('antigravity adapter.spawn — wrong platform yields canonical -1 entry', (
   assert.match(result.detail, /non-antigravity platform/);
 });
 
-test('antigravity install — lays down .agent/workflows/swarm.md', () => {
+test('antigravity install — lays down .agents/workflows/swarm.md', () => {
   const tmp = mktmp('antigravity-swarm-install-');
   try {
     const r = runCli(['init', tmp, '--agent', 'antigravity'], { cwd: tmp });
     assert.equal(r.status, 0, `init failed: ${r.stderr}`);
-    const workflowPath = path.join(tmp, '.agent', 'workflows', 'swarm.md');
-    assert.ok(exists(workflowPath), 'swarm.md workflow must be installed at .agent/workflows/');
+    const workflowPath = path.join(tmp, '.agents', 'workflows', 'swarm.md');
+    assert.ok(exists(workflowPath), 'swarm.md workflow must be installed at .agents/workflows/');
     const body = read(workflowPath);
     assert.match(body, /^---\n/);
     assert.match(body, /^description: /m);

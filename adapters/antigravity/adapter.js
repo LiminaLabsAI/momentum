@@ -2,9 +2,12 @@
 
 // Antigravity adapter for momentum.
 //
-// Antigravity is a chat-based advanced agentic AI coding assistant.
-// It uses AGENTS.md as its primary instruction surface.
-// Commands install into .antigravity/commands/ for tool guidance.
+// Antigravity (2.x: IDE + `agy` CLI + Python SDK over one shared agent
+// harness) auto-loads AGENTS.md hierarchically as its primary instruction
+// surface and discovers workflows/skills/hooks/plugins under the `.agents/`
+// customization root. Contract locked by live probes against agy 1.0.16 —
+// see specs/phases/phase-22b-antigravity-2-adoption/evidence/fact-sheet.md
+// and ADR-0005.
 
 const fs = require('fs');
 const path = require('path');
@@ -14,17 +17,18 @@ module.exports = {
   displayName: 'Antigravity',
 
   destinations: {
-    // Phase 16 Rework: native Antigravity surfaces.
-    // Antigravity has no commands/ concept — recipes are workflows.
-    // Workflows live at .agent/workflows/ (singular per official docs;
-    //   Google codelab uses .agents/workflows/ — gated on Group 4 smoke).
-    // Skills live at .agents/skills/ (shared convention with Codex).
+    // Phase 22b (ADR-0005): ONE canonical customization root — .agents/.
+    // agy 1.0.16 accepts .agents/.agent/_agents/_agent equally (fact-sheet §1);
+    // .agents/ is what every vendor example, the builtin reference docs, and
+    // the plugin layout use. Legacy .agent/ files are orphan-cleaned on
+    // upgrade (Phase 20 machinery; user-owned files keep their shield).
+    // Recipes are workflows (auto-register as /<name> slash commands).
     // agents/ declared but unused — personas live as skills on Antigravity.
-    commands: ['.agent', 'workflows'], // legacy commands key reused — overlay still feeds via destinations[commands]
-    'agent-rules': ['.agent', 'rules'],
+    commands: ['.agents', 'workflows'], // legacy commands key reused — overlay still feeds via destinations[commands]
+    'agent-rules': ['.agents', 'rules'],
     scripts: ['scripts'],
-    engines: ['.agent', 'engines'],
-    workflows: ['.agent', 'workflows'],
+    engines: ['.agents', 'engines'],
+    workflows: ['.agents', 'workflows'],
     skills: ['.agents', 'skills'],
     agents: ['.agents', 'agents'],
   },
@@ -45,12 +49,12 @@ module.exports = {
   ],
 
   capabilities: {
-    hooks: true,
-    slashCommands: true,  // Phase 16 Rework: workflows at .agent/workflows/<name>.md auto-register as /<name> per official docs
+    hooks: true,          // Phase 22b: five-event contract verified live (fact-sheet §5; PreToolUse/PostToolUse/PreInvocation/PostInvocation/Stop all fired)
+    slashCommands: true,  // Phase 22b: workflows auto-register as /<name> — verified live incl. planted markers (fact-sheet §3)
     subagents: true,
     parallelSubagents: true,
-    sessionStartHook: false, // Phase 16 Rework: hook is wired; SessionStart event support pending VAL-002 confirmation
-    skills: true,         // Phase 16 Rework: .agents/skills/ overlay ships momentum-orient + 3 reviewers
+    sessionStartHook: false, // Phase 22b: no SessionStart event EXISTS (5-event surface). Equivalent ships via PreInvocation invocationNum==0 + injectSteps; flip gated on the live injection round-trip (ENH-052 hang blocks re-probe).
+    skills: true,         // Phase 22b: <name>/SKILL.md discovery verified live (fact-sheet §4)
     browser: false,
     computerUse: false,
     artifacts: true,
@@ -59,7 +63,7 @@ module.exports = {
 
   roadmap: {
     sessionStartHook:
-      'Phase 16 Rework: hook is wired in .agents/hooks.json. Whether `agy` actually fires the SessionStart event is pending VAL-002 live confirmation; AGENTS.md text carries fallback handoff hint.',
+      'Phase 22b (ADR-0005): SessionStart does not exist on Antigravity — the momentum-session-context PreInvocation hook injects the handoff banner + queued notices as ephemeralMessage at invocationNum 0. Capability flips true once the injection round-trip is verified live (re-probe blocked by the intermittent agy 1.0.16 hook-runner hang, ENH-052). AGENTS.md text carries the fallback handoff hint meanwhile.',
   },
 
   runInstall(targetDir, adapterDir, helpers) {

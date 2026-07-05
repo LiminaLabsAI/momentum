@@ -58,3 +58,10 @@ Affects-specs: none
 Detail: During the probe battery, hook-ful headless runs hung indefinitely 6/10 times — ignoring --print-timeout, writing ZERO log lines — while hook-less runs passed 3/3 and the same configs passed minutes before/after (fact-sheet §9–10). Not attributable to config shape; working hypothesis is an intermittent hook-runner stdin/deadlock in agy 1.0.16. Consequences: momentum's shipped hooks.json shape stays UNVERIFIED (moot — G1 adopts the documented vendor schema); deny semantics remain doc-sourced pending a stable re-probe; every headless integration (spawn(), CI probes) MUST wrap agy in an external watchdog with pacing. Filed as ENH-052; upstream report drafted in G4.
 
 ---
+### [ARCH_CHANGE] 2026-07-05 — G1: adapter realigned to the locked 2.x contract (ADR-0005)
+Topics: antigravity, adapters, hooks, instructions
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: specs/decisions/0005-antigravity-canonical-root-and-hook-shim.md
+Detail: All destinations consolidated to the canonical `.agents/` root (legacy `.agent/` orphan-cleaned on upgrade by Phase 20 machinery); hooks.json rewritten to the vendor named-group schema over the real five events; NEW boundary shim adapters/antigravity/scripts/antigravity-hook-adapter.sh translates camelCase payloads → shared scripts and maps responses (deny decisions, notice queue for PostToolUse, PreInvocation ephemeralMessage injection for handoff banner + queued reminders at invocationNum 0). Core scripts byte-identical to main — capture tool reports claude-code/codex "no change"; antigravity fingerprint re-baselined once (58→59 files). Suite 733 → 739 green.
+
+---

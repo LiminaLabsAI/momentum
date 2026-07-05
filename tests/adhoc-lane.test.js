@@ -44,8 +44,8 @@ test('/hotfix ships to all three adapters at parity', () => {
   // Antigravity → workflow
   ({ tmp, repo } = installInto('antigravity'));
   try {
-    assert.ok(fs.existsSync(path.join(repo, '.agent', 'workflows', 'hotfix.md')),
-      'antigravity: .agent/workflows/hotfix.md missing');
+    assert.ok(fs.existsSync(path.join(repo, '.agents', 'workflows', 'hotfix.md')),
+      'antigravity: .agents/workflows/hotfix.md missing');
   } finally { rmrf(tmp); }
 });
 

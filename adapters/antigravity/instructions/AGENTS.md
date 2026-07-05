@@ -21,34 +21,34 @@
 
 ---
 
-## Antigravity-native layout under `.agent/` and `.agents/`
+## Antigravity-native layout under `.agents/`
 
-Momentum installs Antigravity-discoverable assets under two directories
-at the project root (this matches the documented `agy` CLI layout — note
-that `.agent/` (singular) hosts workflows and rules; `.agents/` (plural)
-hosts skills and hooks):
+Momentum installs every Antigravity-discoverable asset under the ONE
+canonical customization root, `.agents/`, at the project root (ADR-0005;
+Antigravity accepts four root spellings, and `.agents/` is the one all
+vendor examples and reference docs use):
 
 | Path | Purpose |
 |---|---|
-| `.agent/workflows/` | Step-by-step workflow recipes — each `<name>.md` auto-registers as `/<name>` slash command in `agy`. Includes all momentum phase + orchestration commands. |
-| `.agent/engines/` | Execution engines (subagent dispatch playbook). |
-| `.agents/skills/` | On-demand persona/capability skills — each `<name>/SKILL.md` loads when invoked. Momentum ships `momentum-orient` + three reviewer skills. |
-| `.agents/hooks.json` | Pre/Post tool event hooks + SessionStart. |
+| `.agents/workflows/` | Step-by-step workflow recipes — each `<name>.md` auto-registers as `/<name>` slash command. Includes all momentum phase + orchestration commands. |
+| `.agents/engines/` | Execution engines (subagent dispatch playbook). |
+| `.agents/skills/` | On-demand persona/capability skills — each `<name>/SKILL.md` is discovered by name+description and loads on activation. Momentum ships `momentum-orient` + three reviewers + `swarm-supervisor`. |
+| `.agents/hooks.json` | Lifecycle hooks (five events: PreToolUse, PostToolUse, PreInvocation, PostInvocation, Stop). |
 
 ## Workflows = momentum recipes (native slash commands)
 
 When the user types `/<name>` (e.g. `/brainstorm-phase`, `/start-phase`,
 `/sync-docs`, `/complete-phase`, `/dispatch`, `/handoff`, `/continue`,
 `/review-code`), `agy` reads the matching workflow file from
-`.agent/workflows/<name>.md` and follows its numbered steps.
+`.agents/workflows/<name>.md` and follows its numbered steps.
 
 Workflows ship in two layers:
 
-1. **Core workflows** — momentum's cross-adapter phase + ecosystem commands. Installed from `core/commands/*.md` to `.agent/workflows/*.md`. Examples: `brainstorm-phase`, `start-phase`, `sync-docs`, `complete-phase`, `track`, `validate`, `ecosystem`, `initiative`, `session`, `systematic-debug`.
+1. **Core workflows** — momentum's cross-adapter phase + ecosystem commands. Installed from `core/commands/*.md` to `.agentss/workflows/*.md`. Examples: `brainstorm-phase`, `start-phase`, `sync-docs`, `complete-phase`, `track`, `validate`, `ecosystem`, `initiative`, `session`, `systematic-debug`.
 2. **Antigravity-specific workflows** — orchestration primitives with native parallel subagent fan-out. Installed from `adapters/antigravity/workflows/*.md`. Examples: `scout`, `dispatch`, `handoff`, `continue`, `review-code`.
 
 To add a project-specific workflow, drop a Markdown file into
-`.agent/workflows/<name>.md` with YAML frontmatter:
+`.agents/workflows/<name>.md` with YAML frontmatter:
 
 ```markdown
 ---
@@ -91,7 +91,7 @@ YAML frontmatter (`name`, `description`).
 
 Momentum's swarm primitive — sustained parallel multi-project feature
 delivery — ships on Antigravity as of v0.20.4. The user-facing
-workflow lives at `.agent/workflows/swarm.md`; `agy` auto-registers it
+workflow lives at `.agents/workflows/swarm.md`; `agy` auto-registers it
 as `/swarm`. The per-repo supervisor persona lives at
 `.agents/skills/swarm-supervisor/SKILL.md`.
 
@@ -136,21 +136,25 @@ When in planning mode or executing a phase, keep Antigravity's native artifacts 
 
 ## Hooks
 
-Antigravity hook wiring lives in `.agents/hooks.json`. Momentum installs
-reusable shell scripts to `scripts/` and references them:
+Antigravity hook wiring lives in `.agents/hooks.json` (named-group schema,
+five lifecycle events — there is NO SessionStart event on Antigravity).
+Hook commands run with CWD = `.agents/`, so momentum wires them through the
+boundary shim `scripts/antigravity-hook-adapter.sh` (ADR-0005), which
+translates Antigravity's camelCase payloads and response contract and
+delegates to the same shared scripts every adapter uses:
 
-| Event | Matcher | Script | Purpose |
+| Named hook | Event | Matcher | Behavior |
 |---|---|---|---|
-| `PreToolUse` | `run_command\|view_file\|.*write.*\|apply_patch` | `scripts/brainstorm-gate.sh` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`). Exits 2 to block. |
-| `PostToolUse` | `run_command\|apply_patch\|.*write.*` | `scripts/check-history-reminder.sh` | Prompts for `history.md` append when meaningful edits land during phase work — resolved to the phase bound to the current branch (fallback: `status.md`) (Rule 8). |
-| `SessionStart` | (none) | `scripts/sessionstart-handoff.sh` | When `agy` fires SessionStart, auto-greets with any pending handoff banner + ecosystem context. (SessionStart vendor support pending VAL-002.) |
+| `momentum-brainstorm-gate` | `PreToolUse` | `write_to_file\|run_command\|.*write.*\|.*edit.*\|.*replace.*` | Blocks writes to `specs/` while a `/brainstorm-*` session is active (sentinel `.momentum/brainstorm-active`) — responds `{"decision":"deny","reason":…}`. |
+| `momentum-history-reminder` | `PostToolUse` | same write-family matcher | Runs `check-history-reminder.sh`; reminders are QUEUED (PostToolUse has no message channel) and injected on the next model invocation (Rule 8). |
+| `momentum-session-context` | `PreInvocation` | (flat — no matcher) | At `invocationNum 0`, runs `sessionstart-handoff.sh` and injects the pending-handoff banner + ecosystem context as an `ephemeralMessage`; every invocation also drains queued reminders. |
 
-### SessionStart fallback
+### Session-start fallback
 
-If `agy`'s SessionStart event isn't yet supported, the handoff pickup
-hint also lives in this AGENTS.md primary-instruction text below: if a
-`.momentum/inbox/handoff-NNN.md` file exists at session start, read it
-and acknowledge before continuing.
+Injection depends on the vendor hook runner. The handoff pickup hint also
+lives in this AGENTS.md primary-instruction text as a belt-and-braces
+fallback: if a `.momentum/inbox/handoff-NNN.md` file exists at session
+start, read it and acknowledge before continuing.
 
 ## Autonomous Behaviors (Always-On Rules)
 

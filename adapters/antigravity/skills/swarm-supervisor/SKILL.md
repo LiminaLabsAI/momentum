@@ -25,7 +25,7 @@ session) spawned you with a spawn directive containing:
 3. **Read `specs/status.md`** per Rule 1 (orient first).
 4. **Begin the normal momentum lifecycle inside this repo**: `/start-phase`
    → implement → `/sync-docs` → `/complete-phase`. Each phase command is
-   a workflow at `.agent/workflows/<name>.md` — invoke them by name.
+   a workflow at `.agents/workflows/<name>.md` — invoke them by name.
 
 ## Operating constraints
 
