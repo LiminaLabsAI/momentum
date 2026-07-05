@@ -42,6 +42,12 @@ const htmlThemeAttr = theme === 'auto' ? undefined : theme;
 // braces parsed as Astro expressions.
 const themeInit =
 	"(function(){try{var t=localStorage.getItem('mm-theme');document.documentElement.dataset.theme=(t==='dark'||t==='light')?t:'light';}catch(e){document.documentElement.dataset.theme='light';}})();";
+
+// Logo sweep runs once per browser session. On the first page of a session we
+// let the CSS load-animation play; on every later navigation we mark <html>
+// so the CSS skips it (flash-free — decided before paint). Hover still sweeps.
+const sweepInit =
+	"(function(){try{if(sessionStorage.getItem('mm-swept')){document.documentElement.classList.add('mm-swept');}else{sessionStorage.setItem('mm-swept','1');}}catch(e){}})();";
 ---
 
 <!doctype html>
@@ -71,6 +77,7 @@ const themeInit =
 		<meta name="twitter:image" content={ogImageUrl} />
 
 		{theme === 'auto' && <script is:inline set:html={themeInit} />}
+		<script is:inline set:html={sweepInit} />
 	</head>
 	<body>
 		<div class="ambient-layer" aria-hidden="true"></div>
