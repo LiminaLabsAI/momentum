@@ -105,7 +105,8 @@ for the adjudication that preceded it) found:
 4. `spawn()` launches a real headless supervisor session and returns the
    contract tuple.
 5. Suite green (733 baseline + new); antigravity fingerprint re-baselined
-   exactly once, with explanatory meta.
+   only deliberately — each re-baseline carries the capture-tool diff in its
+   commit (G1: layout consolidation; G3: plugin docs section in AGENTS.md).
 6. Zero stale "pending VAL-002" / "no CLI exists" residue in any shipped surface.
 
 ## Risks

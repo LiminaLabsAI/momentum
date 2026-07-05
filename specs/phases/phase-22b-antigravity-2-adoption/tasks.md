@@ -34,11 +34,11 @@
 
 ## Group 3 — Native 2.0 surfaces (deps: G1)
 
-- [ ] Reviewer subagent definitions in locked format/location
-- [ ] `/review-code` wired to native subagent fan-out
-- [ ] `agy plugin` packaging of recipes (opt-in, documented)
-- [ ] Global-skills opt-in documented (never default)
-- [ ] `momentum doctor` agy check advising official installer (supersedes ENH-051)
+- [x] Reviewer subagents RE-SCOPED per evidence: no documented/observed project-level subagent-definition surface exists (fact-sheet §7) — reviewers stay skills; `[SCOPE_CHANGE]` logged
+- [x] `/review-code` fan-out unchanged — semantic skill activation is the vendor mechanism; no fictional wiring added
+- [x] `momentum antigravity plugin-pack [--global] [--dry-run]` — plugin.json + 5 skills; validated LIVE: `agy plugin validate` → [ok], 5 skills processed (`evidence/plugin-pack.md`)
+- [x] Global opt-in via `plugin-pack --global` → `~/.gemini/config/plugins/momentum/`; workspace installs take priority; documented in surfaces
+- [x] `momentum doctor` advisory: antigravity projects (lock-file gated) + missing agy → official installer hint; never provisions; silent for other adapters
 
 ## Group 4 — Truth-sync (deps: G2, G3)
 

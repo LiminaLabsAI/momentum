@@ -151,6 +151,31 @@ function cmdDoctor(args) {
   }
   console.log('');
 
+  // Phase 22b G3 — Antigravity runtime advisory. Only for projects whose
+  // momentum install targets antigravity (lock file), and only ADVISES the
+  // official installer — momentum never provisions vendor binaries (see the
+  // VAL-002 adjudication record).
+  try {
+    const lockPath = path.join(cwd, '.momentum', 'installed.json');
+    if (fs.existsSync(lockPath)) {
+      const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+      if (lock.agent === 'antigravity') {
+        const { spawnSync } = require('child_process');
+        const agyBin = process.env.AGY_BIN || 'agy';
+        const found = agyBin.includes(path.sep)
+          ? fs.existsSync(agyBin)
+          : spawnSync('which', [agyBin], { stdio: 'ignore' }).status === 0;
+        if (!found) {
+          console.log('Advisory: this project targets Antigravity but the `agy` CLI is not on PATH.');
+          console.log('  Headless features (swarm spawn, orchestration CLI floor) need it.');
+          console.log('  Official installer: curl -fsSL https://antigravity.google/cli/install.sh | bash');
+          console.log('  (The Antigravity IDE works without it — this only affects CLI/headless use.)');
+          console.log('');
+        }
+      }
+    }
+  } catch (_err) { /* advisory is best-effort — never block doctor */ }
+
   const transitions = stateLib.availableTransitions(state, reg || {});
   if (transitions.length === 0) {
     console.log('No suggested next steps for this state.');

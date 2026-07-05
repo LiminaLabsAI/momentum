@@ -126,6 +126,25 @@ directive's `repoPath` as the cwd. Each supervisor BECOMES the
 **`agy` not on PATH**: `momentum swarm start --spawn` degrades to
 dry-run and prints spawn directives the user can launch manually.
 
+## Plugins — global momentum skills (opt-in)
+
+Antigravity plugins bundle skills into one namespaced, enable/disable-able
+unit (`plugins/<name>/plugin.json` + `skills/`). Momentum can pack its five
+skills as a native plugin:
+
+```bash
+momentum antigravity plugin-pack            # → .agents/plugins/momentum/ (this project)
+momentum antigravity plugin-pack --global   # → ~/.gemini/config/plugins/momentum/ (all workspaces)
+```
+
+The `--global` form is the explicit opt-in way to make momentum's skills
+available in every Antigravity workspace on this machine; a per-project
+momentum install always takes priority (workspace beats global in the
+discovery order). Hooks are deliberately not packed — they are
+project-relative and ship via `momentum init`/`upgrade` only. Momentum never
+installs the `agy` binary itself; `momentum doctor` points at the official
+installer when it is missing.
+
 ## Antigravity Native Artifacts Integration
 
 When in planning mode or executing a phase, keep Antigravity's native artifacts in sync with momentum's spec files:

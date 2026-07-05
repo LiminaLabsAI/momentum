@@ -41,7 +41,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "AGENTS.md": "d5aec0ee19c5e4816ae5deb81af7274bf66bc3ed9b3dd5e1c3a5cd5334c91f67",
+    "AGENTS.md": "bdb6d485f71aa98090e0178ad124d5481f9beb26041e132ec1452c1dd5e2f327",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/antigravity-hook-adapter.sh": "60b78d4bf5fb3bb2cefe32b7fdfcad722f5d37d5fb758516f2badc9fa429fe65",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",

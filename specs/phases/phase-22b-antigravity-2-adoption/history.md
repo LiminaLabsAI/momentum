@@ -72,3 +72,10 @@ Affects-specs: none
 Detail: adapter.spawn(directive) now launches a DETACHED `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from directive.repoPath (spawnSync cwd replaces the fictional --cwd; skill engagement by name replaces the fictional --skill), logs to .momentum/swarm-supervisor-<swarm>-w<wave>.log, and returns the contract tuple synchronously (missing binary detected up front with the official-installer hint). Detached-async replaces claude-code's 5s spawnSync shape because agy print runs take minutes and can hang past their own timeout (ENH-052) — the conductor must never block. Live smoke: real agy launched, log captured BOOT-OK (evidence/spawn-smoke.md). Suite 740/740.
 
 ---
+### [SCOPE_CHANGE] 2026-07-05 — G3: reviewer subagent definitions dropped (no such vendor surface); plugin packaging shipped
+Topics: antigravity, subagents, plugins, doctor
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: none
+Detail: G0 evidence (fact-sheet §7) found no documented or observed project-level subagent-definition surface in agy 1.0.16 — the planned "reviewers as native subagent defs" deliverable would have been Phase-18-style fiction, so it is dropped; reviewers stay skills (semantic activation IS the vendor mechanism). Shipped instead: `momentum antigravity plugin-pack [--global]` (plugin.json + 5 skills; live-validated with `agy plugin validate` → [ok]) and the `momentum doctor` advisory (lock-file-gated, official installer, never provisions — the ENH-051 supersession made real). Bonus discovery: the plugin validator recognizes undocumented `agents`/`commands` plugin subdirs — future surfaces. Suite 740 → 745.
+
+---
