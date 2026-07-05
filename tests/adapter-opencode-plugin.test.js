@@ -122,23 +122,46 @@ test('gate is not fooled by ../ traversal into specs/', async () => {
   }
 });
 
-test('history reminder fires once per throttle window for meaningful edits', async () => {
+test('history reminder fires once per throttle window (real payload: args only in before, callID correlation)', async () => {
   const root = mktmp();
   try {
     const hooks = await loadPluginHooks(root);
-    const first = await captureLogs(() =>
-      hooks['tool.execute.after']({ tool: 'edit' }, { args: { filePath: 'src/app.js' } }),
-    );
+    // Live-confirmed payload shape (Phase 22 G5): the after hook does NOT
+    // receive tool args — the plugin must correlate via callID.
+    const first = await captureLogs(async () => {
+      await hooks['tool.execute.before'](
+        { tool: 'edit', callID: 'call-1' },
+        { args: { filePath: 'src/app.js' } },
+      );
+      await hooks['tool.execute.after']({ tool: 'edit', callID: 'call-1' }, { output: 'ok' });
+    });
     assert.equal(first.logs.length, 1, 'first meaningful edit must log a reminder');
     assert.match(first.logs[0], /history/i);
     assert.ok(
       fs.existsSync(path.join(root, '.momentum', 'history-reminder-stamp')),
       'reminder must write its throttle stamp',
     );
-    const second = await captureLogs(() =>
-      hooks['tool.execute.after']({ tool: 'edit' }, { args: { filePath: 'src/other.js' } }),
-    );
+    const second = await captureLogs(async () => {
+      await hooks['tool.execute.before'](
+        { tool: 'edit', callID: 'call-2' },
+        { args: { filePath: 'src/other.js' } },
+      );
+      await hooks['tool.execute.after']({ tool: 'edit', callID: 'call-2' }, { output: 'ok' });
+    });
     assert.equal(second.logs.length, 0, 'second edit within throttle window must stay silent');
+  } finally {
+    rmrf(root);
+  }
+});
+
+test('history reminder falls back to output.args when no callID correlation exists', async () => {
+  const root = mktmp();
+  try {
+    const hooks = await loadPluginHooks(root);
+    const out = await captureLogs(() =>
+      hooks['tool.execute.after']({ tool: 'edit' }, { args: { filePath: 'src/app.js' } }),
+    );
+    assert.equal(out.logs.length, 1, 'fallback path must still produce the reminder');
   } finally {
     rmrf(root);
   }

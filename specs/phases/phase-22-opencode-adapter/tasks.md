@@ -53,15 +53,15 @@
 
 ## Group 5 — Live validation + docs + release prep (sequential)
 
-- [ ] Live check 1: `/command` discovery in TUI
-- [ ] Live check 2: gate blocks `specs/` write under `brainstorm-active`
-- [ ] Live check 3: history reminder fires
-- [ ] Live check 4: `session.created` banner
-- [ ] Live check 5: reviewer subagent invocation
-- [ ] Live check 6: `opencode run --dir --agent` spawn
-- [ ] Live check 7: multi-adapter skills coexistence
-- [ ] Finalize `parallelSubagents` / `sessionStartHook` / `skills` booleans from evidence (+ parity cells 17/19 gated→shipped as earned)
-- [ ] README + site adapter mention
-- [ ] Roadmap repair (Rules Unification row; Reach = opencode v0.27.0; Intelligence → v0.28.0)
-- [ ] Retrospective with Verification Evidence; version bump → 0.27.0
-- [ ] Commit G5; `lanes done`; land + release per Rule 6 gates
+- [x] Live check 1: /validate executed the recipe end-to-end in run-mode ✅
+- [x] Live check 2: gate BLOCKED a real specs/ edit; negative control passed ✅
+- [x] Live check 3: reminder stamp on disk after real write ✅ (after live-payload callID fix)
+- [x] Live check 4: NOT CONFIRMED in run-mode — sessionStartHook stays false ❌ (honest fail; event-hook hang documented)
+- [x] Live check 5: opencode agent list discovers all 4 momentum agents w/ correct modes ✅
+- [x] Live check 6: supervisor spawn from foreign cwd — agent selected, cwd pinned ✅
+- [x] Live check 7: skill tool loaded momentum-orient; duplicate-name coexistence clean ✅ (+ parallel fan-out proof)
+- [x] Booleans finalized: parallelSubagents=true, skills=true (earned); sessionStartHook=false (unobserved); parity cells promoted
+- [x] README quickstart + agents table (site page deferred to the site-redesign lane — noted in history)
+- [x] Roadmap repaired: Rules Unification row added; Reach re-scoped; Intelligence → 24 (v0.28.0); Platform → 25 (v1.0)
+- [x] Retrospective with Verification Evidence; version 0.26.0 → 0.27.0
+- [/] Commit G5; `lanes done`; land + release per Rule 6 gates (STOPPED at operator release gate)

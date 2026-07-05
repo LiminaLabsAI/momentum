@@ -52,24 +52,23 @@ module.exports = {
   ],
 
   capabilities: {
-    hooks: true, // .opencode/plugins/momentum.js — tool.execute.before/after + session.created
-    slashCommands: true, // recipes at .opencode/commands/ register natively as /<name>
-    subagents: true, // momentum-reviewer-* + swarm-supervisor at .opencode/agents/
-    parallelSubagents: false, // flips only on live evidence of task-tool fan-out (Phase 22 G5)
-    sessionStartHook: false, // wired via session.created; flips only on live evidence (Phase 22 G5)
-    skills: false, // wired at .opencode/skills/; flips only on live skill-tool discovery evidence (Phase 22 G5)
+    hooks: true, // live-validated: gate blocked a real specs/ edit; reminder stamp observed (G5 checks 2-3)
+    slashCommands: true, // live-validated: /validate executed the recipe in run-mode (G5 check 1)
+    subagents: true, // live-validated: all 4 agents discovered; supervisor selected via --agent (G5 checks 5-6)
+    parallelSubagents: true, // live-validated: two task-tool subagents with overlapping start/end timestamps (G5)
+    sessionStartHook: false, // session.created NOT observed in run-mode with a pending handoff (G5 check 4)
+    skills: true, // live-validated: skill tool loaded momentum-orient; multi-adapter coexistence clean (G5 check 7)
     browser: false,
     computerUse: false,
     planningMode: true, // built-in read-only Plan agent (Tab-cycle primary)
   },
 
   roadmap: {
-    parallelSubagents:
-      'opencode docs describe task-tool parallel fan-out; promote on Phase 22 G5 live evidence, not docs.',
     sessionStartHook:
-      'Wired via the session.created plugin event; promote on Phase 22 G5 live evidence of the event firing.',
-    skills:
-      'Shipped at .opencode/skills/<name>/SKILL.md (native surface, opencode ≥1.17); promote on Phase 22 G5 live skill-tool discovery evidence.',
+      'Banner code ships via the session.created plugin hook but the event was not observed in ' +
+      '`opencode run` non-interactive mode (Phase 22 G5 evidence: val-opencode-live.txt). Promote only ' +
+      'on observed TUI-session evidence. NB: a generic `event` bus hook HANGS run-mode (1.17.13) — ' +
+      'keep this plugin on named hooks only.',
   },
 
   runInstall(targetDir, adapterDir, helpers) {

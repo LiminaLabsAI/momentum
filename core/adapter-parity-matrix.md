@@ -67,7 +67,7 @@ overview.md):
 
 | Skill | Claude Code | Codex | Antigravity | opencode |
 |---|---|---|---|---|
-| `momentum-orient` | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped-gated¹⁷ |
+| `momentum-orient` | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped¹⁷ |
 | `momentum-reviewer-security` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
 | `momentum-reviewer-qa` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
 | `momentum-reviewer-architecture` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
@@ -76,9 +76,9 @@ overview.md):
 
 | Hook | Claude Code | Codex | Antigravity | opencode |
 |---|---|---|---|---|
-| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-gated¹⁹ |
-| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-gated¹⁹ |
-| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-gated¹⁹ |
+| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped¹⁹ |
+| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped¹⁹ |
+| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-degraded¹⁹ |
 
 ### Git-lifecycle hooks (Phase 19 — agent-agnostic)
 
@@ -144,11 +144,11 @@ overview.md):
 
 16. **`agent-rules` overlay retired (Phase 23 / ADR-0004)** — the condensed `.agent/rules/project.md` file is no longer shipped by any adapter: no agent auto-loaded it, and the full detailed rules (Red Flags + anti-rationalization + Rule 13) now ride each adapter's auto-loaded primary instruction file, generated from the single canonical source at `core/instructions/rules-body.md`. `momentum upgrade` migrates existing installs (pristine → removed; customized → kept + deprecation warning). The `destinations['agent-rules']` contract key stays reserved for future per-adapter rule overlays.
 
-17. **opencode recipes + skills (Phase 22)** — recipes install at `.opencode/commands/<name>.md` where each file registers natively as `/<name>` in the TUI ([opencode commands docs](https://opencode.ai/docs/commands/)); `runInstall` prepends `description` frontmatter for the command picker. Momentum skills install at `.opencode/skills/<name>/SKILL.md` (native surface, opencode ≥1.17; opencode also discovers the `.agents/skills/` path Codex/Antigravity use, so multi-adapter installs coexist). `momentum-orient` marked `shipped-gated` pending Phase 22 G5 live skill-tool discovery evidence — the `skills` capability boolean stays `false` until then.
+17. **opencode recipes + skills (Phase 22, LIVE-validated)** — recipes install at `.opencode/commands/<name>.md` where each file registers natively as `/<name>` ([opencode commands docs](https://opencode.ai/docs/commands/)); `runInstall` prepends `description` frontmatter for the command picker. Live evidence (G5): `opencode run "/validate"` executed the recipe end-to-end. Momentum skills install at `.opencode/skills/<name>/SKILL.md`; live evidence: the skill tool loaded `momentum-orient` in a real session, and a same-named duplicate on the `.agents/skills/` path (Codex/Antigravity convention) coexisted without error — the `skills` capability boolean is `true`, a momentum first. Full transcript: `specs/phases/phase-22-opencode-adapter/evidence/val-opencode-live.txt`.
 
 18. **opencode agents (Phase 22)** — reviewers + swarm supervisor at `.opencode/agents/<name>.md` (markdown agents, [opencode agents docs](https://opencode.ai/docs/agents/)). The three reviewers declare `mode: subagent` + `permission: edit: deny` (+ read-only bash allowlist) — true sandbox-level read-only, not just prompt-level. Spawn contract: `opencode run --dir <repoPath> --agent swarm-supervisor` (`--dir` pins cwd natively; no MCP shim needed, unlike Codex footnote 14).
 
-19. **opencode momentum plugin (Phase 22)** — one self-contained JS plugin at `.opencode/plugins/momentum.js` ([opencode plugins docs](https://opencode.ai/docs/plugins/)) wires all three enforcement hooks: brainstorm gate (`tool.execute.before` — throwing blocks the tool call), history reminder (`tool.execute.after`), pending-handoff banner (`session.created`). Reads the same `.momentum/` sentinels as the other adapters' shell hooks. Marked `shipped-gated` pending Phase 22 G5 live validation. Degraded ecosystem cells: the ecosystem SessionStart context banner and the auto session log are not yet wired through the plugin (use `/session` or the `momentum` CLI); in-phase follow-up tracked in the Phase 22 plan.
+19. **opencode momentum plugin (Phase 22, LIVE-validated)** — one self-contained JS plugin at `.opencode/plugins/momentum.js` ([opencode plugins docs](https://opencode.ai/docs/plugins/)) wires the three enforcement hooks; reads the same `.momentum/` sentinels as the other adapters' shell hooks. Live evidence (G5, `val-opencode-live.txt`): the gate **blocked a real specs/ edit** during `brainstorm-active` (negative control passed after sentinel removal); the history reminder stamped after a real write (required a callID-correlation fix — `tool.execute.after` carries no args in the live runtime). Degraded cells: `session.created` was NOT observed in `opencode run` mode, so the handoff/ecosystem banners are unconfirmed (code ships; may fire in TUI); the ecosystem auto session log is not yet wired through the plugin (use `/session` or the `momentum` CLI). Runtime caveat: a generic `event` bus hook hangs run-mode (1.17.13) — the plugin deliberately uses named hooks only.
 
 ## Read this if you are…
 

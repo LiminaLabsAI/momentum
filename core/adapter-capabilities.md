@@ -34,9 +34,9 @@ orchestration code depends on.
 | `hooks` | ✅ | ✅ | ✅ | ✅⁵ |
 | `slashCommands` | ✅ | ✅ | ❌¹ | ✅⁵ |
 | `subagents` | ✅ | ✅² | ✅ | ✅⁵ |
-| `parallelSubagents` | ✅ | ❌² | ✅ | ❌⁵ |
+| `parallelSubagents` | ✅ | ❌² | ✅ | ✅⁵ |
 | `sessionStartHook` | ✅ | ✅ | ❌³ | ❌⁵ |
-| `skills` | ❌ | ❌⁴ | ❌ | ❌⁵ |
+| `skills` | ❌ | ❌⁴ | ❌ | ✅⁵ |
 | `browser` | ❌ | ❌⁴ | ❌ | ❌ |
 | `computerUse` | ❌ | ❌⁴ | ❌ | ❌ |
 | `artifacts` (adapter-specific) | — | — | ✅ | — |
@@ -80,7 +80,7 @@ conditions.
 3. **Antigravity `sessionStartHook: false`** — Antigravity has no SessionStart hook surface today. The handoff inbox pickup hint surfaces via primary-instruction text in `AGENTS.md` instead. `/continue` and `momentum continue` still work; the user just doesn't get an automatic banner.
 4. **Codex `skills` / `browser` / `computerUse`** — declared `false` today; planned for a future Codex feature drop. When Codex ships those features, flip the boolean and remove the corresponding `roadmap` entry in the same PR.
 
-5. **opencode (Phase 22)** — `hooks` / `slashCommands` / `subagents` are `true` on shipped file surfaces (`.opencode/plugins/momentum.js`, `.opencode/commands/`, `.opencode/agents/`) backed by vendor docs. `parallelSubagents`, `sessionStartHook`, and `skills` stay `false` until Phase 22 G5 **live** evidence confirms runtime behavior (task-tool fan-out, `session.created` firing, skill-tool discovery) — the VAL-002 lesson: file presence + docs ≠ observed runtime.
+5. **opencode (Phase 22, LIVE-validated 2026-07-05)** — every boolean set from real-runtime evidence against opencode 1.17.13 with real model calls (free tier, zero credentials) — see `specs/phases/phase-22-opencode-adapter/evidence/val-opencode-live.txt`. `parallelSubagents: true` earned via overlapping task-tool timestamps; `skills: true` earned via a live skill-tool load of momentum-orient (**a momentum first — no other adapter has live-validated skills**); `sessionStartHook: false` because `session.created` was not observed in `opencode run` mode with a pending handoff (banner code ships and may fire in TUI sessions; promote only on observed evidence). Runtime caveat: a generic `event` bus hook hangs run-mode — momentum's plugin uses named hooks only.
 
 ## ENH-023 and ENH-024 closed (Phase 11 G0)
 

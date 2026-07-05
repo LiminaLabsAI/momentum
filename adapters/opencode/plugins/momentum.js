@@ -51,12 +51,25 @@ export const MomentumPlugin = async ({ directory, worktree }) => {
   const root = worktree || directory || process.cwd()
   const momentumDir = path.join(root, ".momentum")
 
+  // tool.execute.after does NOT carry tool args (confirmed live, Phase 22 G5)
+  // — only the before hook sees them. Correlate by callID so the reminder
+  // knows which path a completed write touched. Bounded: entries are removed
+  // at after-time; the cap guards sessions whose after hooks never fire.
+  const pendingWrites = new Map()
+  const PENDING_CAP = 512
+
   return {
     "tool.execute.before": async (input, output) => {
       const tool = (input && input.tool) || ""
       if (!WRITE_TOOLS.has(tool) && tool !== "bash") return
-      if (!fs.existsSync(path.join(momentumDir, "brainstorm-active"))) return
       const target = extractTargetPath(tool, output && output.args)
+      if (target && WRITE_TOOLS.has(tool) && input && input.callID) {
+        if (pendingWrites.size >= PENDING_CAP) {
+          pendingWrites.delete(pendingWrites.keys().next().value)
+        }
+        pendingWrites.set(input.callID, target)
+      }
+      if (!fs.existsSync(path.join(momentumDir, "brainstorm-active"))) return
       if (!target) return // fail-open when no path is extractable
       if (isUnderSpecs(root, target)) {
         throw new Error(
@@ -75,7 +88,11 @@ export const MomentumPlugin = async ({ directory, worktree }) => {
       try {
         const tool = (input && input.tool) || ""
         if (!WRITE_TOOLS.has(tool)) return
-        const target = extractTargetPath(tool, output && output.args)
+        // Args live only in the before hook — recover the path via callID
+        // (fallback to output.args for synthetic/direct invocations).
+        let target = input && input.callID ? pendingWrites.get(input.callID) : undefined
+        if (input && input.callID) pendingWrites.delete(input.callID)
+        if (!target) target = extractTargetPath(tool, output && output.args)
         if (!target) return
         // Edits to the spec layer ARE the tracking — only code/doc edits
         // outside specs/ and .momentum/ warrant a history nudge.
