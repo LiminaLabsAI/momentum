@@ -75,3 +75,17 @@ clone (primary checkout masked by local chmod). BUG-012 guard covers only
 `*.sh`. Four `.bak` twins also committed. Filed as BUG-017 (P1).
 
 ---
+
+### [DECISION] 2026-07-05 — G0 complete: ADR-0005 accepted; contracts shipped
+Topics: okf, adr-0005, frontmatter, type-taxonomy
+Affects-phases: phase-24-okf-adoption
+Affects-specs: specs/decisions/0005-adopt-okf.md
+Detail: ADR-0005 accepted (OKF v0.1 adoption: distributed phase metadata,
+impact-map table, dual-read fallback, history.md retained). Contracts shipped:
+core/lib/frontmatter.js (zero-dep YAML subset, tolerant parse — data:null on
+anything outside the emitted subset so callers leave the file opaque;
+insertTypeLine does textual injection to avoid reserialization fidelity risk)
+and core/lib/okf-types.js (17-type taxonomy, first-match-wins, reserved
+index.md/log.md → null). Verification: node --test 18/18 pass.
+
+---

@@ -3,9 +3,9 @@
 > Execution: G0 → (G1 ∥ G2 ∥ G3) → G4 → G5
 
 ## Group 0 — Contracts
-- [ ] ADR-0005 (spec pin, taxonomy, migration + dual-read policy)
-- [ ] core/lib/frontmatter.js + tests
-- [ ] core/lib/okf-types.js + tests
+- [x] ADR-0005 (spec pin, taxonomy, migration + dual-read policy)
+- [x] core/lib/frontmatter.js + tests
+- [x] core/lib/okf-types.js + tests
 
 ## Group 1 — Waves engine (deps: G0)
 - [ ] plan-graph.js frontmatter scan + index.json fallback + nudge
