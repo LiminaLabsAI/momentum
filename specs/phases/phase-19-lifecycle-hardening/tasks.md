@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 19 — Lifecycle Hardening: Tasks
 
 > Mirrors `plan.md`. Mark `[x]` complete, `[/]` in-progress. Verify before marking done (Rule 12).

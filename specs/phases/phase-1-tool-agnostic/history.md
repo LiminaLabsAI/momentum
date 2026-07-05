@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 1 — Tool-Agnostic Architecture: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

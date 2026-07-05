@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 15 — Ecosystem Agent Discoverability: Retrospective
 
 ## What shipped

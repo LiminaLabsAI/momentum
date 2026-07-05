@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 13 — Site Polish & Content Depth: Tasks
 
 > Granular checklist mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress, `[ ]` not started.

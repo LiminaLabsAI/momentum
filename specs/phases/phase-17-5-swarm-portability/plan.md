@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 17.5 — Swarm Portability: Implementation Plan
 
 # Execution order: Group 0 → Group 1 → (Groups 2 + 3 in parallel) → Group 4 → Group 5

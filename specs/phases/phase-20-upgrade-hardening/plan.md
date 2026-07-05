@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 20 — Upgrade Hardening: Plan
 
 > **Target release**: v0.22.0

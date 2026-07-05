@@ -1,3 +1,7 @@
+---
+type: Decision
+---
+
 # ADR-0005: Adopt OKF v0.1 as the Specs Storage Format
 
 > **Status**: Accepted (2026-07-05)

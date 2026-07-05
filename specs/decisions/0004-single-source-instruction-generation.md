@@ -1,3 +1,7 @@
+---
+type: Decision
+---
+
 # ADR-0004: Single-Source Instruction Generation
 
 > **Status**: Accepted (2026-07-04)

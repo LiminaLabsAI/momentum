@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 17 Swarm — Tasks
 
 > Granular checklist mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress.

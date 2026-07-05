@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-16, adapter-rework, native-idiom, codex, antigravity, claude-code-zero-regression, recipes-vs-personas-vs-subagents, workflows, skills, agents-md-recipes, apply-patch-matcher, run-command-matcher, agent-workflows-directory, dot-agents-skills-shared, toml-subagents-codex, sandbox-mode-read-only, brainstorm-gate-generalization, fingerprint-snapshot, parity-matrix, val-001, val-002, v0-19-0]
+---
+
 # Phase 16 Rework: Codex & Antigravity Native-Idiom Adapters
 
 > **Target Version**: v0.19.0

@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 21c — Lanes Fly — Tasks
 
 > Mirrors plan (in overview.md scope). Execution: G0 → G1 → G2 → G3 → G4.

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 11 — Dynamic Orchestration & Context Handover: Retrospective
 
 > Produced at `/complete-phase` time. Captures verification evidence

@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-7b, adapter-contract-v3, agent-runtime, compatibility, codex, agents-md, codex-hooks, commands, claude-code, adapter-metadata, tarball-shape, npm-pack]
+---
+
 # Phase 7b — Agent Runtime Compatibility: Overview
 
 > **Goal**: Ship v0.9.0 — prove momentum is genuinely agent-agnostic by hardening the adapter contract and adding Codex as the first non-Claude adapter.

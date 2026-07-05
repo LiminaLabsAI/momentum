@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 21a — Lanes Walk — Implementation Plan
 
 ```

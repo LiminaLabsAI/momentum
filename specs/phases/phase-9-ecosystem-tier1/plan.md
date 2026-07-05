@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 9 — Ecosystem (Tier 1): Plan
 
 ## Execution Order

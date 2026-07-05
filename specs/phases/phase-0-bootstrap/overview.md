@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [install, template, distribution, commands, hook, agent-rules, spec-structure]
+---
+
 # Phase 0: Bootstrap
 
 > **Status**: Complete (2026-04-21)

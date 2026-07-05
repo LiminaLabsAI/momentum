@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 9 — Ecosystem (Tier 1): Retrospective
 
 > Completed 2026-06-07. Released as v0.12.0.

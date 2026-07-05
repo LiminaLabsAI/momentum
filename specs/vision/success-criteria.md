@@ -1,3 +1,7 @@
+---
+type: Vision
+---
+
 # Success Criteria
 
 ## Phase 0 Complete When...

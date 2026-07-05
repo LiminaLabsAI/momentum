@@ -1,4 +1,5 @@
 ---
+type: Decision
 id: "0000"
 title: "ADR Template"
 status: template

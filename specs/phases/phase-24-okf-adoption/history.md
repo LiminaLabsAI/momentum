@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 24 — History
 
 ### [DECISION] 2026-07-05 — OKF v0.1 pinned as the target spec
@@ -132,5 +136,33 @@ decisions README; /validate gained step 4b delegating to `momentum okf check`.
 All 3 adapter fingerprints re-baselined with a phase-24 note. Verification:
 18/18 okf+fingerprint suites, 24/24 instruction/install/upgrade, tarball +
 agent-rules-migration green.
+
+---
+
+### [NOTE] 2026-07-05 — G4 complete: self-repo is an OKF v0.1 bundle
+Topics: okf, dogfood, migration, drift
+Affects-phases: phase-24-okf-adoption
+Affects-specs: specs/index.md, specs/phases/index.md, specs/decisions/index.md
+Detail: Real `node bin/momentum.js upgrade .` migrated this repo: 28 phases
+distributed, 155 files swept, both JSONs deleted, 3 indexes generated;
+`okf check` green (192 files); `momentum waves` reads frontmatter and now
+shows only phase-24 in flight. Recipes in .claude/commands refreshed to the
+OKF versions.
+
+---
+
+### [DISCOVERY] 2026-07-05 — Migration surfaced two pre-existing drift artifacts
+Topics: okf, drift, phases-index, git-hooks
+Affects-phases: phase-24-okf-adoption
+Affects-specs: specs/phases/phase-18-swarm-parity/overview.md, specs/phases/phase-7c-autonomous-tdd/overview.md
+Detail: (1) index.json carried stale `complete-on-branch` for phase-18 (shipped
+v0.20.4 2026-06-15) — faithfully migrated, then corrected to `complete` as a
+bookkeeping repair (21a-setup precedent); exactly the central-file drift class
+ADR-0005 eliminates. (2) phase-7c-autonomous-tdd was listed in index.json but
+never had a directory — the migration recreated a minimal overview.md so its
+status/topics survive in the bundle. Also: the upgrade's hook install
+self-healed the .githooks exec bits ON DISK, but core.fileMode=false hides the
+mode change from git, so the committed 100644 (BUG-017) remains — the quick-task
+stays open.
 
 ---

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 0 Retrospective — Bootstrap
 
 > **Completed**: 2026-04-21

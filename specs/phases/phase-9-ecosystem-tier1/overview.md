@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-9, ecosystem, multi-repo, cross-repo, manifest, initiative, session-log, track, post-tool-use-hook, additive, tier-1, tier-2]
+---
+
 # Phase 9 — Ecosystem (Tier 1): Overview
 
 ## Vision

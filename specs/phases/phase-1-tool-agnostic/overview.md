@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [dip, core, adapters, claude-code, coding-agent, install, restructure]
+---
+
 # Phase 1: Tool-Agnostic Architecture
 
 > **Status**: Complete (2026-04-21)

@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [upgrade, cli, validate, migrate, commands, health-check, conflict-resolution]
+---
+
 # Phase 4 — Enhanced Commands: Overview
 
 > **Goal**: Give momentum projects an upgrade path when new versions ship, a health-check command for spec integrity, and a one-time migration tool for projects with a manual momentum-like structure.

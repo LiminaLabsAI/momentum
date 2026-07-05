@@ -1,3 +1,7 @@
+---
+type: Status
+---
+
 # Project Status
 
 > **Last Updated**: 2026-07-05

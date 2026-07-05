@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 20 — Upgrade Hardening: Retrospective
 
 > **Released as**: v0.22.0

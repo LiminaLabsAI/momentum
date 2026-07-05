@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [specs-templates, scaffold, copyDir, coding-agent, adapter, npmignore, track, brainstorm-idea, start-project, commands]
+---
+
 # Phase 3 — Gap Fixes: Overview
 
 > **Goal**: Close every usability gap found post-Phase 2. After this phase, `momentum init` produces a fully usable project in one command, the CLI has feature parity with `install.sh`, and command documentation is complete and consistent.

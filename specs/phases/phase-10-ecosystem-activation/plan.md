@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 10 — Ecosystem Activation & Polish: Plan
 
 ## Execution Order

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 21c — Lanes Fly — Retrospective
 
 > Built as **v0.25.0** (2026-07-03) on the stacked branch

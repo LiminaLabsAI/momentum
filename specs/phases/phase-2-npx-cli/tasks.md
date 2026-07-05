@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 2: npx CLI Distribution — Task Checklist
 
 > Mirrors plan.md. Check off as you go.

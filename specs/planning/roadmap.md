@@ -1,3 +1,7 @@
+---
+type: Roadmap
+---
+
 # Roadmap
 
 > **Start Date**: 2026-04-21

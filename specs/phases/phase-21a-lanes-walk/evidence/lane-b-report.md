@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Lane B (G3) — Trial Session Report
 
 > Captured verbatim by the conductor from the Lane B agent session's final

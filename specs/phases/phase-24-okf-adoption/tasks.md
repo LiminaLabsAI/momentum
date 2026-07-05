@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 24 — Tasks
 
 > Execution: G0 → (G1 ∥ G2 ∥ G3) → G4 → G5
@@ -25,8 +29,8 @@
 - [x] fingerprint re-baseline with meta
 
 ## Group 4 — Self-repo migration (deps: G1, G2, G3)
-- [ ] real-upgrade migration of this repo's specs/ + diff review
-- [ ] okf check green · waves green · JSON files gone
+- [x] real-upgrade migration of this repo's specs/ + diff review
+- [x] okf check green · waves green · JSON files gone
 
 ## Group 5 — Verification & docs (deps: G4)
 - [ ] full suite + 2 smokes (fresh init / legacy upgrade)

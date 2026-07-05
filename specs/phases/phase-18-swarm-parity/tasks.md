@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 18 — Tasks
 
 ## Group 0 — Spawn contract + Claude Code refactor

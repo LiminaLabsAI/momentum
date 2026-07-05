@@ -1,3 +1,7 @@
+---
+type: Planning Note
+---
+
 # Phase 11 — Dynamic Orchestration & Context Handover (PLANNING STUB)
 
 > Status: planned, not started. Target v0.14.0. Brainstorm via `/brainstorm-phase` when ready.

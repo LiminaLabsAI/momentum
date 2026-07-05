@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 14 — Site Refinement & Positioning Pivot: Retrospective
 
 > Written at `/complete-phase` time, after Group 7 verification and bookkeeping.

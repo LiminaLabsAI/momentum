@@ -27,8 +27,8 @@ active, in the ad-hoc work record (off-phase decisions are never dropped).
    - Evaluator defined or changed → [EVALUATOR]
    - Anything else → [NOTE]
 4. Extract or infer topics (2-5 keywords)
-5. Identify affects-phases (check `specs/phases/index.json`)
-6. Identify affects-specs (check `specs/decisions/impact-map.json`)
+5. Identify affects-phases (check `status:` frontmatter in `specs/phases/*/overview.md`)
+6. Identify affects-specs (check `specs/decisions/impact-map.md`)
 7. Append the formatted entry to history.md (APPEND ONLY):
 
 ```
@@ -41,5 +41,5 @@ Detail: One to three sentences describing what changed and why.
 ---
 ```
 
-8. If the entry introduces a topic not in `specs/decisions/impact-map.json`, add it
+8. If the entry introduces a topic not in the `specs/decisions/impact-map.md` table, add a row
 9. Confirm: "Logged [TYPE] entry to [phase or ad-hoc] history."

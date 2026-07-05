@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 24 — Implementation Plan
 
 # Mixed: Group 0 → (Groups 1 + 2 + 3 in parallel) → Group 4 → Group 5

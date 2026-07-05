@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-11, orchestration, scout, dispatch, handoff, continue, context-handover, sessionstart-hook, auto-greet, inbox, capability-routing, graceful-degradation, cli-floor, natural-language-inference, three-doors, live-narration, event-stream, tracking-contract, meaningful-context, no-orchestration-noise, synthesis, parallel-fanout, sequential-fallback, enh-023, enh-024, capability-flag-unification]
+---
+
 # Phase 11 — Dynamic Orchestration & Context Handover: Overview
 
 ## Vision

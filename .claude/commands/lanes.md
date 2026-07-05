@@ -30,12 +30,14 @@ The board footer always shows **queue pressure** (done-but-unlanded lanes
 ### Plan waves first (N ideas → N lanes)
 
 ```bash
-momentum waves            # phase-scale waves from index.json "deps"
+momentum waves            # phase-scale waves from overview.md frontmatter "deps"
 momentum waves --tasks    # group waves for the phase bound to your branch
 ```
 
 Dependencies are annotations in the plans themselves (`(deps: G0, G1)`
-group-heading suffix; `"deps"` arrays in `specs/phases/index.json`).
+group-heading suffix; `deps:` frontmatter on each phase's overview.md —
+OKF bundle, ADR-0005; legacy `specs/phases/index.json` still read as a
+fallback until the project runs `momentum upgrade`).
 Wave-1 nodes are safe to open as lanes NOW; later waves unblock as their
 dependencies land.
 

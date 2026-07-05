@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-21b, lanes, lane-registry, board, queue-pressure, signals, inbox, merge-queue, graded-gates, landing, rebase-freshness, overlap-warnings, touch-paths, git-common-dir, worktrees, substrate-detection, preflight, momentum-lanes-cli, adr-0002, feat-026, feat-027, enh-047, v0-24-0]
+---
+
 # Phase 21b — Lanes Run (Registry, Board, Signals, Merge Queue)
 
 > **Target release:** v0.24.0

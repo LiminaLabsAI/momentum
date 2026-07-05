@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 2: npx CLI Distribution — Implementation Plan
 
 ```

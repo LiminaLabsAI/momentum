@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 7a — Planning Contracts: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

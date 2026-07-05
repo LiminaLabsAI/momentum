@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 0 Tasks
 
 > **Status**: Complete | **Progress**: 4/4 groups

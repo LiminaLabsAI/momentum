@@ -1,3 +1,7 @@
+---
+type: Backlog
+---
+
 # Backlog
 
 > **Last Updated**: 2026-07-03 (post-Lanes-family grooming for Phase 22: closed the shipped arc — ENH-046→21a, FEAT-026/027+ENH-047→21b, FEAT-028→21c, all resolved; BUG-013/014/015 + ENH-048 resolved same day via parallel-lanes quick-tasks. Re-slotted Phase 22 Reach deliverables FEAT-007/FEAT-008/ENH-009 to P1 phase-22 (planned; ENH-009's "needs ≥1 more adapter" deferral was stale). TD-006 bumped P3→P2 (evidence churn taxed the whole Lanes day). ENH-017 deprecated (BUG-006 substitution covers the practical pain). ENH-019 P1→P2 (operator keeps a max-duration npm token). ENH-037/038 P1→P2 (externally gated on live Codex access). Genuinely-open P1s: ENH-030 (fold into Phase 22 start or a quick-task) + the three phase-22-planned items.)

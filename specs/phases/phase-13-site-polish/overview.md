@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-13, site-polish, content-depth, augment-in-place, mermaid, custom-svg, diagrams, landing-rewrite, agentic-ai, positioning, feature-pillars, phase-flow, animated-hero, topology, ecosystem-rewrite, orchestration-page, scout, dispatch, handoff, continue, multi-repo-coordination, concepts-deepening, skills-examples, rules-full-text, tutorial, end-to-end-walkthrough, ide-support-deep, faq-expansion, word-count-baseline, rehype-mermaid]
+---
+
 # Phase 13 — Site Polish & Content Depth: Overview
 
 ## Vision

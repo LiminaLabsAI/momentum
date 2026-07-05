@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 1 Implementation Plan — Tool-Agnostic Architecture
 
 # Sequential: Group 0 → Group 1 → Group 2 → Group 3

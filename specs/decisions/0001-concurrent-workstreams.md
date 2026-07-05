@@ -1,4 +1,5 @@
 ---
+type: Decision
 id: "0001"
 title: "Concurrent workstreams in one repo — multi-active-phase conventions"
 status: accepted

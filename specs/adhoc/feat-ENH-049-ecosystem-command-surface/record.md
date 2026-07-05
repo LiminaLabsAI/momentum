@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: feat-ENH-049-ecosystem-command-surface
 
 > **Type**: quick-task

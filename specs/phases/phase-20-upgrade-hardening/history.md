@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 20 — Upgrade Hardening: History
 
 > Append-only. See Rule 8 for entry types.

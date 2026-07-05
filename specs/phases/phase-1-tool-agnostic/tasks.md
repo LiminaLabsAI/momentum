@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 1 Tasks — Tool-Agnostic Architecture
 
 > **Status**: Complete

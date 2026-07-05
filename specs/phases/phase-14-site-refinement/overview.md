@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-14, site-refinement, positioning-pivot, agentic-ai, remark-heading-id, anchor-syntax, mermaid-dark-mode, phaseflow-animation, ecosystem-mdx, state-layer, action-layer, state-action-layers, ecosystem-orchestration-clarity, repo-to-project, multi-project, terminology-shift, two-tone-logo, concentric-arcs, velocity-arrow-retired, readme-rewrite, github-readme, release-checklist, gh-release-create, v0-17-0]
+---
+
 # Phase 14 — Site Refinement & Positioning Pivot: Overview
 
 ## Vision

@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 19 — Lifecycle Hardening: Implementation Plan
 
 ## Execution Order

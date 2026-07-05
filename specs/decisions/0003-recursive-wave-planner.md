@@ -1,4 +1,5 @@
 ---
+type: Decision
 id: "0003"
 title: "One recursive wave planner; annotations as data; lane-state stays internal"
 status: accepted

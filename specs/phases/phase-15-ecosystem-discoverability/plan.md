@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 15 — Ecosystem Agent Discoverability: Plan
 
 ## Execution Order

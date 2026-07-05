@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 9 — Ecosystem (Tier 1): Implementation History
 
 > Append-only log. Do NOT edit existing entries.

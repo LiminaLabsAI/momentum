@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 3 — Gap Fixes: Retrospective
 
 > **Released**: v0.4.0 — 2026-04-21

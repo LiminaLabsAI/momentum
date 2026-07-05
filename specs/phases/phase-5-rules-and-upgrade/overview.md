@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [rules, persuasion-hardening, claude-md, project-extensions, marker, upgrade, agent-flag, breaking-change, rule-10, rule-11, evaluator, history-log, naming-conventions]
+---
+
 # Phase 5 — Rules & Upgrade Safety: Overview
 
 > **Goal**: Ship v0.6.0 — upstream the cerebrio-sapience rule learnings, make `momentum upgrade` non-destructive to project-specific CLAUDE.md content, and consolidate the breaking `--coding-agent` → `--agent` rename in this minor bump.

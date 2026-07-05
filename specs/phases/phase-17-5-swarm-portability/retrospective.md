@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 17.5 — Swarm Portability: Retrospective
 
 > **Target Version**: v0.20.2

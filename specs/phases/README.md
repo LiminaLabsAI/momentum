@@ -1,3 +1,7 @@
+---
+type: Guide
+---
+
 # Phases Index
 
 | Phase | Name | Status | Directory |

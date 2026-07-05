@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 3 — Gap Fixes: Tasks
 
 > Execution order: Group 0 → (Groups 1 + 2 in parallel) → Group 3

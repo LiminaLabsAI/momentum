@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 18 — Swarm Parity — History
 
 ### [DECISION] 2026-06-15 — Phase 18 surface scope: full 13 subcommands

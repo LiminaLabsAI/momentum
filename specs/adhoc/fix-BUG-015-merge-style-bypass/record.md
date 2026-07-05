@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: fix-BUG-015-merge-style-bypass
 
 > **Type**: quick-task

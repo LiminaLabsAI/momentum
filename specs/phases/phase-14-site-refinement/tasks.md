@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 14 — Site Refinement & Positioning Pivot: Tasks
 
 > Granular checklist mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress, `[ ]` not started.

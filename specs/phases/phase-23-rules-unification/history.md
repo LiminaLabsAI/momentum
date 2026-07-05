@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 23 — Rules Unification: History
 
 ### [DISCOVERY] 2026-07-03 — Two-tier rule architecture is the root cause of live rule violations

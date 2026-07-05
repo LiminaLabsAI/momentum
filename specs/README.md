@@ -1,3 +1,7 @@
+---
+type: Guide
+---
+
 # Specs
 
 > Project management for momentum.

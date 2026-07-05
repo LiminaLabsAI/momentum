@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [instructions, agent-rules, rules-body, generation, templates, adapters, claude-code, codex, antigravity, migration, upgrade, fingerprints, primary-instruction]
+---
+
 # Phase 23 — Rules Unification (single-source agent instructions)
 
 > **Status**: Planned (brainstormed 2026-07-03)

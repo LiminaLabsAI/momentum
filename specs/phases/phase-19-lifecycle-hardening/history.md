@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 19 — Lifecycle Hardening: History
 
 > Append-only. See CLAUDE.md Rule 8 for entry format.

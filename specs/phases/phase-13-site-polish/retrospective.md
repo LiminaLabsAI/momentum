@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 13 — Site Polish & Content Depth: Retrospective
 
 > Written at `/complete-phase` time, after Group 5 verification and Group 6

@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 15 — Ecosystem Agent Discoverability: Tasks
 
 > Granular checklist mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress, `[ ]` not started.

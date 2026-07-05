@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 21b — Lanes Run — History
 
 > Append-only. Format per Rule 8.

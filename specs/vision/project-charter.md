@@ -1,3 +1,7 @@
+---
+type: Vision
+---
+
 # Project Charter
 
 ## Problem Statement

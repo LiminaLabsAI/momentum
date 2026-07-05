@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 7a — Tasks
 
 ## Group 0 — Contracts

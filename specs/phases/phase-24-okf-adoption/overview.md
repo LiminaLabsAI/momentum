@@ -1,3 +1,9 @@
+---
+type: Phase
+status: in-progress
+tags: [okf, open-knowledge-format, knowledge-format, frontmatter, yaml, specs-structure, phases-index, impact-map, migration, upgrade, templates, waves, okf-check, okf-index, adr-0005, distributed-metadata, v0-27-0]
+---
+
 # Phase 24 — Open Knowledge Format (OKF v0.1) Adoption
 
 > **Target version**: v0.27.0 (nominal — next free minor at landing; 3 lanes in flight)

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 7b — Agent Runtime Compatibility: Retrospective
 
 ## Summary

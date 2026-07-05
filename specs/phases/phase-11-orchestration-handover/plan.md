@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 11 — Dynamic Orchestration & Context Handover: Plan
 
 ## Execution Order

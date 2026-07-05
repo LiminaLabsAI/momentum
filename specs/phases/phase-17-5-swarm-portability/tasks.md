@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 17.5 — Swarm Portability: Tasks
 
 ## Group 0 — Signal protocol + lease enforcement library

@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 13 — Site Polish & Content Depth: Plan
 
 ## Execution Order

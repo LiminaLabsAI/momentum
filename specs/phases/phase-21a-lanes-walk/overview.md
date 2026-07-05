@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-21a, lanes, concurrent-workstreams, multi-active-phase, lane-binding, branch-phase-resolution, rule-15, lane-scoped-rules, merge-discipline, sequential-landing, rebase-onto-main, stacked-lanes, off-lane, brainstorms, spikes, status-multi-row, active-phase-table, adr-0001, dogfood-in-phase, trial-thresholds, worktrees, treehouse, gitbutler, templates, agent-rules, fingerprint-snapshot, check-history-reminder, site-docs, enh-046, v0-23-0]
+---
+
 # Phase 21a — Lanes Walk (Concurrent Workstreams)
 
 > **Target release:** v0.23.0

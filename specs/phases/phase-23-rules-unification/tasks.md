@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 23 — Rules Unification: Tasks
 
 > Mirrors `plan.md`. Mark `[/]` in-progress, `[x]` done (Rule 12: only after

@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: fix-BUG-013-postbuild-empty-body-gate
 
 > **Type**: quick-task

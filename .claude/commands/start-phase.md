@@ -46,16 +46,19 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
    Solo (non-swarm) briefs omit the block entirely — they remain plain
    markdown. See `core/swarm/lib/brief.js` for the canonical helper.
 
-4. Build phase topic index:
+4. Set phase metadata (OKF bundle, ADR-0005):
    - Read the phase's `overview.md` and `tasks.md`
    - Extract key topics: technology names, services, architectural concepts
-   - Add/update the phase entry in `specs/phases/index.json`:
-     ```json
-     "phase-N-name": {
-       "status": "in-progress",
-       "topics": ["topic-1", "topic-2"]
-     }
+   - Add/update the frontmatter at the top of the phase's `overview.md`:
+     ```yaml
+     ---
+     type: Phase
+     status: in-progress
+     tags: [topic-1, topic-2]
      ```
+     (add `deps: [phase-M-name]` when this phase depends on another
+     unfinished phase — `momentum waves` reads it)
+   - Refresh the bundle listings: `momentum okf index`
 
 5. Update `specs/phases/README.md`:
    - Change phase status: `Not Started` → `In Progress`
@@ -135,7 +138,7 @@ The engine does all of these without asking:
 - Commit per the conventional commit style and the per-group commit message in `plan.md`
 - Push the phase branch to origin
 - Run tests, lint, typecheck, build commands
-- Update `specs/status.md`, `specs/phases/index.json`, `specs/phases/README.md`, the active phase's `tasks.md` and `history.md`
+- Update `specs/status.md`, the phase's `overview.md` frontmatter, `specs/phases/README.md`, the active phase's `tasks.md` and `history.md`
 - Append to `specs/changelog/YYYY-MM.md`
 - Create ADRs from discoveries (per Rule 8 / Rule 10)
 - Add backlog entries from discoveries (per Rule 3)

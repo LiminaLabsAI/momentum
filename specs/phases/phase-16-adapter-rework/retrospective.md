@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 16 Rework — Codex & Antigravity Native-Idiom Adapters: Retrospective
 
 ## What shipped

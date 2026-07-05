@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 17.5 Swarm Portability History
 
 > Append-only log of decisions, scope changes, and discoveries during Phase 17.5.
