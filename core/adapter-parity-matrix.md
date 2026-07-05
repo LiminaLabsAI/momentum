@@ -78,7 +78,7 @@ overview.md):
 |---|---|---|---|---|
 | `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped¹⁹ |
 | `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped¹⁹ |
-| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ | shipped-degraded¹⁹ |
+| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ | shipped¹⁹ |
 
 ### Git-lifecycle hooks (Phase 19 — agent-agnostic)
 
@@ -148,7 +148,7 @@ overview.md):
 
 18. **opencode agents (Phase 22)** — reviewers + swarm supervisor at `.opencode/agents/<name>.md` (markdown agents, [opencode agents docs](https://opencode.ai/docs/agents/)). The three reviewers declare `mode: subagent` + `permission: edit: deny` (+ read-only bash allowlist) — true sandbox-level read-only, not just prompt-level. Spawn contract: `opencode run --dir <repoPath> --agent swarm-supervisor` (`--dir` pins cwd natively; no MCP shim needed, unlike Codex footnote 14).
 
-19. **opencode momentum plugin (Phase 22, LIVE-validated)** — one self-contained JS plugin at `.opencode/plugins/momentum.js` ([opencode plugins docs](https://opencode.ai/docs/plugins/)) wires the three enforcement hooks; reads the same `.momentum/` sentinels as the other adapters' shell hooks. Live evidence (G5, `val-opencode-live.txt`): the gate **blocked a real specs/ edit** during `brainstorm-active` (negative control passed after sentinel removal); the history reminder stamped after a real write (required a callID-correlation fix — `tool.execute.after` carries no args in the live runtime). Degraded cells: `session.created` was NOT observed in `opencode run` mode, so the handoff/ecosystem banners are unconfirmed (code ships; may fire in TUI); the ecosystem auto session log is not yet wired through the plugin (use `/session` or the `momentum` CLI). Runtime caveat: a generic `event` bus hook hangs run-mode (1.17.13) — the plugin deliberately uses named hooks only.
+19. **opencode momentum plugin (Phase 22 + banner fix, LIVE-validated)** — one self-contained JS plugin at `.opencode/plugins/momentum.js` ([opencode plugins docs](https://opencode.ai/docs/plugins/)) wires the three enforcement hooks; reads the same `.momentum/` sentinels as the other adapters' shell hooks. Live evidence (G5 `val-opencode-live.txt` + `specs/adhoc/fix-opencode-sessionstart-banner/record.md`): the gate blocked a real specs/ edit during `brainstorm-active`; the history reminder stamped after a real write (callID correlation — `tool.execute.after` carries no args); the handoff banner fired in a live served session after being rewired onto the generic `event` bus (a named "session.created" hook key never fires on 1.17.x). Run-mode exclusion by design: the event handler's presence hangs `opencode run` (1.17.13, upstream issue candidate) and a session-start banner is meaningless non-interactively. Remaining degraded cells: ecosystem SessionStart context banner + auto session log not yet wired through the plugin (ENH-058; use `/session` or the `momentum` CLI).
 
 ## Read this if you are…
 

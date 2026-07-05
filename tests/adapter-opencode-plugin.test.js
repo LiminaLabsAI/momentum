@@ -184,19 +184,46 @@ test('history reminder ignores specs/ and .momentum/ writes', async () => {
   }
 });
 
-test('session.created banner surfaces pending handoffs and stays silent without them', async () => {
+test('handoff banner rides the event bus: fires on session.created, silent otherwise', async () => {
   const root = mktmp();
   try {
     const hooks = await loadPluginHooks(root);
-    const silent = await captureLogs(() => hooks['session.created']());
+    // Live-verified (fix/opencode-sessionstart-banner): session events reach
+    // plugins ONLY via the generic `event` handler — a named "session.created"
+    // hook key never fires on opencode 1.17.x.
+    assert.equal(typeof hooks.event, 'function', 'plugin must register the event bus handler');
+    assert.equal('session.created' in hooks, false, 'dead named hook key must not ship');
+
+    const silent = await captureLogs(() => hooks.event({ event: { type: 'session.created' } }));
     assert.equal(silent.logs.length, 0, 'no inbox → no banner');
+
     fs.mkdirSync(path.join(root, '.momentum', 'inbox'), { recursive: true });
     fs.writeFileSync(path.join(root, '.momentum', 'inbox', 'handoff-001.md'), '# handoff');
-    const banner = await captureLogs(() => hooks['session.created']());
+    const other = await captureLogs(() => hooks.event({ event: { type: 'session.idle' } }));
+    assert.equal(other.logs.length, 0, 'non-session.created events → no banner');
+    const banner = await captureLogs(() => hooks.event({ event: { type: 'session.created' } }));
     assert.equal(banner.logs.length, 1, 'pending handoff → one banner line');
     assert.match(banner.logs[0], /handoff-001\.md/);
     assert.match(banner.logs[0], /continue/);
   } finally {
+    rmrf(root);
+  }
+});
+
+test('run-mode skips the event handler entirely (upstream hang guard)', async () => {
+  const root = mktmp();
+  const origArgv = process.argv;
+  try {
+    // The event handler's mere presence hangs `opencode run` (1.17.13) — the
+    // plugin must not register it when the process is a run-mode invocation.
+    process.argv = [...origArgv.slice(0, 2), 'run', '--model', 'x', 'prompt'];
+    const hooks = await loadPluginHooks(root);
+    assert.equal('event' in hooks, false, 'run-mode must not register the event bus handler');
+    // The tool hooks stay active in run-mode — gate and reminder still work.
+    assert.equal(typeof hooks['tool.execute.before'], 'function');
+    assert.equal(typeof hooks['tool.execute.after'], 'function');
+  } finally {
+    process.argv = origArgv;
     rmrf(root);
   }
 });

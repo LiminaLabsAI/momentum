@@ -14,8 +14,9 @@
 //                          (throwing blocks the tool call).
 //   tool.execute.after   — history reminder: meaningful edits during phase
 //                          work prompt for a history.md append (Rule 8).
-//   session.created      — handoff banner: pending .momentum/inbox/ handoffs
-//                          surface at session start.
+//   event (session.created) — handoff banner: pending .momentum/inbox/
+//                          handoffs surface at session start (TUI/serve
+//                          sessions only; see the run-mode note below).
 //
 // Self-contained: node builtins only, no npm dependencies. Fail-open by
 // design (like the shell hooks): any unexpected error in reminder/banner
@@ -120,22 +121,33 @@ export const MomentumPlugin = async ({ directory, worktree }) => {
       }
     },
 
-    "session.created": async () => {
-      try {
-        const inboxDir = path.join(momentumDir, "inbox")
-        if (!fs.existsSync(inboxDir)) return
-        const pending = fs
-          .readdirSync(inboxDir)
-          .filter((f) => /^handoff-\d+\.md$/.test(f))
-          .sort()
-        if (pending.length === 0) return
-        console.log(
-          `[momentum] ${pending.length} pending handoff(s) in .momentum/inbox/: ` +
-            `${pending.join(", ")} — run /continue (or \`momentum continue\`) to pick up.`,
-        )
-      } catch {
-        /* banner is best-effort; never disturb the session */
-      }
-    },
+    // Handoff banner. Session events reach plugins ONLY via the generic
+    // `event` bus in opencode 1.17.x — a named "session.created" hook key
+    // never fires (live-verified, Phase 22 follow-up). The event handler is
+    // registered conditionally: its mere presence HANGS `opencode run`
+    // non-interactive mode (reproduced on 1.17.13), and a session-start
+    // banner is meaningless there anyway — so run-mode skips it.
+    ...(process.argv.includes("run")
+      ? {}
+      : {
+          event: async ({ event }) => {
+            try {
+              if (!event || event.type !== "session.created") return
+              const inboxDir = path.join(momentumDir, "inbox")
+              if (!fs.existsSync(inboxDir)) return
+              const pending = fs
+                .readdirSync(inboxDir)
+                .filter((f) => /^handoff-\d+\.md$/.test(f))
+                .sort()
+              if (pending.length === 0) return
+              console.log(
+                `[momentum] ${pending.length} pending handoff(s) in .momentum/inbox/: ` +
+                  `${pending.join(", ")} — run /continue (or \`momentum continue\`) to pick up.`,
+              )
+            } catch {
+              /* banner is best-effort; never disturb the session */
+            }
+          },
+        }),
   }
 }
