@@ -27,19 +27,19 @@
 
 ## Group 1 — Command + skill shape tests (parallel)
 
-- [ ] `tests/adapter-opencode-commands.test.js`: every installed command has description frontmatter; skill name-regex + frontmatter validation; 23-command count pin
-- [ ] Commit G1
+- [x] `tests/adapter-opencode-commands.test.js`: frontmatter on all 23 commands, single-leading-block idempotence, skill name-regex, AGENTS.md surface docs (3 tests)
+- [x] Commit G1
 
 ## Group 2 — Plugin unit tests (parallel)
 
-- [ ] `tests/adapter-opencode-plugin.test.js` (node-only, dynamic import): gate blocks specs/ write while sentinel exists; allows without sentinel; allows non-specs writes; bash heuristic; reminder throttle + stamp; banner detects pending handoffs
-- [ ] Commit G2
+- [x] `tests/adapter-opencode-plugin.test.js` (node-only, dynamic import): 7 tests — gate block/allow paths incl. ../ traversal + bash heuristic, reminder throttle + spec-layer exclusion, banner detect/silent
+- [x] Commit G2
 
 ## Group 3 — Agents + spawn tests (parallel)
 
-- [ ] Agent shape tests: frontmatter (description, mode, permission edit deny on reviewers)
-- [ ] Spawn arg-shape test: OPENCODE_BIN override → `run --dir <path> --agent swarm-supervisor` args, canonical -1 on missing binary
-- [ ] Commit G3
+- [x] Agent shape tests: description/mode/permission frontmatter on all 4 agents (reviewers sandbox read-only; supervisor mode: all, writable)
+- [x] Spawn tests: stub-binary argv shape (run --dir --agent + multi-line directive), canonical -1 on missing binary + platform mismatch
+- [x] Commit G3
 
 ## Group 4 — Wiring + regression (sequential)
 

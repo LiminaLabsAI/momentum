@@ -56,3 +56,10 @@ Affects-specs: core/adapter-capabilities.md#matrix
 Detail: The brainstorm targeted `skills: true` on the native-surface basis, but the same-day VAL-002 adjudication (agy-wrapper closure rejected for unearned flips) hardened the standard: file presence + vendor docs ≠ observed runtime. G0 declares hooks/slashCommands/subagents true (shipped file surfaces), while skills, parallelSubagents, and sessionStartHook stay false with parity cells marked shipped-gated¹⁷/¹⁹ until G5 live evidence. Known degraded cells (ecosystem session banner + auto session log not yet in the plugin) footnoted as ¹⁹ with an in-phase follow-up.
 
 ---
+### [NOTE] 2026-07-05 — G1–G3 verified: 13 opencode tests green; suite 734 → 747
+Topics: opencode-adapter, tests
+Affects-phases: phase-22-opencode-adapter
+Affects-specs: none
+Detail: G1 (command/skill shape — 3 tests), G2 (plugin unit coverage via .mjs dynamic import, no opencode runtime needed — 7 tests incl. ../ traversal and bash heuristic), G3 (agent frontmatter + spawn argv via stub binary — 3 tests). Two initial test bugs fixed (multi-line prompt vs line-split argv; recipes' `---` horizontal rules vs fence counting) — code was correct in both cases. Suite 747/747.
+
+---
