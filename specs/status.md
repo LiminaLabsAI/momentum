@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-05
-> **Current Phase**: _none on main_ (Phase 24 released; see `momentum lanes` for lanes in flight)
+> **Current Phase**: Phase 22 — Reach: opencode Adapter (lane `phase-22-opencode-adapter`; see `momentum lanes` for all lanes)
 > **Latest Release**: v0.27.0 — Phase 24 OKF Adoption (npm latest = 0.27.0)
 > **Health**: On Track
 
@@ -70,7 +70,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 24 released v0.27.0; active lanes tracked on their branches — `momentum lanes`)_ | | | |
+| Phase 22 — Reach: opencode Adapter | `phase-22-opencode-adapter` | In Progress (target v0.28.0 — retargeted from v0.27.0 after the OKF release took it) | G0 starting |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
