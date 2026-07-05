@@ -1,7 +1,7 @@
 # Phase 22 — Reach: opencode Adapter — Retrospective
 
 > **Completed**: 2026-07-05 (single-day phase)
-> **Release**: v0.27.0
+> **Release**: v0.28.0 *(retargeted 2026-07-05 at landing: the OKF lane released v0.27.0 first — Rule 6 Landing Order)*
 > **Lane**: `phase-22-opencode-adapter` (momentum lanes)
 
 ## What shipped
@@ -24,7 +24,7 @@ phase** (no deferred VAL item):
   reminder, and handoff banner.
 - Capability matrix + parity matrix columns (footnotes 17–19); README;
   roadmap drift repair (missing Rules Unification row; Reach re-scoped to
-  opencode @ v0.27.0; Intelligence → 24 @ v0.28.0; Platform → 25 @ v1.0).
+  opencode @ v0.28.0 after the OKF retarget; Intelligence → 25 @ v0.29.0+; Platform → 26 @ v1.0).
 - Core fix en route: `installHookFiles` no longer backs up byte-identical
   hook files — the mechanism that originally created BUG-017's committed
   `.githooks/*.bak` litter. TD-006 completed on the multi-adapter e2e

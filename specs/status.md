@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-05
-> **Current Phase**: Phase 22 — Reach: opencode Adapter (lane `phase-22-opencode-adapter`; see `momentum lanes` for all lanes)
+> **Current Phase**: _none on main_ (Phase 22 opencode complete on lane, landing queued; see `momentum lanes`)
 > **Latest Release**: v0.27.0 — Phase 24 OKF Adoption (npm latest = 0.27.0)
 > **Health**: On Track
 
@@ -45,6 +45,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 21a | Parallel Lanes — Walk (Concurrent Workstreams) | Complete | v0.23.0 (2026-07-03) |
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete | v0.24.0 (2026-07-03) |
 | 21c | Parallel Lanes — Fly (Recursive Waves) | Complete | v0.25.0 (2026-07-03) |
+| 22 | Reach: opencode Adapter | Complete | v0.27.0 (2026-07-05) |
 | 23 | Rules Unification (single-source agent instructions) | Complete | v0.26.0 (2026-07-04) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete | v0.27.0 (2026-07-05) |
 
@@ -70,7 +71,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| Phase 22 — Reach: opencode Adapter | `phase-22-opencode-adapter` | In Progress (target v0.28.0 — retargeted from v0.27.0 after the OKF release took it) | G5 — live validation done (6/7 + fan-out); release prep |
+| Phase 22 — Reach: opencode Adapter | `phase-22-opencode-adapter` | Complete on lane — landing queued (target v0.28.0, retargeted after OKF took v0.27.0) | All groups done |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -80,9 +81,14 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
+<<<<<<< HEAD
 | 22 | Reach — opencode Adapter | In Progress (target v0.28.0 — retargeted after OKF took v0.27.0) | Adapter: opencode (full parity, live-validated); Cursor + Gemini deferred to a later Reach wave; ENH-009 unblocked |
 | 25 | Intelligence | Not Started (target v0.29.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
 | 26 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+=======
+| 24 | Intelligence | Not Started (target v0.28.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 25 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+>>>>>>> aadfdfa (chore(release): v0.27.0 — Phase 22 complete)
 
 ## Unscheduled Future Work
 
