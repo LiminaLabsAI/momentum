@@ -1,49 +1,46 @@
-# Starlight Starter Kit: Basics
+# momentum — website
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+The public site for [momentum](https://github.com/avinash-singh-io/momentum),
+served at <https://trymomentum.github.io>. A custom [Astro](https://astro.build)
+static site (no docs framework) on a cobalt / glassmorphic / Geist design
+system.
 
-```
-npm create astro@latest -- --template starlight
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+## Structure
 
 ```
-.
-├── public/
+site/
 ├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+│   ├── pages/
+│   │   ├── index.astro         # marketing home (light, glassmorphic)
+│   │   └── [...slug].astro      # renders every docs entry at /{slug}/
+│   ├── layouts/
+│   │   ├── BaseLayout.astro     # <html> shell, fonts, OG meta, ambient bg, theme
+│   │   └── DocsLayout.astro     # docs shell: topbar, sidebar, TOC, ⌘K palette, prev/next
+│   ├── content/docs/            # docs source (Markdown / MDX) — the `docs` collection
+│   ├── lib/docsNav.ts           # sidebar order + prev/next model
+│   ├── plugins/remark-asides.mjs   # :::note / :::tip → <aside>
+│   └── styles/                  # tokens.css (design system) + mermaid.css
+├── scripts/
+│   ├── generate-og-cards.mjs    # prebuild: SVG → public/og/*.png (sharp)
+│   └── check-dist-content.mjs   # postbuild: fails the build on empty page bodies
+└── astro.config.mjs
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+## Commands
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+| Command           | Action                                                  |
+| ----------------- | ------------------------------------------------------- |
+| `npm install`     | Install dependencies                                    |
+| `npm run dev`     | Dev server at `localhost:4321`                          |
+| `npm run build`   | Prebuild OG cards → build to `./dist/` → content gate   |
+| `npm run preview` | Preview the production build locally                    |
 
-Static assets, like favicons, can be placed in the `public/` directory.
+## Notes
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+- **Mermaid** blocks render to inline SVG at build via `rehype-mermaid`
+  (needs a Playwright Chromium; `excludeLangs: ['mermaid']` keeps Shiki off
+  those blocks). Zero client JS for diagrams.
+- **Fonts** (Geist / Geist Mono) are self-hosted via `@fontsource-variable/*`
+  and **icons** are inlined via `astro-icon` — no external CDN requests.
+- The **home** is pinned light; **docs** default light with a persisted
+  light/dark toggle (`data-theme` on `<html>`).

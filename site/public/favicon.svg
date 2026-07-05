@@ -1,19 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
 	<title>momentum</title>
-	<g class="arcs" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" fill="none">
-		<path d="M 22 22 A 8 8 0 0 1 22 38" />
-		<path d="M 22 16 A 14 14 0 0 1 22 44" />
-		<path d="M 22 10 A 20 20 0 0 1 22 50" />
+	<rect width="64" height="64" rx="15" fill="#0023ae" />
+	<g stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+		<path d="M 20 22 L 32 32 L 20 42" />
+		<path d="M 33 22 L 45 32 L 33 42" />
 	</g>
-	<path class="arrow-body" d="M 10 52 Q 30 30 50 14"
-		stroke="#4F46E5" stroke-width="6"
-		stroke-linecap="round" fill="none" />
-	<path class="arrow-head" d="M 44 4 L 60 14 L 50 26 Z" fill="#4F46E5" />
-	<style>
-		@media (prefers-color-scheme: dark) {
-			.arcs path { stroke: #CBD5E1; }
-			.arrow-body { stroke: #818CF8; }
-			.arrow-head { fill: #818CF8; }
-		}
-	</style>
 </svg>

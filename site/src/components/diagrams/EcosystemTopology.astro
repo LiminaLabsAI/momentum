@@ -20,32 +20,32 @@
 	>
 		<defs>
 			<linearGradient id="eco-root" x1="0%" y1="0%" x2="0%" y2="100%">
-				<stop offset="0%" stop-color="var(--brand-primary)" stop-opacity="0.18" />
-				<stop offset="100%" stop-color="var(--brand-primary)" stop-opacity="0.06" />
+				<stop offset="0%" stop-color="var(--accent)" stop-opacity="0.18" />
+				<stop offset="100%" stop-color="var(--accent)" stop-opacity="0.06" />
 			</linearGradient>
 		</defs>
 
 		{/* Ecosystem root container */}
 		<g transform="translate(450 110)">
 			<rect x="-180" y="-60" width="360" height="120" rx="14"
-				fill="url(#eco-root)" stroke="var(--brand-primary)" stroke-width="2" />
+				fill="url(#eco-root)" stroke="var(--accent)" stroke-width="2" />
 			<text y="-32" text-anchor="middle" font-size="14" font-weight="700"
-				fill="var(--brand-primary)" letter-spacing="0.04em">ECOSYSTEM ROOT</text>
+				fill="var(--accent)" letter-spacing="0.04em">ECOSYSTEM ROOT</text>
 			<text y="-10" text-anchor="middle" font-size="15" font-weight="600"
-				fill="var(--brand-text)">my-eco/</text>
+				fill="var(--fg-0)">my-eco/</text>
 
 			{/* Inner files */}
-			<g font-family="ui-monospace, monospace" font-size="11" fill="var(--brand-text-muted)">
+			<g font-family="ui-monospace, monospace" font-size="11" fill="var(--fg-2)">
 				<text x="-160" y="18">ecosystem.json</text>
 				<text x="-40" y="18">initiatives/</text>
 				<text x="80" y="18">sessions/</text>
 			</g>
 
 			{/* file ticks */}
-			<g stroke="var(--brand-border-strong)" stroke-width="1.5">
-				<rect x="-167" y="28" width="100" height="14" rx="3" fill="var(--brand-surface)" />
-				<rect x="-50" y="28" width="80" height="14" rx="3" fill="var(--brand-surface)" />
-				<rect x="70" y="28" width="80" height="14" rx="3" fill="var(--brand-surface)" />
+			<g stroke="var(--bd-3)" stroke-width="1.5">
+				<rect x="-167" y="28" width="100" height="14" rx="3" fill="var(--bg-1)" />
+				<rect x="-50" y="28" width="80" height="14" rx="3" fill="var(--bg-1)" />
+				<rect x="70" y="28" width="80" height="14" rx="3" fill="var(--bg-1)" />
 			</g>
 		</g>
 
@@ -58,18 +58,18 @@
 			].map((m, i) => (
 				<g transform={`translate(${m.x} 340)`}>
 					<rect x="-110" y="-50" width="220" height="100" rx="12"
-						fill="var(--brand-surface)" stroke="var(--brand-border-strong)" stroke-width="2" />
+						fill="var(--bg-1)" stroke="var(--bd-3)" stroke-width="2" />
 					<text y="-22" text-anchor="middle" font-size="13" font-weight="600"
-						fill="var(--brand-text)">{m.name}</text>
+						fill="var(--fg-0)">{m.name}</text>
 					<text y="-4" text-anchor="middle" font-size="11"
-						fill="var(--brand-text-subtle)">{m.subtitle}</text>
+						fill="var(--fg-3)">{m.subtitle}</text>
 
 					{/* Pointer-block visual marker */}
 					<g transform="translate(-90 14)">
 						<rect width="180" height="24" rx="4"
-							fill="var(--brand-primary-soft)" stroke="var(--brand-primary)" stroke-width="1" />
+							fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1" />
 						<text x="90" y="16" text-anchor="middle" font-size="10" font-weight="600"
-							fill="var(--brand-primary)" font-family="ui-monospace, monospace">
+							fill="var(--accent)" font-family="ui-monospace, monospace">
 							{`▸ member of my-eco/`}
 						</text>
 					</g>
@@ -78,14 +78,14 @@
 		}
 
 		{/* Root → member connections (status data flow) */}
-		<g stroke="var(--brand-accent)" stroke-width="1.5" stroke-dasharray="3 4" fill="none">
+		<g stroke="var(--fg-3)" stroke-width="1.5" stroke-dasharray="3 4" fill="none">
 			<path d="M 350 170 Q 250 230 150 290" />
 			<path d="M 450 170 L 450 290" />
 			<path d="M 550 170 Q 650 230 750 290" />
 		</g>
 
 		{/* Label for flow */}
-		<g fill="var(--brand-text-subtle)" font-size="11" font-style="italic">
+		<g fill="var(--fg-3)" font-size="11" font-style="italic">
 			<text x="260" y="240" text-anchor="middle">pointer block</text>
 			<text x="450" y="240" text-anchor="middle">→ status flow</text>
 			<text x="640" y="240" text-anchor="middle">→ session log</text>

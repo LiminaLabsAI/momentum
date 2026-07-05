@@ -1,72 +1,73 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
+import icon from 'astro-icon';
+import mdx from '@astrojs/mdx';
 import rehypeMermaid from 'rehype-mermaid';
+import remarkDirective from 'remark-directive';
 import remarkCustomHeadingId from 'remark-custom-heading-id';
+import { remarkAsides } from './src/plugins/remark-asides.mjs';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://trymomentum.github.io',
 	base: '/',
 	trailingSlash: 'always',
-	// Server-side render Mermaid blocks to inline SVG via Playwright.
-	// Zero client-side JS for diagrams; keeps Lighthouse green.
 	markdown: {
-		syntaxHighlight: 'shiki',
-		// Parse kramdown-style {#custom-id} anchors so headings can keep
-		// stable short slugs for cross-page links (e.g. /orchestration/#scout)
-		// even when the full heading text would auto-slug to something long.
-		remarkPlugins: [remarkCustomHeadingId],
+		// Exclude `mermaid` from Shiki so the raw <code class="language-mermaid">
+		// survives for rehype-mermaid to convert to inline SVG (otherwise Shiki
+		// highlights it as a plain code block and the diagram never renders).
+		syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
+		// Dark code blocks (#0d1117) matching the design's terminal surfaces.
+		shikiConfig: { theme: 'github-dark-default', wrap: false },
+		// remarkDirective parses `:::note[...]` containers; remarkAsides turns
+		// them into styled <aside>. remarkCustomHeadingId parses kramdown-style
+		// {#custom-id} anchors so headings keep stable short cross-page slugs
+		// (e.g. /orchestration/#scout).
+		remarkPlugins: [remarkDirective, remarkAsides, remarkCustomHeadingId],
+		// Server-side render Mermaid blocks to inline SVG via Playwright.
+		// Zero client-side JS for diagrams; keeps Lighthouse green.
 		rehypePlugins: [
 			[
 				rehypeMermaid,
 				{
 					strategy: 'inline-svg',
 					mermaidConfig: {
-						// Brand-tinted neutral palette baked into the SVG. The
-						// SVG renders IDENTICALLY in light + dark modes; what
-						// changes is only the Mermaid container surface (see
-						// mermaid.css). Lines + arrows + text use mid-tone
-						// slate that's readable on both light page backgrounds
-						// (default) and the slightly-lighter container we use
-						// even in dark mode.
+						// Brand-tinted neutral palette baked into the SVG. The SVG
+						// renders IDENTICALLY in light + dark modes; what changes is
+						// only the Mermaid container surface (see mermaid.css).
 						theme: 'base',
 						themeVariables: {
-							primaryColor: '#EEF2FF',          // indigo-50 — node fill
-							primaryBorderColor: '#4F46E5',    // indigo-600 — node border
-							primaryTextColor: '#0F172A',      // slate-900 — node text
-							secondaryColor: '#F1F5F9',        // slate-100
-							secondaryBorderColor: '#94A3B8',  // slate-400
-							secondaryTextColor: '#0F172A',
-							tertiaryColor: '#F8FAFC',         // slate-50
-							tertiaryBorderColor: '#CBD5E1',   // slate-300
-							lineColor: '#475569',             // slate-600 — arrow lines
-							textColor: '#0F172A',
-							// Sequence-diagram specific (these were missing
-							// before; that's why arrows + messages disappeared
-							// in dark mode after the invert filter).
-							actorBkg: '#EEF2FF',
-							actorBorder: '#4F46E5',
-							actorTextColor: '#0F172A',
-							actorLineColor: '#475569',
-							signalColor: '#475569',
-							signalTextColor: '#0F172A',
-							labelBoxBkgColor: '#F1F5F9',
-							labelBoxBorderColor: '#CBD5E1',
-							labelTextColor: '#0F172A',
-							loopTextColor: '#0F172A',
-							noteBkgColor: '#FEF3C7',
-							noteTextColor: '#0F172A',
-							noteBorderColor: '#FCD34D',
-							activationBkgColor: '#E0E7FF',
-							activationBorderColor: '#818CF8',
-							// State-diagram specific (used on /concepts/)
-							stateLabelColor: '#0F172A',
-							transitionColor: '#475569',
-							transitionLabelColor: '#0F172A',
+							primaryColor: '#e6ecff', // cobalt-50 — node fill
+							primaryBorderColor: '#0023ae', // cobalt ink — node border
+							primaryTextColor: '#15161c', // fg-0 light — node text
+							secondaryColor: '#f1f2f7',
+							secondaryBorderColor: '#94a3b8',
+							secondaryTextColor: '#15161c',
+							tertiaryColor: '#f8fafc',
+							tertiaryBorderColor: '#cbd5e1',
+							lineColor: '#5b5f6b', // fg-2 — arrow lines
+							textColor: '#15161c',
+							actorBkg: '#e6ecff',
+							actorBorder: '#0023ae',
+							actorTextColor: '#15161c',
+							actorLineColor: '#5b5f6b',
+							signalColor: '#5b5f6b',
+							signalTextColor: '#15161c',
+							labelBoxBkgColor: '#f1f2f7',
+							labelBoxBorderColor: '#cbd5e1',
+							labelTextColor: '#15161c',
+							loopTextColor: '#15161c',
+							noteBkgColor: '#fef3c7',
+							noteTextColor: '#15161c',
+							noteBorderColor: '#fcd34d',
+							activationBkgColor: '#dbe3ff',
+							activationBorderColor: '#5f7dff',
+							stateLabelColor: '#15161c',
+							transitionColor: '#5b5f6b',
+							transitionLabelColor: '#15161c',
 							fontSize: '14px',
 							fontFamily:
-								"'Inter Variable', Inter, system-ui, sans-serif",
+								"'Geist Variable', Geist, system-ui, sans-serif",
 						},
 					},
 				},
@@ -74,82 +75,10 @@ export default defineConfig({
 		],
 	},
 	integrations: [
-		starlight({
-			title: 'momentum',
-			description:
-				'Spec-driven development for agentic AI. Phases, decisions, history, backlog — first-class state across any AI IDE.',
-			logo: {
-				src: './src/assets/logo/wordmark.svg',
-				replacesTitle: true,
-			},
-			customCss: [
-				'@fontsource-variable/inter',
-				'./src/styles/custom.css',
-				'./src/styles/mermaid.css',
-			],
-			head: [
-				{
-					tag: 'meta',
-					attrs: {
-						property: 'og:image',
-						content: 'https://trymomentum.github.io/og/default.png',
-					},
-				},
-				{
-					tag: 'meta',
-					attrs: {
-						name: 'twitter:card',
-						content: 'summary_large_image',
-					},
-				},
-				{
-					tag: 'meta',
-					attrs: {
-						name: 'twitter:image',
-						content: 'https://trymomentum.github.io/og/default.png',
-					},
-				},
-			],
-			social: [
-				{
-					icon: 'github',
-					label: 'GitHub',
-					href: 'https://github.com/avinash-singh-io/momentum',
-				},
-			],
-			sidebar: [
-				{
-					label: 'Start here',
-					items: [
-						{ label: 'Getting started', slug: 'getting-started' },
-						{ label: 'Concepts', slug: 'concepts' },
-						{ label: 'Parallel work', slug: 'parallel-work' },
-					],
-				},
-				{
-					label: 'Reference',
-					items: [
-						{ label: 'Skills', slug: 'skills' },
-						{ label: 'Rules', slug: 'rules' },
-						{ label: 'IDE support', slug: 'ide-support' },
-					],
-				},
-				{
-					label: 'Orchestration',
-					items: [
-						{ label: 'Ecosystem', slug: 'ecosystem' },
-						{ label: 'Cross-project actions', slug: 'orchestration' },
-						{ label: 'Swarm', slug: 'swarm' },
-					],
-				},
-				{
-					label: 'More',
-					items: [
-						{ label: 'FAQ', slug: 'faq' },
-						{ label: 'About', slug: 'about' },
-					],
-				},
-			],
-		}),
+		// Build-time inlined SVG icons from @iconify-json/lucide. Zero client
+		// JS; keeps Lighthouse green and satisfies the no-external-CDN posture.
+		icon(),
+		// MDX support for docs that embed Astro components (e.g. ecosystem.mdx).
+		mdx(),
 	],
 });

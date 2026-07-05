@@ -1,61 +1,73 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
 	<!-- momentum default OG card (1200 x 630 for Twitter/LinkedIn/Facebook) -->
 
-	<!-- Background -->
-	<rect width="1200" height="630" fill="#0F172A" />
-
-	<!-- Subtle halo behind the mark -->
 	<defs>
-		<radialGradient id="halo" cx="62%" cy="42%" r="55%">
-			<stop offset="0%" stop-color="#4F46E5" stop-opacity="0.18" />
-			<stop offset="100%" stop-color="#4F46E5" stop-opacity="0" />
+		<linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+			<stop offset="0%" stop-color="#0a0d16" />
+			<stop offset="100%" stop-color="#0d1330" />
+		</linearGradient>
+		<radialGradient id="halo" cx="82%" cy="14%" r="60%">
+			<stop offset="0%" stop-color="#2f5be0" stop-opacity="0.42" />
+			<stop offset="100%" stop-color="#2f5be0" stop-opacity="0" />
 		</radialGradient>
+		<linearGradient id="mark" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0%" stop-color="#2f5be0" />
+			<stop offset="100%" stop-color="#0023ae" />
+		</linearGradient>
 	</defs>
+
+	<!-- Background + cobalt halo -->
+	<rect width="1200" height="630" fill="url(#bg)" />
 	<rect width="1200" height="630" fill="url(#halo)" />
 
-	<!-- Logo mark — concentric arcs + arrow (scaled up 8x from 64 viewBox) -->
-	<g transform="translate(820 130)">
-		<g stroke="#CBD5E1" stroke-width="20" stroke-linecap="round" fill="none">
-			<path d="M 80 80 A 60 60 0 0 1 80 200" />
-			<path d="M 80 30 A 110 110 0 0 1 80 250" />
-			<path d="M 80 -20 A 160 160 0 0 1 80 300" />
-		</g>
-		<path d="M -20 280 Q 140 140 280 -10"
-			stroke="#818CF8" stroke-width="44"
-			stroke-linecap="round" fill="none" />
-		<path d="M 200 -60 L 320 20 L 250 110 Z" fill="#818CF8" />
+	<!-- Logo mark — chevrons-right in a rounded cobalt square -->
+	<rect x="80" y="150" width="128" height="128" rx="30" fill="url(#mark)" />
+	<g stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none">
+		<path d="M 126 184 L 150 214 L 126 244" />
+		<path d="M 150 184 L 174 214 L 150 244" />
 	</g>
 
-	<!-- Wordmark text -->
+	<!-- Wordmark -->
 	<text
-		x="80"
-		y="430"
-		fill="#F8FAFC"
-		font-family="'Inter Variable', Inter, system-ui, sans-serif"
-		font-size="86"
+		x="240"
+		y="248"
+		fill="#f4f5fb"
+		font-family="'Geist Variable', Geist, system-ui, sans-serif"
+		font-size="104"
 		font-weight="700"
-		letter-spacing="-0.02em"
+		letter-spacing="-0.03em"
 	>momentum</text>
+
+	<!-- Headline -->
+	<text
+		x="84"
+		y="392"
+		fill="#e8ebf6"
+		font-family="'Geist Variable', Geist, system-ui, sans-serif"
+		font-size="52"
+		font-weight="600"
+		letter-spacing="-0.02em"
+	>The right context for your coding agent.</text>
 
 	<!-- Tagline -->
 	<text
-		x="80"
-		y="490"
-		fill="#CBD5E1"
-		font-family="'Inter Variable', Inter, system-ui, sans-serif"
-		font-size="32"
-		font-weight="450"
+		x="84"
+		y="452"
+		fill="#9aa3c4"
+		font-family="'Geist Variable', Geist, system-ui, sans-serif"
+		font-size="30"
+		font-weight="400"
 		letter-spacing="-0.01em"
-	>Spec-driven development for agentic AI</text>
+	>Durable project state your agent reads every session.</text>
 
 	<!-- Footer ribbon -->
+	<rect x="84" y="540" width="6" height="34" rx="3" fill="#2f5be0" />
 	<text
-		x="80"
-		y="572"
-		fill="#94A3B8"
-		font-family="'Inter Variable', Inter, system-ui, sans-serif"
-		font-size="22"
+		x="108"
+		y="566"
+		fill="#8b90a8"
+		font-family="'Geist Variable', Geist, system-ui, sans-serif"
+		font-size="24"
 		font-weight="500"
-		letter-spacing="0"
-	>Phases · Decisions · History · Backlog · Multi-project orchestration</text>
+	>Open source · Phases · Decisions · History · Backlog · Orchestration</text>
 </svg>

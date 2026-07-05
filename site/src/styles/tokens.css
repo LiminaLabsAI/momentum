@@ -1,76 +1,262 @@
 /*
- * momentum — brand tokens
+ * momentum — design-system tokens
  *
- * Locked in Phase 12 Group 0 (see history.md). Single source of truth for
- * the palette, type system, and motion vocabulary used across the site.
+ * Adopted in the site redesign (feat/site-redesign). Single source of truth
+ * for the whole site (home + docs), replacing the previous Indigo/Slate/Inter
+ * system. Ported from the "cerebrio" design system: one brand hue (cobalt
+ * blue), a glassmorphic light marketing surface + dark-capable docs, and the
+ * Geist / Geist Mono families.
  *
- * Selection rationale:
- *   Palette: Indigo + Slate — calm, accessible, developer-tool feel, works
- *            equally in light + dark mode without tuning per page.
- *   Font:    Inter Variable — neutral, highly legible, scales from 12px
- *            body to 64px hero without retuning.
- *   Logo:    Velocity Arc with integrated arrowhead (Group 1 SVG assets).
+ * Theme model: values are theme-scoped. Dark is defined on :root as the base;
+ * [data-theme="light"] overrides for the (light, glassmorphic) marketing
+ * surface. The home page is pinned light; docs toggle light/dark.
  *
- * Group 1 (Brand & Identity Assets) downloads the WOFF2 file into
- * /public/fonts/InterVariable.woff2 and the logo SVGs into
- * /src/assets/logo/. Until then, the @font-face below references the
- * future path; browsers fall back to system-ui until the file lands.
+ * Geist + Geist Mono are self-hosted via @fontsource-variable/*, imported in
+ * BaseLayout.astro. The fontsource variable packages expose the families as
+ * "Geist Variable" / "Geist Mono Variable" — aliased first below.
  */
 
-/* Inter Variable @font-face declarations come from the
- * @fontsource-variable/inter package, loaded via Starlight's customCss
- * in astro.config.mjs (and so listed BEFORE this file in the cascade). */
-
 :root {
-	/* ── Brand palette — light theme defaults ───────────────────── */
-	--brand-primary: #4f46e5; /* indigo-600 */
-	--brand-primary-hover: #4338ca; /* indigo-700 */
-	--brand-primary-soft: #eef2ff; /* indigo-50, for soft surfaces */
-	--brand-accent: #334155; /* slate-700 */
+	/* ---------- Brand ramp — cobalt blue (anchor #0023AE) ---------- */
+	--brand-50: oklch(0.97 0.018 260);
+	--brand-100: oklch(0.935 0.04 260);
+	--brand-200: oklch(0.87 0.08 260);
+	--brand-300: oklch(0.78 0.13 260);
+	--brand-400: oklch(0.66 0.18 260);
+	--brand-500: oklch(0.56 0.205 260);
+	--brand-600: oklch(0.49 0.205 260);
+	--brand-700: oklch(0.45 0.2 260);
+	--brand-800: oklch(0.385 0.165 260);
+	--brand-900: oklch(0.32 0.13 260);
+	--brand-ink: #0023ae; /* exact logo cobalt */
 
-	/* Surfaces */
-	--brand-surface: #ffffff;
-	--brand-surface-subtle: #f8fafc; /* slate-50 */
-	--brand-surface-muted: #f1f5f9; /* slate-100 */
+	/* ---------- Semantic (dark-tuned base) ---------- */
+	--success: #19b574;
+	--warning: #e8a019;
+	--danger: #e54848;
+	--info: #4d8bff;
 
-	/* Text */
-	--brand-text: #0f172a; /* slate-900 */
-	--brand-text-muted: #475569; /* slate-600 */
-	--brand-text-subtle: #64748b; /* slate-500 */
+	/* ---------- Families ---------- */
+	--ff-sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, -apple-system,
+		'Segoe UI', sans-serif;
+	--ff-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono',
+		'JetBrains Mono', Menlo, monospace;
+	--ff-mono-features: 'ss01', 'cv11', 'tnum';
 
-	/* Borders */
-	--brand-border: #e2e8f0; /* slate-200 */
-	--brand-border-strong: #cbd5e1; /* slate-300 */
+	/* ---------- Marketing display scale ---------- */
+	--ds-sm: 18px;
+	--ds-md: 24px;
+	--ds-lg: 36px;
+	--ds-xl: 48px;
+	--ds-2xl: 60px;
+	--ds-3xl: 72px;
 
-	/* Type */
-	--brand-font:
-		'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
-		'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	--brand-font-mono:
-		ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
-		monospace;
+	/* ---------- Weights / line-heights / tracking ---------- */
+	--fw-normal: 400;
+	--fw-medium: 500;
+	--fw-semibold: 600;
+	--fw-bold: 700;
+	--lh-tight: 1.1;
+	--lh-snug: 1.3;
+	--lh-normal: 1.45;
+	--lh-relaxed: 1.65;
+	--ls-tighter: -0.02em;
+	--ls-tight: -0.012em;
+	--ls-upper: 0.06em;
 
-	/* Motion */
-	--brand-ease: cubic-bezier(0.4, 0, 0.2, 1);
-	--brand-duration-fast: 150ms;
-	--brand-duration-base: 250ms;
+	/* ---------- Spacing (4px grid) ---------- */
+	--s-1: 4px;
+	--s-2: 8px;
+	--s-3: 12px;
+	--s-4: 16px;
+	--s-5: 24px;
+	--s-6: 32px;
+	--s-7: 48px;
+	--s-8: 64px;
+	--s-9: 96px;
+
+	/* ---------- Radius ---------- */
+	--r-sm: 6px;
+	--r-md: 8px;
+	--r-lg: 12px;
+	--r-xl: 16px;
+	--r-2xl: 24px;
+	--r-full: 999px;
+
+	/* ---------- Layout ---------- */
+	--container: 1180px;
 }
 
+/* ---------- DARK (base) ---------- */
+:root,
 [data-theme='dark'] {
-	/* ── Brand palette — dark theme overrides ───────────────────── */
-	--brand-primary: #818cf8; /* indigo-400 — lifted for dark surfaces */
-	--brand-primary-hover: #a5b4fc; /* indigo-300 */
-	--brand-primary-soft: #1e1b4b; /* indigo-950 */
-	--brand-accent: #cbd5e1; /* slate-300 */
+	color-scheme: dark;
 
-	--brand-surface: #0f172a; /* slate-900 */
-	--brand-surface-subtle: #1e293b; /* slate-800 */
-	--brand-surface-muted: #334155; /* slate-700 */
+	--bg-0: #08090c;
+	--bg-1: #0c0e13;
+	--bg-2: #11141a;
+	--bg-3: #161a22;
+	--bg-4: #1d222c;
 
-	--brand-text: #f8fafc; /* slate-50 */
-	--brand-text-muted: #cbd5e1; /* slate-300 */
-	--brand-text-subtle: #94a3b8; /* slate-400 */
+	--fg-0: #ebecf0;
+	--fg-1: #c9ccd4;
+	--fg-2: #8b909c;
+	--fg-3: #5e6471;
+	--fg-4: #3e434d;
 
-	--brand-border: #334155; /* slate-700 */
-	--brand-border-strong: #475569; /* slate-600 */
+	--bd-1: rgba(255, 255, 255, 0.06);
+	--bd-2: rgba(255, 255, 255, 0.1);
+	--bd-3: rgba(255, 255, 255, 0.16);
+
+	--accent: var(--brand-400);
+	--accent-soft: oklch(0.66 0.18 260 / 0.16);
+	--accent-bd: oklch(0.66 0.18 260 / 0.32);
+
+	/* glass */
+	--glass-std: rgba(20, 22, 28, 0.55);
+	--glass-std-bd: rgba(255, 255, 255, 0.08);
+	--glass-blur-std: blur(24px) saturate(140%);
+	--glass-heavy: rgba(20, 22, 28, 0.65);
+	--glass-heavy-bd: rgba(255, 255, 255, 0.1);
+	--glass-blur-heavy: blur(40px) saturate(160%);
+	--glass-subtle: rgba(20, 22, 28, 0.7);
+	--glass-subtle-bd: rgba(255, 255, 255, 0.06);
+	--glass-blur-subtle: blur(16px) saturate(120%);
+
+	--ambient:
+		radial-gradient(60% 50% at 88% 8%, rgba(45, 77, 255, 0.2), transparent 60%),
+		radial-gradient(45% 45% at 8% 88%, rgba(0, 35, 174, 0.18), transparent 65%),
+		radial-gradient(35% 35% at 50% 50%, rgba(0, 35, 174, 0.06), transparent 70%);
+
+	--focus-ring:
+		0 0 0 2px oklch(0.56 0.205 260 / 0.45), 0 0 0 4px oklch(0.56 0.205 260 / 0.18);
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--shadow-md: 0 8px 24px -10px rgba(0, 0, 0, 0.5);
+	--shadow-lg:
+		0 24px 60px -20px rgba(0, 0, 0, 0.6), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+	--shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.28);
+	--shadow-glass-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- LIGHT (marketing + light docs) ---------- */
+[data-theme='light'] {
+	color-scheme: light;
+
+	--bg-0: #f5f4f8;
+	--bg-1: #ffffff;
+	--bg-2: #ffffff;
+	--bg-3: #f4f3f7;
+	--bg-4: #eeecf2;
+
+	--fg-0: #15161c;
+	--fg-1: #2d2f38;
+	--fg-2: #5b5f6b;
+	--fg-3: #878c97;
+	--fg-4: #b4b8c1;
+
+	--bd-1: rgba(15, 15, 25, 0.06);
+	--bd-2: rgba(15, 15, 25, 0.1);
+	--bd-3: rgba(15, 15, 25, 0.16);
+
+	--accent: var(--brand-700);
+	--accent-soft: oklch(0.45 0.2 260 / 0.08);
+	--accent-bd: oklch(0.45 0.2 260 / 0.28);
+
+	--success: #0a9c5e;
+	--warning: #c97f00;
+	--danger: #cd2f2f;
+	--info: #2e6cdb;
+
+	--glass-std: rgba(255, 255, 255, 0.55);
+	--glass-std-bd: rgba(255, 255, 255, 0.5);
+	--glass-blur-std: blur(24px) saturate(140%);
+	--glass-heavy: rgba(255, 255, 255, 0.7);
+	--glass-heavy-bd: rgba(255, 255, 255, 0.6);
+	--glass-blur-heavy: blur(40px) saturate(160%);
+	--glass-subtle: rgba(255, 255, 255, 0.78);
+	--glass-subtle-bd: rgba(255, 255, 255, 0.5);
+	--glass-blur-subtle: blur(16px) saturate(120%);
+
+	--ambient:
+		radial-gradient(55% 50% at 8% 8%, rgba(0, 35, 174, 0.1), transparent 60%),
+		radial-gradient(50% 50% at 92% 35%, rgba(45, 77, 255, 0.1), transparent 65%),
+		radial-gradient(45% 45% at 75% 95%, rgba(0, 35, 174, 0.05), transparent 70%);
+
+	--focus-ring:
+		0 0 0 2px oklch(0.45 0.2 260 / 0.45), 0 0 0 4px oklch(0.45 0.2 260 / 0.16);
+	--shadow-sm: 0 1px 2px rgba(0, 18, 96, 0.06);
+	--shadow-md: 0 8px 24px -10px rgba(0, 18, 96, 0.1);
+	--shadow-lg:
+		0 24px 60px -20px rgba(0, 18, 96, 0.18), 0 8px 24px -8px rgba(0, 18, 96, 0.1);
+	--shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.06);
+	--shadow-glass-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* reduced transparency — drop glass, fall back to solid panel fill */
+@media (prefers-reduced-transparency: reduce) {
+	:root {
+		--glass-std: var(--bg-1);
+		--glass-heavy: var(--bg-1);
+		--glass-subtle: var(--bg-1);
+		--glass-blur-std: none;
+		--glass-blur-heavy: none;
+		--glass-blur-subtle: none;
+	}
+}
+
+/* ============================ base ============================ */
+
+* {
+	box-sizing: border-box;
+}
+html {
+	scroll-behavior: smooth;
+}
+body {
+	margin: 0;
+	background: var(--bg-0);
+	color: var(--fg-1);
+	font-family: var(--ff-sans);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+a {
+	color: inherit;
+}
+img,
+svg {
+	max-width: 100%;
+}
+/* lucide icons (astro-icon) render with class="ic" — match the design's
+   thinner 1.6 stroke without touching mermaid or other SVGs. */
+svg.ic {
+	stroke-width: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+/* ============================ utilities ============================ */
+
+.eyebrow {
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--accent);
+}
+
+.text-gradient-brand {
+	background: linear-gradient(90deg, var(--brand-700), var(--brand-400));
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.mono {
+	font-family: var(--ff-mono);
+	font-feature-settings: var(--ff-mono-features);
 }
