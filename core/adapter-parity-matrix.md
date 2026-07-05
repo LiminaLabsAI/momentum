@@ -38,76 +38,76 @@ overview.md):
 
 ### Recipes (phase + orchestration commands)
 
-| Recipe | Claude Code | Codex | Antigravity | opencode |
+| Recipe | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
-| `/brainstorm-idea` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/brainstorm-phase` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/start-project` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/start-phase` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/complete-phase` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/sync-docs` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/track` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/review` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/log` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/migrate` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/validate` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/ecosystem` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/initiative` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/session` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/systematic-debug` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/scout` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/dispatch` | shipped¹ | shipped-degraded⁴ | shipped³ | shipped¹⁷ |
-| `/handoff` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/continue` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/review-code` | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
-| `/swarm` (Phase 17 + 17.5) | shipped¹ | shipped¹⁴ | shipped¹⁴ | shipped¹⁷ |
-| `/hotfix` (Phase 19) | shipped¹ | shipped² | shipped³ | shipped¹⁷ |
+| `/brainstorm-idea` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/brainstorm-phase` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/start-project` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/start-phase` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/complete-phase` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/sync-docs` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/track` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/review` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/log` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/migrate` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/validate` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/ecosystem` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/initiative` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/session` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/systematic-debug` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/scout` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/dispatch` | shipped¹⁷ | shipped¹ | shipped-degraded⁴ | shipped³ |
+| `/handoff` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/continue` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/review-code` | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
+| `/swarm` (Phase 17 + 17.5) | shipped¹⁷ | shipped¹ | shipped¹⁴ | shipped¹⁴ |
+| `/hotfix` (Phase 19) | shipped¹⁷ | shipped¹ | shipped² | shipped³ |
 
 ### Personas (skills)
 
-| Skill | Claude Code | Codex | Antigravity | opencode |
+| Skill | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
-| `momentum-orient` | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped¹⁷ |
-| `momentum-reviewer-security` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
-| `momentum-reviewer-qa` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
-| `momentum-reviewer-architecture` | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ | shipped-as-subagent¹⁸ |
+| `momentum-orient` | shipped¹⁷ | not-applicable⁵ | shipped⁶ | shipped⁷ |
+| `momentum-reviewer-security` | shipped-as-subagent¹⁸ | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ |
+| `momentum-reviewer-qa` | shipped-as-subagent¹⁸ | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ |
+| `momentum-reviewer-architecture` | shipped-as-subagent¹⁸ | not-applicable⁵ | shipped-as-subagent⁸ | shipped⁷ |
 
 ### Hooks
 
-| Hook | Claude Code | Codex | Antigravity | opencode |
+| Hook | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
-| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped¹⁹ |
-| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped¹⁹ |
-| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ | shipped¹⁹ |
+| `PreToolUse` (brainstorm-gate) | shipped¹⁹ | shipped⁹ | shipped¹⁰ | shipped¹¹ |
+| `PostToolUse` (history reminder) | shipped¹⁹ | shipped⁹ | shipped¹⁰ | shipped¹¹ |
+| `SessionStart` (handoff banner) | shipped¹⁹ | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ |
 
 ### Git-lifecycle hooks (Phase 19 — agent-agnostic)
 
-| Hook | Claude Code | Codex | Antigravity | opencode |
+| Hook | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
 | `commit-msg` (Conventional Commits) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
 | `pre-push` (merge gate + verify-evidence) | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ | shipped¹⁵ |
 
 ### Overlay surfaces
 
-| Surface | Claude Code | Codex | Antigravity | opencode |
+| Surface | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
 | Primary instruction file (CLAUDE.md / AGENTS.md) | shipped | shipped | shipped | shipped |
-| `commands` overlay | shipped | shipped | shipped-as-workflows¹² | shipped¹⁷ |
+| `commands` overlay | shipped¹⁷ | shipped | shipped | shipped-as-workflows¹² |
 | `agent-rules` overlay | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ |
 | `scripts` overlay (hooks) | shipped | shipped | shipped | shipped |
 | `engines` overlay | shipped | shipped | shipped | shipped |
-| `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | shipped¹³ | not-applicable⁵ |
-| `skills` overlay (Phase 16) | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped¹⁷ |
-| `agents` overlay (Phase 16) | not-applicable⁵ | shipped⁸ | not-applicable⁵ | shipped¹⁸ |
+| `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | not-applicable⁵ | shipped¹³ |
+| `skills` overlay (Phase 16) | shipped¹⁷ | not-applicable⁵ | shipped⁶ | shipped⁷ |
+| `agents` overlay (Phase 16) | shipped¹⁸ | not-applicable⁵ | shipped⁸ | not-applicable⁵ |
 
 ### Ecosystem features
 
-| Feature | Claude Code | Codex | Antigravity | opencode |
+| Feature | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
 | `momentum init/upgrade` install | shipped | shipped | shipped | shipped |
 | Ecosystem manifest awareness (`ecosystem.json`) | shipped | shipped | shipped | shipped |
-| SessionStart ecosystem banner | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ | shipped-degraded¹⁹ |
-| Auto session log (PostToolUse) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped-degraded¹⁹ |
+| SessionStart ecosystem banner | shipped¹⁹ | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ |
+| Auto session log (PostToolUse) | shipped¹⁹ | shipped⁹ | shipped¹⁰ | shipped¹¹ |
 | Managed `CLAUDE.md` / `AGENTS.md` on `ecosystem init` | shipped | shipped | shipped | shipped |
 
 ## Footnotes

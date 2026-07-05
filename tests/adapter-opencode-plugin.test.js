@@ -227,3 +227,88 @@ test('run-mode skips the event handler entirely (upstream hang guard)', async ()
     rmrf(root);
   }
 });
+
+test('session.created delegates to the installed sessionstart-handoff.sh when present (ENH-058)', async () => {
+  const root = mktmp();
+  try {
+    fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, 'scripts', 'sessionstart-handoff.sh'),
+      '#!/usr/bin/env bash\necho "ECO-BANNER ecosystem: test-eco (2 members)" >&2\necho "HANDOFF-BANNER 1 pending" >&2\nexit 0\n',
+      { mode: 0o755 },
+    );
+    const hooks = await loadPluginHooks(root);
+    const out = await captureLogs(() => hooks.event({ event: { type: 'session.created' } }));
+    assert.equal(out.logs.length, 1, 'script output surfaces as one banner log');
+    assert.match(out.logs[0], /ECO-BANNER ecosystem: test-eco/);
+    assert.match(out.logs[0], /HANDOFF-BANNER 1 pending/);
+  } finally {
+    rmrf(root);
+  }
+});
+
+test('session.created stays silent when the installed script prints nothing', async () => {
+  const root = mktmp();
+  try {
+    fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, 'scripts', 'sessionstart-handoff.sh'),
+      '#!/usr/bin/env bash\nexit 0\n',
+      { mode: 0o755 },
+    );
+    // Even with a pending handoff on disk, the installed script owns the
+    // banner decision — the JS fallback must NOT double-report.
+    fs.mkdirSync(path.join(root, '.momentum', 'inbox'), { recursive: true });
+    fs.writeFileSync(path.join(root, '.momentum', 'inbox', 'handoff-001.md'), '# h');
+    const hooks = await loadPluginHooks(root);
+    const out = await captureLogs(() => hooks.event({ event: { type: 'session.created' } }));
+    assert.equal(out.logs.length, 0, 'silent script → no banner, no fallback double-fire');
+  } finally {
+    rmrf(root);
+  }
+});
+
+test('bash completions pipe the canonical payload into check-history-reminder.sh (ENH-058)', async () => {
+  const root = mktmp();
+  try {
+    fs.mkdirSync(path.join(root, 'scripts'), { recursive: true });
+    const captureFile = path.join(root, 'payload.json');
+    fs.writeFileSync(
+      path.join(root, 'scripts', 'check-history-reminder.sh'),
+      `#!/usr/bin/env bash\ncat > "${captureFile}"\necho "SESSION-APPEND-OK"\n`,
+      { mode: 0o755 },
+    );
+    const hooks = await loadPluginHooks(root);
+    const out = await captureLogs(async () => {
+      await hooks['tool.execute.before'](
+        { tool: 'bash', callID: 'bash-1' },
+        { args: { command: 'git commit -m "feat: x"' } },
+      );
+      await hooks['tool.execute.after']({ tool: 'bash', callID: 'bash-1' }, { output: 'done' });
+    });
+    const payload = JSON.parse(fs.readFileSync(captureFile, 'utf8'));
+    assert.equal(payload.tool_name, 'Bash', 'canonical hook payload tool_name');
+    assert.equal(payload.tool_input.command, 'git commit -m "feat: x"');
+    assert.equal(out.logs.length, 1);
+    assert.match(out.logs[0], /SESSION-APPEND-OK/);
+  } finally {
+    rmrf(root);
+  }
+});
+
+test('bash completions are a no-op when the reminder script is absent', async () => {
+  const root = mktmp();
+  try {
+    const hooks = await loadPluginHooks(root);
+    const out = await captureLogs(async () => {
+      await hooks['tool.execute.before'](
+        { tool: 'bash', callID: 'bash-2' },
+        { args: { command: 'git commit -m x' } },
+      );
+      await hooks['tool.execute.after']({ tool: 'bash', callID: 'bash-2' }, { output: 'done' });
+    });
+    assert.equal(out.logs.length, 0, 'no script → silent, no error');
+  } finally {
+    rmrf(root);
+  }
+});
