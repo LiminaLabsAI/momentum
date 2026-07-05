@@ -117,7 +117,10 @@ module.exports = {
 
     console.log('→ Refreshing command frontmatter...');
     if (dryRun) console.log('  ✋ would refresh description frontmatter on .opencode/commands/*.md');
-    else ensureCommandFrontmatter(targetDir);
+    else {
+      ensureCommandFrontmatter(targetDir);
+      cleanupConvergedBackups(path.join(targetDir, '.opencode', 'commands'));
+    }
   },
 
   // adapter.spawn(directive) — Phase 18 contract. Shells `opencode run` in
@@ -195,4 +198,26 @@ function extractRecipeDescription(body, name) {
 
 function yamlQuote(s) {
   return `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+}
+
+// The generic overlay upgrade sees the install-time frontmatter as drift from
+// the pristine template, so it backs up each command before replacing it —
+// then the transform above re-adds identical frontmatter, converging the file
+// back to its pre-upgrade bytes. A `.bak` byte-identical to its base is that
+// cycle's artifact, not a user modification — remove it. Real user edits
+// leave a differing `.bak`, which is kept.
+function cleanupConvergedBackups(dir) {
+  if (!fs.existsSync(dir)) return;
+  let removed = 0;
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith('.bak')) continue;
+    const bakPath = path.join(dir, f);
+    const basePath = path.join(dir, f.slice(0, -'.bak'.length));
+    if (!fs.existsSync(basePath)) continue;
+    if (fs.readFileSync(bakPath, 'utf8') === fs.readFileSync(basePath, 'utf8')) {
+      fs.unlinkSync(bakPath);
+      removed++;
+    }
+  }
+  if (removed) console.log(`  - ${removed} converged .bak backup(s) removed (frontmatter cycle)`);
 }

@@ -109,14 +109,33 @@ function canonicalize(body) {
     .replace(/^- Completed at: .+$/gm, '- Completed at: <deterministic-omitted>');
 }
 
+// Phase 22: opencode evidence lands in ITS phase's evidence dir, not Phase 18's.
+const EVIDENCE_DIR_BY_ADAPTER = {
+  opencode: path.join(
+    REPO_ROOT, 'specs', 'phases', 'phase-22-opencode-adapter', 'evidence',
+  ),
+};
+
+const CAPTION_BY_ADAPTER = {
+  opencode: 'Captured: 2026-07-05 (Phase 22 G4)',
+};
+
 function captureEvidence(scenarioId, adapter, ecosystemRoot, swarmId, spawnResults, metrics) {
-  fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
-  const evidencePath = path.join(EVIDENCE_DIR, `scenario-${scenarioId}-${adapter}.txt`);
+  // TD-006: evidence capture is opt-in (this file was missed by the original
+  // gating pass — its static content happened to rewrite byte-identically).
+  if (process.env.MOMENTUM_CAPTURE_EVIDENCE !== '1') return null;
+  const evidenceDir = EVIDENCE_DIR_BY_ADAPTER[adapter] || EVIDENCE_DIR;
+  fs.mkdirSync(evidenceDir, { recursive: true });
+  const evidencePath = path.join(evidenceDir, `scenario-${scenarioId}-${adapter}.txt`);
   const manifest = manifestLib.loadManifest(ecosystemRoot, swarmId);
+  const title =
+    adapter === 'opencode'
+      ? `# Phase 22 Swarm Parity — Scenario ${scenarioId.toUpperCase()} × ${adapter}`
+      : `# Phase 18 Swarm Parity — Scenario ${scenarioId.toUpperCase()} × ${adapter}`;
   const lines = [
-    `# Phase 18 Swarm Parity — Scenario ${scenarioId.toUpperCase()} × ${adapter}`,
+    title,
     '',
-    `Captured: 2026-06-15 (Phase 18 G3)`,
+    CAPTION_BY_ADAPTER[adapter] || `Captured: 2026-06-15 (Phase 18 G3)`,
     `Adapter:  ${adapter}`,
     `Swarm:    ${swarmId}`,
     `Status:   ${manifest && manifest.status}`,
@@ -199,7 +218,7 @@ const SCENARIOS = [
   },
 ];
 
-const ADAPTERS = ['codex', 'antigravity'];
+const ADAPTERS = ['codex', 'antigravity', 'opencode'];
 
 for (const scenario of SCENARIOS) {
   for (const adapter of ADAPTERS) {
@@ -210,8 +229,12 @@ for (const scenario of SCENARIOS) {
       // surface, not launch real sessions.
       const prevCodex = process.env.CODEX_BIN;
       const prevAgy = process.env.AGY_BIN;
+      const prevOpencode = process.env.OPENCODE_BIN;
       process.env.CODEX_BIN = '/this/does/not/exist/codex';
       process.env.AGY_BIN = '/this/does/not/exist/agy';
+      // opencode IS often on PATH in dev envs (Phase 22) — pin it away so the
+      // dispatch stays observable-and-fast rather than launching a session.
+      process.env.OPENCODE_BIN = '/this/does/not/exist/opencode';
       try {
         const eco = setupEcosystem(tmp, `${scenario.id}-${adapter}`, scenario.members, scenario.deps);
         const manifest = conductor.planSwarm({
@@ -265,6 +288,8 @@ for (const scenario of SCENARIOS) {
         else process.env.CODEX_BIN = prevCodex;
         if (prevAgy === undefined) delete process.env.AGY_BIN;
         else process.env.AGY_BIN = prevAgy;
+        if (prevOpencode === undefined) delete process.env.OPENCODE_BIN;
+        else process.env.OPENCODE_BIN = prevOpencode;
         rmrf(tmp);
       }
     });

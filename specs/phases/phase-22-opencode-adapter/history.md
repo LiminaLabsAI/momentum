@@ -63,3 +63,18 @@ Affects-specs: none
 Detail: G1 (command/skill shape — 3 tests), G2 (plugin unit coverage via .mjs dynamic import, no opencode runtime needed — 7 tests incl. ../ traversal and bash heuristic), G3 (agent frontmatter + spawn argv via stub binary — 3 tests). Two initial test bugs fixed (multi-line prompt vs line-split argv; recipes' `---` horizontal rules vs fence counting) — code was correct in both cases. Suite 747/747.
 
 ---
+### [DISCOVERY] 2026-07-05 — Upgrade litters .bak files for byte-identical content (root cause of BUG-017's committed .baks)
+Topics: opencode-adapter, upgrade, bug-017
+Affects-phases: phase-22-opencode-adapter
+Affects-specs: none
+Detail: G4's upgrade-idempotence test exposed two .bak-litter sources: (1) `installHookFiles` (bin/momentum.js) backed up + rewrote momentum hook files even when source and dest were byte-identical — exactly how the `.githooks/*.bak` files that BUG-017(c) deleted got created and committed in the first place; fixed with an identical-content skip (files still recordManaged + re-chmod'd for the BUG-011 self-heal). (2) The install-time command-frontmatter transform makes opencode commands differ from their pristine templates, so the generic overlay upgrade backs each up before replacing, then the re-transform converges the content — leaving .baks identical to their bases; fixed with a converged-backup sweep in the adapter's runUpgrade (real user edits leave differing .baks, which are kept). Also completed TD-006 on `tests/swarm-e2e-multi-adapter.test.js` — its evidence capture was unmuted (missed by the original gating pass; masked by byte-identical rewrites).
+
+---
+
+### [NOTE] 2026-07-05 — G4 complete: fingerprint + smoke + tarball + swarm e2e; suite 747 → 756
+Topics: opencode-adapter, tests, fingerprint
+Affects-phases: phase-22-opencode-adapter
+Affects-specs: none
+Detail: opencode fingerprint baseline (58 files), upgrade byte-idempotence, adapter+orchestration smoke (init/ecosystem/join/leave/doctor + scout/dispatch/handoff/continue), tarball shape (15 opencode paths), and the 3 synthetic swarm scenarios × opencode with evidence at evidence/scenario-*-opencode.txt. Existing adapters untouched: claude-code/codex/antigravity fingerprints byte-identical, phase-18 evidence files restored after a header regression was caught in-session.
+
+---

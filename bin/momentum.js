@@ -706,7 +706,7 @@ function isMomentumHookFile(filePath) {
 //   existing & foreign → leave untouched (warn-not-clobber)
 // Skips macOS AppleDouble (`._*`) sidecars so exFAT volumes don't leak junk.
 function installHookFiles(hooksSrc, hooksDest) {
-  const out = { installed: [], upgraded: [], skipped: [] };
+  const out = { installed: [], upgraded: [], unchanged: [], skipped: [] };
   if (!_dryRun) fs.mkdirSync(hooksDest, { recursive: true });
   for (const f of fs.readdirSync(hooksSrc)) {
     if (f.startsWith('._') || f === '.DS_Store') continue;
@@ -715,12 +715,20 @@ function installHookFiles(hooksSrc, hooksDest) {
     const destF = path.join(hooksDest, f);
     if (fs.existsSync(destF)) {
       if (isMomentumHookFile(destF)) {
-        if (!_dryRun) {
-          fs.copyFileSync(destF, destF + '.bak');
-          fs.copyFileSync(srcF, destF);
+        // Identical content → no rewrite and NO .bak. Backing up identical
+        // files is how `.githooks/*.bak` litter got committed (BUG-017);
+        // the file still counts for recordManaged + the exec-bit re-chmod.
+        if (fs.readFileSync(srcF, 'utf8') === fs.readFileSync(destF, 'utf8')) {
+          recordManaged(destF);
+          out.unchanged.push(f);
+        } else {
+          if (!_dryRun) {
+            fs.copyFileSync(destF, destF + '.bak');
+            fs.copyFileSync(srcF, destF);
+          }
+          recordManaged(destF);
+          out.upgraded.push(f);
         }
-        recordManaged(destF);
-        out.upgraded.push(f);
       } else {
         out.skipped.push(f); // foreign hook — never clobber
       }
@@ -773,9 +781,10 @@ function installGitHooks(src, target, opts = {}) {
     return;
   }
 
-  // Executable bit on the hook files we just wrote (git only execs the
-  // git-named wrappers, but +x is harmless on the node libs).
-  for (const f of [...res.installed, ...res.upgraded]) {
+  // Executable bit on every momentum-managed hook file — including unchanged
+  // ones, so upgrade keeps self-healing exec bits on old installs (git only
+  // execs the git-named wrappers, but +x is harmless on the node libs).
+  for (const f of [...res.installed, ...res.upgraded, ...res.unchanged]) {
     if (f.endsWith('.md')) continue;
     const fp = path.join(hooksDest, f);
     if (fs.existsSync(fp)) fs.chmodSync(fp, 0o755);

@@ -23,7 +23,7 @@
 - [x] `package.json` files += `adapters/**/plugins/**`
 - [x] Capability matrix + parity matrix opencode columns (footnotes 17–19; booleans evidence-gated per capability discipline)
 - [x] Verification: full suite 734/734; tmp-dir `init --agent opencode` smoke (23 commands w/ frontmatter, 4 agents, plugin, skill, AGENTS.md substituted)
-- [ ] Commit G0
+- [x] Commit G0 (64cfcfe)
 
 ## Group 1 — Command + skill shape tests (parallel)
 
@@ -43,13 +43,13 @@
 
 ## Group 4 — Wiring + regression (sequential)
 
-- [ ] opencode install fingerprint snapshot test
-- [ ] Existing-adapter fingerprints byte-identical (verify against suite)
-- [ ] Tarball-shape test covers `adapters/opencode/**` (npm pack dry-run)
-- [ ] Synthetic swarm e2e opencode fixture
-- [ ] Upgrade idempotence test on an opencode fixture
-- [ ] Full suite green
-- [ ] Commit G4
+- [x] opencode install fingerprint snapshot test (58-file fixture v0.27.0; explicit MOMENTUM_RESNAPSHOT_OPENCODE opt-in)
+- [x] Existing-adapter fingerprints byte-identical (suite green incl. claude-code/codex/antigravity fingerprint tests)
+- [x] Tarball-shape test: 15 opencode paths required in npm pack; .bak-leak guard already global
+- [x] Synthetic swarm e2e: 3 scenarios × opencode (ADAPTERS extended; OPENCODE_BIN pinned; evidence → phase-22, TD-006 gate completed on this file)
+- [x] Upgrade idempotence: fresh install upgrade is byte-identical — fixed identical-content .bak litter in installHookFiles (core) + converged-backup sweep (adapter)
+- [x] Full suite green: 756/756 (734 baseline + 13 G1-G3 + 9 G4)
+- [x] Commit G4
 
 ## Group 5 — Live validation + docs + release prep (sequential)
 
