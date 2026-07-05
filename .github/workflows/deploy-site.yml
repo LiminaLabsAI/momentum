@@ -1,4 +1,4 @@
-# Deploy the momentum GitHub Pages site (Astro Starlight) to
+# Deploy the momentum GitHub Pages site (custom Astro) to
 # trymomentum.github.io via cross-repo push.
 #
 # Source repo:   avinash-singh-io/momentum         (this repo — site under /site)
@@ -69,6 +69,14 @@ jobs:
       - name: Prepare dist for GitHub Pages
         run: |
           touch site/dist/.nojekyll
+          # Hop-2 publisher: the deploy step below force-pushes site/dist as
+          # the target repo's ENTIRE main, which wipes the target's own Pages
+          # publish workflow. Ship it INSIDE dist so every deploy re-lands it;
+          # the force-push then triggers it → actions/deploy-pages → live.
+          # (Requires PAGES_DEPLOY_TOKEN to allow pushes under .github/workflows/.)
+          mkdir -p site/dist/.github/workflows
+          echo 'bmFtZTogUHVibGlzaCBQYWdlcwojIFB1Ymxpc2hlcyB0aGlzIHJlcG8ncyBjb21taXR0ZWQgc3RhdGljIHNpdGUgdG8gR2l0SHViIFBhZ2VzIChidWlsZF90eXBlOgojIHdvcmtmbG93KS4gU2hpcHBlZCBJTlRPIGRpc3QgYnkgYXZpbmFzaC1zaW5naC1pby9tb21lbnR1bSdzIGRlcGxveS1zaXRlLnltbAojIHNvIHRoZSBjcm9zcy1yZXBvIGZvcmNlLXB1c2ggKHdoaWNoIHJlcGxhY2VzIHRoaXMgcmVwbydzIG1haW4pIGFsd2F5cwojIHJlLWxhbmRzIHRoZSBwdWJsaXNoZXI7IHRoZSBwdXNoIHRoZW4gdHJpZ2dlcnMgdGhpcyB3b3JrZmxvdy4Kb246CiAgcHVzaDoKICAgIGJyYW5jaGVzOiBbbWFpbl0KICB3b3JrZmxvd19kaXNwYXRjaDoKcGVybWlzc2lvbnM6CiAgY29udGVudHM6IHJlYWQKICBwYWdlczogd3JpdGUKICBpZC10b2tlbjogd3JpdGUKY29uY3VycmVuY3k6CiAgZ3JvdXA6IHBhZ2VzCiAgY2FuY2VsLWluLXByb2dyZXNzOiBmYWxzZQpqb2JzOgogIGRlcGxveToKICAgIGVudmlyb25tZW50OiBnaXRodWItcGFnZXMKICAgIHJ1bnMtb246IHVidW50dS1sYXRlc3QKICAgIHN0ZXBzOgogICAgICAtIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjQKICAgICAgLSB1c2VzOiBhY3Rpb25zL2NvbmZpZ3VyZS1wYWdlc0B2NQogICAgICAtIHVzZXM6IGFjdGlvbnMvdXBsb2FkLXBhZ2VzLWFydGlmYWN0QHYzCiAgICAgICAgd2l0aDoKICAgICAgICAgIHBhdGg6ICcuJwogICAgICAtIHVzZXM6IGFjdGlvbnMvZGVwbG95LXBhZ2VzQHY0Cg==' \
+            | base64 -d > site/dist/.github/workflows/publish.yml
 
       - name: Deploy dist → trymomentum/trymomentum.github.io
         env:
