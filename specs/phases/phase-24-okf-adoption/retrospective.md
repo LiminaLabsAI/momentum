@@ -51,7 +51,9 @@ All output fresh from this session (2026-07-05), lane branch
 `feat/open-knowledge-format`; raw captures in `evidence/`:
 
 - **Full suite**: `npm test` → **769/769 pass, 0 fail** (baseline 733 at
-  phase start; +36 net new tests). `evidence/suite-and-grep.txt`.
+  phase start; +36 net new tests). Post-rebase onto main (VAL-002 +
+  BUG-017 landings): **770/770 pass** — the combination is green.
+  `evidence/suite-and-grep.txt`.
 - **Smoke 1 — fresh init**: `momentum init` → `momentum okf check` →
   `✓ specs/ is an OKF v0.1 conformant bundle (17 markdown file(s))`.
   `evidence/smoke-init-upgrade.txt`.
