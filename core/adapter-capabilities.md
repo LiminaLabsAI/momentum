@@ -35,7 +35,7 @@ orchestration code depends on.
 | `slashCommands` | ✅ | ✅ | ❌¹ | ✅⁵ |
 | `subagents` | ✅ | ✅² | ✅ | ✅⁵ |
 | `parallelSubagents` | ✅ | ❌² | ✅ | ✅⁵ |
-| `sessionStartHook` | ✅ | ✅ | ❌³ | ❌⁵ |
+| `sessionStartHook` | ✅ | ✅ | ❌³ | ✅⁵ |
 | `skills` | ❌ | ❌⁴ | ❌ | ✅⁵ |
 | `browser` | ❌ | ❌⁴ | ❌ | ❌ |
 | `computerUse` | ❌ | ❌⁴ | ❌ | ❌ |
@@ -80,7 +80,7 @@ conditions.
 3. **Antigravity `sessionStartHook: false`** — a literal SessionStart event does not exist on Antigravity (five-event surface, Phase 22b/ADR-0006). The banner ships via the `momentum-session-context` PreInvocation hook (`ephemeralMessage` at `invocationNum 0`); AGENTS.md text keeps the fallback hint. Flag flips once the injection round-trip is verified live (ENH-054). `/continue` and `momentum continue` work regardless.
 4. **Codex `skills` / `browser` / `computerUse`** — declared `false` today; planned for a future Codex feature drop. When Codex ships those features, flip the boolean and remove the corresponding `roadmap` entry in the same PR.
 
-5. **opencode (Phase 22, LIVE-validated 2026-07-05)** — every boolean set from real-runtime evidence against opencode 1.17.13 with real model calls (free tier, zero credentials) — see `specs/phases/phase-22-opencode-adapter/evidence/val-opencode-live.txt`. `parallelSubagents: true` earned via overlapping task-tool timestamps; `skills: true` earned via a live skill-tool load of momentum-orient (**a momentum first — no other adapter has live-validated skills**); `sessionStartHook: false` because `session.created` was not observed in `opencode run` mode with a pending handoff (banner code ships and may fire in TUI sessions; promote only on observed evidence). Runtime caveat: a generic `event` bus hook hangs run-mode — momentum's plugin uses named hooks only.
+5. **opencode (Phase 22, LIVE-validated 2026-07-05)** — every boolean set from real-runtime evidence against opencode 1.17.13 with real model calls (free tier, zero credentials) — see `specs/phases/phase-22-opencode-adapter/evidence/val-opencode-live.txt`. `parallelSubagents: true` earned via overlapping task-tool timestamps; `skills: true` earned via a live skill-tool load of momentum-orient (**a momentum first — no other adapter has live-validated skills**); `sessionStartHook: true` — earned post-phase (fix/opencode-sessionstart-banner): the banner fired live in a served session once rewired onto the generic `event` bus (a named "session.created" hook key never fires on 1.17.x). Run-mode is deliberately excluded — the event handler hangs `opencode run` (upstream issue candidate) and a session-start banner is meaningless non-interactively.
 
 ## ENH-023 and ENH-024 closed (Phase 11 G0)
 

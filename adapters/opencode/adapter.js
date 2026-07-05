@@ -56,7 +56,7 @@ module.exports = {
     slashCommands: true, // live-validated: /validate executed the recipe in run-mode (G5 check 1)
     subagents: true, // live-validated: all 4 agents discovered; supervisor selected via --agent (G5 checks 5-6)
     parallelSubagents: true, // live-validated: two task-tool subagents with overlapping start/end timestamps (G5)
-    sessionStartHook: false, // session.created NOT observed in run-mode with a pending handoff (G5 check 4)
+    sessionStartHook: true, // live-validated post-phase: banner fired in a served session via the event bus (run-mode excluded — see roadmap)
     skills: true, // live-validated: skill tool loaded momentum-orient; multi-adapter coexistence clean (G5 check 7)
     browser: false,
     computerUse: false,
@@ -65,10 +65,12 @@ module.exports = {
 
   roadmap: {
     sessionStartHook:
-      'Banner code ships via the session.created plugin hook but the event was not observed in ' +
-      '`opencode run` non-interactive mode (Phase 22 G5 evidence: val-opencode-live.txt). Promote only ' +
-      'on observed TUI-session evidence. NB: a generic `event` bus hook HANGS run-mode (1.17.13) — ' +
-      'keep this plugin on named hooks only.',
+      'Flipped true on live serve-session evidence (fix/opencode-sessionstart-banner): session events ' +
+      'reach plugins only via the generic `event` bus (a named "session.created" hook key never fires ' +
+      'on 1.17.x), and the banner now rides that bus. Deliberately EXCLUDED from `opencode run` ' +
+      'non-interactive mode: the event handler\'s mere presence hangs run-mode (reproduced on 1.17.13, ' +
+      'upstream issue candidate), and a session-start banner is meaningless there. Evidence: ' +
+      'specs/adhoc/fix-opencode-sessionstart-banner/record.md.',
   },
 
   runInstall(targetDir, adapterDir, helpers) {
