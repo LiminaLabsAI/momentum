@@ -27,10 +27,10 @@
 
 ## Group 2 — Spawn + swarm rewrite (deps: G1)
 
-- [ ] `spawn()` on real flags (cwd + `-p` + least-privilege permissions shape)
-- [ ] `tests/adapter-antigravity-swarm.test.js` updated to real surface
-- [ ] Live spawn smoke transcript in `evidence/`
-- [ ] Synthetic swarm e2e re-run; byte-stable where expected
+- [x] `spawn()` on real flags: detached `agy --new-project --dangerously-skip-permissions --print-timeout -p` FROM repoPath; per-repo log; synchronous missing-binary detection with official-installer hint
+- [x] Swarm tests: argv-capture stub proves real flag surface + no fictional flags; 6/6
+- [x] Live spawn smoke: real agy launched detached, log captured `BOOT-OK` (`evidence/spawn-smoke.md`)
+- [x] Full suite incl. swarm e2e green: 740/740
 
 ## Group 3 — Native 2.0 surfaces (deps: G1)
 

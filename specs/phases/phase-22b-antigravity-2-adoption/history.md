@@ -65,3 +65,10 @@ Affects-specs: specs/decisions/0005-antigravity-canonical-root-and-hook-shim.md
 Detail: All destinations consolidated to the canonical `.agents/` root (legacy `.agent/` orphan-cleaned on upgrade by Phase 20 machinery); hooks.json rewritten to the vendor named-group schema over the real five events; NEW boundary shim adapters/antigravity/scripts/antigravity-hook-adapter.sh translates camelCase payloads → shared scripts and maps responses (deny decisions, notice queue for PostToolUse, PreInvocation ephemeralMessage injection for handoff banner + queued reminders at invocationNum 0). Core scripts byte-identical to main — capture tool reports claude-code/codex "no change"; antigravity fingerprint re-baselined once (58→59 files). Suite 733 → 739 green.
 
 ---
+### [FEATURE] 2026-07-05 — G2: spawn() rewritten on the real agy surface; live smoke green
+Topics: antigravity, spawn, swarm
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: none
+Detail: adapter.spawn(directive) now launches a DETACHED `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from directive.repoPath (spawnSync cwd replaces the fictional --cwd; skill engagement by name replaces the fictional --skill), logs to .momentum/swarm-supervisor-<swarm>-w<wave>.log, and returns the contract tuple synchronously (missing binary detected up front with the official-installer hint). Detached-async replaces claude-code's 5s spawnSync shape because agy print runs take minutes and can hang past their own timeout (ENH-052) — the conductor must never block. Live smoke: real agy launched, log captured BOOT-OK (evidence/spawn-smoke.md). Suite 740/740.
+
+---

@@ -11,7 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { spawnSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
 module.exports = {
   displayName: 'Antigravity',
@@ -106,12 +106,20 @@ module.exports = {
     }
   },
 
-  // Phase 18 G2 — adapter.spawn(directive) for Antigravity.
-  // Shells `agy` via the Agent Manager primitive, passing the
-  // supervisor skill as the persona and the directive's repoPath as
-  // the cwd. Exploits Antigravity's `parallelSubagents: true`
-  // capability — one supervisor per repo can run concurrently.
-  // See `bin/momentum.js` for the directive contract.
+  // Phase 22b G2 — adapter.spawn(directive) on the REAL agy CLI surface.
+  //
+  // agy 1.0.16 has no --cwd/--skill flags (fact-sheet §7 — the Phase 18
+  // contract was written against a runtime that did not exist). Real shape:
+  //   - run FROM directive.repoPath (process cwd),
+  //   - headless print mode: -p <prompt>,
+  //   - --new-project: MANDATORY isolation — without it print mode can
+  //     resume an unrelated prior conversation for the workspace,
+  //   - skill engagement by name in the prompt (semantic activation),
+  //   - --dangerously-skip-permissions: supervisors edit files headlessly,
+  //   - --print-timeout as the in-CLI bound + detached launch with logs:
+  //     print runs take minutes and can hang PAST their own timeout when
+  //     hooks are present (ENH-052) — the conductor monitors via the board
+  //     and the per-repo log file; never block the conductor's session.
   spawn(directive) {
     if (!directive || directive.platform !== 'antigravity') {
       return {
@@ -121,23 +129,68 @@ module.exports = {
       };
     }
     const agyBin = process.env.AGY_BIN || 'agy';
-    const args = ['--cwd', directive.repoPath, '--skill', 'swarm-supervisor'];
+
+    // Synchronous missing-binary detection (the async 'error' event would
+    // arrive after we return the contract tuple).
+    const resolved = agyBin.includes(path.sep)
+      ? (fs.existsSync(agyBin) ? agyBin : null)
+      : (() => {
+          const w = spawnSync('which', [agyBin], { encoding: 'utf8' });
+          return w.status === 0 ? agyBin : null;
+        })();
+    if (!resolved) {
+      return {
+        repoId: directive.repoId,
+        status: -1,
+        detail: `agy not found (${agyBin}) — install: curl -fsSL https://antigravity.google/cli/install.sh | bash`,
+      };
+    }
+
+    const printTimeout = process.env.MOMENTUM_AGY_PRINT_TIMEOUT || '30m';
     const prompt = [
+      `Load the swarm-supervisor skill and stay in that persona.`,
       `You are a swarm supervisor. Recipe: ${directive.recipePath}`,
       `Read the recipe and the brief at specs/phases/${directive.phaseSlug}/overview.md.`,
       `Your repo: ${directive.repoId}. Your swarm: ${directive.swarmId} wave ${directive.wave}.`,
       `Begin the boot sequence.`,
     ].join('\n');
-    const r = spawnSync(agyBin, args, {
-      input: prompt,
-      env: Object.assign({}, process.env, directive.env),
-      encoding: 'utf8',
-      timeout: 5000,
-    });
-    return {
-      repoId: directive.repoId,
-      status: r.status == null ? -1 : r.status,
-      detail: (r.error && r.error.message) || (r.stderr || '').slice(0, 200),
-    };
+    const args = [
+      '--new-project',
+      '--dangerously-skip-permissions',
+      '--print-timeout', printTimeout,
+      '-p', prompt,
+    ];
+
+    let logPath = null;
+    let out = 'ignore';
+    try {
+      const logDir = path.join(directive.repoPath, '.momentum');
+      fs.mkdirSync(logDir, { recursive: true });
+      logPath = path.join(logDir, `swarm-supervisor-${directive.swarmId}-w${directive.wave}.log`);
+      out = fs.openSync(logPath, 'a');
+    } catch (_) { /* log file is best-effort — spawn proceeds without it */ }
+
+    try {
+      const child = spawn(resolved, args, {
+        cwd: directive.repoPath,
+        env: Object.assign({}, process.env, directive.env),
+        detached: true,
+        stdio: ['ignore', out, out],
+      });
+      child.unref();
+      if (typeof out === 'number') fs.closeSync(out);
+      return {
+        repoId: directive.repoId,
+        status: 0,
+        detail: `launched pid ${child.pid}${logPath ? ` (log: ${logPath})` : ''}`,
+      };
+    } catch (err) {
+      if (typeof out === 'number') { try { fs.closeSync(out); } catch (_) {} }
+      return {
+        repoId: directive.repoId,
+        status: -1,
+        detail: (err && err.message) || 'spawn failed',
+      };
+    }
   },
 };

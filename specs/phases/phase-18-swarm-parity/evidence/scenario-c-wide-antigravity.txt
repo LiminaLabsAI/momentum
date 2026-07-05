@@ -18,7 +18,7 @@ status: -1 is expected. Live spawn evidence lands in G4 VAL.
   {
     "repoId": "core",
     "status": -1,
-    "detail": "spawnSync /this/does/not/exist/agy ENOENT"
+    "detail": "agy not found (/this/does/not/exist/agy) — install: curl -fsSL https://antigravity.google/cli/install.sh | bash"
   }
 ]
 ```
