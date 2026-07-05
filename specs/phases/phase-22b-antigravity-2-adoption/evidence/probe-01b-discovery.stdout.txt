@@ -1,0 +1,3 @@
+1. SENTINEL: `.momentum/brainstorm-active`, `.momentum/merge-approved`
+2. SKILLS: antigravity-guide, momentum-orient, momentum-reviewer-architecture, momentum-reviewer-qa, momentum-reviewer-security, probe-plural-skill, probe-singular-skill, swarm-supervisor
+3. WORKFLOWS/COMMANDS: /continue, /dispatch, /handoff, /probe-plural-wf, /probe-singular-wf, /review-code, /scout, /swarm, /goal, /schedule, /grill-me, /teamwork-preview, /learn

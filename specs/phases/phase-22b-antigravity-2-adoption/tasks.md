@@ -5,17 +5,18 @@
 
 ## Group 0 — Live-probe evidence lock
 
-- [ ] Fixture project via `momentum init --agent antigravity`; record installed tree
-- [ ] Probe (a): workflows path (singular vs plural) + slash registration
-- [ ] Probe (b): skills path + directory/SKILL.md format + `/skills` listing
-- [ ] Probe (c): hooks — accepted schema shape, event set (SessionStart? PreInvocation?), relative vs absolute commands, exit-code semantics, stdin payload capture per event
-- [ ] Probe (d): subagent definition format/location + `/agent` invocation
-- [ ] Probe (e)+(f): global skills dir; `agy plugin` local install shape
-- [ ] Probe (g): AGENTS.md auto-load (sentinel-string quote test)
-- [ ] `evidence/fact-sheet.md` written; 6 VAL-002 questions mapped to answers + transcripts; `[EVALUATOR]` history entry
+- [x] Fixture project via `momentum init --agent antigravity`; record installed tree
+- [x] Probe (a): workflows path (singular vs plural) + slash registration
+- [x] Probe (b): skills path + directory/SKILL.md format + `/skills` listing
+- [x] Probe (c): hooks — accepted schema shape, event set (SessionStart? PreInvocation?), relative vs absolute commands, exit-code semantics, stdin payload capture per event
+- [x] Probe (d): subagent definition format/location + `/agent` invocation
+- [x] Probe (e)+(f): global skills dir; `agy plugin` local install shape
+- [x] Probe (g): AGENTS.md auto-load (sentinel-string quote test)
+- [x] `evidence/fact-sheet.md` written; 6 VAL-002 questions mapped to answers + transcripts; `[EVALUATOR]` history entry (deny-semantics + shipped-shape items carry §10 caveats; re-probe task added to G1)
 
 ## Group 1 — Core realignment (deps: G0)
 
+- [ ] Re-probe (stable env): deny semantics live + momentum-shipped-shape parse (fact-sheet §10 caveats)
 - [ ] Destinations per fact sheet (ADR-0005 first if dual-path required)
 - [ ] `hooks.json` regenerated: accepted schema + real matchers
 - [ ] Install/upgrade-time absolute-path templating for hook commands

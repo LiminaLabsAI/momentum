@@ -44,3 +44,17 @@ Affects-specs: none
 Detail: BUG-017 (committed `.githooks/*` tracked non-executable → Rule 6 enforcement silently off in fresh worktrees, P1) was surfaced by the Rule 4 pre-phase bug check. It is a ~30-minute standalone fix with no dependency on this phase; routed to its own quick-task lane instead of widening this scope.
 
 ---
+### [EVALUATOR] 2026-07-05 — G0 fact sheet locked: the vendor-truth reference for all groups
+Topics: antigravity, evidence, hooks, val-002
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: none
+Detail: `evidence/fact-sheet.md` locks the Antigravity 2.x contract against agy 1.0.16: four accepted customization roots (.agents/.agent/_agents/_agent); AGENTS.md hierarchical auto-load (confirmed in-context); workflows register as slash commands; skills = <name>/SKILL.md dirs; hooks = named groups over EXACTLY five events (no SessionStart — PreInvocation invocationNum==0 + injectSteps/ephemeralMessage is the session-start mechanism); PreToolUse decision contract (allow/deny/ask/force_ask); camelCase payloads captured verbatim (hook-captures/); real tool names run_command/write_to_file/view_file/list_dir/list_permissions; plugins = plugins/<name>/plugin.json bundles; CLI flag surface locked (no --cwd/--skill — Phase 18 spawn contract fictional; --new-project REQUIRED for headless isolation). Vendor reference docs archived verbatim under evidence/vendor-docs/. All six VAL-002 questions answered (fact-sheet §8).
+
+---
+### [DISCOVERY] 2026-07-05 — Intermittent indefinite hang in headless agy runs WITH hooks.json present (vendor bug candidate)
+Topics: antigravity, hooks, spawn, reliability
+Affects-phases: phase-22b-antigravity-2-adoption
+Affects-specs: none
+Detail: During the probe battery, hook-ful headless runs hung indefinitely 6/10 times — ignoring --print-timeout, writing ZERO log lines — while hook-less runs passed 3/3 and the same configs passed minutes before/after (fact-sheet §9–10). Not attributable to config shape; working hypothesis is an intermittent hook-runner stdin/deadlock in agy 1.0.16. Consequences: momentum's shipped hooks.json shape stays UNVERIFIED (moot — G1 adopts the documented vendor schema); deny semantics remain doc-sourced pending a stable re-probe; every headless integration (spawn(), CI probes) MUST wrap agy in an external watchdog with pacing. Filed as ENH-052; upstream report drafted in G4.
+
+---

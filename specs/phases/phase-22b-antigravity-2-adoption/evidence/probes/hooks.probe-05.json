@@ -1,0 +1,17 @@
+{
+  "deny-writes": {
+    "PreToolUse": [
+      {
+        "matcher": ".*write.*",
+        "hooks": [
+          { "command": "cat > /dev/null; echo '{\"decision\":\"deny\",\"reason\":\"MOMENTUM-DENY-TEST: file writes are blocked by policy\"}'" }
+        ]
+      }
+    ]
+  },
+  "rel-probe": {
+    "PreInvocation": [
+      { "command": "./rel-capture.sh" }
+    ]
+  }
+}
