@@ -1283,6 +1283,7 @@ Ecosystem use — entry/exit commands (run from any repo):
                                       existing ecosystem
   momentum leave                      Detach THIS repo from its ecosystem
   momentum doctor                     Diagnose state + list available transitions
+  momentum antigravity plugin-pack    Pack momentum skills as a native Antigravity plugin ([--global])
 
 Ecosystem use — operator toolkit (advanced):
   momentum ecosystem <sub> [...]      Subcommands: init | add | remove | status
@@ -1618,6 +1619,14 @@ async function main() {
     try {
       const { cmdLeave } = require('./state-commands');
       cmdLeave(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'antigravity') {
+    try {
+      const { runAntigravity } = require('./antigravity');
+      runAntigravity(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

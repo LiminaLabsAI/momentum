@@ -4,11 +4,11 @@
  * Phase 16 Rework G2.7 — Antigravity workflows smoke.
  *
  * Asserts:
- *   - Adapter-specific orchestration workflows install at .agent/workflows/
+ *   - Adapter-specific orchestration workflows install at .agents/workflows/
  *   - Each has valid YAML frontmatter with `description`
  *   - Each is ≤12,000 chars (Antigravity workflow size limit)
- *   - Core commands (cross-adapter) ALSO ship to .agent/workflows/
- *     via destinations.commands → .agent/workflows/ rewire
+ *   - Core commands (cross-adapter) ALSO ship to .agents/workflows/
+ *     via destinations.commands → .agents/workflows/ rewire
  */
 
 const fs = require('node:fs');
@@ -27,13 +27,13 @@ const CORE_COMMANDS_THAT_SHOULD_SHIP_AS_WORKFLOWS = [
   'track', 'validate', 'ecosystem', 'initiative', 'session',
 ];
 
-test('antigravity install ships adapter-specific workflows at .agent/workflows/', () => {
+test('antigravity install ships adapter-specific workflows at .agents/workflows/', () => {
   const target = mktmp();
   try {
     const res = runCli(['init', target, '--agent', 'antigravity']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
     for (const name of ANTIGRAVITY_OVERLAY_WORKFLOWS) {
-      const file = path.join(target, '.agent', 'workflows', `${name}.md`);
+      const file = path.join(target, '.agents', 'workflows', `${name}.md`);
       assert.equal(exists(file), true, `expected ${file}`);
     }
   } finally {
@@ -47,8 +47,8 @@ test('antigravity install ships core commands as workflows', () => {
     const res = runCli(['init', target, '--agent', 'antigravity']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
     for (const name of CORE_COMMANDS_THAT_SHOULD_SHIP_AS_WORKFLOWS) {
-      const file = path.join(target, '.agent', 'workflows', `${name}.md`);
-      assert.equal(exists(file), true, `expected ${file} (core/commands/${name}.md → .agent/workflows/)`);
+      const file = path.join(target, '.agents', 'workflows', `${name}.md`);
+      assert.equal(exists(file), true, `expected ${file} (core/commands/${name}.md → .agents/workflows/)`);
     }
   } finally {
     rmrf(target);
@@ -61,7 +61,7 @@ test('antigravity adapter-specific workflows have YAML frontmatter with descript
     const res = runCli(['init', target, '--agent', 'antigravity']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
     for (const name of ANTIGRAVITY_OVERLAY_WORKFLOWS) {
-      const file = path.join(target, '.agent', 'workflows', `${name}.md`);
+      const file = path.join(target, '.agents', 'workflows', `${name}.md`);
       const content = fs.readFileSync(file, 'utf8');
       assert.match(
         content,
@@ -79,7 +79,7 @@ test('antigravity workflows are ≤12,000 chars each (vendor size limit)', () =>
   try {
     const res = runCli(['init', target, '--agent', 'antigravity']);
     assert.equal(res.status, 0, `init failed: ${res.stderr}`);
-    const workflowsDir = path.join(target, '.agent', 'workflows');
+    const workflowsDir = path.join(target, '.agents', 'workflows');
     for (const f of fs.readdirSync(workflowsDir)) {
       if (!f.endsWith('.md')) continue;
       const size = fs.readFileSync(path.join(workflowsDir, f), 'utf8').length;

@@ -76,9 +76,9 @@ overview.md):
 
 | Hook | Claude Code | Codex | Antigravity | opencode |
 |---|---|---|---|---|
-| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped¹⁹ |
-| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped¹⁹ |
-| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-degraded¹⁹ |
+| `PreToolUse` (brainstorm-gate) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped¹⁹ |
+| `PostToolUse` (history reminder) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped¹⁹ |
+| `SessionStart` (handoff banner) | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ | shipped-degraded¹⁹ |
 
 ### Git-lifecycle hooks (Phase 19 — agent-agnostic)
 
@@ -96,7 +96,7 @@ overview.md):
 | `agent-rules` overlay | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ | not-applicable¹⁶ |
 | `scripts` overlay (hooks) | shipped | shipped | shipped | shipped |
 | `engines` overlay | shipped | shipped | shipped | shipped |
-| `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | shipped-gated¹³ | not-applicable⁵ |
+| `workflows` overlay (Phase 16) | not-applicable⁵ | not-applicable⁵ | shipped¹³ | not-applicable⁵ |
 | `skills` overlay (Phase 16) | not-applicable⁵ | shipped⁶ | shipped⁷ | shipped¹⁷ |
 | `agents` overlay (Phase 16) | not-applicable⁵ | shipped⁸ | not-applicable⁵ | shipped¹⁸ |
 
@@ -106,8 +106,8 @@ overview.md):
 |---|---|---|---|---|
 | `momentum init/upgrade` install | shipped | shipped | shipped | shipped |
 | Ecosystem manifest awareness (`ecosystem.json`) | shipped | shipped | shipped | shipped |
-| SessionStart ecosystem banner | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-degraded¹⁹ |
-| Auto session log (PostToolUse) | shipped⁹ | shipped¹⁰ | shipped-degraded¹¹ | shipped-degraded¹⁹ |
+| SessionStart ecosystem banner | shipped⁹ | shipped¹⁰ | shipped-as-preinvocation¹¹ | shipped-degraded¹⁹ |
+| Auto session log (PostToolUse) | shipped⁹ | shipped¹⁰ | shipped¹¹ | shipped-degraded¹⁹ |
 | Managed `CLAUDE.md` / `AGENTS.md` on `ecosystem init` | shipped | shipped | shipped | shipped |
 
 ## Footnotes
@@ -132,13 +132,13 @@ overview.md):
 
 10. **Codex hooks** — wired via `.codex/hooks.json` with matchers `apply_patch|Bash` for PreToolUse/PostToolUse and no matcher for SessionStart. Per Codex docs (https://developers.openai.com/codex/hooks) the canonical `tool_name` for shell commands is `Bash` — earlier `shell` matcher was a bug (BUG-007, fixed 2026-06-13). Hooks are **enabled by default** in current Codex CLI (`hooks` is `stable: true` in `codex features list`); the first run prompts users to trust each hook via `/hooks`. The legacy `[features] hooks = true` opt-in remains as a fallback.
 
-11. **Antigravity hooks** — wired via `.agents/hooks.json` with matchers `run_command|view_file|.*write.*` for PreToolUse, `apply_patch|run_command` for PostToolUse. Marked `shipped-degraded` until VAL-002 confirms `agy` actually reads and dispatches the hooks (`agy` desktop-app vs CLI hook support is partially documented). The AGENTS.md text carries fallback instructions for handoff pickup and history reminder.
+11. **Antigravity hooks (Phase 22b, verified live)** — vendor named-group `.agents/hooks.json` over the real five events; every hook delegates through `scripts/antigravity-hook-adapter.sh` (ADR-0006), which translates camelCase payloads and emits decision JSON. PreToolUse/PostToolUse fire-verified against agy 1.0.16 (captured payloads under `specs/phases/phase-22b-antigravity-2-adoption/evidence/hook-captures/`). SessionStart does not exist — the handoff/ecosystem banner ships as a PreInvocation `ephemeralMessage` injection at `invocationNum 0` (hence `shipped-as-preinvocation`); AGENTS.md text keeps the fallback hint.
 
 12. **Antigravity `commands` overlay as workflows** — the cross-adapter `core/commands/*.md` content ships to `.agent/workflows/` on Antigravity (recipes become workflows). The destination is shared with the `workflows` overlay key; conflict detection prevents duplicates.
 
-13. **Antigravity `workflows` overlay (gated)** — adapter-specific workflows (`adapters/antigravity/workflows/*.md`) ship to `.agent/workflows/`. Marked `shipped-gated` pending Group 4 live smoke to confirm `.agent/` (singular) vs `.agents/` (plural) — Google's official docs page uses singular, codelab uses plural. If smoke fails, dual-copy and VAL-002 follow-up.
+13. **Antigravity `workflows` overlay (Phase 22b, path locked)** — adapter-specific workflows ship to `.agents/workflows/` (canonical root, ADR-0006). Live probe verified slash registration including planted path-matrix markers; agy accepts four root spellings and `.agents/` is the vendor-canonical one. Evidence: `specs/phases/phase-22b-antigravity-2-adoption/evidence/fact-sheet.md` §1/§3.
 
-14. **`/swarm` (Phase 17 v0.20.0 + Phase 17.5 v0.20.2 + Phase 18 v0.20.4)** — Phase 18 v0.20.4 brings full Codex + Antigravity parity to the swarm primitive. Implementation: a platform-agnostic `adapter.spawn(directive)` contract added in Phase 18 G0; Codex dispatch + supervisor TOML + MCP cwd shim documented in G1; Antigravity workflow + supervisor skill + AGENTS.md section in G2; multi-adapter synthetic e2e + Codex/Antigravity install fingerprints in G3. **Capability flips deferred** based on G4 live evidence: Codex `parallelSubagents` stays `false` (gated on `codex features list` showing `enable_fanout: stable: true` — currently `under development`); Antigravity `sessionStartHook` stays `false` (no standalone `agy` CLI exists — IDE-only product; operator-manual VAL inside the IDE required). All other adapter surfaces ship with full file-layout coverage; live VAL evidence at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt` + `val-002-antigravity.txt`. Operator-manual closure paths for both VALs documented in those files.
+14. **`/swarm` (Phase 17 v0.20.0 + Phase 17.5 v0.20.2 + Phase 18 v0.20.4)** — Phase 18 v0.20.4 brings full Codex + Antigravity parity to the swarm primitive. Implementation: a platform-agnostic `adapter.spawn(directive)` contract added in Phase 18 G0; Codex dispatch + supervisor TOML + MCP cwd shim documented in G1; Antigravity workflow + supervisor skill + AGENTS.md section in G2; multi-adapter synthetic e2e + Codex/Antigravity install fingerprints in G3. **Capability flips deferred** based on G4 live evidence: Codex `parallelSubagents` stays `false` (gated on `codex features list` showing `enable_fanout: stable: true` — currently `under development`); Antigravity `sessionStartHook` stays `false` (Phase 22b: the event does not exist — see footnote 11; VAL-002 RESOLVED with vendor-runtime evidence). Phase 22b also rewrote the Antigravity spawn onto the real CLI surface: detached `agy --new-project --dangerously-skip-permissions --print-timeout <bound> -p <boot prompt>` from `repoPath` with a per-repo supervisor log (live smoke: BOOT-OK — `specs/phases/phase-22b-antigravity-2-adoption/evidence/spawn-smoke.md`). Codex VAL-001 evidence unchanged at `specs/phases/phase-18-swarm-parity/evidence/val-001-codex.txt`.
 
 15. **Git-lifecycle hooks (Phase 19, FEAT-018/019)** — vendor-neutral, *agent-agnostic* git hooks installed identically for all three adapters: `bin/momentum.js::installGitHooks()` copies `core/git-hooks/*` to the target's `.githooks/` and runs `git config core.hooksPath .githooks` (warn-not-clobber if husky / a custom hooks path exists). `commit-msg` validates Conventional Commits; `pre-push` blocks direct pushes to protected branches without the single-use `.momentum/merge-approved` sentinel and blocks release-tag pushes lacking a non-empty `## Verification Evidence` (Rule 12). Escape hatch: `MOMENTUM_SKIP_HOOKS=1`. These are git hooks, not agent tool-event hooks — the mechanism is identical regardless of agent; the per-column cells exist only for matrix uniformity. Forge-neutral by design (no GitHub/GitLab API); see `core/lifecycle-contract.md`.
 

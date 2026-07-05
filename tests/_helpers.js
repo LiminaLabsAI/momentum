@@ -65,8 +65,35 @@ function fakeToolEvent({ hooksFile, event, toolName, payload, cwd }) {
   }
   const { spawnSync } = require('node:child_process');
   const config = JSON.parse(fs.readFileSync(hooksFile, 'utf8'));
-  const eventBlock = config.hooks && config.hooks[event];
-  if (!Array.isArray(eventBlock)) {
+
+  // Two schemas (Phase 22b, ADR-0006):
+  //  - legacy wrapper  {hooks: {Event: [...]}}          (Claude Code, Codex)
+  //  - vendor named groups {name: {Event: [...]}, ...}  (Antigravity 2.x)
+  // Antigravity runs hook commands with CWD = the hooks.json directory and
+  // grouped (matcher) structure only for tool events; loop events are FLAT
+  // handler lists. Model both faithfully.
+  const vendorSchema = !config.hooks;
+  const entries = [];
+  if (!vendorSchema) {
+    const eventBlock = config.hooks && config.hooks[event];
+    if (Array.isArray(eventBlock)) entries.push(...eventBlock);
+  } else {
+    for (const groupName of Object.keys(config)) {
+      const group = config[groupName];
+      if (!group || typeof group !== 'object') continue;
+      if (group.enabled === false) continue;
+      const eventBlock = group[event];
+      if (!Array.isArray(eventBlock)) continue;
+      for (const item of eventBlock) {
+        if (item && Array.isArray(item.hooks)) {
+          entries.push(item); // grouped (tool events)
+        } else if (item && item.command) {
+          entries.push({ hooks: [{ type: item.type || 'command', ...item }] }); // flat (loop events)
+        }
+      }
+    }
+  }
+  if (entries.length === 0) {
     return { exits: [], stdouts: [], stderrs: [] };
   }
 
@@ -75,16 +102,18 @@ function fakeToolEvent({ hooksFile, event, toolName, payload, cwd }) {
   const stderrs = [];
   const payloadJson = JSON.stringify(payload || {});
   const projectDir = cwd || process.cwd();
+  // Vendor rule (fact-sheet §5): commands run from the hooks.json directory.
+  const hookCwd = vendorSchema ? path.dirname(hooksFile) : projectDir;
 
-  for (const entry of eventBlock) {
-    if (entry.matcher) {
-      const matched = new RegExp(entry.matcher).test(toolName);
+  for (const entry of entries) {
+    if (entry.matcher && entry.matcher !== '*' && entry.matcher !== '') {
+      const matched = new RegExp(entry.matcher).test(toolName || '');
       if (!matched) continue;
     }
     for (const hook of entry.hooks || []) {
-      if (hook.type !== 'command') continue;
+      if ((hook.type || 'command') !== 'command') continue;
       const result = spawnSync('bash', ['-c', hook.command], {
-        cwd: projectDir,
+        cwd: hookCwd,
         input: payloadJson,
         encoding: 'utf8',
         timeout: 10000,
@@ -141,16 +170,40 @@ const payloads = {
     return { tool_name: 'Bash', tool_input: { command } };
   },
   /**
-   * Antigravity run_command shape: { tool_name: 'run_command', tool_input: { command, path } }
+   * Antigravity 2.x payload shapes — camelCase protojson, captured live from
+   * agy 1.0.16 (Phase 22b: specs/phases/phase-22b-antigravity-2-adoption/
+   * evidence/hook-captures/). workspacePaths[0] is the project root.
    */
-  antigravityRunCommand(command, filePath) {
-    return { tool_name: 'run_command', tool_input: { command, path: filePath } };
+  antigravityCommon(workspaceDir) {
+    return {
+      conversationId: '00000000-0000-4000-8000-000000000000',
+      workspacePaths: [workspaceDir],
+      transcriptPath: `${workspaceDir}/.transcript.jsonl`,
+      artifactDirectoryPath: `${workspaceDir}/.artifacts`,
+      modelName: 'test',
+    };
   },
-  /**
-   * Antigravity view_file shape: { tool_name: 'view_file', tool_input: { path } }
-   */
-  antigravityViewFile(filePath) {
-    return { tool_name: 'view_file', tool_input: { path: filePath } };
+  antigravityPreTool(workspaceDir, toolName, args, stepIdx = 1) {
+    return { ...payloads.antigravityCommon(workspaceDir), stepIdx, toolCall: { name: toolName, args } };
+  },
+  antigravityWriteToFile(workspaceDir, targetFile, stepIdx = 1) {
+    return payloads.antigravityPreTool(workspaceDir, 'write_to_file', {
+      TargetFile: targetFile,
+      CodeContent: 'x',
+      Overwrite: true,
+    }, stepIdx);
+  },
+  antigravityRunCommand(workspaceDir, commandLine, stepIdx = 1) {
+    return payloads.antigravityPreTool(workspaceDir, 'run_command', {
+      CommandLine: commandLine,
+      Cwd: workspaceDir,
+    }, stepIdx);
+  },
+  antigravityPostTool(workspaceDir, toolName, args, error = '') {
+    return { ...payloads.antigravityCommon(workspaceDir), stepIdx: 2, error, toolCall: toolName ? { name: toolName, args } : null };
+  },
+  antigravityPreInvocation(workspaceDir, invocationNum) {
+    return { ...payloads.antigravityCommon(workspaceDir), invocationNum, initialNumSteps: 1 };
   },
 };
 

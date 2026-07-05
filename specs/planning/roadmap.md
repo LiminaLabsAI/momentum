@@ -42,6 +42,7 @@ type: Roadmap
 | 23 | Rules Unification (single-source agent instructions) | **Complete (v0.26.0)** | ADR-0004 build-time instruction generation; complete rulebook on every adapter auto-loaded surface; `.agent/rules/project.md` retired with safe migration. *(Row added 2026-07-05 — drift repair.)* |
 | 25 | Intelligence | Not Started (target v0.29.0+) | Self-learning hooks (`specs/learnings.md`); retrospective-driven rule evolution; self-healing (recurring failure → ADR proposal); context-window-aware task sizing |
 | 26 | Platform | Not Started (target v1.0) | MCP server; `/specify` auto-spec generation; `/decide` (ADR creation); skill/command authoring command; bidirectional spec sync (experimental); ecosystem Tier 2 (federated impact-map, shared rules, deploy-order awareness, multi-repo `/review-code`). *(Dependency-aware task ordering moved to the Parallel Lanes arc — FEAT-028 recursive wave planner.)* |
+| 22b | Antigravity 2.0 Full Adoption | **In Progress** (target v0.29.0 — retargeted after OKF/opencode took v0.27.0/v0.28.0) | Evidence-first realignment vs agy CLI 1.0.16: canonical `.agents/` root (ADR-0005); real five-event hooks contract via boundary shim; spawn on real flags (live BOOT-OK); plugin-pack + doctor advisory; VAL-002 resolved; ENH-051 superseded; FEAT-008 closure rec. *(Runs parallel to phase-22 opencode; Timeline rows 22–24 still carry pre-July numbering — see status.md.)* |
 
 ## Unscheduled Future Work
 

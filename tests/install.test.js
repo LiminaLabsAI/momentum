@@ -115,9 +115,9 @@ test('init — antigravity install produces AGENTS.md and command recipes', () =
 
     assert.equal(fs.existsSync(path.join(target, 'AGENTS.md')), true);
     assert.equal(fs.existsSync(path.join(target, 'CLAUDE.md')), false);
-    assert.equal(fs.existsSync(path.join(target, '.agent', 'workflows', 'brainstorm-phase.md')), true);
-    assert.equal(fs.existsSync(path.join(target, '.agent', 'workflows', 'start-phase.md')), true);
-    assert.equal(fs.existsSync(path.join(target, '.antigravity')), false, '.antigravity/ should not be created — Phase 16 Rework rewires to .agent/workflows/');
+    assert.equal(fs.existsSync(path.join(target, '.agents', 'workflows', 'brainstorm-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.agents', 'workflows', 'start-phase.md')), true);
+    assert.equal(fs.existsSync(path.join(target, '.antigravity')), false, '.antigravity/ should not be created — workflows live at .agents/workflows/ (ADR-0006)');
     assert.equal(fs.existsSync(path.join(target, '.agent', 'rules', 'project.md')), false, 'retired (Phase 23)');
     assert.equal(fs.existsSync(path.join(target, 'scripts', 'check-history-reminder.sh')), true);
     assert.equal(fs.existsSync(path.join(target, 'specs', 'status.md')), true);

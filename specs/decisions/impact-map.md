@@ -118,3 +118,8 @@ entry carries matching `Topics:`.
 | tracking-drift | specs/planning/roadmap.md | Timeline |
 | tracking-drift | specs/status.md | Summary |
 | skills | core/adapter-capabilities.md | Matrix |
+| antigravity | core/adapter-capabilities.md | Antigravity |
+| antigravity | core/adapter-parity-matrix.md | (all) |
+| antigravity | specs/backlog/backlog.md | Validation (post-release follow-ups) |
+| gemini | specs/planning/roadmap.md | Timeline |
+| gemini | specs/backlog/backlog.md | Features |
