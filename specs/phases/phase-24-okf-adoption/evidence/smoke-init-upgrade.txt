@@ -1,0 +1,18 @@
+== Smoke 1: fresh init → conformant bundle ==
+✓ specs/ is an OKF v0.1 conformant bundle (17 markdown file(s))
+
+== Smoke 2: legacy project upgrade → converted + conformant ==
+→ Migrating specs/ to the OKF bundle format...
+  ✓ index.json distributed into 1 phase overview.md file(s)
+  ✓ impact-map.json → decisions/impact-map.md
+  ✓ legacy removed: phases/index.json, decisions/impact-map.json
+  ✓ bundle indexes: index.md, phases/index.md, decisions/index.md
+→ Refreshing .gitignore...
+  + added:    .gitignore
+✓ specs/ is an OKF v0.1 conformant bundle (5 markdown file(s))
+index.json present after upgrade: no
+---
+type: Phase
+status: in-progress
+tags: [demo]
+---

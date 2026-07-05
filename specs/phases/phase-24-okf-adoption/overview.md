@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: in-progress
+status: complete-on-branch
 tags: [okf, open-knowledge-format, knowledge-format, frontmatter, yaml, specs-structure, phases-index, impact-map, migration, upgrade, templates, waves, okf-check, okf-index, adr-0005, distributed-metadata, v0-27-0]
 ---
 
@@ -10,7 +10,7 @@ tags: [okf, open-knowledge-format, knowledge-format, frontmatter, yaml, specs-st
 > **Branch / lane**: `feat/open-knowledge-format` (lane `feat-open-knowledge-format`;
 > branch keeps its lane-registry binding — Active Phase row is the phase binding record,
 > per the 21b/21c non-phase-branch precedent)
-> **Status**: planned
+> **Status**: complete on lane — awaiting landing + release approval (status flips to `complete` at landing)
 
 ## Goal
 

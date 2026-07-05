@@ -33,6 +33,6 @@ type: Task List
 - [x] okf check green · waves green · JSON files gone
 
 ## Group 5 — Verification & docs (deps: G4)
-- [ ] full suite + 2 smokes (fresh init / legacy upgrade)
-- [ ] README + developer-guide; site-page backlog item + lane signal
-- [ ] retrospective (Rule 12 evidence) + version bump
+- [x] full suite + 2 smokes (fresh init / legacy upgrade)
+- [x] README + developer-guide; site-page backlog item + lane signal
+- [x] retrospective (Rule 12 evidence) + version bump

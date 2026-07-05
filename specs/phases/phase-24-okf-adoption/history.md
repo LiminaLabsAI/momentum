@@ -166,3 +166,19 @@ mode change from git, so the committed 100644 (BUG-017) remains — the quick-ta
 stays open.
 
 ---
+
+### [NOTE] 2026-07-05 — G5 complete: phase complete on lane; v0.27.0 prepared
+Topics: okf, verification, docs, release, enh-052
+Affects-phases: phase-24-okf-adoption
+Affects-specs: README.md#your-specs-are-an-open-knowledge-bundle, docs/developer-guide.md#repo-layout
+Detail: Full suite 769/769 (baseline 733; one stale start-phase-contract
+assertion updated for the intentional recipe rename). Both smokes green
+(fresh init 17-file bundle; legacy upgrade converts + checks green). README
+OKF section + developer-guide section shipped; ENH-052 filed for the site
+page (site-redesign lane owns the surface, signaled); overlap heads-up
+signaled to the opencode lane. Version bumped 0.26.0 → 0.27.0. Retrospective
+written with Verification Evidence (lanes land phase-gate ready). All 5
+acceptance criteria met. Phase status: complete-on-branch — flips to complete
+at landing.
+
+---

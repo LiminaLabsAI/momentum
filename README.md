@@ -96,6 +96,29 @@ A momentum-managed project records its version-of-record in
 `.momentum/installed.json` (committed) — that's what powers orphan cleanup and
 the ecosystem sweep's per-repo version report.
 
+## Your specs are an open knowledge bundle
+
+Every momentum project's `specs/` tree is a conformant **[Open Knowledge
+Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
+(OKF v0.1)** bundle — Google Cloud's open, vendor-neutral standard for agent
+knowledge: markdown concept files with YAML frontmatter, reserved `index.md`
+listings for progressive disclosure, ordinary markdown links as the
+relationship graph. Any OKF consumer — a knowledge catalog, a visualizer,
+someone else's agent — can read your specs with zero momentum knowledge, and
+there is no JSON state left to drift: a phase's status lives in the phase's
+own `overview.md` frontmatter.
+
+```bash
+momentum okf check    # conformance report for specs/ (exit 1 on violations)
+momentum okf index    # regenerate the bundle listings
+```
+
+Existing projects convert automatically on `momentum upgrade`: legacy
+`specs/phases/index.json` is distributed into per-phase frontmatter,
+`impact-map.json` becomes a readable table, every spec file gains its `type`,
+and the old JSON is removed. The migration preserves your prose byte-for-byte
+and is idempotent. (ADR-0005.)
+
 ## What you get
 
 | | |
