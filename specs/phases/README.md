@@ -32,7 +32,7 @@ type: Guide
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete (v0.24.0 — release parked on approval) | [phase-21b-lanes-run/](phase-21b-lanes-run/) |
 | 21c | Parallel Lanes — Fly (Recursive Waves) | Complete (v0.25.0 — release parked on approval) | [phase-21c-lanes-fly/](phase-21c-lanes-fly/) |
 | 23 | Rules Unification (single-source agent instructions) | Complete (v0.26.0) | [phase-23-rules-unification/](phase-23-rules-unification/) |
-| 24 | Open Knowledge Format (OKF v0.1) Adoption | In Progress | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
+| 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete (v0.27.0) | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
 
 ## Phase Structure
 

@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-05
-> **Current Phase**: Phase 24 — Open Knowledge Format (OKF v0.1) Adoption (lane `feat-open-knowledge-format`)
-> **Latest Release**: v0.26.0 — Phase 23 Rules Unification (npm latest = 0.26.0)
+> **Current Phase**: _none on main_ (Phase 24 released; see `momentum lanes` for lanes in flight)
+> **Latest Release**: v0.27.0 — Phase 24 OKF Adoption (npm latest = 0.27.0)
 > **Health**: On Track
 
 ## Summary
@@ -46,6 +46,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 21b | Parallel Lanes — Run (Registry/Board/Signals/Queue) | Complete | v0.24.0 (2026-07-03) |
 | 21c | Parallel Lanes — Fly (Recursive Waves) | Complete | v0.25.0 (2026-07-03) |
 | 23 | Rules Unification (single-source agent instructions) | Complete | v0.26.0 (2026-07-04) |
+| 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete | v0.27.0 (2026-07-05) |
 
 ## Ad-hoc / Patch Releases
 
@@ -69,7 +70,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 24 — Open Knowledge Format (OKF v0.1) Adoption | `feat/open-knowledge-format` | Complete on lane — awaiting landing + v0.27.0 release approval | 6/6 groups; suite 769/769 |
+| _(none — Phase 24 released v0.27.0; active lanes tracked on their branches — `momentum lanes`)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -80,8 +81,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
 | 22 | Reach | Not Started (target v0.26.0) | Adapter: Cursor (FEAT-007); Adapter: Gemini CLI (FEAT-008); ENH-009 distribution decision |
-| 23 | Intelligence | Not Started (target v0.27.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 24 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+| 25 | Intelligence | Not Started (target v0.28.0) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 26 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
 
 ## Unscheduled Future Work
 
