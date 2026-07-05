@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 7b — Agent Runtime Compatibility: Tasks
 
 ## Group 0 — Adapter Audit + Contract

@@ -21,18 +21,25 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
    - Bugs, Features, Tech Debt, Enhancements
    - Report any missing table as a failure
 
-3. Read `specs/phases/index.json` — for each phase listed:
-   - Verify directory exists at `specs/phases/<phase-id>/`
+3. For each phase directory under `specs/phases/` (OKF bundle, ADR-0005):
    - Verify all 4 files present: `overview.md`, `plan.md`, `tasks.md`, `history.md`
-   - Report missing directories or files as failures
+   - Verify `overview.md` frontmatter carries `type: Phase` and a `status:`
+     (legacy projects may still have `specs/phases/index.json` instead —
+     recommend `momentum upgrade` to migrate)
+   - Report missing files or missing status frontmatter as failures
 
 4. Cross-check active phase consistency:
-   - If an active phase is named, it must be listed in `index.json` and its
-     directory must exist — report mismatch as a failure. With multiple active
-     lanes (Rule 15), check EVERY row: each row's branch must bind to an
-     existing phase directory listed in `index.json`.
+   - If an active phase is named, its directory must exist and its
+     `overview.md` frontmatter must say `status: in-progress` — report
+     mismatch as a failure. With multiple active lanes (Rule 15), check EVERY
+     row: each row's branch must bind to an existing phase directory.
    - If `Current Phase` is "none" / no active phase, **skip this check** (valid
      between-phases state).
+
+4b. OKF conformance (delegates to the CLI):
+   - Run `momentum okf check` — report its violations as failures verbatim
+   - Run `momentum okf index` if listings are stale (safe — regenerates only
+     `specs/index.md`, `specs/phases/index.md`, `specs/decisions/index.md`)
 
 5. Check `.claude/commands/` for standard momentum commands:
    - Required: `brainstorm-idea`, `brainstorm-phase`, `start-project`, `start-phase`,
@@ -43,7 +50,7 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
    ```
    ✓ N checks passed
    ✗ N issues found:
-     - specs/phases/index.json: phase-3-gap-fixes directory missing
+     - specs/phases/phase-3-gap-fixes/overview.md: missing `status:` frontmatter
      - specs/status.md: missing field "Latest Release"
    ```
 
@@ -51,8 +58,8 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
 
 Run all default mode checks, then additionally:
 
-7. Walk ALL directories under `specs/phases/` — flag any directory not listed in
-   `index.json` as an orphaned phase
+7. Walk ALL directories under `specs/phases/` — flag any directory whose
+   `overview.md` lacks `status:` frontmatter as an untracked phase
 
 8. For each phase directory, read `tasks.md`:
    - Extract all backlog ID references: `BUG-NNN`, `FEAT-NNN`, `TD-NNN`, `ENH-NNN`
@@ -64,8 +71,9 @@ Run all default mode checks, then additionally:
      format, `Topics:`, `Affects-phases:`, `Affects-specs:`, `Detail:`
    - Report malformed entries (missing fields) as warnings
 
-10. Check `specs/changelog/` — for each phase with status `complete` in `index.json`,
-    verify at least one changelog file exists under `specs/changelog/`
+10. Check `specs/changelog/` — for each phase whose `overview.md` frontmatter
+    says `status: complete`, verify at least one changelog file exists under
+    `specs/changelog/`
     - Report completely absent changelog as a warning
 
 11. Swarm member integrity (Phase 17+, only when ecosystem context exists):

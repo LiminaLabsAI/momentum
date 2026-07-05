@@ -1,3 +1,7 @@
+---
+type: Note
+---
+
 # Phase 7b — Adapter Runtime Audit
 
 ## Capability Matrix

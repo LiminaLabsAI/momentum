@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 12 — Public Site: Tasks
 
 > Granular checklist mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress, `[ ]` not started.

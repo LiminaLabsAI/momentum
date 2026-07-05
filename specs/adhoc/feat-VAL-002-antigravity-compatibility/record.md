@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: feat-VAL-002-antigravity-compatibility
 
 > **Type**: quick-task

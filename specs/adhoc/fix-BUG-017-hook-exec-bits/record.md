@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: fix-BUG-017-hook-exec-bits
 
 > **Type**: quick-task

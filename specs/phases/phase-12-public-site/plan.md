@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 12 — Public Site: Plan
 
 ## Execution Order

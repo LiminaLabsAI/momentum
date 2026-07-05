@@ -1,3 +1,7 @@
+---
+type: Note
+---
+
 # Phase 7a — Canonical Contracts
 
 > **Status**: Frozen at Group 0. Downstream groups embed these verbatim.

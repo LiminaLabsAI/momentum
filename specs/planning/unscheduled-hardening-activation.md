@@ -1,3 +1,7 @@
+---
+type: Planning Note
+---
+
 # Unscheduled — Hardening & Activation (NO COMMITTED SLOT)
 
 > Status: planned, no version target. Pickable any time. Originally slotted as Phase 10 (v0.13.0); displaced when Ecosystem Activation & Polish took priority during the 2026-06-07 Phase 10 brainstorm.

@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 18 — Implementation Plan
 
 ```

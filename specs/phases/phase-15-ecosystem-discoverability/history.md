@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 15 — Ecosystem Agent Discoverability: History
 
 > Append-only log of meaningful decisions, discoveries, scope changes,

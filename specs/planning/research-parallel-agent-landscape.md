@@ -1,3 +1,7 @@
+---
+type: Planning Note
+---
+
 # Research — Parallel AI-Agent Development Landscape (2026-07-02)
 
 > **Follow-up:** direction adopted same day — see

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 23 — Rules Unification: Retrospective
 
 > **Completed**: 2026-07-04 (all groups; landing + release pending approval)

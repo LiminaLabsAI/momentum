@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 1 Retrospective — Tool-Agnostic Architecture
 
 > **Completed**: 2026-04-21

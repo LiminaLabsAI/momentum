@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-18, swarm-parity, codex, antigravity, adapter-contract, spawn, adapter-spawn, claude-code-refactor, swarm-supervisor-toml, mcp-cwd-shim, swarm-conductor-workflow, swarm-supervisor-skill, agent-manager, parallel-subagents, session-start-hook, val-001, val-002, live-dogfood, capability-flips, multi-adapter-e2e, fingerprint-snapshot, adapter-parity-matrix, v0-20-4]
+---
+
 # Phase 18 — Swarm Parity (Codex + Antigravity)
 
 > **Target release**: v0.20.4

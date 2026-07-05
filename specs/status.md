@@ -1,7 +1,11 @@
+---
+type: Status
+---
+
 # Project Status
 
-> **Last Updated**: 2026-07-04
-> **Current Phase**: _none active_ (Phase 22 — Reach is next)
+> **Last Updated**: 2026-07-05
+> **Current Phase**: Phase 24 — Open Knowledge Format (OKF v0.1) Adoption (lane `feat-open-knowledge-format`)
 > **Latest Release**: v0.26.0 — Phase 23 Rules Unification (npm latest = 0.26.0)
 > **Health**: On Track
 
@@ -65,7 +69,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 23 released; Phase 22 Reach is next)_ | | | |
+| 24 — Open Knowledge Format (OKF v0.1) Adoption | `feat/open-knowledge-format` | Complete on lane — awaiting landing + v0.27.0 release approval | 6/6 groups; suite 769/769 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -126,6 +130,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-05**: **Phase 24 — OKF Adoption COMPLETE on its lane; v0.27.0 built + verified (landing + release awaiting approval).** Every momentum `specs/` tree is now an OKF v0.1 bundle (ADR-0005): distributed phase frontmatter replaces `specs/phases/index.json` (waves reads frontmatter, legacy fallback + nudge), `impact-map.json` → `impact-map.md` table, `type` frontmatter across all templates + self-repo (155 files swept, 192-file bundle checks green), idempotent `momentum upgrade` migration, new `momentum okf check|index`, generated bundle listings. Dogfood surfaced + repaired two pre-existing drift artifacts (phase-18 stale `complete-on-branch`; phase-7c dir-less ghost recreated). Suite **733 → 769**; all 3 adapter fingerprints re-baselined with meta; ENH-052 filed (site page → site-redesign lane, signaled); overlap heads-up signaled to opencode lane. Evidence: `specs/phases/phase-24-okf-adoption/evidence/`.
+
+- **2026-07-05**: **Phase 24 — Open Knowledge Format (OKF v0.1) Adoption brainstormed and planned** (`/brainstorm-phase` on lane `feat-open-knowledge-format`; gate honored — files written only after operator approval). Spec pinned: Google Cloud **OKF v0.1** (announced 2026-06-13; normative spec `GoogleCloudPlatform/knowledge-catalog` `okf/SPEC.md`). Operator decisions: (1) **full bundle conformance** — `momentum upgrade` makes existing projects' `specs/` a conformant OKF bundle (type frontmatter sweep, byte-preserving + idempotent); (2) **distributed frontmatter** on each phase's overview.md replaces `specs/phases/index.json` (waves engine reads frontmatter, JSON fallback + nudge; `impact-map.json` → `impact-map.md`); (3) phase number **24**. Execution: G0 → (G1∥G2∥G3) → G4 self-repo migration → G5. ADR-0005 in G0 (draft said 0004 — already taken by Phase 23). Baseline suite 733/733 green on the lane branch. Files at `specs/phases/phase-24-okf-adoption/`.
 
 - **2026-07-03**: **Phase 21c — Lanes Fly COMPLETE; v0.25.0 built + verified (release parked). THE PARALLEL LANES FAMILY IS DONE.** FEAT-028: one recursive wave engine (`core/waves`) with swarm rewired byte-stable as its top-scale consumer (parity test; e2e scenarios 8/8 unchanged); dependency annotations as data (tasks.md `(deps: …)` heading suffix, index.json phase `deps`); `momentum waves` CLI at task+phase scale with wave-1 lane suggestions; 3-ideas e2e demo (waves → lanes → stale-refusal/rebase → sequenced landings → next wave unblocks) with committed evidence; lane-state contract stays INTERNAL (publication decision handed to the operator, ADR-0003 §5). Suite 684 → 697. The family: Walk (Rule 15 conventions) → Run (`momentum lanes`) → Fly (`momentum waves`) — the coordination & trust plane of the platform direction, shipped in one arc.
 

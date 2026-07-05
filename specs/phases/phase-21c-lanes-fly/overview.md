@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-21c, waves, wave-planner, recursive-plan-graph, dependency-annotations, deps, kahn-layering, topological-sort, task-groups, phase-deps, momentum-waves-cli, swarm-rewire, byte-stable, three-ideas-demo, lane-state-contract, adr-0003, feat-028, v0-25-0]
+---
+
 # Phase 21c — Lanes Fly (One Recursive Wave Planner)
 
 > **Target release:** v0.25.0

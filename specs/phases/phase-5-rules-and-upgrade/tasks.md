@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 5 — Rules & Upgrade Safety: Tasks
 
 > Mirrors `plan.md`. Mark `[x]` when complete, `[/]` when in progress.

@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: 2026-06-19-backlog-reconcile
 
 > **Type**: quick-task

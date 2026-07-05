@@ -1,3 +1,7 @@
+---
+type: Guide
+---
+
 # Ad-hoc Work (`specs/adhoc/`)
 
 First-class home for work that does NOT warrant a full numbered phase —

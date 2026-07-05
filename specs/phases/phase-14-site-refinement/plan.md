@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 14 — Site Refinement & Positioning Pivot: Plan
 
 ## Execution Order

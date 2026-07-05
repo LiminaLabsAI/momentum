@@ -1,3 +1,7 @@
+---
+type: Vision
+---
+
 # Engineering Principles
 
 1. **Generic over specific** — Template files must work for any project. No hardcoded names, paths, or framework assumptions.

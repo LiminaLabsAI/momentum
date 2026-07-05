@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 21b — Lanes Run — Implementation Plan
 
 ```

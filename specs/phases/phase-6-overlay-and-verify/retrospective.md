@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 6 — Adapter Overlay & Verification: Retrospective
 
 > **Released**: v0.7.0 (2026-05-08)

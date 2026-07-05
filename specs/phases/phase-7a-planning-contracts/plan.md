@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 7a — Implementation Plan
 
 # Execution order:

@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 7b — Agent Runtime Compatibility: Implementation Plan
 
 ```

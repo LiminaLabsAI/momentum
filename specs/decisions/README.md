@@ -1,3 +1,7 @@
+---
+type: Guide
+---
+
 # Decision Records
 
 > Captures significant decisions and their rationale.

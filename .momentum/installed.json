@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "momentumVersion": "0.25.2",
+  "momentumVersion": "0.27.0",
   "agent": "claude-code",
   "installedAt": "2026-07-03",
-  "updatedAt": "2026-07-03",
+  "updatedAt": "2026-07-05",
   "managedFiles": [
     {
       "path": ".agent/engines/subagent-dispatch.md",
@@ -47,15 +47,15 @@
     },
     {
       "path": ".claude/commands/lanes.md",
-      "sha256": "2fa6e0abc816d474d744b1bafd1b12523ff8bc4b1dfe215dab20adb682af6463"
+      "sha256": "f5db61a79ebbc7f540ee5a8a6e5ad3d657d352f18777bb5e4725e2cd1009c478"
     },
     {
       "path": ".claude/commands/log.md",
-      "sha256": "ef5f70ee60e8393615129df13b8eb75b31af31d5b0356b4e7a3f245220d6a608"
+      "sha256": "b2728ec55d95996cb6c8bbc24411cfd0a99f618e4c0374ac054f6229feac50a6"
     },
     {
       "path": ".claude/commands/migrate.md",
-      "sha256": "8679a9cd91d1c97ef0b80acae5abe209d8ef89d77a57b155adeb91ba9022beb0"
+      "sha256": "729ec91538554af968fd032d4949df4381f66fb5a61ec716d20e39bdea50229d"
     },
     {
       "path": ".claude/commands/review-code.md",
@@ -75,11 +75,11 @@
     },
     {
       "path": ".claude/commands/start-phase.md",
-      "sha256": "538b2e2c9e3ef78e7b4ee4e1b92feec75ce26174dc52f56af89977ab0c156138"
+      "sha256": "ccf727d6539a3953ab26ff1907f1d71d0194bea3800174912d33f911058c8ff1"
     },
     {
       "path": ".claude/commands/start-project.md",
-      "sha256": "d2d0594120d8cbbba101e3c83e488251c5a2dde7883af2c7b8ed6459cfbc5f6b"
+      "sha256": "e4d31c3cd4fe9bb8b61c7578240148c6e28222f642aa3af01e263018f045eefa"
     },
     {
       "path": ".claude/commands/swarm.md",
@@ -87,7 +87,7 @@
     },
     {
       "path": ".claude/commands/sync-docs.md",
-      "sha256": "e0252ddc818266b94999a77f38099bf4788aee58263c365f4c7c3b66c17af696"
+      "sha256": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b"
     },
     {
       "path": ".claude/commands/systematic-debug.md",
@@ -99,7 +99,7 @@
     },
     {
       "path": ".claude/commands/validate.md",
-      "sha256": "b721b4567784da44251b4adcf4cb16444b89d08fc9c1595142b8350859881f47"
+      "sha256": "3de3507b7d568310d5fe7e3630d5f669562fe86daa2d242e016d1c964cf854d8"
     },
     {
       "path": ".claude/settings.json",
@@ -123,7 +123,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "sha256": "e2bf5a6c09a91324bf197138bfc54ad52db70d0da5243c66938fdb472aea0c5e"
+      "sha256": "3035c5a0caea4a6b0306b5c3fa67a6883cb1c6f8ad4820b435c1238181e98bcf"
     },
     {
       "path": "scripts/brainstorm-gate.sh",

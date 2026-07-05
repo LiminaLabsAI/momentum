@@ -1,3 +1,7 @@
+---
+type: Vision
+---
+
 # Success Criteria
 
 > Measurable targets. When all are met, the project has achieved its goals.

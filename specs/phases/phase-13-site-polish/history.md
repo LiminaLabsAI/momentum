@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 13 — Site Polish & Content Depth: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

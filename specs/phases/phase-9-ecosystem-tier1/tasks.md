@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 9 — Ecosystem (Tier 1): Tasks
 
 - `[x]` **Group 0 — Schemas & Layout**

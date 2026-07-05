@@ -136,3 +136,97 @@ test('cycles report participants; --json is marked unstable; errors exit 1', () 
     rmrf(dir);
   }
 });
+
+// ---------------------------------------------------------------------------
+// Phase 24 G1 — phase metadata from OKF overview.md frontmatter (ADR-0005)
+// ---------------------------------------------------------------------------
+
+function writePhaseOverview(dir, phaseId, fmLines) {
+  write(
+    path.join(dir, 'specs', 'phases', phaseId, 'overview.md'),
+    `---\n${fmLines.join('\n')}\n---\n\n# ${phaseId}\n`,
+  );
+}
+
+test('phase scale: overview.md frontmatter is preferred; no legacy nudge', () => {
+  const dir = makeRepo();
+  try {
+    writePhaseOverview(dir, 'phase-a-auth', ['type: Phase', 'status: in-progress']);
+    writePhaseOverview(dir, 'phase-b-api', ['type: Phase', 'status: planned', 'deps: [phase-d-done]']);
+    writePhaseOverview(dir, 'phase-c-ui', ['type: Phase', 'status: planned', 'deps: [phase-a-auth, phase-b-api]']);
+    writePhaseOverview(dir, 'phase-d-done', ['type: Phase', 'status: complete']);
+    const res = runCli(['waves'], { cwd: dir });
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /overview\.md frontmatter/);
+    assert.match(res.stdout, /wave 1: phase-a-auth +phase-b-api/);
+    assert.match(res.stdout, /wave 2: phase-c-ui/);
+    assert.doesNotMatch(res.stdout, /phase-d-done/);
+    assert.doesNotMatch(res.stderr, /legacy/, 'no nudge on the frontmatter path');
+  } finally {
+    rmrf(dir);
+  }
+});
+
+test('phase scale: frontmatter wins when legacy index.json also exists', () => {
+  const dir = makeRepo();
+  try {
+    writePhaseOverview(dir, 'phase-real', ['type: Phase', 'status: planned']);
+    write(path.join(dir, 'specs', 'phases', 'index.json'), JSON.stringify({
+      version: 1,
+      phases: { 'phase-stale-ghost': { status: 'planned', topics: [] } },
+    }));
+    const res = runCli(['waves'], { cwd: dir });
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /phase-real/);
+    assert.doesNotMatch(res.stdout, /phase-stale-ghost/);
+  } finally {
+    rmrf(dir);
+  }
+});
+
+test('phase scale: legacy index.json fallback emits the upgrade nudge', () => {
+  const dir = makeRepo();
+  try {
+    write(path.join(dir, 'specs', 'phases', 'index.json'), JSON.stringify({
+      version: 1,
+      phases: { 'phase-legacy': { status: 'planned', topics: [] } },
+    }));
+    const res = runCli(['waves'], { cwd: dir });
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /index\.json \(legacy\)/);
+    assert.match(res.stderr, /run `momentum upgrade` to migrate specs\/ to the OKF bundle format/);
+  } finally {
+    rmrf(dir);
+  }
+});
+
+test('phase scale parity: identical graph → identical waves from both formats', () => {
+  const graph = {
+    'phase-a-auth': { status: 'in-progress', deps: [] },
+    'phase-b-api': { status: 'planned', deps: ['phase-d-done'] },
+    'phase-c-ui': { status: 'planned', deps: ['phase-a-auth', 'phase-b-api'] },
+    'phase-d-done': { status: 'complete', deps: [] },
+  };
+  const jsonDir = makeRepo();
+  const fmDir = makeRepo();
+  try {
+    write(path.join(jsonDir, 'specs', 'phases', 'index.json'), JSON.stringify({
+      version: 1,
+      phases: Object.fromEntries(Object.entries(graph).map(([id, p]) => [id, { status: p.status, topics: [], deps: p.deps }])),
+    }, null, 2));
+    for (const [id, p] of Object.entries(graph)) {
+      const lines = ['type: Phase', `status: ${p.status}`];
+      if (p.deps.length) lines.push(`deps: [${p.deps.join(', ')}]`);
+      writePhaseOverview(fmDir, id, lines);
+    }
+    const a = runCli(['waves'], { cwd: jsonDir });
+    const b = runCli(['waves'], { cwd: fmDir });
+    assert.equal(a.status, 0, a.stderr);
+    assert.equal(b.status, 0, b.stderr);
+    const waveLines = (out) => out.split('\n').filter((l) => /^wave \d+:/.test(l.trim()) || /momentum lanes open/.test(l));
+    assert.deepEqual(waveLines(b.stdout), waveLines(a.stdout), 'wave layers + suggestions identical across formats');
+  } finally {
+    rmrf(jsonDir);
+    rmrf(fmDir);
+  }
+});

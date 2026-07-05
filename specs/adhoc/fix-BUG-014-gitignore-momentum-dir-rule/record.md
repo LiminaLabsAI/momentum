@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: fix-BUG-014-gitignore-momentum-dir-rule
 
 > **Type**: quick-task

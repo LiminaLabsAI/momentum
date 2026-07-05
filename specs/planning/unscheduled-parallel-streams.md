@@ -1,3 +1,7 @@
+---
+type: Planning Note
+---
+
 # Unscheduled — Parallel Stream Development (CLOSED — won't-do)
 
 > **Status (2026-06-19, Phase 19 / TD-008): CLOSED — won't-do.** The

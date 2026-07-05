@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 14 — Site Refinement & Positioning Pivot: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

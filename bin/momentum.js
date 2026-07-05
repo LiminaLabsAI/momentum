@@ -1055,6 +1055,28 @@ function upgrade(targetDir, agent, opts = {}) {
   // Delegate adapter-specific upgrade
   adapter.runUpgrade(target, adapterDir, { copyFile, copyDir, fileExists, recordManaged, dryRun: _dryRun });
 
+  // OKF bundle migration (Phase 24, ADR-0005). specs/ is USER content —
+  // these writes are deliberately not recorded in the managed manifest so
+  // orphan cleanup can never touch them.
+  console.log('→ Migrating specs/ to the OKF bundle format...');
+  const okfResult = require('../core/lib/okf-migrate').migrate(target, { dryRun: _dryRun });
+  if (!okfResult.applicable) {
+    console.log('  (no specs/ directory — skipped)');
+  } else {
+    const okfChanges = okfResult.writes.length + okfResult.converted.length
+      + okfResult.injected.length + okfResult.deletes.length + okfResult.indexes.length;
+    if (okfChanges === 0) {
+      console.log('  = specs/ is already an OKF bundle (no changes)');
+    } else {
+      if (okfResult.writes.length) console.log(`  ✓ index.json distributed into ${okfResult.writes.length} phase overview.md file(s)`);
+      if (okfResult.converted.length) console.log('  ✓ impact-map.json → decisions/impact-map.md');
+      if (okfResult.injected.length) console.log(`  ✓ \`type\` frontmatter added to ${okfResult.injected.length} spec file(s)`);
+      if (okfResult.deletes.length) console.log(`  ✓ legacy removed: ${okfResult.deletes.map((d) => d.rel).join(', ')}`);
+      if (okfResult.indexes.length) console.log(`  ✓ bundle indexes: ${okfResult.indexes.join(', ')}`);
+    }
+    for (const w of okfResult.warnings) console.log(`  ⚠️  ${w}`);
+  }
+
   // Additively refresh .gitignore (append missing momentum/OS ignore rules).
   console.log('→ Refreshing .gitignore...');
   gitignoreResult = refreshGitignore(src, target);
@@ -1274,9 +1296,13 @@ Lanes — concurrent workstreams in ONE repo (Phase 21b, Rule 15):
                                        signal | inbox | land (see: momentum lanes help)
 
 Waves — wave plan from dependency annotations (Phase 21c, one engine every scale):
-  momentum waves                      Phase-scale waves (index.json "deps")
+  momentum waves                      Phase-scale waves (overview.md frontmatter "deps")
   momentum waves --tasks [ref]        Task-group waves for a tasks.md
                                        (default: the phase bound to your branch)
+
+OKF — specs/ as an Open Knowledge Format bundle (Phase 24, ADR-0005):
+  momentum okf check [dir]            OKF v0.1 conformance report for <dir>/specs
+  momentum okf index [dir]            Regenerate bundle indexes (root/phases/decisions)
 
 Options:
   --agent <name>                      Agent to install for (default: claude-code)
@@ -1647,6 +1673,14 @@ async function main() {
     try {
       const { runWaves } = require('./waves');
       exitCode = runWaves(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'okf') {
+    try {
+      const { runOkf } = require('./okf');
+      exitCode = runOkf(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 21b — Lanes Run — Retrospective
 
 > Built as **v0.24.0** (2026-07-03) on the stacked branch

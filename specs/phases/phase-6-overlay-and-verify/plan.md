@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 6 — Adapter Overlay & Verification: Implementation Plan
 
 ```

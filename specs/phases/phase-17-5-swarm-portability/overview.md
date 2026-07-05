@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-17-5, swarm-portability, multi-session-coordination, files-as-channels, lease-enforcement, signal-protocol, tokens, sessions-registry, swarm-focus, swarm-join, swarm-absorb, swarm-claim, swarm-release, manifest-write-chokepoint, mkdir-lock, opaque-tokens, single-use-tokens, absorb-merge, contract-verify, synthetic-two-session-scenarios, claude-code-only, v0-20-2]
+---
+
 # Phase 17.5 — Swarm Portability
 
 > **Target Version**: v0.20.2 (v0.20.1 consumed by Codex Runtime Refresh)

@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 4 — Enhanced Commands: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 10 — Ecosystem Activation & Polish: Retrospective
 
 > Completed 2026-06-07. Released as v0.13.0.

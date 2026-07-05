@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 11 — Dynamic Orchestration & Context Handover: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

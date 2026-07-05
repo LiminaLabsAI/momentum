@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-12, public-site, github-pages, astro, starlight, landing-page, docs-site, site, brand, identity, logo, favicon, og-cards, self-hosted-font, color-palette, illustrated-hero, lighthouse, deployment, github-actions, gh-pages, pagefind, homepage, npm-metadata, metadata-bump, roadmap-renumber, ide-support, skills-reference, rules-reference, ecosystem-mode, faq, about, philosophy]
+---
+
 # Phase 12 — Public Site: Overview
 
 ## Vision

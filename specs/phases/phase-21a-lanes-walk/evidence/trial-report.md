@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Phase 21a — Concurrency Trial Report (D6)
 
 > **Verdict: ALL THREE THRESHOLDS MET → the template release (D4) ships in

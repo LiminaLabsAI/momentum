@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [adapter, overlay, contract, conflict-detection, verification, rule-12, verify-before-claim, complete-phase, evidence, review-code, subagent, claude-code, cross-repo, rule-9, tests]
+---
+
 # Phase 6 — Adapter Overlay & Verification: Overview
 
 > **Goal**: Ship v0.7.0 — evolve the adapter contract to support per-agent commands/rules/scripts (overlays on top of `core/`), and add verification rigor that forces agents to produce evidence rather than check boxes.

@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: BUG-010
 
 > **Type**: quick-task

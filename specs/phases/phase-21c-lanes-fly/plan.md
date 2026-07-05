@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 21c — Lanes Fly — Plan
 
 > Compact phase: the group plan is folded into `overview.md` (Scope +

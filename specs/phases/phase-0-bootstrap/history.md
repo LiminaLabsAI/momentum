@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 0 — Bootstrap: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

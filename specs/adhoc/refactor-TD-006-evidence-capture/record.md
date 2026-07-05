@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: refactor-TD-006-evidence-capture
 
 > **Type**: quick-task

@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 16 Rework — Implementation Plan
 
 # Sequential:  Group 0 → (Groups 1 + 2 + 3 in parallel) → Group 4 → Group 5 → Group 6

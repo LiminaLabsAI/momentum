@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 3 — Gap Fixes: Implementation Plan
 
 ```

@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 16 Rework History
 
 > Append-only log of decisions, scope changes, and discoveries during the

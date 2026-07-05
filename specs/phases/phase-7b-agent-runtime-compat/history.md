@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 7b — Agent Runtime Compatibility: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

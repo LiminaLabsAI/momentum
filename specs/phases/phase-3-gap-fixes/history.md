@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 3 — Gap Fixes: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

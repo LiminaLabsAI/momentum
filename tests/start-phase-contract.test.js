@@ -54,6 +54,6 @@ test('start-phase.md keeps the original setup steps', () => {
   // Key setup actions still listed
   assert.match(content, /Read `specs\/status\.md`/);
   assert.match(content, /Scan `specs\/backlog\/backlog\.md`/);
-  assert.match(content, /Build phase topic index/);
+  assert.match(content, /Set phase metadata \(OKF bundle, ADR-0005\)/); // renamed from "Build phase topic index" in Phase 24
   assert.match(content, /Create git branch and initial commit/);
 });

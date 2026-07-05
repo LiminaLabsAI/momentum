@@ -1,3 +1,7 @@
+---
+type: Planning Note
+---
+
 # Future Phase — Context Economy (DEFERRED)
 
 > Status: deferred. Not currently needed. Pull off the shelf when a trigger below fires.

@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 21a — Lanes Walk — Tasks
 
 > Mirrors `plan.md`. Mark `[/]` in-progress, `[x]` done (only with fresh

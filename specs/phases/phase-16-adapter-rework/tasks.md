@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 16 Rework — Tasks
 
 > Granular task list mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress.

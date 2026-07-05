@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 4 — Enhanced Commands: Implementation Plan
 
 ```

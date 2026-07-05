@@ -158,7 +158,7 @@ Append a history entry when ANY of these occur:
 | Locked evaluator was defined or its evaluation set changed | `[EVALUATOR]` |
 | Anything else worth a future reader's time | `[NOTE]` |
 
-After writing a history entry, check `specs/decisions/impact-map.json` and add any new topics so `/sync-docs` can find affected files.
+After writing a history entry, check `specs/decisions/impact-map.md` and add any new topics so `/sync-docs` can find affected files.
 
 The hook script `scripts/check-history-reminder.sh` runs after edits as a safety net — heed its prompts.
 

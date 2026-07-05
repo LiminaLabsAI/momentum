@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-10, ecosystem-activation, dual-mode, entry-exit, join, leave, doctor, init-ecosystem, auto-detect, single-project-invariant, phase-9-followup, session-log-race, location-agnostic, max-parent-walk, sibling-walk, readme-rewrite, product-positioning, decision-tree, supported-agents-matrix, adapter-smoke-matrix, capability-flag-audit, adapter-capabilities, realpath-normalization]
+---
+
 # Phase 10 — Ecosystem Activation & Polish: Overview
 
 ## Vision

@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 17 — Swarm: Single-Session Multi-Project Feature Delivery (Claude Code): Retrospective
 
 > **Target Version**: v0.20.0

@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: fix-ENH-048-land-gate-lane-branch
 
 > **Type**: quick-task

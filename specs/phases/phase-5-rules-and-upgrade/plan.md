@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 5 — Rules & Upgrade Safety: Implementation Plan
 
 ```

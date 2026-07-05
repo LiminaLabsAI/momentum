@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 6 — Adapter Overlay & Verification: Tasks
 
 > Status legend: `[ ]` not started · `[/]` in progress · `[x]` complete

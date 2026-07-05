@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 11 — Dynamic Orchestration & Context Handover: Tasks
 
 > Granular checklist mirroring `plan.md`. Mark `[x]` complete, `[/]` in progress, `[ ]` not started.

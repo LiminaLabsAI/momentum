@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 2 Retrospective — npx CLI Distribution
 
 > **Completed**: 2026-04-21

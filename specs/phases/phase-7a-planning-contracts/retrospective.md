@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 7a — Planning Contracts: Retrospective
 
 > **Released**: v0.8.0 (2026-05-27)

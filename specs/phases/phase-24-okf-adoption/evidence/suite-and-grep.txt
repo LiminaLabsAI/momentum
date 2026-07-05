@@ -1,0 +1,14 @@
+== Full suite (npm test) — 2026-07-05 ==
+tests 769 / pass 769 / fail 0 (baseline 733 at phase start; +36 net new)
+
+== D5: no instruction surface directs agents to the legacy JSON files ==
+All remaining mentions are deliberate legacy/migration references:
+core/commands/validate.md:27:     (legacy projects may still have `specs/phases/index.json` instead —
+core/commands/migrate.md:46:   - Run `momentum upgrade` — it migrates any legacy `specs/phases/index.json`
+core/commands/migrate.md:47:     / `specs/decisions/impact-map.json` into frontmatter + `impact-map.md`,
+core/commands/lanes.md:39:OKF bundle, ADR-0005; legacy `specs/phases/index.json` still read as a
+
+== Post-rebase combination proof (2026-07-05) ==
+Rebased onto local main f2a0701 (VAL-002 adjudication + BUG-017 fix landings).
+npm test → 770/770 pass, 0 fail (one new main-side guard, tests/readme-examples.test.js, taught the `okf` command).
+okf check → 195-file bundle conformant (2 main-landed records swept by the idempotent migration).

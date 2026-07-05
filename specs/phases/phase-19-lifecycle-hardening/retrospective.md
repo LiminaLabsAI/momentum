@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 19 — Lifecycle Hardening: Retrospective
 
 > **Target release**: v0.21.0

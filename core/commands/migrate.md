@@ -11,7 +11,7 @@ This command fills gaps without overwriting anything the project already has.
    | Spec root | `specs/` | |
    | Status file | `specs/status.md` | |
    | Backlog | `specs/backlog/backlog.md` | |
-   | Phase index | `specs/phases/index.json` | |
+   | Bundle root | `specs/index.md` (OKF, `okf_version`) | |
    | Decisions dir | `specs/decisions/` | |
    | Planning dir | `specs/planning/` | |
    | Changelog dir | `specs/changelog/` | |
@@ -27,7 +27,7 @@ This command fills gaps without overwriting anything the project already has.
    Found: 8 / Missing: 4 items
    Will add:
      - specs/backlog/details/ (.gitkeep)
-     - specs/phases/index.json
+     - specs/index.md (OKF bundle root)
      - .claude/commands/validate.md
      - .claude/commands/migrate.md
    Will skip (already exist):
@@ -42,15 +42,22 @@ This command fills gaps without overwriting anything the project already has.
    - Add any missing momentum commands to `.claude/commands/` — skip ones already present
    - Add `scripts/check-history-reminder.sh` if absent (and chmod +x)
 
-4. **Phase index reconciliation** — if `specs/phases/index.json` is missing or its
-   `phases` object is empty:
-   - Scan `specs/phases/` for existing subdirectories (any `phase-*` directory)
-   - Add each discovered phase to `index.json` with:
-     ```json
-     "<phase-dir-name>": { "status": "unknown", "topics": [] }
+4. **Phase metadata reconciliation** (OKF bundle, ADR-0005):
+   - Run `momentum upgrade` — it migrates any legacy `specs/phases/index.json`
+     / `specs/decisions/impact-map.json` into frontmatter + `impact-map.md`,
+     sweeps `type:` frontmatter across `specs/**/*.md`, and generates the
+     bundle indexes
+   - For any `phase-*` directory whose `overview.md` still lacks `status:`
+     frontmatter, add:
+     ```yaml
+     ---
+     type: Phase
+     status: unknown
+     ---
      ```
-   - Inform the user: "Added N phases to index.json with status 'unknown' — update
-     status and topics fields manually to match actual state"
+   - Inform the user: "N phases marked status 'unknown' — update the
+     frontmatter manually to match actual state"
+   - Finish with `momentum okf check` and report any remaining violations
 
 5. **Report result**:
    ```
@@ -58,6 +65,6 @@ This command fills gaps without overwriting anything the project already has.
    Added: 4 items
    Skipped: 6 items (already existed — not overwritten)
    Needs manual attention:
-     - specs/phases/index.json: 3 phases added with status 'unknown' — verify manually
-     - specs/status.md: already exists — verify Current Phase matches index.json
+     - 3 phases marked status 'unknown' in overview.md frontmatter — verify manually
+     - specs/status.md: already exists — verify Current Phase matches the phase frontmatter
    ```

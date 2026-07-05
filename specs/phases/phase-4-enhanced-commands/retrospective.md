@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 4 — Enhanced Commands: Retrospective
 
 > **Completed**: 2026-04-21

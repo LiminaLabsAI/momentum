@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 17 Swarm — Implementation Plan
 
 # Sequential:  Group 0 → (Groups 1 + 2 in parallel) → Group 3 → Group 4

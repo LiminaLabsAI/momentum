@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [npm, npx, cli, node, distribution, package, init]
+---
+
 # Phase 2: npx CLI Distribution
 
 > **Status**: Complete (2026-04-21)

@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 2 — npx CLI Distribution: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

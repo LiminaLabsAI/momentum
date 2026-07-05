@@ -1,3 +1,7 @@
+---
+type: Backlog Detail
+---
+
 # FEAT-011: `momentum upgrade` Subcommand
 
 ## Problem

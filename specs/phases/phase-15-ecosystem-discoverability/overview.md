@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-15, ecosystem, agent-discoverability, orchestration, managed-claude-md, pointer-block, pointer-version, session-start-hook, ecosystem-context-banner, dispatch-cli, degraded-mode, mode-notice, initiative-create-cli, enh-025, v0-18-0]
+---
+
 # Phase 15 — Ecosystem Agent Discoverability: Overview
 
 ## Vision

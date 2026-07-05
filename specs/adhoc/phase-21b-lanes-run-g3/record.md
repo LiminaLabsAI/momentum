@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc record — lane `phase-21b-lanes-run-g3` (Phase 21b G3 sub-lane)
 
 > Work type: quick-task (bounded single-group implementation executed as a

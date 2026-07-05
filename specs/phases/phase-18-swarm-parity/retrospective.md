@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 18 — Swarm Parity (Codex + Antigravity): Retrospective
 
 > **Target Version**: v0.20.4

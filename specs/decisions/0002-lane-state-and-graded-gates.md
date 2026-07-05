@@ -1,4 +1,5 @@
 ---
+type: Decision
 id: "0002"
 title: "Lane state at the shared git dir + Rule-14-graded landing gates"
 status: accepted

@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-17, swarm, single-session-multi-project, parallel-supervisors, conductor-supervisor-architecture, files-as-channels, stateless-agents, wave-ordering, manifest, board-cache, indexing-strategies, git-sha-invalidation, incremental-log, supervisor-context-isolation, intervention-modes, autopilot-checkpoint, inbox-protocol, context-push, broadcast, contract-verifier, saga-records, portability-schema-hooks, swarm-brief-frontmatter, claude-code-only-v0-20-0, codex-antigravity-deferred, synthetic-ecosystem-fixtures, v0-20-0]
+---
+
 # Phase 17: Swarm — Single-Session Multi-Project Feature Delivery (Claude Code)
 
 > **Target Version**: v0.20.0

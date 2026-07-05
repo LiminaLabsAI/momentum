@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 21a — Lanes Walk — Retrospective
 
 > Released as **v0.23.0** (2026-07-03). Branch `phase-21a-lanes-walk`.

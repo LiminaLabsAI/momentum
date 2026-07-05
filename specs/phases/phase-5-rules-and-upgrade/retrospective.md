@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 5 — Rules & Upgrade Safety: Retrospective
 
 > Phase: phase-5-rules-and-upgrade

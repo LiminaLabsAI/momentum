@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-19, lifecycle-hardening, git-enforcement, git-hooks, commit-msg-hook, pre-push-hook, conventional-commits, core-hookspath, githooks, zero-dependency, no-husky, escape-hatch, merge-approved-sentinel, verify-evidence-gate, rule-12-enforcement, rule-6-honesty, rule-14-escalation, ad-hoc-work, hotfix, spike-mode, work-types, specs-adhoc, phase-optional, log, sync-docs, validate-no-phase, ad-hoc-releases, forge-neutral, vendor-agnostic, dip, branch-protection-docs, branch-cleanup, stale-branches, gitignore-worktrees, phase-8-close, td-007, td-008, warn-not-clobber, v0-21-0]
+---
+
 # Phase 19 — Lifecycle Hardening
 
 > **Status**: Planned (not started)

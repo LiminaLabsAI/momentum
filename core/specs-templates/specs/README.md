@@ -1,3 +1,7 @@
+---
+type: Guide
+---
+
 # Specs
 
 > Structured project knowledge. All planning, tracking, and decision-making lives here.

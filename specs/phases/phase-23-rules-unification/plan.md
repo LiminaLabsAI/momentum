@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 23 — Rules Unification: Implementation Plan
 
 ```

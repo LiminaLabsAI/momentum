@@ -1,3 +1,7 @@
+---
+type: Planning Note
+---
+
 # Platform Direction — Parallel Lanes (adopted 2026-07-02)
 
 > **Status:** direction adopted in an operator brainstorm session (SIEVE →

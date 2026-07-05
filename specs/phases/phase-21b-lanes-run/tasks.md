@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 21b — Lanes Run — Tasks
 
 > Mirrors `plan.md`. Mark `[/]` in-progress, `[x]` done (fresh Rule 12

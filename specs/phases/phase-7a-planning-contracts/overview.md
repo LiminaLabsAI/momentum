@@ -1,3 +1,9 @@
+---
+type: Phase
+status: complete
+tags: [phase-7a, brainstorm-gate, autonomous-execution, contract, sentinel, pre-tool-use-hook, claude-code, start-phase, brainstorm-phase, brainstorm-idea, start-project, write-discipline, gitignore, appledouble, test-glob, filemode]
+---
+
 # Phase 7a — Planning Contracts
 
 > **Target release**: v0.8.0

@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 10 — Ecosystem Activation & Polish: Implementation History
 
 > Append-only log. Do NOT edit existing entries.

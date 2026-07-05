@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 21c — Lanes Fly — History
 
 > Append-only. Format per Rule 8.

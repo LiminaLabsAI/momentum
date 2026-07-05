@@ -1,3 +1,7 @@
+---
+type: Ad-hoc Record
+---
+
 # Ad-hoc Work Record: fix-BUG-016-ecosystem-root-guard
 
 > **Type**: quick-task
