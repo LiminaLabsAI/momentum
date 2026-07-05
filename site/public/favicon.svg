@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-	<title>momentum</title>
-	<rect width="64" height="64" rx="15" fill="#0023ae" />
-	<g stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
-		<path d="M 20 22 L 32 32 L 20 42" />
-		<path d="M 33 22 L 45 32 L 33 42" />
-	</g>
-</svg>

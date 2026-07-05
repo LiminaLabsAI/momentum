@@ -1,0 +1,103 @@
+---
+/**
+ * Brand — the momentum "fast-forward" mark (three chevrons as a speed trail)
+ * + optional wordmark. Per the brand kit:
+ *   - cobalt (#0023AE) on light, white on dark (via currentColor)
+ *   - a single forward sweep on load, and again on hover — never looping
+ *   - honours prefers-reduced-motion (the mark just appears)
+ * Static raster/vector variants live in /public/brand/ (favicons, app icons).
+ */
+interface Props {
+	/** Render the "momentum" wordmark next to the mark. */
+	wordmark?: boolean;
+	/** Mark size in px. */
+	size?: number;
+	/** Link target. */
+	href?: string;
+	/** Extra class on the anchor. */
+	class?: string;
+}
+const { wordmark = false, size = 28, href = '/', class: cls = '' } = Astro.props;
+---
+
+<a class:list={['mm-brand', cls]} href={href} aria-label="momentum">
+	<svg
+		class="mm-mark"
+		viewBox="0 0 48 48"
+		width={size}
+		height={size}
+		fill="none"
+		aria-hidden="true"
+	>
+		<path class="c c1" d="M11 15 20 24 11 33"></path>
+		<path class="c c2" d="M20 15 29 24 20 33"></path>
+		<path class="c c3" d="M29 15 38 24 29 33"></path>
+	</svg>
+	{wordmark && <span class="mm-word">momentum</span>}
+	<slot />
+</a>
+
+<style>
+	.mm-brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		text-decoration: none;
+		/* mark colour — the only brand hue; white on dark surfaces */
+		color: var(--brand-ink);
+	}
+	:global([data-theme='dark']) .mm-brand {
+		color: #fff;
+	}
+	.mm-word {
+		font-weight: 600;
+		font-size: 16px;
+		letter-spacing: -0.03em;
+		line-height: 1;
+		color: var(--fg-0);
+	}
+	.mm-mark {
+		display: block;
+		flex: none;
+	}
+	.mm-mark .c {
+		stroke: currentColor;
+		stroke-width: 5;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		transform-box: fill-box;
+		transform-origin: center;
+		animation: mm-in 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+	.mm-mark .c1 {
+		--b: 0.3;
+	}
+	.mm-mark .c2 {
+		--b: 0.6;
+		animation-delay: 0.09s;
+	}
+	.mm-mark .c3 {
+		--b: 1;
+		animation-delay: 0.18s;
+	}
+	.mm-brand:hover .mm-mark .c {
+		animation: mm-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+	@keyframes mm-in {
+		from {
+			opacity: 0;
+			transform: translateX(-6px);
+		}
+		to {
+			opacity: var(--b);
+			transform: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mm-mark .c,
+		.mm-brand:hover .mm-mark .c {
+			animation: none;
+			opacity: var(--b);
+		}
+	}
+</style>

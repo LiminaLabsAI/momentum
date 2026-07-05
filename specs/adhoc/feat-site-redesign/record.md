@@ -82,3 +82,20 @@ files but they are all the **marketing site**, not the shipped momentum npm
 package (no `core/`, `bin/`, `specs/architecture/`, or public-contract change;
 no ADR). Landing to `main` + the two-hop Pages deploy remain operator-gated
 (Rule 6).
+
+## Follow-up (2026-07-05) — brand kit + home light/dark
+
+Operator-provided brand pack ("Momentum logo redesign.zip") integrated:
+- New **fast-forward three-chevron mark** (speed-trail; single load + hover
+  sweep; `prefers-reduced-motion` static) as reusable `src/components/Brand.astro`
+  (cobalt `#0023AE` light / white dark via `currentColor`). Swapped into home
+  nav + footer, docs topbar, and the OG card.
+- Full kit **vendored** into `site/public/brand/` (favicon SVG + PNGs, app
+  icons, mark variants, animated lockup, README) + `site/public/site.webmanifest`,
+  apple-touch-icon, `theme-color`.
+- **Home page now supports light + dark** (BaseLayout `theme=auto` + nav toggle,
+  matching the docs); old `public/favicon.svg` and the lucide-square mark removed.
+
+Verified: `npm run build` 12 pages green + gate; Playwright home light+dark +
+docs light+dark, favicon/manifest head present, home theme toggle + 0 console
+errors.

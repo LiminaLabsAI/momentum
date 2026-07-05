@@ -6,6 +6,7 @@
  * toggle. Built on BaseLayout (theme="auto" → persisted, toggleable).
  */
 import BaseLayout from './BaseLayout.astro';
+import Brand from '../components/Brand.astro';
 import { Icon } from 'astro-icon/components';
 import { docsNav, navContext } from '../lib/docsNav';
 import '../styles/mermaid.css';
@@ -46,11 +47,9 @@ const navData = {
 >
 	<!-- TOPBAR -->
 	<header class="tb">
-		<a class="tb-brand" href="/">
-			<span class="tb-mark"><Icon class="ic" name="lucide:chevrons-right" /></span>
-			<span class="tb-name">momentum</span>
+		<Brand href="/" wordmark size={24} class="tb-brand">
 			<span class="tb-pill">docs</span>
-		</a>
+		</Brand>
 		<button type="button" class="tb-search" data-open-palette aria-label="Search docs">
 			<Icon class="ic" name="lucide:search" />
 			<span>Search docs</span>
