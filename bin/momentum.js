@@ -1326,7 +1326,7 @@ Options:
 Examples:
   # Single project (unchanged from v0.12.0):
   npx @avinash-singh-io/momentum init
-  npx @avinash-singh-io/momentum init ./my-project --agent codex
+  npx @avinash-singh-io/momentum init ./my-project --agent opencode
 
   # Ecosystem from scratch:
   npx @avinash-singh-io/momentum init --ecosystem my-eco

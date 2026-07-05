@@ -1,6 +1,6 @@
 ---
 title: IDE support
-description: How momentum installs in Claude Code, Codex, Antigravity today — and what's coming for Cursor and Gemini CLI in Phase 14.
+description: How momentum installs in opencode, Claude Code, Codex, Antigravity today — and what's coming for Cursor and Gemini CLI.
 ---
 
 momentum is **agent-agnostic**. The same commands, rules, and workflow ship
@@ -9,13 +9,59 @@ hooks attach, and which slash-command surface the IDE exposes.
 
 | Agent | Status | Primary instruction file | Hook surface | Slash commands |
 | --- | --- | --- | --- | --- |
+| [opencode](#opencode) | Available | `AGENTS.md` | `.opencode/plugins/momentum.js` — tool.execute.before/after + session banners via the event bus | Native `.opencode/commands/*.md` |
 | [Claude Code](#claude-code) | Available | `CLAUDE.md` | `.claude/settings.json` — PreToolUse, PostToolUse, SessionStart | Native `.claude/commands/*.md` |
 | [Codex](#codex) | Testing pending | `AGENTS.md` | `.codex/hooks.json` (PreToolUse / PostToolUse / SessionStart, `apply_patch\|Bash`) | Native skills at `.agents/skills/<name>/SKILL.md` |
-| [Antigravity](#antigravity) | Testing pending | `AGENTS.md` | `.agents/hooks.json` (`run_command|view_file|.*write.*|apply_patch`) | `.agent/workflows/*.md` auto-registered as slash commands |
+| [Antigravity](#antigravity) | Available | `AGENTS.md` | `.agents/hooks.json` (`run_command|view_file|.*write.*|apply_patch`) | `.agent/workflows/*.md` auto-registered as slash commands |
 | [Cursor](#cursor) | Planned (Phase 19 — Reach) | `.cursor/rules/` | TBD | Rules-based prompt fragments |
 | [Gemini CLI](#gemini-cli) | Planned (Phase 19 — Reach) | `GEMINI.md` | TBD | Embedded sections |
 
-> **Status legend.** *Available* = installed adapter + live-runtime verified. *Testing pending* = adapter ships and unit-tests pass, but full live-runtime smoke against the actual CLI is still being validated (tracked as VAL-001 for Codex and VAL-002 for Antigravity). *Planned* = adapter not yet built.
+> **Status legend.** *Available* = installed adapter + live-runtime verified. *Testing pending* = adapter ships and unit-tests pass, but full live-runtime smoke against the actual CLI is still being validated (tracked as VAL-001 for Codex). *Planned* = adapter not yet built.
+
+## opencode
+
+Fully live-validated adapter — every capability momentum tracks is lit
+(hooks, slash commands, subagents, parallel subagents, skills, session
+banners), each earned against the real opencode runtime.
+
+```bash
+npx @avinash-singh-io/momentum@latest init --agent opencode
+```
+
+### What you get
+
+- **`AGENTS.md`** at the project root — opencode's primary instruction file,
+  generated from momentum's single-source rulebook.
+- **`.opencode/commands/*.md`** — every momentum recipe as a native slash
+  command, with `description` frontmatter for the TUI command picker.
+- **`.opencode/plugins/momentum.js`** — one self-contained plugin wiring the
+  whole enforcement layer: the brainstorm gate (blocks the tool call by
+  throwing), the Rule 8 history reminder, session-start banners (ecosystem
+  context + pending handoffs), and the ecosystem session log (commit / PR
+  events append automatically).
+- **`.opencode/agents/*.md`** — three reviewer subagents (security, QA,
+  architecture) with sandbox-level read-only permissions (`edit: deny` +
+  bash allowlist), plus the swarm supervisor.
+- **`.opencode/skills/momentum-orient/SKILL.md`** — Rule 1 orientation as a
+  native skill, loaded on demand by opencode's skill tool.
+
+### Hook compatibility
+
+| Hook | What it does | When it fires |
+|---|---|---|
+| **`tool.execute.before`** | Brainstorm gate — throws on write-class tools targeting `specs/` while `.momentum/brainstorm-active` exists | Before every tool call |
+| **`tool.execute.after`** | History reminder for meaningful edits; bash completions feed the ecosystem session log (commit / PR events) via the shared hook scripts | After write-class and bash tool calls |
+| **`event` (session.created)** | Ecosystem context + pending-handoff banners — same output as every other adapter's SessionStart hook | At session start in TUI and served sessions (excluded from `opencode run` non-interactive mode) |
+
+The plugin reads the same `.momentum/` sentinels and delegates to the same
+installed shell scripts as the other adapters — enforcement semantics are
+identical across platforms.
+
+### When to pick opencode
+
+When you want an open-source, terminal-first agent with momentum's entire
+capability surface live-verified — including native project-level skills
+and parallel subagents, which no other adapter has validated yet.
 
 ## Claude Code
 

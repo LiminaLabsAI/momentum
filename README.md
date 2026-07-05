@@ -31,9 +31,9 @@ That's it. The agent picks up the workflow on next session start.
 
 ```bash
 # Want a specific adapter?
+npx @avinash-singh-io/momentum@latest init --agent opencode     # opencode
 npx @avinash-singh-io/momentum@latest init --agent codex        # Codex
 npx @avinash-singh-io/momentum@latest init --agent antigravity  # Antigravity
-npx @avinash-singh-io/momentum@latest init --agent opencode     # opencode
 
 # Coordinating multiple related projects?
 npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
@@ -53,10 +53,10 @@ Nothing runs in the background. No service to manage, no lock-in: **uninstall = 
 
 | Agent | Status | Primary instruction file |
 | --- | --- | --- |
+| [opencode](https://opencode.ai) | ✅ Shipped (v0.28.0, live-validated) | `AGENTS.md` |
 | [Claude Code](https://trymomentum.github.io/ide-support/#claude-code) | ✅ Shipped | `CLAUDE.md` |
 | [Codex](https://trymomentum.github.io/ide-support/#codex) | ✅ Shipped | `AGENTS.md` |
 | [Antigravity](https://trymomentum.github.io/ide-support/#antigravity) | ✅ Shipped | `AGENTS.md` |
-| [opencode](https://opencode.ai) | ✅ Shipped (v0.28.0, live-validated) | `AGENTS.md` |
 | [Cursor](https://trymomentum.github.io/ide-support/#cursor) | 🛠️ Planned (Phase 15) | `.cursor/rules/` |
 | [Gemini CLI](https://trymomentum.github.io/ide-support/#gemini-cli) | 🛠️ Planned (Phase 15) | `GEMINI.md` |
 

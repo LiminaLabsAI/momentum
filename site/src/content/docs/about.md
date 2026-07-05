@@ -28,7 +28,7 @@ Five principles, locked at Phase 12 and refined at Phase 13:
 
 ### 1. Agent-agnostic
 
-momentum runs on Claude Code, Codex, Antigravity today — Cursor and Gemini
+momentum runs on opencode, Claude Code, Codex, Antigravity today — Cursor and Gemini
 CLI next. Same commands, same workflow, every adapter. The adapter
 contract handles per-agent wiring (where instruction files live, how
 hooks attach, which command surface to use). The shared `specs/`,

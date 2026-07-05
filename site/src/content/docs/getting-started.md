@@ -50,12 +50,13 @@ ever as new as the CLI itself.
 a different one:
 
 ```bash
+npx @avinash-singh-io/momentum@latest init --agent opencode     # opencode
 npx @avinash-singh-io/momentum@latest init                       # Claude Code (default)
 npx @avinash-singh-io/momentum@latest init --agent codex         # Codex
 npx @avinash-singh-io/momentum@latest init --agent antigravity   # Antigravity
 ```
 
-Cursor and Gemini CLI adapters ship in Phase 14. See [IDE
+Cursor adapter planned for a later Reach wave. See [IDE
 support](/ide-support/) for which adapter is the right fit for your setup.
 
 ### Ecosystem mode (opt-in)
@@ -106,7 +107,7 @@ This is the loop. Run it once and you've seen everything momentum does.
 
 ### Step 1 — Open your agent
 
-Open Claude Code, Codex, or Antigravity in the project directory you just
+Open opencode, Claude Code, Codex, or Antigravity in the project directory you just
 scaffolded. The agent should load `CLAUDE.md` (or `AGENTS.md`) automatically
 at session start. That file pulls in the 13 rules from
 `.agent/rules/project.md`.

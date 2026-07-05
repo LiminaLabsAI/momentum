@@ -29,18 +29,18 @@ orchestration code depends on.
 
 ## Matrix (as of 2026-07-05, Phase 22 G0 — opencode column added)
 
-| Capability | Claude Code | Codex | Antigravity | opencode |
+| Capability | opencode | Claude Code | Codex | Antigravity |
 |---|---|---|---|---|
-| `hooks` | ✅ | ✅ | ✅ | ✅⁵ |
-| `slashCommands` | ✅ | ✅ | ❌¹ | ✅⁵ |
-| `subagents` | ✅ | ✅² | ✅ | ✅⁵ |
-| `parallelSubagents` | ✅ | ❌² | ✅ | ✅⁵ |
-| `sessionStartHook` | ✅ | ✅ | ❌³ | ✅⁵ |
-| `skills` | ❌ | ❌⁴ | ❌ | ✅⁵ |
-| `browser` | ❌ | ❌⁴ | ❌ | ❌ |
-| `computerUse` | ❌ | ❌⁴ | ❌ | ❌ |
-| `artifacts` (adapter-specific) | — | — | ✅ | — |
-| `planningMode` (adapter-specific) | — | — | ✅ | ✅ |
+| `hooks` | ✅⁵ | ✅ | ✅ | ✅ |
+| `slashCommands` | ✅⁵ | ✅ | ✅ | ❌¹ |
+| `subagents` | ✅⁵ | ✅ | ✅² | ✅ |
+| `parallelSubagents` | ✅⁵ | ✅ | ❌² | ✅ |
+| `sessionStartHook` | ✅⁵ | ✅ | ✅ | ❌³ |
+| `skills` | ✅⁵ | ❌ | ❌⁴ | ❌ |
+| `browser` | ❌ | ❌ | ❌⁴ | ❌ |
+| `computerUse` | ❌ | ❌ | ❌⁴ | ❌ |
+| `artifacts` (adapter-specific) | — | — | — | ✅ |
+| `planningMode` (adapter-specific) | ✅ | — | — | ✅ |
 
 ## Phase 17 (v0.20.0) + Phase 17.5 (v0.20.2) + Phase 18 (v0.20.4) — `/swarm` cross-adapter
 

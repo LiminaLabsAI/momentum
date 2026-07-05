@@ -40,7 +40,7 @@ inference, and CLI — over **one shared `core/orchestration/` library**. The
 output shape is identical no matter how you reach for it. That matters because:
 
 - **Slash commands** are the most discoverable surface. `/scout repo-x` works
-  in any IDE that supports slash commands (Claude Code, Codex).
+  in any IDE that supports slash commands (opencode, Claude Code, Codex).
 - **Natural-language inference** is the most fluid. "Can you check what's
   happening in repo-x?" is enough — the agent infers `scout`, picks the right
   flags, and runs.
