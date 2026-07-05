@@ -7,7 +7,7 @@
  * a tmp project under a fixed-name subdirectory (so project-name
  * substitution in AGENTS.md hashes deterministically), walks the resulting
  * file tree, and asserts every (path, SHA256(content)) pair matches the
- * committed baseline at `tests/fixtures/v0.27.0-opencode-fingerprint.json`.
+ * committed baseline at `tests/fixtures/v0.28.0-opencode-fingerprint.json`.
  *
  * Also asserts `momentum upgrade` on a fresh install is byte-identical —
  * this pins the command-frontmatter transform as idempotent (no double
@@ -28,7 +28,7 @@ const { mktmp, rmrf, runCli } = require('./_helpers');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const FIXTURE_PATH = path.join(
-  REPO_ROOT, 'tests', 'fixtures', 'v0.27.0-opencode-fingerprint.json',
+  REPO_ROOT, 'tests', 'fixtures', 'v0.28.0-opencode-fingerprint.json',
 );
 
 function fingerprintInstall(targetDir) {
@@ -67,7 +67,7 @@ if (process.env.MOMENTUM_RESNAPSHOT_OPENCODE === '1') {
         meta: {
           captured: new Date().toISOString().slice(0, 10),
           adapter: 'opencode',
-          note: 'Phase 22 G4 baseline — v0.27.0 opencode adapter install',
+          note: 'Phase 22 G4 baseline — v0.28.0 opencode adapter install',
         },
         files: fingerprintInstall(target),
       };

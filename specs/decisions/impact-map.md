@@ -111,3 +111,10 @@ entry carries matching `Topics:`.
 | opencode-adapter | specs/planning/roadmap.md | Timeline |
 | opencode-adapter | README.md | Adapter Authors |
 | reach | specs/planning/roadmap.md | Timeline |
+| adapter-contract | README.md | Adapter Authors |
+| adapter-contract | core/adapter-parity-matrix.md | (all) |
+| capability-flips | core/adapter-capabilities.md | Matrix |
+| validation | specs/backlog/backlog.md | Validation (post-release follow-ups) |
+| tracking-drift | specs/planning/roadmap.md | Timeline |
+| tracking-drift | specs/status.md | Summary |
+| skills | core/adapter-capabilities.md | Matrix |

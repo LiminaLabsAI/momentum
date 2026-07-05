@@ -1,6 +1,12 @@
+---
+type: Phase
+status: complete
+tags: [phase-22, reach, opencode, opencode-adapter, native-idiom, adapter-contract, commands, plugins, tool-execute-before, brainstorm-gate, session-created, agents, subagents, skills, opencode-skills, spawn, opencode-run, live-validation, capability-flips, fingerprint-snapshot, parity-matrix, roadmap-repair, v0-28-0]
+---
+
 # Phase 22 — Reach: opencode Adapter
 
-> **Target release**: v0.27.0
+> **Target release**: v0.28.0 (retargeted from v0.27.0 — the OKF phase landed first and took it)
 > **Branch / lane**: `phase-22-opencode-adapter` (momentum lanes)
 > **Planned**: 2026-07-05 (brainstormed under the Brainstorm Gate Contract)
 
@@ -56,7 +62,7 @@ the first time on any adapter — a native, project-level skills surface.
 8. Live validation (7 checks) with evidence under this phase's `evidence/`.
 9. Docs: capability matrix, parity matrix, README, site adapter mention.
 10. Roadmap repair: Timeline gains the shipped Phase 23 Rules Unification row;
-    Reach = opencode @ v0.27.0; Intelligence slides to v0.28.0.
+    Reach = opencode @ v0.28.0 (retargeted); Intelligence slides to v0.29.0+.
 
 ### Out of scope (non-goals)
 
@@ -78,7 +84,7 @@ the first time on any adapter — a native, project-level skills surface.
 | D5 | Zero regression on existing adapters | fingerprint tests byte-identical |
 | D6 | Live validation evidence | 7 evidence files under `evidence/`; capability booleans finalized from them |
 | D7 | Docs + roadmap repair | linkinator-clean docs build; roadmap row audit |
-| D8 | v0.27.0 release prep | full suite green; version bump; retrospective with Verification Evidence section |
+| D8 | v0.28.0 release prep | full suite green; version bump; retrospective with Verification Evidence section |
 
 ## Acceptance Criteria
 
@@ -91,4 +97,4 @@ the first time on any adapter — a native, project-level skills surface.
    multi-adapter skills coexistence (`.agents/skills/` + `.opencode/skills/`).
 4. Capability matrix row filled from live evidence only.
 5. `momentum upgrade` idempotent on an opencode project.
-6. v0.27.0 released — gated on operator approval per Rule 6.
+6. v0.28.0 released — gated on operator approval per Rule 6. (Retargeted from v0.27.0 — OKF landed first.)

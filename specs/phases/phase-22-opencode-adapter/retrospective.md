@@ -1,3 +1,7 @@
+---
+type: Retrospective
+---
+
 # Phase 22 — Reach: opencode Adapter — Retrospective
 
 > **Completed**: 2026-07-05 (single-day phase)

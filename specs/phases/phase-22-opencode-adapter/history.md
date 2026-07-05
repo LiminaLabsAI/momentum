@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 22 — Reach: opencode Adapter — History
 
 > Append-only. Format per Rule 8.
@@ -99,5 +103,12 @@ Topics: opencode-adapter, roadmap, tracking-drift, release
 Affects-phases: phase-22-opencode-adapter
 Affects-specs: specs/planning/roadmap.md#timeline
 Detail: Roadmap Timeline gains the shipped Phase 23 Rules Unification row; Reach re-scoped to opencode @ v0.27.0 (operator decision 2026-07-05); Intelligence renumbered 24 (v0.28.0), Platform 25 (v1.0); Milestones updated. Retrospective written with Verification Evidence (suite 756/756; live runsheet; upgrade idempotence). package.json 0.26.0 → 0.27.0. Release halted at the operator gate per the Autonomous Execution Contract.
+
+---
+### [SCOPE_CHANGE] 2026-07-05 — Release retargeted v0.27.0 → v0.28.0; rebased across the OKF landing
+Topics: opencode-adapter, release, roadmap, okf
+Affects-phases: phase-22-opencode-adapter
+Affects-specs: specs/status.md#upcoming-phases, specs/planning/roadmap.md#timeline
+Detail: While this lane sat in the landing queue, lane `feat-open-knowledge-format` landed as Phase 24 and released v0.27.0 (tag + GitHub Release + npm). This phase retargets to v0.28.0; Intelligence slides to v0.29.0+ (numbering: Intelligence 25, Platform 26 per main). The rebase also adopts the OKF v0.1 bundle conventions: phases/index.json is gone (this phase's topics now live as frontmatter tags on overview.md), impact-map.json → impact-map.md, and earlier history entries referencing v0.27.0 remain as written (append-only; this entry records the retarget).
 
 ---

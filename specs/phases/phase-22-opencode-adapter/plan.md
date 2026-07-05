@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 22 — Reach: opencode Adapter — Implementation Plan
 
 > **Execution order:**
@@ -99,11 +103,11 @@
 - [ ] Finalize `parallelSubagents` / `sessionStartHook` / `skills` booleans from evidence
 - [ ] `core/adapter-capabilities.md` + `core/adapter-parity-matrix.md` opencode columns
 - [ ] README + site adapter mention
-- [ ] Roadmap repair: add shipped Phase 23 Rules Unification row; Reach = opencode @ v0.27.0;
+- [ ] Roadmap repair: add shipped Phase 23 Rules Unification row; Reach = opencode @ v0.28.0 (retargeted);
   Intelligence → v0.28.0; Cursor/Gemini noted as later Reach wave
-- [ ] Retrospective with `## Verification Evidence`; version bump 0.26.0 → 0.27.0
+- [ ] Retrospective with `## Verification Evidence`; version bump → 0.28.0
 - [ ] Release: `lanes done` → `lanes land` (operator approval gates per Rule 6; then
   project release checklist: gh release + npm publish, both operator-approved)
 
 **Verification:** all 7 evidence files present; full suite green; docs build clean.
-**Commit:** `docs(opencode): live validation evidence + docs + v0.27.0 prep (G5)`
+**Commit:** `docs(opencode): live validation evidence + docs + v0.28.0 prep (G5)` (commit landed as v0.27.0-era message; retarget recorded in history)

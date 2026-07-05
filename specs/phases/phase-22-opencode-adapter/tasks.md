@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 22 — Reach: opencode Adapter — Tasks
 
 > Execution: `G0 → (G1 + G2 + G3 in parallel) → G4 → G5`
@@ -43,7 +47,7 @@
 
 ## Group 4 — Wiring + regression (sequential)
 
-- [x] opencode install fingerprint snapshot test (58-file fixture v0.27.0; explicit MOMENTUM_RESNAPSHOT_OPENCODE opt-in)
+- [x] opencode install fingerprint snapshot test (58-file fixture v0.28.0; explicit MOMENTUM_RESNAPSHOT_OPENCODE opt-in)
 - [x] Existing-adapter fingerprints byte-identical (suite green incl. claude-code/codex/antigravity fingerprint tests)
 - [x] Tarball-shape test: 15 opencode paths required in npm pack; .bak-leak guard already global
 - [x] Synthetic swarm e2e: 3 scenarios × opencode (ADAPTERS extended; OPENCODE_BIN pinned; evidence → phase-22, TD-006 gate completed on this file)
@@ -63,5 +67,5 @@
 - [x] Booleans finalized: parallelSubagents=true, skills=true (earned); sessionStartHook=false (unobserved); parity cells promoted
 - [x] README quickstart + agents table (site page deferred to the site-redesign lane — noted in history)
 - [x] Roadmap repaired: Rules Unification row added; Reach re-scoped; Intelligence → 24 (v0.28.0); Platform → 25 (v1.0)
-- [x] Retrospective with Verification Evidence; version 0.26.0 → 0.27.0
+- [x] Retrospective with Verification Evidence; version → 0.28.0 (retargeted after OKF took v0.27.0)
 - [/] Commit G5; `lanes done`; land + release per Rule 6 gates (STOPPED at operator release gate)

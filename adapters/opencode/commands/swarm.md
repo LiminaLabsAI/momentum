@@ -2,7 +2,7 @@ Swarm — sustained parallel multi-project feature delivery (Phase 22, opencode 
 
 A **swarm** is a declared cross-repo work unit driven from ONE user session. The user's session becomes the **conductor**. The conductor spawns one **supervisor** opencode session per impacted repo, each pinned to that repo's working directory natively via `opencode run --dir <repoPath>` (no MCP shim needed). Each supervisor runs momentum's normal `/start-phase` → implement → `/sync-docs` → `/complete-phase` loop INSIDE its repo. The conductor coordinates waves (computed from `ecosystem.json` dependency edges), surfaces inbox decisions, broadcasts cross-cutting concerns, and synthesizes per-repo retrospectives at fan-in.
 
-> Phase 22 / v0.27.0 — opencode parity of the Phase 17 / 17.5 swarm surface. All 13 subcommands work through the opencode `adapter.spawn(directive)` dispatch (`adapters/opencode/adapter.js`).
+> Phase 22 / v0.28.0 — opencode parity of the Phase 17 / 17.5 swarm surface. All 13 subcommands work through the opencode `adapter.spawn(directive)` dispatch (`adapters/opencode/adapter.js`).
 
 ## Architecture
 

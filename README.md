@@ -56,7 +56,7 @@ Nothing runs in the background. No service to manage, no lock-in: **uninstall = 
 | [Claude Code](https://trymomentum.github.io/ide-support/#claude-code) | ✅ Shipped | `CLAUDE.md` |
 | [Codex](https://trymomentum.github.io/ide-support/#codex) | ✅ Shipped | `AGENTS.md` |
 | [Antigravity](https://trymomentum.github.io/ide-support/#antigravity) | ✅ Shipped | `AGENTS.md` |
-| [opencode](https://opencode.ai) | ✅ Shipped (v0.27.0, live-validated) | `AGENTS.md` |
+| [opencode](https://opencode.ai) | ✅ Shipped (v0.28.0, live-validated) | `AGENTS.md` |
 | [Cursor](https://trymomentum.github.io/ide-support/#cursor) | 🛠️ Planned (Phase 15) | `.cursor/rules/` |
 | [Gemini CLI](https://trymomentum.github.io/ide-support/#gemini-cli) | 🛠️ Planned (Phase 15) | `GEMINI.md` |
 
