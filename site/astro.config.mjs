@@ -37,16 +37,17 @@ export default defineConfig({
 						// only the Mermaid container surface (see mermaid.css).
 						theme: 'base',
 						themeVariables: {
-							primaryColor: '#e6ecff', // cobalt-50 — node fill
-							primaryBorderColor: '#0023ae', // cobalt ink — node border
-							primaryTextColor: '#15161c', // fg-0 light — node text
-							secondaryColor: '#f1f2f7',
-							secondaryBorderColor: '#94a3b8',
-							secondaryTextColor: '#15161c',
-							tertiaryColor: '#f8fafc',
-							tertiaryBorderColor: '#cbd5e1',
-							lineColor: '#5b5f6b', // fg-2 — arrow lines
-							textColor: '#15161c',
+							primaryColor: '#dde5ff', // cobalt-50 — node fill
+							primaryBorderColor: '#2f5be0', // cobalt — node border (visible)
+							primaryTextColor: '#0d1330', // near-ink — node text (high contrast)
+							nodeTextColor: '#0d1330',
+							secondaryColor: '#eceef6',
+							secondaryBorderColor: '#8b93b8',
+							secondaryTextColor: '#0d1330',
+							tertiaryColor: '#f3f5fb',
+							tertiaryBorderColor: '#c3cbe0',
+							lineColor: '#4a4f5e', // arrow lines (darker for contrast)
+							textColor: '#0d1330',
 							actorBkg: '#e6ecff',
 							actorBorder: '#0023ae',
 							actorTextColor: '#15161c',
@@ -62,10 +63,10 @@ export default defineConfig({
 							noteBorderColor: '#fcd34d',
 							activationBkgColor: '#dbe3ff',
 							activationBorderColor: '#5f7dff',
-							stateLabelColor: '#15161c',
-							transitionColor: '#5b5f6b',
-							transitionLabelColor: '#15161c',
-							fontSize: '14px',
+							stateLabelColor: '#0d1330',
+							transitionColor: '#4a4f5e',
+							transitionLabelColor: '#0d1330',
+							fontSize: '15px',
 							fontFamily:
 								"'Geist Variable', Geist, system-ui, sans-serif",
 						},

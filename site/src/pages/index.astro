@@ -386,6 +386,24 @@ Group 2  Docs deepening                  <span style="color:#19b574">✓</span>
 	}
 	.mm-home .glasscard > * { position: relative; }
 	.mm-home .copy-btn { font-family: var(--ff-sans); }
+
+	/* Dark mode: over the near-black page the dark glass tint reads as a flat
+	   panel. Lift every card surface into visible frosted glass — a subtly
+	   *light* translucent fill (lighter than the bg), a brighter edge, real
+	   backdrop blur, and a stronger corner sheen. */
+	[data-theme='dark'] .mm-home .glasscard {
+		background: rgba(255, 255, 255, 0.055);
+		border-color: rgba(255, 255, 255, 0.1);
+	}
+	[data-theme='dark'] .mm-home .glasscard::before {
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 58%);
+	}
+	[data-theme='dark'] .mm-home [style*='background:var(--bg-1)'] {
+		background: rgba(255, 255, 255, 0.045) !important;
+		border-color: rgba(255, 255, 255, 0.09) !important;
+		-webkit-backdrop-filter: blur(14px) saturate(140%);
+		backdrop-filter: blur(14px) saturate(140%);
+	}
 	.mm-home .mm-theme-btn {
 		display: inline-flex;
 		align-items: center;

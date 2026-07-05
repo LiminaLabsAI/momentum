@@ -24,9 +24,10 @@
 }
 
 [data-theme='dark'] .mm-docs .doc svg[aria-roledescription] {
-	/* Keep the surface light so the baked-in dark text + slate arrows stay
-	 * readable against the diagram, with a stronger border for separation
-	 * from the dark page. */
-	background: #f1f2f7;
-	border-color: #cbd5e1;
+	/* Keep the surface light so the baked-in dark text + cobalt borders stay
+	 * high-contrast, with a soft ring so the light panel doesn't read as a
+	 * harsh island against the dark page. */
+	background: #f5f6fb;
+	border-color: rgba(255, 255, 255, 0.14);
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 8px 30px rgba(0, 0, 0, 0.35);
 }
