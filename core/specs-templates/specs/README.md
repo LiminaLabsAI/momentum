@@ -15,14 +15,19 @@ type: Guide
 | `changelog/` | Monthly change logs |
 | `decisions/` | Architecture Decision Records (ADRs) |
 | `phases/` | Phase plans, tasks, and history |
-| `planning/` | Roadmap and release plan |
-| `vision/` | Project charter, principles, success criteria |
+| `planning/` | Roadmap and release plan — created at founding (`/start-project`) |
+| `vision/` | Project charter, principles, success criteria — created at founding (`/start-project`) |
+
+Foundation docs (`vision/`, `planning/roadmap.md`) are **authored, not
+scaffolded**: they don't exist until `/start-project` founds the project
+from your brainstorm. Their absence means "not founded yet" — phase
+commands will route you to `/start-project` first.
 
 ## Workflow
 
 ```
 /brainstorm-idea     →  explore an idea (no files written)
-/start-project       →  scaffold vision + roadmap + Phase 0
+/start-project       →  found the project: author vision + roadmap, plan Phase 0
 /start-phase         →  begin a phase
 /track               →  log a discovery mid-phase
 /complete-phase      →  verify, release, retrospective

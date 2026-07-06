@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-06
-> **Current Phase**: _none active_ (Phase 25 — Intelligence is next)
-> **Latest Release**: v0.31.2 — README dark-mode render fixes (logo `<picture>` + adaptive mermaid) (ad-hoc)
+> **Current Phase**: _none active_ (Phase 26 — Intelligence is next)
+> **Latest Release**: v0.32.0 — Phase 25: Founding Contract (foundation docs authored, not scaffolded)
 > **Health**: On Track
 
 ## Summary
@@ -50,6 +50,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 23 | Rules Unification (single-source agent instructions) | Complete | v0.26.0 (2026-07-04) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete | v0.27.0 (2026-07-05) |
 | 22c | Opencode Polish & Multi-Adapter Support | Complete | v0.30.0 (2026-07-06) |
+| 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete | v0.32.0 (2026-07-06) |
 
 ## Ad-hoc / Patch Releases
 
@@ -78,7 +79,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 22c released; Phase 25 Intelligence is next)_ | | | |
+| _(none — Phase 25 released; Phase 26 Intelligence is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -88,8 +89,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 25 | Intelligence | Not Started (target v0.30.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 26 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+| 26 | Intelligence | Not Started (target v0.33.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 27 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
 
 ## Unscheduled Future Work
 
@@ -138,6 +139,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-06**: **Phase 25 — Founding Contract brainstormed and planned** (`/brainstorm-phase`, gate contract honored — files written only after operator approval). Closes ENH-060 (P1, filed same day from the password-manager live dogfood): clean 3-state lifecycle (Installed → Founded → Phase loop) replacing placeholder foundation docs — init stops shipping charter/principles/success-criteria/roadmap templates; `/start-project` reframed as the founding step (content, not structure); phase commands gate on founded = charter + roadmap exist; upgrade auto-removes provably-untouched placeholders. Operator decisions: renumber (this = 25, Intelligence → 26, Platform → 27); auto-remove migration; charter+roadmap gate. Files at `specs/phases/phase-25-founding-contract/`; renumber sweep executes in G0. Branch `phase-25-founding-contract`.
 
 - **2026-07-06**: **Release-tracking reconciliation.** Phases 24 (OKF), 22 (opencode) and 22b (Antigravity 2.0) all **landed on `main` and released on 2026-07-05** — git tags + GitHub Releases for v0.27.0 / v0.28.0 / v0.29.0, npm `latest = 0.29.0`, `package.json = 0.29.0` — but the summary docs still described them as "landing queued / awaiting approval." Reconciled the stale state: `status.md` header (Latest Release v0.27.0 → **v0.29.0**; Active Phase table cleared; 22b added to Completed Phases; Phase 25 Intelligence target v0.29.0 → **v0.30.0**), `specs/phases/README.md` (22 v0.27.0 → **v0.28.0**; 22b In Progress → **Complete v0.29.0**; 21a/b/c "release parked" → released), and `specs/planning/roadmap.md` (22/22b → Complete; opencode timeline row v0.27.0 → v0.28.0 Released; v0.29.0 row added). No code change — tracking only. The v0.28.0 npm-artifact loss (release race) is documented in the changelog; npm history is 0.27.0 → 0.29.0 (0.29.0 fully contains 0.28.0).
 

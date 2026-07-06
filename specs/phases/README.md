@@ -36,6 +36,7 @@ type: Guide
 | 23 | Rules Unification (single-source agent instructions) | Complete (v0.26.0) | [phase-23-rules-unification/](phase-23-rules-unification/) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete (v0.27.0) | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
 | 22c | Opencode Polish & Multi-Adapter Support | Complete (v0.30.0) | [phase-22c-opencode-polish/](phase-22c-opencode-polish/) |
+| 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete (v0.32.0) | [phase-25-founding-contract/](phase-25-founding-contract/) |
 
 ## Phase Structure
 

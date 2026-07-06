@@ -1,0 +1,44 @@
+# E2E — legacy install (≤ v0.31.2 placeholders) healed by upgrade (ADR-0008)
+# momentum @ 2336814 | 2026-07-06
+
+$ momentum init <tmp>  # then plant the four v0.31.2 placeholder foundation docs
+  planted: specs/planning/roadmap.md specs/vision/principles.md specs/vision/project-charter.md specs/vision/success-criteria.md 
+
+$ momentum upgrade --dry-run   (preview — nothing deleted)
+→ Refreshing .gitignore...
+→ Checking foundation docs (authored, not scaffolded)...
+  ✋ would remove: specs/vision/project-charter.md (untouched init placeholder — foundation docs are authored via /start-project, ADR-0008)
+  ✋ would remove: specs/vision/principles.md (untouched init placeholder — foundation docs are authored via /start-project, ADR-0008)
+  ✋ would remove: specs/vision/success-criteria.md (untouched init placeholder — foundation docs are authored via /start-project, ADR-0008)
+  ✋ would remove: specs/planning/roadmap.md (untouched init placeholder — foundation docs are authored via /start-project, ADR-0008)
+  → project is not yet founded — run /start-project to author the foundation docs.
+
+✓ Dry run complete — no files were written.
+
+$ ls specs/vision (still present after dry-run)
+principles.md
+project-charter.md
+success-criteria.md
+
+$ momentum upgrade   (real run)
+→ Refreshing .gitignore...
+→ Checking foundation docs (authored, not scaffolded)...
+  🗑  removed: specs/vision/project-charter.md (untouched init placeholder — foundation docs are authored via /start-project)
+  🗑  removed: specs/vision/principles.md (untouched init placeholder — foundation docs are authored via /start-project)
+  🗑  removed: specs/vision/success-criteria.md (untouched init placeholder — foundation docs are authored via /start-project)
+  🗑  removed: specs/planning/roadmap.md (untouched init placeholder — foundation docs are authored via /start-project)
+  → project is not yet founded — run /start-project to author the foundation docs.
+
+✓ Upgrade complete.
+--
+  .gitignore:          unchanged
+  foundation docs:     removed 4 untouched placeholder(s) — not yet founded; run /start-project
+
+
+$ shape check after upgrade
+HEALED-TO-NOT-FOUNDED-OK
+
+$ momentum upgrade   (second run — idempotent)
+→ Checking foundation docs (authored, not scaffolded)...
+  = no untouched placeholders (foundation docs are authored or absent)
+

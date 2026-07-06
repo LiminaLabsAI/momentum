@@ -1,0 +1,69 @@
+# E2E — fresh init has no foundation placeholders (ADR-0008)
+# momentum @ 2336814 | 2026-07-06
+
+$ momentum init <tmp> --agent claude-code
+Installing momentum into: /private/tmp/claude-501/-Users-avinash-Workspace-Projects-cerebrio-momentum/b1b4fbc0-b67c-443e-8187-42b58d7c69f2/scratchpad/e2e-fresh [agent: claude-code]
+
+→ Installing slash commands...
+→ Installing hook scripts...
+→ Installing git-lifecycle hooks...
+  ✓ git hooks installed → .githooks/ (core.hooksPath set).
+  ⚠️  not a git repo — hooks copied to .githooks/; after 'git init' run:
+       git config core.hooksPath .githooks
+→ Installing execution engines...
+→ Scaffolding project specs...
+→ Installing CLAUDE.md...
+→ Overlaying commands from adapter...
+→ Configuring Claude Code hooks...
+
+✓ momentum installed successfully.
+
+Next steps:
+
+  Explore the idea first (writes nothing):
+    Open Claude Code and run: /brainstorm-idea
+
+  Found the project — author the charter + roadmap, plan Phase 0:
+    Open Claude Code and run: /start-project
+
+  Already founded — plan your next phase:
+    Open Claude Code and run: /brainstorm-phase
+
+  See docs: https://github.com/LiminaLabsAI/momentum
+
+$ find specs -type f (foundation files must be absent)
+specs/adhoc/_TEMPLATE.md
+specs/adhoc/README.md
+specs/architecture/ecosystem.md
+specs/backlog/backlog.md
+specs/backlog/details/.gitkeep
+specs/changelog/.gitkeep
+specs/decisions/0000-template.md
+specs/decisions/impact-map.md
+specs/decisions/index.md
+specs/decisions/README.md
+specs/index.md
+specs/phases/index.md
+specs/phases/README.md
+specs/README.md
+specs/status.md
+
+$ test ! -e specs/vision && test ! -e specs/planning/roadmap.md && echo NOT-FOUNDED-SHAPE-OK
+NOT-FOUNDED-SHAPE-OK
+
+$ head -12 specs/status.md
+---
+type: Status
+---
+
+# Project Status
+
+> **Last Updated**: YYYY-MM-DD
+> **Current Phase**: _Not founded_ — run `/brainstorm-idea`, then `/start-project`
+> **Latest Release**: None
+> **Health**: On Track
+
+## Summary
+
+$ momentum okf check
+✓ specs/ is an OKF v0.1 conformant bundle (13 markdown file(s))

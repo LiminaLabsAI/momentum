@@ -21,6 +21,16 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
    - Bugs, Features, Tech Debt, Enhancements
    - Report any missing table as a failure
 
+2b. Founded state (`core/project-lifecycle.md`, ADR-0008):
+   - founded ⟺ `specs/vision/project-charter.md` AND
+     `specs/planning/roadmap.md` both exist
+   - Phase directories exist under `specs/phases/` while NOT founded →
+     FAILURE: "phase work exists but the project is not founded — run
+     `/start-project` to author the foundation docs"
+   - Not founded with no phase directories is the VALID Installed state —
+     report informationally ("not founded yet — `/start-project` when
+     ready"), never as a failure
+
 3. For each phase directory under `specs/phases/` (OKF bundle, ADR-0005):
    - Verify all 4 files present: `overview.md`, `plan.md`, `tasks.md`, `history.md`
    - Verify `overview.md` frontmatter carries `type: Phase` and a `status:`

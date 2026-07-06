@@ -82,6 +82,12 @@ Work happens in **phases** — one repeatable unit of work, five stages:
 
 **Brainstorm → Plan → Execute → Verify → Release**
 
+New projects begin with a one-time **founding** step: `/brainstorm-idea`
+explores the idea (writes nothing), then `/start-project` authors the
+charter, principles, success criteria, and roadmap from that brainstorm —
+momentum never ships placeholder docs, and phase commands wait until the
+project is founded.
+
 Your agent drives all of it: scopes through dialogue (disk writes gated until
 you approve), plans groups + tasks + acceptance criteria, commits per group
 with conventional commits, and marks tasks done only with passing evidence.

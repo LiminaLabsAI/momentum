@@ -7,6 +7,10 @@ Before ANY work, read `specs/status.md`. This tells you:
 - What's blocking progress
 - What P0 items need attention
 
+If `status.md` says **Not founded**, stop: the project has no charter or
+roadmap yet — foundation docs are authored at founding, never scaffolded
+(`core/project-lifecycle.md`). Route to `/start-project` before any phase work.
+
 ### Rule 2: Auto-Update Tracking After Changes
 
 After completing ANY meaningful work, automatically update:
