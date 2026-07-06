@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-06
-> **Current Phase**: Between phases — Phases 24 / 22 / 22b all landed + released (v0.27.0 → v0.29.0). Next up: Phase 25 Intelligence (target v0.30.0). Site redesign shipped as an ad-hoc lane.
+> **Current Phase**: Phase 22c Opencode Polish & Multi-Adapter Support (target v0.30.0) — fixing BUG-020 multi-adapter upgrade destruction + opencode enhancements
 > **Latest Release**: v0.29.0 — Phase 22b Antigravity 2.0 Full Adoption (npm latest = 0.29.0; v0.28.0 shipped to GitHub but its npm artifact was lost to the release race — see changelog)
 > **Health**: On Track
 
@@ -72,7 +72,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phases 22 / 22b landed + released as v0.28.0 / v0.29.0; between phases)_ | | | |
+| 22c — Opencode Polish & Multi-Adapter | `phase-22c-opencode-polish` | In Progress | G0/G1/G2 complete — ADR-0007, agents map, per-agent orphan cleanup, 3 opencode skills, A3 surfaces.md run-mode docs, 819/819 green |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

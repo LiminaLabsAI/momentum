@@ -35,6 +35,7 @@ type: Guide
 | 22b | Antigravity 2.0 Full Adoption | Complete (v0.29.0) | [phase-22b-antigravity-2-adoption/](phase-22b-antigravity-2-adoption/) |
 | 23 | Rules Unification (single-source agent instructions) | Complete (v0.26.0) | [phase-23-rules-unification/](phase-23-rules-unification/) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete (v0.27.0) | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
+| 22c | Opencode Polish & Multi-Adapter Support | In Progress (v0.30.0) | [phase-22c-opencode-polish/](phase-22c-opencode-polish/) |
 
 ## Phase Structure
 
