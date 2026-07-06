@@ -1,9 +1,11 @@
 <div align="center">
   <img src="site/src/assets/logo/wordmark.svg" width="280" alt="momentum" />
 
-  ### Spec-driven discipline for agentic AI
+  ### The right context for your coding agent
 
-  Phases. Decisions. History. Backlog. First-class state across any AI IDE.
+  momentum keeps your project's memory and state as Markdown files in the repo —
+  so every session your agent retrieves the right context, hallucinates less,
+  and turns a vague request into a well-grounded plan.
 
   [![npm](https://img.shields.io/npm/v/@limina-labs/momentum?logo=npm)](https://www.npmjs.com/package/@limina-labs/momentum)
   [![license](https://img.shields.io/github/license/LiminaLabsAI/momentum)](LICENSE)
@@ -14,11 +16,24 @@
 
 ---
 
-## What is momentum?
+## Your agent doesn't need more context. It needs the right context.
 
-**Your AI coding agent forgets.** Hit the context limit or open a fresh session and it loses the roadmap, the architecture decisions, the bug it fixed an hour ago. The chat window is the wrong place to keep your project's source of truth — the file system is.
+**Without it, your agent guesses.** Ask an agent to fix a bug and it greps
+around, fills the gaps with assumptions, and drafts a plan on shaky ground —
+burning tokens rediscovering what your project already knew. And whatever it
+does learn evaporates at the context limit or the next fresh session.
 
-momentum makes your project's memory durable. Phases, decisions, history, and backlog live as plain files your agent reads at the start of every session and updates as it works — so the *project* persists, not just whatever the agent shipped this session. Whether your agent writes code, manages infrastructure, runs research, or operates pipelines, the same discipline applies: every phase planned, every decision recorded, every release tagged.
+momentum hands the agent your project's real state up front. Phases, decisions,
+history, and backlog live as plain Markdown files in the repo — read at the
+start of every session, updated as the agent works — so it reasons from
+recorded facts instead of guesses, and the *project* persists, not just
+whatever one session shipped.
+
+| Without momentum | With momentum |
+| --- | --- |
+| Greps the codebase, hopes it found the right files | Reads project state first — oriented in seconds |
+| Fills the gaps with assumptions — hallucinates | Reasons from recorded decisions, not guesses |
+| Plans on shaky ground, burns tokens rediscovering | Produces a well-grounded, actionable plan |
 
 ## Quick install
 
@@ -43,6 +58,31 @@ npx @limina-labs/momentum@latest init --agent antigravity  # Antigravity
 # Coordinating multiple related projects?
 npx @limina-labs/momentum@latest init --ecosystem my-eco
 ```
+
+## Better context in. Better work out.
+
+- **Less hallucination** — the agent reasons from recorded facts (status,
+  decisions, history) instead of confident guesses. Fewer wrong turns, fewer
+  retries.
+- **Higher-signal context** — the relevant history and prior decisions surface
+  first, not whatever a blind search returned. Less noise in the window, less
+  token waste.
+- **Better-grounded plans** — a vague ask becomes a concrete plan: what to
+  change, where in the codebase, and how to verify it.
+
+Based on hands-on use — momentum reduces guesswork and re-derivation. Your
+mileage will vary by project and agent.
+
+## The phase loop
+
+Work happens in **phases** — one repeatable unit of work, five stages:
+
+**Brainstorm → Plan → Execute → Verify → Release**
+
+Your agent drives all of it: scopes through dialogue (disk writes gated until
+you approve), plans groups + tasks + acceptance criteria, commits per group
+with conventional commits, and marks tasks done only with passing evidence.
+It stops at exactly one hard gate — the merge and release are yours to approve.
 
 ## How it works — no daemon, no lock-in
 
