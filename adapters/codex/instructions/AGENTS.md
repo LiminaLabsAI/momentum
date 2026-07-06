@@ -14,7 +14,7 @@
 | What's in the backlog? | `specs/backlog/backlog.md` |
 | Phase tasks/progress? | `specs/phases/phase-N-*/tasks.md` |
 | Why was X chosen? | `specs/decisions/NNNN-*.md` |
-| Roadmap / timeline? | `specs/planning/roadmap.md` |
+| Roadmap / timeline? | `specs/planning/roadmap.md` (authored at founding — `/start-project`) |
 | How to contribute? | `docs/developer-guide.md` |
 
 > **First file to read: ALWAYS `specs/status.md`.**
@@ -236,6 +236,10 @@ Before ANY work, read `specs/status.md`. This tells you:
 - What phase is active
 - What's blocking progress
 - What P0 items need attention
+
+If `status.md` says **Not founded**, stop: the project has no charter or
+roadmap yet — foundation docs are authored at founding, never scaffolded
+(`core/project-lifecycle.md`). Route to `/start-project` before any phase work.
 
 ### Rule 2: Auto-Update Tracking After Changes
 

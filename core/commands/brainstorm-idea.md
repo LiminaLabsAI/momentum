@@ -2,7 +2,7 @@ Explore any idea through structured dialogue before committing to anything.
 
 Use this to think through a concept, technical direction, product decision, or architecture question. **Nothing gets written to disk.** The output is a clear, structured summary you can act on.
 
-When you're ready to turn the result into a project, run `/start-project`. To turn a decision into an ADR, run `/log` with `--decision`.
+When you're ready to turn the result into a project, run `/start-project` — it **founds** the project: authors the charter, principles, success criteria, and roadmap from this brainstorm and plans Phase 0. It works whether or not `momentum init` has already scaffolded the machinery (structure ≠ content — see `core/project-lifecycle.md`). To turn a decision into an ADR, run `/log` with `--decision`.
 
 ## When to use
 
@@ -50,7 +50,7 @@ When you're ready to turn the result into a project, run `/start-project`. To tu
    ```
 
 6. Close with one of:
-   - "Ready to build this? Run `/start-project` to scaffold it as a project."
+   - "Ready to build this? Run `/start-project` to found the project — it authors the foundation docs (charter, principles, success criteria, roadmap) from this brainstorm and plans Phase 0. An existing `momentum init` scaffold doesn't change this: init owns structure, founding owns content."
    - "Want to explore further before committing? Ask away."
    - "This is a decision, not a project — want to log it as an ADR with `/log --decision`?"
 

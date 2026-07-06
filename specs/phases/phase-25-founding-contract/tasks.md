@@ -21,15 +21,15 @@ type: Tasks
 - [x] Verify: full suite green (845/845)
 
 ## Group 2 — Command + rules surface
-- [ ] start-project.md rewritten (founding; inline authoring templates; gate intact)
-- [ ] brainstorm-idea.md routing line
-- [ ] brainstorm-phase.md founded gate
-- [ ] start-phase.md founded gate
-- [ ] validate.md invariant (phases ⟹ founded)
-- [ ] migrate.md audited (no placeholder creation)
-- [ ] CLAUDE.md template Rule 1 sentence
-- [ ] specs README template updated
-- [ ] Verify: fingerprints re-baselined; full suite green
+- [x] start-project.md rewritten (founding; inline authoring templates; gate intact) — landed with G1's commit (fingerprint atomicity)
+- [x] brainstorm-idea.md routing line
+- [x] brainstorm-phase.md founded gate
+- [x] start-phase.md founded gate
+- [x] validate.md invariant (phases ⟹ founded; step 2b)
+- [x] migrate.md audited — foundation docs declared non-gaps; "Founded:" report line
+- [x] Rule 1 not-founded routing + navigation note in core/instructions/ (single source, ADR-0004) — all 4 instruction surfaces regenerated
+- [x] specs README template updated — landed with G1's commit
+- [x] Verify: fingerprints re-baselined ×4; full suite green (845/845)
 
 ## Group 3 — Verification, docs, release prep
 - [ ] e2e evidence captured (fresh init + legacy upgrade)

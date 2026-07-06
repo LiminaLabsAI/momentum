@@ -47,3 +47,10 @@ Affects-specs: core/foundation-placeholder-hashes.json, core/specs-templates/spe
 Detail: History audit found each foundation template had exactly ONE normalized-body hash across all shipped versions (the v0.27.0 OKF revision was frontmatter-only), so the frozen manifest is 4 hashes. migrateFoundationDocs() follows the migrateAgentRules() pattern (hash-match → remove + report, dry-run aware); slotted after gitignore refresh, before orphan cleanup. The G2 start-project.md rewrite rides in the G1 commit because the fingerprint snapshot captures the whole install tree — remaining G2 docs get their own re-baseline. Suite 833 → 845 (+12 founding-contract tests).
 
 ---
+### [NOTE] 2026-07-06 — G2 complete: founded gate wired across the command + rules surface
+Topics: commands, rules, founding, lifecycle
+Affects-phases: phase-25-founding-contract
+Affects-specs: core/commands/brainstorm-phase.md, core/commands/start-phase.md, core/commands/validate.md#2b, core/commands/migrate.md, core/instructions/rules-body.md
+Detail: The founded predicate (charter + roadmap exist) now gates /brainstorm-phase step 1 and /start-phase setup step 1 (STOP → route to /start-project, offer to draft foundation docs from conversation context); /validate gains check 2b (phases ⟹ founded = failure; unfounded-no-phases = valid Installed state); /migrate declares foundation docs non-gaps and reports Founded: yes/no; /brainstorm-idea routes through founding language. Rule 1 gained not-founded routing in core/instructions/rules-body.md (single source) — all four generated instruction surfaces regenerated per ADR-0004. Fingerprints re-baselined ×4; suite 845/845.
+
+---

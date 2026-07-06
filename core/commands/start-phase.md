@@ -11,6 +11,12 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
 ## Setup Steps (run once at phase start)
 
 1. Read current state:
+   - **Founded gate** (`core/project-lifecycle.md`, ADR-0008): verify
+     `specs/vision/project-charter.md` AND `specs/planning/roadmap.md`
+     exist. If either is missing, the project is not founded — STOP and
+     run `/start-project` first (it authors the foundation docs from your
+     brainstorm and plans Phase 0). Never start a phase on an unfounded
+     project.
    - Read `specs/status.md`
 
 2. Check for blocking bugs (pre-phase bug check):

@@ -18,6 +18,14 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    From this point until Step 8, do NOT call any write-class tool on any path under `specs/`. The PreToolUse hook (`core/scripts/brainstorm-gate.sh`, wired by Claude Code + Codex + Antigravity) will block such calls; this step makes the intent explicit.
 
 1. Review current state:
+   - **Founded gate first** (`core/project-lifecycle.md`, ADR-0008): verify
+     `specs/vision/project-charter.md` AND `specs/planning/roadmap.md` exist.
+     If either is missing, the project is NOT founded — STOP: remove the
+     sentinel (`rm .momentum/brainstorm-active`) and route to
+     `/start-project`, offering to draft the foundation docs with the user
+     from the context already in this conversation (best-effort content
+     marked for refinement beats absent docs). Re-run this command once
+     founded. Never plan a phase on an unfounded project.
    - Read `specs/status.md` — what phase just completed?
    - Read the completed phase's `history.md` — what was learned?
    - Read `specs/backlog/backlog.md` — any P0/P1 items to address first?
