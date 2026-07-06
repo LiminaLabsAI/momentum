@@ -119,7 +119,7 @@ Once a phase plan is approved, this command executes the plan end-to-end without
 
 **Merge to staging/main + release.** After the final group's verification passes, STOP. Ask the user:
 
-> "All groups complete and verified. Ready to merge `<phase-branch>` → staging (then main), tag `v<version>`, and run `npm publish --access public`. Approve to proceed?"
+> "All groups complete and verified. Ready to merge `<phase-branch>` → staging (then main), tag `v<version>`, and create the GitHub Release. Approve to proceed? Project-specific publish/deploy steps (e.g. `npm publish`) run from `## Project Extensions` in CLAUDE.md/AGENTS.md — consult them now if any apply."
 
 This is the only place the engine asks. Do NOT skip it.
 

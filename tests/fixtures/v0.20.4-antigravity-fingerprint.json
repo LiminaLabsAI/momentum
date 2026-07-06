@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-06",
-    "capturedFrom": "phase-25-founding-contract",
+    "capturedFrom": "fix/BUG-023-start-phase-npm-publish",
     "adapter": "antigravity",
-    "note": "Phase 25 / ADR-0008 G2: founded gate in brainstorm-phase/start-phase, validate 2b invariant, migrate founding-awareness, brainstorm-idea founding routing, Rule 1 not-founded routing + navigation note (regenerated instruction surfaces)"
+    "note": "BUG-023: drop project-specific npm publish clause from /start-phase Autonomous Execution Contract hard-stop text; gate now project-agnostic (merge+tag+GH release); project-specific publish/deploy reads from ## Project Extensions as ENH-030 intended."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -29,7 +29,7 @@
     ".agents/workflows/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
     ".agents/workflows/scout.md": "09070c09413821d2c89cb8788fa5cd58a2b8824c9826c8966449a5728b8c3b26",
     ".agents/workflows/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
-    ".agents/workflows/start-phase.md": "700ceb8d147bf87aa9507551b3f54241cd707594be734138768f778196aa46a7",
+    ".agents/workflows/start-phase.md": "4e3c9b7273fb6d2ae2c9fde681043ee33ec4b7ea00d03e7ab0358cc041f7d728",
     ".agents/workflows/start-project.md": "2f77ceb9b9632fec5aacacfd4fda0e4459dd4c927c14a8f20ff621fdf4b258b0",
     ".agents/workflows/swarm.md": "8cb40729932ff77b6f537e11349dad4d4706b951d58881c4d57d72ec3b264fe6",
     ".agents/workflows/sync-docs.md": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b",

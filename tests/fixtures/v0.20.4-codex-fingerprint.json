@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-06",
-    "capturedFrom": "phase-25-founding-contract",
+    "capturedFrom": "fix/BUG-023-start-phase-npm-publish",
     "adapter": "codex",
-    "note": "Phase 25 / ADR-0008 G2: founded gate in brainstorm-phase/start-phase, validate 2b invariant, migrate founding-awareness, brainstorm-idea founding routing, Rule 1 not-founded routing + navigation note (regenerated instruction surfaces)"
+    "note": "BUG-023: drop project-specific npm publish clause from /start-phase Autonomous Execution Contract hard-stop text; gate now project-agnostic (merge+tag+GH release); project-specific publish/deploy reads from ## Project Extensions as ENH-030 intended."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -23,7 +23,7 @@
     ".agents/skills/review/SKILL.md": "392bdd47fafda7c0f3cbfcf8a65d4699274f4a58f869abf73004e22929627bf4",
     ".agents/skills/scout/SKILL.md": "6bcea40696129cfec40c90c0e244327f6e83838fb15abca750744aae8e9c4900",
     ".agents/skills/session/SKILL.md": "671e2fdd84eef9aa1097319274dbd25bb245c3e6d1a081fbb3e534aa507c5198",
-    ".agents/skills/start-phase/SKILL.md": "d1749ccc70a05b110297e87c4d47ebf5f74ab1a5c83c1d5d91a6d7d504906349",
+    ".agents/skills/start-phase/SKILL.md": "e61dfe1a2f44adb8fa94d3caf39e29dced90d973c46a5f0455237f836d50ae67",
     ".agents/skills/start-project/SKILL.md": "b81079dda0b9a2a5a11e0a6f6bab5779db8508e7a59f7445879a5c333f59fe67",
     ".agents/skills/swarm/SKILL.md": "c00f6b116f14c579ec9d8eff21d02a56aba452658149035032822daafa535c5f",
     ".agents/skills/sync-docs/SKILL.md": "9293e5f8ba631905ca697a808872f474e8bc716c5214d96f48216c1ca72767ff",
