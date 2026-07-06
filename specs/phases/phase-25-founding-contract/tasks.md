@@ -5,9 +5,9 @@ type: Tasks
 # Phase 25 — Tasks
 
 ## Group 0 — Contract, ADR, renumber
-- [ ] ADR-0008 authored (status Accepted)
-- [ ] core/project-lifecycle.md authored
-- [ ] Roadmap/status/phases-README renumbered (25 Founding Contract / 26 Intelligence / 27 Platform); stale-ref grep clean
+- [x] ADR-0008 authored (status Accepted)
+- [x] core/project-lifecycle.md authored
+- [x] Roadmap/status/phases-README renumbered (25 Founding Contract / 26 Intelligence / 27 Platform); stale-ref grep clean
 
 ## Group 1 — CLI mechanics
 - [ ] 4 foundation templates deleted from core/specs-templates/

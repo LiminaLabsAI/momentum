@@ -33,3 +33,10 @@ Affects-specs: specs/decisions/0008-foundation-docs-authored-not-scaffolded.md
 Detail: Upgrade removes foundation files whose frontmatter-normalized body hash matches any historical shipped template (zero user content by proof) and reports "not yet founded". The founded predicate checks only project-charter.md + roadmap.md — the minimal load-bearing pair; principles/success-criteria are authored at founding but never block phase work.
 
 ---
+### [DECISION] 2026-07-06 — G0: ADR-0008 accepted; lifecycle contract authored; roadmap renumbered
+Topics: lifecycle, foundation-docs, founding, roadmap
+Affects-phases: phase-25-founding-contract
+Affects-specs: specs/decisions/0008-foundation-docs-authored-not-scaffolded.md, specs/planning/roadmap.md#Timeline, specs/status.md
+Detail: ADR-0008 formalizes the three-state lifecycle (Installed/Founded/Phase loop) with the founded predicate (charter + roadmap exist) and the frozen-hash upgrade migration; core/project-lifecycle.md is the normative contract referenced by command docs. Renumber executed: 25 = Founding Contract (v0.32.0), Intelligence → 26 (v0.33.0+), Platform → 27 (v1.0). Impact-map gains lifecycle/foundation-docs/founding/start-project topics.
+
+---

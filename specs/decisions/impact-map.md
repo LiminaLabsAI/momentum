@@ -123,3 +123,13 @@ entry carries matching `Topics:`.
 | antigravity | specs/backlog/backlog.md | Validation (post-release follow-ups) |
 | gemini | specs/planning/roadmap.md | Timeline |
 | gemini | specs/backlog/backlog.md | Features |
+| lifecycle | core/project-lifecycle.md |  |
+| lifecycle | specs/decisions/0008-foundation-docs-authored-not-scaffolded.md |  |
+| foundation-docs | core/project-lifecycle.md |  |
+| foundation-docs | core/commands/start-project.md |  |
+| foundation-docs | specs/backlog/backlog.md | Enhancements |
+| founding | core/project-lifecycle.md |  |
+| founding | specs/planning/roadmap.md | Timeline |
+| start-project | core/commands/start-project.md |  |
+| init-templates | core/specs-templates/specs/status.md |  |
+| upgrade-migration | specs/decisions/0008-foundation-docs-authored-not-scaffolded.md | Key design points |
