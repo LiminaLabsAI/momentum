@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-07-05",
-    "capturedFrom": "feat/open-knowledge-format",
+    "captured": "2026-07-06",
+    "capturedFrom": "chore/repo-transfer-liminalabs",
     "adapter": "codex",
-    "note": "phase-24: OKF v0.1 adoption (ADR-0005) \u2014 specs templates gain type frontmatter; index.json/impact-map.json replaced by frontmatter + impact-map.md + generated index.md listings; 7 recipes + rules-body reference the OKF surfaces"
+    "note": "repo transferred to LiminaLabsAI org — specs-templates README repo URL updated (chore/repo-transfer-liminalabs)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -41,7 +41,7 @@
     ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
     "AGENTS.md": "62478eb010285bd380dd1debfddb63bd914e8ebe65b63dae08862f3e8bd67329",
-    "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
+    "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",

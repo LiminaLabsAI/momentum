@@ -7,7 +7,7 @@ This repo uses its own toolkit. Everything you need is already installed.
 ## Setup
 
 ```bash
-git clone https://github.com/avinash-singh-io/momentum
+git clone https://github.com/LiminaLabsAI/momentum
 cd momentum
 # momentum's own commands are in .claude/commands/
 ```

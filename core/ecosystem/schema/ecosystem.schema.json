@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/ecosystem-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/ecosystem-v1.json",
   "title": "Momentum Ecosystem Manifest",
   "description": "Declares a set of related momentum-installed repos that coordinate as one product. Lives at the root of an ecosystem repo (sibling to its member repos).",
   "type": "object",

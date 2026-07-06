@@ -23,7 +23,7 @@ test('README.md is the product readme, not a scaffold template', () => {
   const readme = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8');
   assert.match(readme, /img\.shields\.io\/npm/, 'npm badge must be present');
   assert.match(readme, /## Works with any AI IDE/, 'adapter table section must be present');
-  assert.match(readme, /npx @avinash-singh-io\/momentum@latest init/, 'quickstart must be present');
+  assert.match(readme, /npx @limina-labs\/momentum@latest init/, 'quickstart must be present');
   assert.doesNotMatch(
     readme,
     /Created by `momentum ecosystem init`/,

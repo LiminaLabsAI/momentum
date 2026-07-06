@@ -38,7 +38,7 @@ Who is this for? (user, system, team)
 
 Use this when you have a vague idea and want to think it through before
 committing to a project.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/brainstorm-idea.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/brainstorm-idea.md)
 
 ### `/start-project`
 
@@ -55,14 +55,14 @@ Primary agent? (claude-code / codex / antigravity)
 ```
 
 Run after `/brainstorm-idea`. Idempotent against skip-if-exists.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/start-project.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/start-project.md)
 
 ### `/migrate`
 
 Onboard an existing project with a manual or outdated momentum-like
 structure into proper momentum layout. Gap detection, skip-if-exists fill,
 index reconciliation.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/migrate.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/migrate.md)
 
 ### `/validate`
 
@@ -78,7 +78,7 @@ Backlog ID monotonicity... ✓
 Status freshness... ⚠ Last Updated > 7 days ago
 ```
 
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/validate.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/validate.md)
 
 ## Phase lifecycle
 
@@ -110,7 +110,7 @@ The brainstorm gate is a `.momentum/brainstorm-active` sentinel file the
 PreToolUse hook checks before allowing any Write/Edit on `specs/` paths.
 Visible safety — agent can't accidentally pre-commit to a half-finished
 plan.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/brainstorm-phase.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/brainstorm-phase.md)
 
 ### `/start-phase`
 
@@ -129,7 +129,7 @@ Group 2: Docs deepening... in progress
 [Hard stop only at merge + release gate]
 ```
 
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/start-phase.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/start-phase.md)
 
 ### `/sync-docs`
 
@@ -137,7 +137,7 @@ Apply pending history entries to other specs. Reads the active phase's
 `history.md`, identifies which other docs need updating via topics + the
 `Affects-specs:` field, applies the updates in one batch. Run at phase
 completion, before `/complete-phase`.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/sync-docs.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/sync-docs.md)
 
 ### `/complete-phase`
 
@@ -160,14 +160,14 @@ Ready to tag v0.16.0 and npm publish? (y/N)
 
 The verification step is non-optional — Rule 12 (Verify Before Claim)
 enforces it. No release without fresh evidence captured in retrospective.md.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/complete-phase.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/complete-phase.md)
 
 ### `/log`
 
 Record a manual entry in the active phase history file. Use when the agent
 missed something the user wants tracked. Drops you into a structured prompt
 for the entry type, topics, and detail.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/log.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/log.md)
 
 ## Backlog
 
@@ -188,14 +188,14 @@ Context? > ...
 
 Assigns the next ID in the chosen prefix, appends the row to backlog.md,
 notifies you of the assignment.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/track.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/track.md)
 
 ### `/review`
 
 Review and groom the backlog between phases. Surfaces stale items, priority
 drift, and missing context. Useful before `/brainstorm-phase` so the next
 phase has clean inputs.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/review.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/review.md)
 
 ## Cross-repo (ecosystem mode only)
 
@@ -207,20 +207,20 @@ no-ops or unavailable.
 Cross-repo ecosystem coordination. Subcommands: `init`, `add`, `remove`,
 `status`, `doctor`. Wraps the `momentum ecosystem` CLI with conversational
 defaults.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/ecosystem.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/ecosystem.md)
 
 ### `/initiative`
 
 Manage cross-project initiatives. A single feature that spans more than one
 member repo gets one initiative file at `<eco-root>/initiatives/NNNN-slug.md`.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/initiative.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/initiative.md)
 
 ### `/session`
 
 Append a manual narrative entry to today's ecosystem session log. Use when
 something happened that's worth recording but isn't tied to a git commit or
 PR.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/session.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/session.md)
 
 ### `/scout`
 
@@ -256,14 +256,14 @@ Idempotent.
 Multi-perspective code review of pending changes on the current branch.
 Dispatches role-specific subagents (security, QA, architecture) in parallel.
 Returns Critical / Important / Minor findings.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/review-code.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/review-code.md)
 
 ### `/systematic-debug`
 
 Systematically isolate, reproduce, and resolve task execution failures.
 Walks a structured debugging protocol — minimal repro, hypothesis test, fix
 isolated, regression check.
-[→ source](https://github.com/avinash-singh-io/momentum/blob/main/core/commands/systematic-debug.md)
+[→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/systematic-debug.md)
 
 ## Adding your own skills
 

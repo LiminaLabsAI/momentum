@@ -317,7 +317,7 @@ The rules are referenced from the primary instruction file (`AGENTS.md` for
 opencode, Codex, and Antigravity; `CLAUDE.md` for Claude Code). Agents load the
 instruction file at session start, which in turn references the rules file.
 
-[→ canonical source on GitHub](https://github.com/avinash-singh-io/momentum/blob/main/.agent/rules/project.md)
+[→ canonical source on GitHub](https://github.com/LiminaLabsAI/momentum/blob/main/.agent/rules/project.md)
 
 ## What's not a rule
 

@@ -18,17 +18,17 @@ brainstormed, started, executed, and (optionally) released.
 
 ## Install
 
-momentum ships as an npm package — `@avinash-singh-io/momentum`. The fastest
+momentum ships as an npm package — `@limina-labs/momentum`. The fastest
 path is `npx`:
 
 ```bash
-npx @avinash-singh-io/momentum@latest init
+npx @limina-labs/momentum@latest init
 ```
 
 Or install globally if you'll run it repeatedly:
 
 ```bash
-npm install -g @avinash-singh-io/momentum@latest
+npm install -g @limina-labs/momentum@latest
 momentum init
 ```
 
@@ -37,7 +37,7 @@ keeps the `momentum` binary on `PATH` for repeat use
 (`momentum upgrade`, `momentum doctor`, etc.). Pick whichever fits your flow.
 
 :::note[Always pin `@latest`]
-A bare `npx @avinash-singh-io/momentum` can serve a **stale, cached** version,
+A bare `npx @limina-labs/momentum` can serve a **stale, cached** version,
 and a stale global install shadows newer releases. Pinning `@latest` forces npm
 to resolve the newest published version. This matters because `momentum
 upgrade` copies files from the *installed* CLI — your project files are only
@@ -50,10 +50,10 @@ ever as new as the CLI itself.
 a different one:
 
 ```bash
-npx @avinash-singh-io/momentum@latest init --agent opencode     # opencode
-npx @avinash-singh-io/momentum@latest init                       # Claude Code (default)
-npx @avinash-singh-io/momentum@latest init --agent codex         # Codex
-npx @avinash-singh-io/momentum@latest init --agent antigravity   # Antigravity
+npx @limina-labs/momentum@latest init --agent opencode     # opencode
+npx @limina-labs/momentum@latest init                       # Claude Code (default)
+npx @limina-labs/momentum@latest init --agent codex         # Codex
+npx @limina-labs/momentum@latest init --agent antigravity   # Antigravity
 ```
 
 Cursor adapter planned for a later Reach wave. See [IDE
@@ -65,7 +65,7 @@ If you have multiple related repos and want them to coordinate, pass
 `--ecosystem` to bootstrap an ecosystem alongside the first member:
 
 ```bash
-npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
+npx @limina-labs/momentum@latest init --ecosystem my-eco
 ```
 
 This creates `../my-eco/` as a sibling git repo + registers the current
@@ -228,7 +228,7 @@ tooling complains about them, configure it to ignore `._*` too.
 
 ### `momentum upgrade` overwrote my CLAUDE.md title
 
-Known regression — see [BUG-006](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md).
+Known regression — see [BUG-006](https://github.com/LiminaLabsAI/momentum/blob/main/specs/backlog/backlog.md).
 The title line and intro paragraph in `CLAUDE.md` sit inside the
 upgrade-managed section and get replaced with the generic template's
 `<Project Name>` placeholder. Workaround: restore manually after upgrade.

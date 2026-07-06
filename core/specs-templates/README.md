@@ -16,7 +16,7 @@
 
 ## Development
 
-This project uses [momentum](https://github.com/avinash-singh-io/momentum) for spec-driven development.
+This project uses [momentum](https://github.com/LiminaLabsAI/momentum) for spec-driven development.
 
 | Command | Purpose |
 |---------|---------|

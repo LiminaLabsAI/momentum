@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-manifest-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/swarm-manifest-v1.json",
   "title": "Momentum Swarm Manifest",
   "description": "Declares a cross-repo work unit driven from one user (conductor) session. Lives at <ecosystem-root>/swarms/<id>/manifest.json. The saga record — repos, waves, owner/lease, contract pins, token budgets, audit. All conductor + supervisor writes go through mkdir-locked CRUD in core/swarm/lib/manifest.js.",
   "type": "object",

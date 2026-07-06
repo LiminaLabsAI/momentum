@@ -1032,7 +1032,7 @@ function init(targetDir, agent, opts = {}) {
   console.log('  Existing project — plan your next phase:');
   console.log(`    Open ${displayName} and run: /brainstorm-phase`);
   console.log('');
-  console.log('  See docs: https://github.com/avinash-singh-io/momentum');
+  console.log('  See docs: https://github.com/LiminaLabsAI/momentum');
 }
 
 // ── Upgrade command ───────────────────────────────────────────────────────────
@@ -1261,7 +1261,7 @@ function formatStaleCliWarning(current, latest) {
     '  │     `upgrade` copies files from the INSTALLED CLI — your project',
     '  │     files will only ever be as new as the CLI itself.',
     '  │     Update the CLI first, then re-run upgrade:',
-    '  │        npm i -g @avinash-singh-io/momentum@latest',
+    '  │        npm i -g @limina-labs/momentum@latest',
     '  └────────────────────────────────────────────────────────────────┘',
     '',
   ].join('\n');
@@ -1339,7 +1339,7 @@ function checkForUpdates() {
     } catch { /* no cache or unreadable — proceed to network check */ }
 
     const req = https.get(
-      'https://registry.npmjs.org/@avinash-singh-io/momentum/latest',
+      'https://registry.npmjs.org/@limina-labs/momentum/latest',
       { timeout: 3000 },
       (res) => {
         let data = '';
@@ -1425,17 +1425,17 @@ Options:
 
 Examples:
   # Single project (unchanged from v0.12.0):
-  npx @avinash-singh-io/momentum init
-  npx @avinash-singh-io/momentum init ./my-project --agent opencode
+  npx @limina-labs/momentum init
+  npx @limina-labs/momentum init ./my-project --agent opencode
 
   # Ecosystem from scratch:
-  npx @avinash-singh-io/momentum init --ecosystem my-eco
+  npx @limina-labs/momentum init --ecosystem my-eco
 
   # Add THIS repo to an existing ecosystem:
-  npx @avinash-singh-io/momentum join ../my-eco
+  npx @limina-labs/momentum join ../my-eco
 
   # Where am I?
-  npx @avinash-singh-io/momentum doctor
+  npx @limina-labs/momentum doctor
 `.trim());
 }
 
@@ -1816,7 +1816,7 @@ async function main() {
       console.log('');
       console.log(`  ┌──────────────────────────────────────────────────────┐`);
       console.log(`  │  Update available: ${pkg.version} → ${latestVersion}`);
-      console.log(`  │  Run: npm install -g @avinash-singh-io/momentum@latest`);
+      console.log(`  │  Run: npm install -g @limina-labs/momentum@latest`);
       console.log(`  └──────────────────────────────────────────────────────┘`);
       console.log('');
     }

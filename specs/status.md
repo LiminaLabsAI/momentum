@@ -126,7 +126,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - Template-based install (file copy via install.sh) chosen for Phase 0 — simpler, no build tooling required; `npx momentum init` CLI deferred to Phase 2
 - DIP architecture: `core/` (tool-agnostic logic) + `adapters/` (tool-specific wiring) — Phase 1 delivers this before the npx CLI so the CLI gets tool auto-detection for free
 - Zero-dependency Node.js CLI — no `commander`, no `chalk`; only built-ins (`fs`, `path`, `process`)
-- Package name `@avinash-singh-io/momentum` — `momentum` (unscoped) was taken on npm
+- Package name `@limina-labs/momentum` — renamed from `@avinash-singh-io/momentum` on 2026-07-06 (Limina Labs org move; old package deprecated with pointer). Original scoped name chosen because `momentum` (unscoped) was taken on npm
 - Claude Code only in Phase 2 — auto-detection deferred until more adapters land
 - `install.sh` kept unchanged — npx CLI is additive, two install paths coexist
 - `adapter.js` per coding agent (Option A) — DIP boundary for future adapters; consistent with `adapter.sh` pattern from Phase 1

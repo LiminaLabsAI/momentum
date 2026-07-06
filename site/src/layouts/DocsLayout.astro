@@ -27,7 +27,7 @@ const { title, description, slug, headings } = Astro.props;
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const { group, prev, next } = navContext(slug);
 
-const REPO = 'https://github.com/avinash-singh-io/momentum';
+const REPO = 'https://github.com/LiminaLabsAI/momentum';
 
 // Command-palette data: every page (title + group) + this page's headings.
 const navData = {

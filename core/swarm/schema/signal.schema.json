@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-signal-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/swarm-signal-v1.json",
   "title": "Momentum Swarm Signal",
   "description": "Typed cross-session message in a swarm's signals/ directory. One file per signal at <eco>/swarms/<id>/signals/NNNN-<type>-<slug>.json. Writes are mkdir-locked. Read once and archived to signals/processed/. Phase 17.5 portability protocol.",
   "type": "object",

@@ -5,8 +5,8 @@
 
   Phases. Decisions. History. Backlog. First-class state across any AI IDE.
 
-  [![npm](https://img.shields.io/npm/v/@avinash-singh-io/momentum?logo=npm)](https://www.npmjs.com/package/@avinash-singh-io/momentum)
-  [![license](https://img.shields.io/github/license/avinash-singh-io/momentum)](LICENSE)
+  [![npm](https://img.shields.io/npm/v/@limina-labs/momentum?logo=npm)](https://www.npmjs.com/package/@limina-labs/momentum)
+  [![license](https://img.shields.io/github/license/LiminaLabsAI/momentum)](LICENSE)
   [![visit the site](https://img.shields.io/badge/site-trymomentum.github.io-4F46E5)](https://trymomentum.github.io/)
 </div>
 
@@ -21,22 +21,22 @@ momentum makes your project's memory durable. Phases, decisions, history, and ba
 ## Quick install
 
 ```bash
-npx @avinash-singh-io/momentum@latest init
+npx @limina-labs/momentum@latest init
 ```
 
 That's it. The agent picks up the workflow on next session start.
 
-> Always pin `@latest`. A bare `npx @avinash-singh-io/momentum` can serve a
+> Always pin `@latest`. A bare `npx @limina-labs/momentum` can serve a
 > stale, cached version; `@latest` forces npx to resolve the newest release.
 
 ```bash
 # Want a specific adapter?
-npx @avinash-singh-io/momentum@latest init --agent opencode     # opencode
-npx @avinash-singh-io/momentum@latest init --agent codex        # Codex
-npx @avinash-singh-io/momentum@latest init --agent antigravity  # Antigravity
+npx @limina-labs/momentum@latest init --agent opencode     # opencode
+npx @limina-labs/momentum@latest init --agent codex        # Codex
+npx @limina-labs/momentum@latest init --agent antigravity  # Antigravity
 
 # Coordinating multiple related projects?
-npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
+npx @limina-labs/momentum@latest init --ecosystem my-eco
 ```
 
 ## How it works — no daemon, no lock-in
@@ -67,7 +67,7 @@ Same commands, same workflow, every agent. Switch adapters anytime; the per-proj
 Upgrading is **two steps** — update the CLI, then re-sync each project's files:
 
 ```bash
-npm install -g @avinash-singh-io/momentum@latest   # 1. update the CLI
+npm install -g @limina-labs/momentum@latest   # 1. update the CLI
 momentum upgrade                                    # 2. re-sync this project
 ```
 
@@ -207,7 +207,7 @@ The discipline is the differentiator. The toolkit is the implementation.
 
 ## Contributing
 
-Issues + discussions + PRs welcome at [github.com/avinash-singh-io/momentum](https://github.com/avinash-singh-io/momentum). The project itself uses momentum, so contributing means following the same workflow — phases, history entries, conventional commits, `/complete-phase` before release.
+Issues + discussions + PRs welcome at [github.com/LiminaLabsAI/momentum](https://github.com/LiminaLabsAI/momentum). The project itself uses momentum, so contributing means following the same workflow — phases, history entries, conventional commits, `/complete-phase` before release.
 
 ## License
 
