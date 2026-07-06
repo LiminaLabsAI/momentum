@@ -37,7 +37,10 @@ Operator review after v0.31.0:
    ecosystem/orchestration/lanes/rules, docs, contributing) preserved.
 2. Both site install pills gain a one-line hint: "init asks which agent to
    set up — or pass --agent …".
-3. v0.31.1 docs-only patch published so the npm package page shows the new
+3. Hero adapter row status dots completed (operator report — Codex and
+   Antigravity had none): Antigravity green (fully adopted, v0.29.0), Codex
+   amber `--warning` with a "Shipped — partial parity" title.
+4. v0.31.1 docs-only patch published so the npm package page shows the new
    README.
 
 ## Unchanged Behavior
