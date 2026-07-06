@@ -186,3 +186,22 @@ test('backward compat: top-level version field exists for old tooling', () => {
     rmrf(target);
   }
 });
+test('saveInstalledState mirrors momentumVersion for external readers (ecosystem fleet lock)', () => {
+  // ADR-0007 review fix: bin/ecosystem.js readMemberVersion() and older CLIs
+  // read `momentumVersion`. The writer must keep it in sync with `version`.
+  const { spawnSync } = require('node:child_process');
+  const target = mktmp('compat-mirror-');
+  try {
+    const cli = path.join(__dirname, '..', 'bin', 'momentum.js');
+    const r = spawnSync('node', [cli, 'init', target, '--agent', 'claude-code'], {
+      encoding: 'utf8',
+      timeout: 60000,
+    });
+    assert.equal(r.status, 0, `init failed: ${r.stderr}`);
+    const lock = JSON.parse(fs.readFileSync(path.join(target, '.momentum', 'installed.json'), 'utf8'));
+    assert.ok('momentumVersion' in lock, 'compat mirror momentumVersion must be written');
+    assert.equal(lock.momentumVersion, lock.version, 'mirror must equal version');
+  } finally {
+    rmrf(target);
+  }
+});

@@ -217,7 +217,13 @@ function loadInstalledState(targetDir) {
 function saveInstalledState(targetDir, state) {
   const dest = path.join(targetDir, ...MANIFEST_REL);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.writeFileSync(dest, JSON.stringify(state, null, 2) + '\n');
+  // Compat mirror (ADR-0007 review fix): external readers — including
+  // bin/ecosystem.js's fleet version lock (readMemberVersion) and any
+  // OLDER momentum CLI inspecting a newer project — read `momentumVersion`.
+  // Keep it in sync with the new top-level `version` so mixed-version
+  // fleets never see 'unknown' after migration.
+  const out = { version: state.version, momentumVersion: state.version, agents: state.agents };
+  fs.writeFileSync(dest, JSON.stringify(out, null, 2) + '\n');
 }
 
 function readInstalledManifest(targetDir) {
