@@ -407,20 +407,23 @@ function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   );
   const removed = [];
   for (const entry of prevManifest.managedFiles) {
-    if (currentRel.has(entry.path)) continue; // still managed → keep
-    if (opts.keepRel && opts.keepRel.has(entry.path)) {
-      console.log(`  ⚠️  kept (not orphan-cleaned): ${entry.path} — user-owned now`);
+    // Phase 22c: entry can be a string path (new agents-map format) or { path, sha256 } (legacy)
+    const relPath = typeof entry === 'string' ? entry : entry.path;
+    if (!relPath) continue;
+    if (currentRel.has(relPath)) continue;
+    if (opts.keepRel && opts.keepRel.has(relPath)) {
+      console.log(`  ⚠️  kept (not orphan-cleaned): ${relPath} — user-owned now`);
       continue;
     }
-    const abs = path.join(targetDir, entry.path);
-    if (!fileExists(abs)) continue; // already gone
-    removed.push(entry.path);
+    const abs = path.join(targetDir, relPath);
+    if (!fileExists(abs)) continue;
+    removed.push(relPath);
     if (!opts.dryRun) {
       fs.copyFileSync(abs, abs + '.bak');
       fs.rmSync(abs);
     }
     console.log(
-      `  ${opts.dryRun ? '✋ would remove' : '🗑  removed'}: ${entry.path}` +
+      `  ${opts.dryRun ? '✋ would remove' : '🗑  removed'}: ${relPath}` +
       `${opts.dryRun ? '' : ' (original saved as .bak)'}`
     );
   }
@@ -1048,9 +1051,14 @@ function upgrade(targetDir, agent, opts = {}) {
 
   const upgradeOpts = { upgradeMode: true, root: target };
 
-  // Snapshot the prior managed set BEFORE any writes, so orphan cleanup can
-  // diff it against what this version installs (Phase 20 G1).
-  const prevManifest = readInstalledManifest(target);
+  // Phase 22c (ADR-0007): scope orphan cleanup to THIS agent's prior files only.
+  // Load the installed state (handles legacy migration), extract only the agent
+  // being upgraded — other agents' files are never eligible for removal.
+  const prevState = loadInstalledState(target);
+  const prevAgentEntry = prevState.agents[agent];
+  const prevAgentFiles = prevAgentEntry && Array.isArray(prevAgentEntry.files)
+    ? prevAgentEntry.files
+    : [];
 
   _dryRun = !!opts.dryRun;
   _managedCollector = new Set();
@@ -1146,10 +1154,9 @@ function upgrade(targetDir, agent, opts = {}) {
   console.log('→ Refreshing .gitignore...');
   gitignoreResult = refreshGitignore(src, target);
 
-  // Orphan cleanup — remove files a prior version installed but this one
-  // no longer ships (uses the snapshot taken before writes). Only ever
-  // touches files we previously recorded as managed.
-  orphans = removeOrphans(target, prevManifest, _managedCollector, {
+  // Orphan cleanup — only remove files this agent's prior version installed
+  // that this version no longer ships. Other agents' files are untouched.
+  orphans = removeOrphans(target, { managedFiles: prevAgentFiles }, _managedCollector, {
     dryRun: _dryRun,
     // A customized project.md is user-owned now — never orphan-clean it.
     keepRel: agentRulesResult === 'kept-customized'
@@ -1190,8 +1197,11 @@ function upgrade(targetDir, agent, opts = {}) {
 
 // ── Update check ─────────────────────────────────────────────────────────────
 
-/** Returns true if version `a` is strictly greater than version `b` (semver). */
+/** Returns true if version `a` is strictly greater than version `b` (semver). Null-safe — null/non-null comparisons always prefer the non-null value. */
 function isNewerVersion(a, b) {
+  if (!a && !b) return false;
+  if (!a) return false;   // null is never newer than a real version
+  if (!b) return true;    // a real version is always newer than null
   const parse = (v) => v.replace(/^v/, '').split('.').map(Number);
   const [aMaj, aMin, aPatch] = parse(a);
   const [bMaj, bMin, bPatch] = parse(b);

@@ -60,7 +60,8 @@ test('upgrade — .gitignore is never recorded as a managed file (not orphan-eli
     write(path.join(target, '.gitignore'), 'node_modules/\n');
     runCli(['upgrade', target]);
     const m = JSON.parse(read(path.join(target, '.momentum', 'installed.json')));
-    assert.ok(!m.managedFiles.some((f) => f.path === '.gitignore'), '.gitignore must not be managed');
+    const allManaged = Object.values(m.agents).flatMap((a) => a.files);
+    assert.ok(!allManaged.includes('.gitignore'), '.gitignore must not be managed');
   } finally {
     rmrf(target);
   }

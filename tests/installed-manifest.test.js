@@ -1,16 +1,14 @@
 'use strict';
 
-// Phase 20 — Upgrade Hardening, Group 0.
-// The `.momentum/installed.json` lock file is momentum's per-repo
-// version-of-record (Copier/Cruft model). These tests pin its shape, the
-// managed-file set (specs excluded, tool files included), sha256 integrity,
-// and that upgrade rewrites it while preserving installedAt.
+// Phase 22c (ADR-0007) — Multi-adapter `.momentum/installed.json` lock file.
+// The lock file now uses a per-agent `agents` map instead of a single agent lock.
+// Each agent has its own `{ version, files: string[] }` entry.
+// Top-level `version` = max of all agent versions (backward compat).
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const crypto = require('node:crypto');
 const { execSync } = require('node:child_process');
 
 const { mktmp, rmrf, runCli } = require('./_helpers');
@@ -24,7 +22,7 @@ function readManifest(target) {
   return JSON.parse(fs.readFileSync(path.join(target, MANIFEST_REL), 'utf8'));
 }
 
-test('init — writes a well-formed lock file', () => {
+test('init — writes a well-formed lock file with agents map', () => {
   const target = mktmp();
   try {
     const res = runCli(['init', target]);
@@ -33,12 +31,12 @@ test('init — writes a well-formed lock file', () => {
     assert.ok(fs.existsSync(path.join(target, MANIFEST_REL)), 'lock file must exist');
     const m = readManifest(target);
 
-    assert.equal(m.schema, 1);
-    assert.equal(m.momentumVersion, PKG.version, 'records the CLI version that wrote it');
-    assert.equal(m.agent, 'claude-code');
-    assert.match(m.installedAt, /^\d{4}-\d{2}-\d{2}$/);
-    assert.match(m.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
-    assert.ok(Array.isArray(m.managedFiles) && m.managedFiles.length > 0);
+    assert.ok(m.version, 'top-level version must exist');
+    assert.equal(m.version, PKG.version, 'records the CLI version that wrote it');
+    assert.ok(m.agents, 'agents map must exist');
+    assert.ok('claude-code' in m.agents, 'default agent claude-code must be in agents');
+    assert.equal(m.agents['claude-code'].version, PKG.version);
+    assert.ok(Array.isArray(m.agents['claude-code'].files) && m.agents['claude-code'].files.length > 0);
   } finally {
     rmrf(target);
   }
@@ -49,7 +47,10 @@ test('init — managed set excludes user-owned specs, includes tool files', () =
   try {
     runCli(['init', target]);
     const m = readManifest(target);
-    const paths = m.managedFiles.map((f) => f.path);
+
+    // Phase 22c: files stored as string array under agents[agent].files
+    const agent = Object.keys(m.agents)[0];
+    const paths = m.agents[agent].files;
 
     // specs/ is install-once / user-owned — must NOT be orphan-eligible
     assert.ok(
@@ -65,44 +66,37 @@ test('init — managed set excludes user-owned specs, includes tool files', () =
   }
 });
 
-test('init — every managed sha256 matches the file on disk', () => {
+test('init — every managed file exists on disk', () => {
   const target = mktmp();
   try {
     runCli(['init', target]);
     const m = readManifest(target);
-    for (const entry of m.managedFiles) {
-      const abs = path.join(target, entry.path);
-      assert.ok(fs.existsSync(abs), `managed file missing on disk: ${entry.path}`);
-      const actual = crypto
-        .createHash('sha256')
-        .update(fs.readFileSync(abs))
-        .digest('hex');
-      assert.equal(actual, entry.sha256, `sha256 mismatch for ${entry.path}`);
+    const agent = Object.keys(m.agents)[0];
+    for (const relPath of m.agents[agent].files) {
+      const abs = path.join(target, relPath);
+      assert.ok(fs.existsSync(abs), `managed file missing on disk: ${relPath}`);
     }
   } finally {
     rmrf(target);
   }
 });
 
-test('upgrade — rewrites the lock file and preserves installedAt', () => {
+test('upgrade — rewrites the lock file and preserves agent entry', () => {
   const target = mktmp();
   try {
     runCli(['init', target]);
 
-    // Backdate installedAt to prove upgrade preserves the original install date.
-    const manifestPath = path.join(target, MANIFEST_REL);
-    const seeded = readManifest(target);
-    seeded.installedAt = '2020-01-01';
-    fs.writeFileSync(manifestPath, JSON.stringify(seeded, null, 2) + '\n');
+    const m = readManifest(target);
+    assert.ok(m.agents['claude-code'], 'claude-code agent must be present');
 
     const res = runCli(['upgrade', target]);
     assert.equal(res.status, 0, `upgrade failed: ${res.stderr}`);
 
-    const m = readManifest(target);
-    assert.equal(m.installedAt, '2020-01-01', 'installedAt preserved across upgrade');
-    assert.equal(m.momentumVersion, PKG.version);
-    assert.ok(m.managedFiles.length > 0);
-    assert.ok(m.managedFiles.some((f) => f.path === 'CLAUDE.md'));
+    const m2 = readManifest(target);
+    assert.equal(m2.version, PKG.version);
+    assert.ok(m2.agents['claude-code'], 'claude-code agent must still be present');
+    assert.ok(m2.agents['claude-code'].files.length > 0);
+    assert.ok(m2.agents['claude-code'].files.includes('CLAUDE.md'));
   } finally {
     rmrf(target);
   }
@@ -116,7 +110,6 @@ test('init — lock file is git-trackable (D1) while sentinels stay ignored', ()
     fs.writeFileSync(path.join(target, '.momentum', 'merge-approved'), '');
 
     const ignored = (rel) => {
-      // git check-ignore exits 0 when ignored, 1 when NOT ignored.
       try {
         execSync(`git check-ignore -q ${rel}`, { cwd: target });
         return true;
@@ -127,7 +120,6 @@ test('init — lock file is git-trackable (D1) while sentinels stay ignored', ()
 
     assert.equal(ignored('.momentum/installed.json'), false, 'lock file must be committable');
     assert.equal(ignored('.momentum/merge-approved'), true, 'sentinels must stay ignored');
-    // And git actually stages it.
     execSync('git add .momentum/installed.json', { cwd: target });
     const staged = execSync('git diff --cached --name-only', { cwd: target, encoding: 'utf8' });
     assert.match(staged, /\.momentum\/installed\.json/);
@@ -136,14 +128,16 @@ test('init — lock file is git-trackable (D1) while sentinels stay ignored', ()
   }
 });
 
-test('init — codex adapter records agent=codex', () => {
+test('init — codex adapter records agent=codex in agents map', () => {
   const target = mktmp();
   try {
     const res = runCli(['init', target, '--agent', 'codex']);
     assert.equal(res.status, 0, `codex init failed: ${res.stderr}`);
     const m = readManifest(target);
-    assert.equal(m.agent, 'codex');
-    assert.ok(m.managedFiles.some((f) => f.path === 'AGENTS.md'), 'AGENTS.md tracked for codex');
+    assert.ok(m.agents['codex'], 'codex must be in agents map');
+    const codex = m.agents['codex'];
+    assert.ok(Array.isArray(codex.files), 'codex files must be an array');
+    assert.ok(codex.files.some((f) => f === 'AGENTS.md'), 'AGENTS.md tracked for codex');
   } finally {
     rmrf(target);
   }
