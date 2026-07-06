@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-contract-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/swarm-contract-v1.json",
   "title": "Momentum Swarm Contract (Pact-Style Shape Declaration)",
   "description": "Declares a cross-repo surface (REST endpoint, message type, library export). One file per surface at <eco>/swarms/<id>/contracts/<surface>.contract.json. Content-hashed; version-bumped on approval. Wave checkpoint verifies producer↔consumer shape agreement before letting the next wave start.",
   "type": "object",

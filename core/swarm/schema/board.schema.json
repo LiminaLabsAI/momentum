@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-board-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/swarm-board-v1.json",
   "title": "Momentum Swarm Board (Materialized Cache)",
   "description": "Slim conductor-turn view derived from manifest.json + per-supervisor dispatch-run records. Regenerated on any write to manifest or a supervisor's saga step. Conductor reads ONLY this on most turns — naive manifest+briefs+history = ~290KB; this = ~3KB. The materializer lives in core/swarm/lib/board.js.",
   "type": "object",

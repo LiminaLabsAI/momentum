@@ -25,7 +25,7 @@ Fully live-validated adapter — every capability momentum tracks is lit
 banners), each earned against the real opencode runtime.
 
 ```bash
-npx @avinash-singh-io/momentum@latest init --agent opencode
+npx @limina-labs/momentum@latest init --agent opencode
 ```
 
 ### What you get
@@ -69,7 +69,7 @@ Default adapter — `--agent claude-code` is implicit. The richest hook
 surface today.
 
 ```bash
-npx @avinash-singh-io/momentum@latest init
+npx @limina-labs/momentum@latest init
 ```
 
 ### What you get
@@ -109,7 +109,7 @@ contractual.
 ## Codex
 
 ```bash
-npx @avinash-singh-io/momentum@latest init --agent codex
+npx @limina-labs/momentum@latest init --agent codex
 ```
 
 ### What you get
@@ -142,7 +142,7 @@ switching IDEs. Hook coverage matches Claude Code.
 ## Antigravity
 
 ```bash
-npx @avinash-singh-io/momentum@latest init --agent antigravity
+npx @limina-labs/momentum@latest init --agent antigravity
 ```
 
 ### What you get
@@ -181,7 +181,7 @@ different from Claude Code's session hooks; the brainstorm-gate equivalent
 may need a different enforcement strategy (e.g., a file-watcher rule that
 warns if the sentinel exists).
 
-Track progress: [FEAT-007 in backlog](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md).
+Track progress: [FEAT-007 in backlog](https://github.com/LiminaLabsAI/momentum/blob/main/specs/backlog/backlog.md).
 
 ## Gemini CLI
 
@@ -193,7 +193,7 @@ Hook surface: TBD. Gemini CLI's plugin model may support before/after-tool
 hooks similar to Claude Code; if it does, the same three hook scripts will
 attach with minimal porting.
 
-Track progress: [FEAT-008 in backlog](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md).
+Track progress: [FEAT-008 in backlog](https://github.com/LiminaLabsAI/momentum/blob/main/specs/backlog/backlog.md).
 
 ## Picking an adapter
 
@@ -235,7 +235,7 @@ The upgrade is **marker-aware**: anything under `## Project Extensions` in
 and rules update from the published template; project-specific content
 stays.
 
-Known regression: see [BUG-006](https://github.com/avinash-singh-io/momentum/blob/main/specs/backlog/backlog.md)
+Known regression: see [BUG-006](https://github.com/LiminaLabsAI/momentum/blob/main/specs/backlog/backlog.md)
 for an upgrade-related title-line issue. Fix is on the backlog.
 
 ## Diagnosing IDE setup

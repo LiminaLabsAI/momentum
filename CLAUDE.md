@@ -515,7 +515,7 @@ Every release MUST do **all three** of these — missing any one leaves the rele
 
 3. **Verify both surfaces are live** —
    - `gh release list --limit 3` shows the new release as `Latest`.
-   - `npm view @avinash-singh-io/momentum version` returns the new version.
+   - `npm view @limina-labs/momentum version` returns the new version.
 
 **Approval required**: Both `gh release create` and `npm publish` are "shared system" actions — never run either without explicit user OK.
 

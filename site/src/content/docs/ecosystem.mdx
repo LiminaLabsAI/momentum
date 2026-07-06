@@ -84,7 +84,7 @@ Skip it when:
 
 ```bash
 # From inside the first project you want to anchor:
-npx @avinash-singh-io/momentum@latest init --ecosystem my-eco
+npx @limina-labs/momentum@latest init --ecosystem my-eco
 ```
 
 This creates `../my-eco/` as a sibling git repo, scaffolds the manifest +
@@ -101,7 +101,7 @@ wrong layer.
 
 ```bash
 # From inside each additional project:
-npx @avinash-singh-io/momentum@latest join ../my-eco
+npx @limina-labs/momentum@latest join ../my-eco
 ```
 
 `join` is idempotent — running it twice does the right thing. It registers
@@ -123,7 +123,7 @@ typically a sibling of members, not an ancestor).
 
 ```bash
 # From the ecosystem root (or any member):
-npm install -g @avinash-singh-io/momentum@latest   # update the CLI first
+npm install -g @limina-labs/momentum@latest   # update the CLI first
 momentum ecosystem upgrade
 ```
 
@@ -163,7 +163,7 @@ one repo and re-run — each sweep picks up whatever's ready.
 :::note[The CLI version bounds the result]
 `momentum upgrade` copies files from the *installed* CLI, not from npm — so a
 member can only ever be as new as your CLI. Always `npm i -g
-@avinash-singh-io/momentum@latest` before a sweep. See the
+@limina-labs/momentum@latest` before a sweep. See the
 [FAQ](/faq/#how-do-i-upgrade-an-existing-project) for the full upgrade model.
 :::
 
@@ -171,7 +171,7 @@ member can only ever be as new as your CLI. Always `npm i -g
 
 ```bash
 # From inside the member project:
-npx @avinash-singh-io/momentum@latest leave
+npx @limina-labs/momentum@latest leave
 ```
 
 Removes the pointer block and de-registers the project from `ecosystem.json`.
@@ -266,7 +266,7 @@ in Phase 10.
   in the member repo exactly as in single-project mode.
 - Every per-project slash command (`/start-phase`, `/complete-phase`,
   `/track`, etc.) works the same way.
-- The npm package surface is unchanged — `@avinash-singh-io/momentum` ships
+- The npm package surface is unchanged — `@limina-labs/momentum` ships
   one CLI that handles both modes.
 - The 13 autonomous agent rules apply identically; Rule 9 (multi-project doc
   sync) adds the "don't modify docs you don't own" guard for cross-project
@@ -290,7 +290,7 @@ You're already running momentum in each individually. Now you want to ship
 
 ```bash
 cd ~/work/platform
-npx @avinash-singh-io/momentum@latest init --ecosystem my-stack
+npx @limina-labs/momentum@latest init --ecosystem my-stack
 ```
 
 `../my-stack/` appears as a new sibling. The `platform` repo gains a pointer
@@ -301,10 +301,10 @@ block. `momentum ecosystem status` from inside `platform` now reports a
 
 ```bash
 cd ~/work/sdk
-npx @avinash-singh-io/momentum@latest join ../my-stack
+npx @limina-labs/momentum@latest join ../my-stack
 
 cd ~/work/cli
-npx @avinash-singh-io/momentum@latest join ../my-stack
+npx @limina-labs/momentum@latest join ../my-stack
 ```
 
 Now `ecosystem status` reports 3 members. The shared `ecosystem.json` lists

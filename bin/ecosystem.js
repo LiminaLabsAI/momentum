@@ -120,7 +120,7 @@ Subcommands:
                 --force      upgrade in place without stashing
               Use --dry-run to preview the whole sweep without writing anything.
               Note: the CLI's OWN version bounds the result — update the CLI
-              first (\`npm i -g @avinash-singh-io/momentum@latest\`).
+              first (\`npm i -g @limina-labs/momentum@latest\`).
 
   initiative  Manage cross-repo initiatives. Currently only \`create\` is
               wired as a CLI subcommand (other operations stay slash-only

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/swarm-dispatch-run-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/swarm-dispatch-run-v1.json",
   "title": "Momentum Swarm Dispatch-Run (Per-Supervisor Saga Step)",
   "description": "Extension of the existing Phase 11 dispatch-run-NNN artifact for swarm-aware supervisors. Lives at <repo>/.momentum/runs/dispatch-run-NNN.json (one per supervisor per wave). The conductor never reads this directly — it watches HEAD SHAs + reads materialized board.json. This schema is the durable per-step saga record that makes /swarm resume possible.",
   "type": "object",

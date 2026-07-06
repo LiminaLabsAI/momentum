@@ -89,10 +89,10 @@ of work).
 
 ## Where to find it
 
-- **Source**: [github.com/avinash-singh-io/momentum](https://github.com/avinash-singh-io/momentum)
-- **Package**: [`@avinash-singh-io/momentum` on npm](https://www.npmjs.com/package/@avinash-singh-io/momentum)
-- **License**: [MIT](https://github.com/avinash-singh-io/momentum/blob/main/LICENSE)
-- **Issues**: [GitHub Issues](https://github.com/avinash-singh-io/momentum/issues)
+- **Source**: [github.com/LiminaLabsAI/momentum](https://github.com/LiminaLabsAI/momentum)
+- **Package**: [`@limina-labs/momentum` on npm](https://www.npmjs.com/package/@limina-labs/momentum)
+- **License**: [MIT](https://github.com/LiminaLabsAI/momentum/blob/main/LICENSE)
+- **Issues**: [GitHub Issues](https://github.com/LiminaLabsAI/momentum/issues)
 
 ## A note on the name
 
@@ -128,7 +128,7 @@ rules, slash commands, multi-IDE support) tell one coherent story.
 
 ## What's next
 
-The public roadmap lives in [`specs/planning/roadmap.md`](https://github.com/avinash-singh-io/momentum/blob/main/specs/planning/roadmap.md).
+The public roadmap lives in [`specs/planning/roadmap.md`](https://github.com/LiminaLabsAI/momentum/blob/main/specs/planning/roadmap.md).
 Near-term phases:
 
 | Phase | Theme |

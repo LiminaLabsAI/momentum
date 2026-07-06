@@ -1,7 +1,7 @@
 # Deploy the momentum GitHub Pages site (custom Astro) to
 # trymomentum.github.io via cross-repo push.
 #
-# Source repo:   avinash-singh-io/momentum         (this repo — site under /site)
+# Source repo:   LiminaLabsAI/momentum         (this repo — site under /site)
 # Deploy target: trymomentum/trymomentum.github.io (org-owned User/Org Pages repo)
 #
 # Auth uses a Fine-grained PAT stored as `PAGES_DEPLOY_TOKEN` in this
@@ -75,7 +75,7 @@ jobs:
           # the force-push then triggers it → actions/deploy-pages → live.
           # (Requires PAGES_DEPLOY_TOKEN to allow pushes under .github/workflows/.)
           mkdir -p site/dist/.github/workflows
-          echo 'bmFtZTogUHVibGlzaCBQYWdlcwojIFB1Ymxpc2hlcyB0aGlzIHJlcG8ncyBjb21taXR0ZWQgc3RhdGljIHNpdGUgdG8gR2l0SHViIFBhZ2VzIChidWlsZF90eXBlOgojIHdvcmtmbG93KS4gU2hpcHBlZCBJTlRPIGRpc3QgYnkgYXZpbmFzaC1zaW5naC1pby9tb21lbnR1bSdzIGRlcGxveS1zaXRlLnltbAojIHNvIHRoZSBjcm9zcy1yZXBvIGZvcmNlLXB1c2ggKHdoaWNoIHJlcGxhY2VzIHRoaXMgcmVwbydzIG1haW4pIGFsd2F5cwojIHJlLWxhbmRzIHRoZSBwdWJsaXNoZXI7IHRoZSBwdXNoIHRoZW4gdHJpZ2dlcnMgdGhpcyB3b3JrZmxvdy4Kb246CiAgcHVzaDoKICAgIGJyYW5jaGVzOiBbbWFpbl0KICB3b3JrZmxvd19kaXNwYXRjaDoKcGVybWlzc2lvbnM6CiAgY29udGVudHM6IHJlYWQKICBwYWdlczogd3JpdGUKICBpZC10b2tlbjogd3JpdGUKY29uY3VycmVuY3k6CiAgZ3JvdXA6IHBhZ2VzCiAgY2FuY2VsLWluLXByb2dyZXNzOiBmYWxzZQpqb2JzOgogIGRlcGxveToKICAgIGVudmlyb25tZW50OiBnaXRodWItcGFnZXMKICAgIHJ1bnMtb246IHVidW50dS1sYXRlc3QKICAgIHN0ZXBzOgogICAgICAtIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjQKICAgICAgLSB1c2VzOiBhY3Rpb25zL2NvbmZpZ3VyZS1wYWdlc0B2NQogICAgICAtIHVzZXM6IGFjdGlvbnMvdXBsb2FkLXBhZ2VzLWFydGlmYWN0QHYzCiAgICAgICAgd2l0aDoKICAgICAgICAgIHBhdGg6ICcuJwogICAgICAtIHVzZXM6IGFjdGlvbnMvZGVwbG95LXBhZ2VzQHY0Cg==' \
+          echo 'bmFtZTogUHVibGlzaCBQYWdlcwojIFB1Ymxpc2hlcyB0aGlzIHJlcG8ncyBjb21taXR0ZWQgc3RhdGljIHNpdGUgdG8gR2l0SHViIFBhZ2VzIChidWlsZF90eXBlOgojIHdvcmtmbG93KS4gU2hpcHBlZCBJTlRPIGRpc3QgYnkgTGltaW5hTGFic0FJL21vbWVudHVtJ3MgZGVwbG95LXNpdGUueW1sCiMgc28gdGhlIGNyb3NzLXJlcG8gZm9yY2UtcHVzaCAod2hpY2ggcmVwbGFjZXMgdGhpcyByZXBvJ3MgbWFpbikgYWx3YXlzCiMgcmUtbGFuZHMgdGhlIHB1Ymxpc2hlcjsgdGhlIHB1c2ggdGhlbiB0cmlnZ2VycyB0aGlzIHdvcmtmbG93LgpvbjoKICBwdXNoOgogICAgYnJhbmNoZXM6IFttYWluXQogIHdvcmtmbG93X2Rpc3BhdGNoOgpwZXJtaXNzaW9uczoKICBjb250ZW50czogcmVhZAogIHBhZ2VzOiB3cml0ZQogIGlkLXRva2VuOiB3cml0ZQpjb25jdXJyZW5jeToKICBncm91cDogcGFnZXMKICBjYW5jZWwtaW4tcHJvZ3Jlc3M6IGZhbHNlCmpvYnM6CiAgZGVwbG95OgogICAgZW52aXJvbm1lbnQ6IGdpdGh1Yi1wYWdlcwogICAgcnVucy1vbjogdWJ1bnR1LWxhdGVzdAogICAgc3RlcHM6CiAgICAgIC0gdXNlczogYWN0aW9ucy9jaGVja291dEB2NAogICAgICAtIHVzZXM6IGFjdGlvbnMvY29uZmlndXJlLXBhZ2VzQHY1CiAgICAgIC0gdXNlczogYWN0aW9ucy91cGxvYWQtcGFnZXMtYXJ0aWZhY3RAdjMKICAgICAgICB3aXRoOgogICAgICAgICAgcGF0aDogJy4nCiAgICAgIC0gdXNlczogYWN0aW9ucy9kZXBsb3ktcGFnZXNAdjQK' \
             | base64 -d > site/dist/.github/workflows/publish.yml
 
       - name: Deploy dist → trymomentum/trymomentum.github.io

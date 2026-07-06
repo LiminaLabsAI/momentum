@@ -71,7 +71,7 @@ access. Your agent might use a remote model, but momentum itself doesn't.
 ## Does momentum send any data anywhere?
 
 No. There is no telemetry, no analytics, no phone-home. The source is
-[on GitHub](https://github.com/avinash-singh-io/momentum) — read the
+[on GitHub](https://github.com/LiminaLabsAI/momentum) — read the
 `bin/`, `core/`, and `adapters/` directories. The install scripts and the
 runtime are static; nothing connects to external services.
 
@@ -87,14 +87,14 @@ run yourself.
 Upgrading is **two steps** — update the CLI, then re-sync the files:
 
 ```bash
-npm install -g @avinash-singh-io/momentum@latest   # 1. update the CLI itself
+npm install -g @limina-labs/momentum@latest   # 1. update the CLI itself
 momentum upgrade                                    # 2. re-sync this project's files
 ```
 
 Why two steps? `momentum upgrade` copies files from the *installed* CLI, not
 from npm — so your project files can only ever be as new as the CLI. If you
 skip step 1, step 2 faithfully re-installs the same old files. (If you use
-`npx`, always pin `@latest` — `npx @avinash-singh-io/momentum@latest …` —
+`npx`, always pin `@latest` — `npx @limina-labs/momentum@latest …` —
 because a bare `npx` invocation serves a cached version. `momentum upgrade`
 also warns you when your installed CLI is behind the published latest.)
 
@@ -193,7 +193,7 @@ not GitHub.
 
 ## Where do I report bugs?
 
-[GitHub Issues](https://github.com/avinash-singh-io/momentum/issues).
+[GitHub Issues](https://github.com/LiminaLabsAI/momentum/issues).
 Please include your `momentum --version`, the agent you're using, and a
 minimal reproduction. Bugs filed with momentum's own backlog conventions
 (priority, status, context block) are appreciated but not required.
@@ -201,7 +201,7 @@ minimal reproduction. Bugs filed with momentum's own backlog conventions
 ## How do I contribute?
 
 momentum is open source. The repo is at
-[github.com/avinash-singh-io/momentum](https://github.com/avinash-singh-io/momentum).
+[github.com/LiminaLabsAI/momentum](https://github.com/LiminaLabsAI/momentum).
 
 Issues, discussions, and PRs welcome. The project itself uses momentum,
 so contributing means following the same workflow you'd use in your own
@@ -215,4 +215,4 @@ branch outside the active phase.
 
 ## What's the license?
 
-MIT. See [LICENSE](https://github.com/avinash-singh-io/momentum/blob/main/LICENSE).
+MIT. See [LICENSE](https://github.com/LiminaLabsAI/momentum/blob/main/LICENSE).

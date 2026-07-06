@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/avinash-singh-io/momentum/schemas/initiative-v1.json",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/initiative-v1.json",
   "title": "Momentum Ecosystem Initiative Frontmatter",
   "description": "YAML frontmatter shape for an initiative file (initiatives/NNNN-slug.md). The file body is free-form markdown; only the frontmatter block is schema-validated.",
   "type": "object",

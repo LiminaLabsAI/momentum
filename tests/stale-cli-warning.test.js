@@ -16,7 +16,7 @@ test('warns when the installed CLI is behind the published latest', () => {
   assert.ok(w, 'expected a warning string');
   assert.match(w, /0\.20\.2/);
   assert.match(w, /0\.21\.0/);
-  assert.match(w, /@avinash-singh-io\/momentum@latest/);
+  assert.match(w, /@limina-labs\/momentum@latest/);
   assert.match(w, /INSTALLED CLI/);
 });
 

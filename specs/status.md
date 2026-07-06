@@ -6,7 +6,7 @@ type: Status
 
 > **Last Updated**: 2026-07-06
 > **Current Phase**: _none active_ (Phase 25 — Intelligence is next)
-> **Latest Release**: v0.30.0 — Phase 22c Opencode Polish & Multi-Adapter Support (BUG-020 fix)
+> **Latest Release**: v0.30.2 — Limina Labs namespace move (ad-hoc; GitHub repo → `LiminaLabsAI/momentum`, npm → `@limina-labs/momentum`)
 > **Health**: On Track
 
 ## Summary
@@ -64,6 +64,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | v0.22.3 | 2026-06-20 | bugfix/patch | BUG-011 — `init`/`upgrade` git-hook install made additive/self-healing (was skipping entirely when `core.hooksPath` ≠ `.githooks`, leaving repos with zero enforcement). Picked up via `/continue` handoff-001 from cerebrio-sapience. |
 | v0.25.1 | 2026-07-03 | bugfix/patch | BUG-014 (upgrade neutralizes legacy `.momentum/` gitignore rule so the D1 lock commits) + BUG-015 (commit-msg bypass accepts the house `merge: ` style — also unblocked `lanes land` on hook-enforced repos). **Fixed as two concurrent `momentum lanes`** — the first real parallel-bugfix dogfood; ENH-048 filed en route. Records in `specs/adhoc/fix-BUG-01{4,5}-*/`. |
 | v0.25.2 | 2026-07-03 | bugfix/patch | BUG-013 (site `postbuild` gate fails builds on empty page bodies + CI headless-shell install) + ENH-048 (`lanes land` gate reads evidence from the lane branch; `--mark-landed` bookkeeping). Parallel lanes round two — BUG-013's landing was the new gate's first production use: one `lanes land --execute`, no workarounds. Records in `specs/adhoc/fix-{BUG-013,ENH-048}-*/`. |
+| v0.30.1 | 2026-07-06 | bugfix/patch | *(row backfilled 2026-07-06 — missed at release)* Issue sweep: BUG-021 `ecosystem init` existing-project guard, ENH-050 lanes foot-guns, BUG-018 test isolation; ships the BUG-022 pointer-preservation fix to npm. Record `specs/adhoc/fix-issue-sweep-v0.30.1/`. |
+| v0.30.2 | 2026-07-06 | chore/patch | **Limina Labs namespace move** — GitHub repo transferred → `LiminaLabsAI/momentum` (old URLs 301-redirect; secret/releases/stars intact), npm renamed → `@limina-labs/momentum` (old scope deprecated with pointer; npm has no scope transfer). All functional refs updated; 4 fingerprints re-baselined; TD-009 filed. Record `specs/adhoc/2026-07-06-repo-transfer-liminalabs/`. |
 
 ## Active Phase
 
@@ -126,7 +128,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - Template-based install (file copy via install.sh) chosen for Phase 0 — simpler, no build tooling required; `npx momentum init` CLI deferred to Phase 2
 - DIP architecture: `core/` (tool-agnostic logic) + `adapters/` (tool-specific wiring) — Phase 1 delivers this before the npx CLI so the CLI gets tool auto-detection for free
 - Zero-dependency Node.js CLI — no `commander`, no `chalk`; only built-ins (`fs`, `path`, `process`)
-- Package name `@avinash-singh-io/momentum` — `momentum` (unscoped) was taken on npm
+- Package name `@limina-labs/momentum` — renamed from `@avinash-singh-io/momentum` on 2026-07-06 (Limina Labs org move; old package deprecated with pointer). Original scoped name chosen because `momentum` (unscoped) was taken on npm
 - Claude Code only in Phase 2 — auto-detection deferred until more adapters land
 - `install.sh` kept unchanged — npx CLI is additive, two install paths coexist
 - `adapter.js` per coding agent (Option A) — DIP boundary for future adapters; consistent with `adapter.sh` pattern from Phase 1

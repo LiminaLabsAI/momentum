@@ -1,6 +1,6 @@
 # momentum — website
 
-The public site for [momentum](https://github.com/avinash-singh-io/momentum),
+The public site for [momentum](https://github.com/LiminaLabsAI/momentum),
 served at <https://trymomentum.github.io>. A custom [Astro](https://astro.build)
 static site (no docs framework) on a cobalt / glassmorphic / Geist design
 system.
