@@ -8,6 +8,8 @@
   [![npm](https://img.shields.io/npm/v/@limina-labs/momentum?logo=npm)](https://www.npmjs.com/package/@limina-labs/momentum)
   [![license](https://img.shields.io/github/license/LiminaLabsAI/momentum)](LICENSE)
   [![visit the site](https://img.shields.io/badge/site-trymomentum.github.io-4F46E5)](https://trymomentum.github.io/)
+
+  <sub>Built and maintained by <a href="https://github.com/LiminaLabsAI">Limina Labs</a></sub>
 </div>
 
 ---
