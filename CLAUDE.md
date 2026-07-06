@@ -4,6 +4,21 @@
 
 # Project Rules: momentum
 
+<!-- ecosystem:begin v=2 -->
+> **Member of `cerebrio-ecosystem` ecosystem** at `../cerebrio-ecosystem`.
+>
+> **Cross-repo work?** Write an initiative — never plan cross-repo features in this repo:
+> `../cerebrio-ecosystem/initiatives/<NNNN-slug>.md` (or `/initiative create <slug>`)
+>
+> Orchestration primitives (run from this repo or the ecosystem root):
+> - `/scout <repo>` — read another member's state
+> - `/dispatch <r1> <r2> "..."` — parallel multi-repo investigation (slash command — `momentum dispatch` CLI is keyword-only)
+> - `/handoff <repo>` — transfer context to another member
+> - `/continue` — resume from an inbox handoff
+>
+> See siblings + live state: `momentum ecosystem status`
+<!-- ecosystem:end -->
+
 > Claude Code configuration for this project.
 
 ## Navigation (Where to Find Things)
