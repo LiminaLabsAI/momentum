@@ -36,8 +36,7 @@
       "WebFetch(domain:trymomentum.github.io)",
       "WebFetch(domain:sachinshelke.github.io)",
       "Bash(mkdir -p .momentum)",
-      "Bash(touch .momentum/brainstorm-active)",
-      "Bash(momentum lanes *)"
+      "Bash(touch .momentum/brainstorm-active)"
     ]
   }
 }
