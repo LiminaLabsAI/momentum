@@ -1,3 +1,7 @@
+---
+type: ADR
+---
+
 # ADR-0007: Multi-Adapter Installed State Schema
 
 ## Status

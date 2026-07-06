@@ -1,3 +1,7 @@
+---
+type: Task List
+---
+
 # Phase 22c Tasks — Opencode Polish & Multi-Adapter Support
 
 ## Group 0 — ADR + Schema Migration

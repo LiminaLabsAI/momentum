@@ -1,3 +1,7 @@
+---
+type: Plan
+---
+
 # Phase 22c Plan — Opencode Polish & Multi-Adapter Support
 
 # Sequential: Group 0 → Group 1 → Group 2 → Group 3

@@ -1,3 +1,7 @@
+---
+type: Phase History
+---
+
 # Phase 22c History
 
 ## Entry Types
@@ -62,5 +66,12 @@
 **Affects-specs**: bin/momentum.js, bin/state-commands.js, specs/status.md, specs/phases/phase-22c-opencode-polish/tasks.md
 
 **Detail**: Implemented the ADR-0007 schema change: `installed.json` now uses per-agent `agents` map instead of a single `agent` lock. `loadInstalledState()` detects legacy format (`agent` at root, no `agents`) and one-way migrates to `{ version, agents: { [name]: { version, files } } }`. `saveInstalledState()` writes the new format. `writeInstalledManifest()` updates only the specified agent's entry, preserving all others. `upgrade()` scopes orphan cleanup to the upgraded agent's prior files only — other agents' files are never eligible. `init()` adds to the agents map without removing other agents. `doctor` command updated to read new format. Three new opencode skills created (`momentum-track`, `momentum-lanes`, `momentum-validate`). Migration tests (5) and multi-adapter upgrade tests (5) all green. Full suite 819/819 green.
+
+---
+### [DISCOVERY] 2026-07-06 — Review found a destructive commit + a fleet-breaking schema gap; both fixed
+Topics: opencode, multi-adapter, installed-json, ecosystem, review
+Affects-phases: phase-22c-opencode-polish
+Affects-specs: specs/decisions/0007-multi-adapter-installed-state.md
+Detail: The reviewing session (claude-code) found commit 9b33a0f bundled an accidental `momentum ecosystem init` INSIDE the repo (README.md and .gitignore replaced by ecosystem-root templates, ecosystem.json/initiatives/ scaffolded, runtime state committed) with a ~180-file mass chmod — reverted in 3cefac5 keeping only the G3 verify script; BUG-021 filed (CLI guard, inverse of BUG-016). Also: the new agents-map schema dropped `momentumVersion`, which bin/ecosystem.js readMemberVersion() reads for the fleet D1 lock — every migrated member would report 'unknown'. Fixed: saveInstalledState writes a momentumVersion compat mirror + the fleet reader accepts either field + regression test. New `tests/repo-integrity-guards.test.js` pins the README/.gitignore/eco-root invariants the incident violated (the suite had stayed green through all of it). ide-support multi-adapter docs updated to the now-true additive behavior.
 
 ---
