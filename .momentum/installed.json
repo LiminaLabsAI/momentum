@@ -1,165 +1,92 @@
 {
-  "schema": 1,
-  "momentumVersion": "0.29.0",
-  "agent": "opencode",
-  "installedAt": "2026-07-03",
-  "updatedAt": "2026-07-06",
-  "managedFiles": [
-    {
-      "path": ".agent/engines/subagent-dispatch.md",
-      "sha256": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb"
+  "version": "0.30.0",
+  "momentumVersion": "0.30.0",
+  "agents": {
+    "opencode": {
+      "version": "0.30.0",
+      "files": [
+        ".agent/engines/subagent-dispatch.md",
+        ".githooks/commit-msg",
+        ".githooks/contract.js",
+        ".githooks/pre-push",
+        ".githooks/run-check.js",
+        ".opencode/agents/momentum-reviewer-architecture.md",
+        ".opencode/agents/momentum-reviewer-qa.md",
+        ".opencode/agents/momentum-reviewer-security.md",
+        ".opencode/agents/swarm-supervisor.md",
+        ".opencode/commands/brainstorm-idea.md",
+        ".opencode/commands/brainstorm-phase.md",
+        ".opencode/commands/complete-phase.md",
+        ".opencode/commands/continue.md",
+        ".opencode/commands/dispatch.md",
+        ".opencode/commands/ecosystem.md",
+        ".opencode/commands/handoff.md",
+        ".opencode/commands/hotfix.md",
+        ".opencode/commands/initiative.md",
+        ".opencode/commands/lanes.md",
+        ".opencode/commands/log.md",
+        ".opencode/commands/migrate.md",
+        ".opencode/commands/review-code.md",
+        ".opencode/commands/review.md",
+        ".opencode/commands/scout.md",
+        ".opencode/commands/session.md",
+        ".opencode/commands/start-phase.md",
+        ".opencode/commands/start-project.md",
+        ".opencode/commands/swarm.md",
+        ".opencode/commands/sync-docs.md",
+        ".opencode/commands/systematic-debug.md",
+        ".opencode/commands/track.md",
+        ".opencode/commands/validate.md",
+        ".opencode/plugins/momentum.js",
+        ".opencode/skills/momentum-lanes/SKILL.md",
+        ".opencode/skills/momentum-orient/SKILL.md",
+        ".opencode/skills/momentum-track/SKILL.md",
+        ".opencode/skills/momentum-validate/SKILL.md",
+        "AGENTS.md",
+        "scripts/brainstorm-gate.sh",
+        "scripts/check-history-reminder.sh",
+        "scripts/session-append.sh",
+        "scripts/sessionstart-handoff.sh"
+      ]
     },
-    {
-      "path": ".githooks/commit-msg",
-      "sha256": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1"
-    },
-    {
-      "path": ".githooks/contract.js",
-      "sha256": "1eaba39ce9c4dac98ef85625371325eee553c70c942927c213d487610ec8ed0c"
-    },
-    {
-      "path": ".githooks/pre-push",
-      "sha256": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6"
-    },
-    {
-      "path": ".githooks/run-check.js",
-      "sha256": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa"
-    },
-    {
-      "path": ".opencode/agents/momentum-reviewer-architecture.md",
-      "sha256": "3331c4f1fe6c8ba389f4d49771fee4720ad83223d4683712bb1cbf341c5ec053"
-    },
-    {
-      "path": ".opencode/agents/momentum-reviewer-qa.md",
-      "sha256": "7b074044de574e27dbfad3e64b3555dc72f81b270ae40da3a2fae5e04d70d15e"
-    },
-    {
-      "path": ".opencode/agents/momentum-reviewer-security.md",
-      "sha256": "48f4eb012373c3c77bf4dc4e37128fef59bc482b13cc9d8822863bdf96ecb90a"
-    },
-    {
-      "path": ".opencode/agents/swarm-supervisor.md",
-      "sha256": "a1431fbc6f81ba844d8f86fa92c2d5ba7f715de9712aa8b95f131e5f00203289"
-    },
-    {
-      "path": ".opencode/commands/brainstorm-idea.md",
-      "sha256": "4d1b983b0a1a7cec2610c7d6d837d812dfe5a8ff89a3a91cb1f14d574b7225ca"
-    },
-    {
-      "path": ".opencode/commands/brainstorm-phase.md",
-      "sha256": "6d4a5c9ee78c96233193e527bdbf0b67c6e148ea83009fb00b23e244d8cf877d"
-    },
-    {
-      "path": ".opencode/commands/complete-phase.md",
-      "sha256": "f927b3421b05d3d7b6950536dc0c0f380851bb9249e84cc140753b1e5789ff05"
-    },
-    {
-      "path": ".opencode/commands/continue.md",
-      "sha256": "1537cee5fefdfaf7a64924a39b9d5ab31edf73095a0a894794d26cd04a23f659"
-    },
-    {
-      "path": ".opencode/commands/dispatch.md",
-      "sha256": "a935f04722ecaeaf9d30b302c04ae24a2ea007551550d7f4f594302caed4d547"
-    },
-    {
-      "path": ".opencode/commands/ecosystem.md",
-      "sha256": "a6b27f06cc72c590e07705d8ca50f0469efd2cb194ddaa9f9b92ef122e126a14"
-    },
-    {
-      "path": ".opencode/commands/handoff.md",
-      "sha256": "b7661a41ac3dc5560456b2259b9358b3b53a18950c0c5943b5cd21de6fe8f744"
-    },
-    {
-      "path": ".opencode/commands/hotfix.md",
-      "sha256": "8926d897df43dcb6e557579ccbf9a0db2c86a821a4417765165f566ae64ac99d"
-    },
-    {
-      "path": ".opencode/commands/initiative.md",
-      "sha256": "350b83f3e8c53d535a6fca50eefaf676e86188f2144b0c19fa4f2de6d586b5b6"
-    },
-    {
-      "path": ".opencode/commands/lanes.md",
-      "sha256": "4ad54e7691145627853b5c3b56947caeeae467ae9d68c6c3acfc820a577352d1"
-    },
-    {
-      "path": ".opencode/commands/log.md",
-      "sha256": "94877de62241a6db0c9b15270f25188731a82a99300a9a3ee42a0a0bf6692bb7"
-    },
-    {
-      "path": ".opencode/commands/migrate.md",
-      "sha256": "76927a40c76c3df55028b79640829a26b784238b15256dda79fce58cf970f07b"
-    },
-    {
-      "path": ".opencode/commands/review-code.md",
-      "sha256": "0859120394ce9a551ea375d45d8be26d378cb420fb45adebfdc749123c0fb03d"
-    },
-    {
-      "path": ".opencode/commands/review.md",
-      "sha256": "ef9b326e760dcb762d54478d28994a6ae000c3e68d725dd2ff5edcf89849d8df"
-    },
-    {
-      "path": ".opencode/commands/scout.md",
-      "sha256": "6f55e31f2466c75c0dd2582047f63462e5d873bcc8e9c1c8c2cccb821ae09461"
-    },
-    {
-      "path": ".opencode/commands/session.md",
-      "sha256": "44e08f13721ac3cd2a42cf8e2e316836b9cdfe96e63ad70e3bae86f3b4b31da1"
-    },
-    {
-      "path": ".opencode/commands/start-phase.md",
-      "sha256": "89705992a6ba207868fd17afcc0ee8a330b0443f5622273206fd491fe7ba8005"
-    },
-    {
-      "path": ".opencode/commands/start-project.md",
-      "sha256": "0e264b36856efd96773f1361813087741dda500847fd669d2ac0032507af0f5b"
-    },
-    {
-      "path": ".opencode/commands/swarm.md",
-      "sha256": "7b0474817b675e660163c4c34a6404c870c7c1f2fb2f19fc925b8996e822dae2"
-    },
-    {
-      "path": ".opencode/commands/sync-docs.md",
-      "sha256": "7221595b8b57436f326f4d545eea94fee1a9f3aa1d7312c61cc2af10e2686a98"
-    },
-    {
-      "path": ".opencode/commands/systematic-debug.md",
-      "sha256": "684ac08f19c8adfa6a3dc3d3650bc409d896b4c8caac1c2306dbce3b14fe7e5d"
-    },
-    {
-      "path": ".opencode/commands/track.md",
-      "sha256": "013a0889e0da54caca51f03e937f6a787d98a6f13feebdac9cc2376991ddfd76"
-    },
-    {
-      "path": ".opencode/commands/validate.md",
-      "sha256": "085130d594fbfbfcda53bc6831e417760ec2f3b5a2a09807af9d5aa3bd0b35f2"
-    },
-    {
-      "path": ".opencode/plugins/momentum.js",
-      "sha256": "6c7f407402e1ab5fb0997dacee1383f447e617257454c20f93f58f3ab0ef1c6c"
-    },
-    {
-      "path": ".opencode/skills/momentum-orient/SKILL.md",
-      "sha256": "9228cab651fdcabbcda34ca553823ec15247e78992e2ff688c60a60ab8dbcea4"
-    },
-    {
-      "path": "AGENTS.md",
-      "sha256": "8ae99cdfb7de968a08d4df116d3243f919773bf4afb738f993c42d6423675c4c"
-    },
-    {
-      "path": "scripts/brainstorm-gate.sh",
-      "sha256": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19"
-    },
-    {
-      "path": "scripts/check-history-reminder.sh",
-      "sha256": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165"
-    },
-    {
-      "path": "scripts/session-append.sh",
-      "sha256": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc"
-    },
-    {
-      "path": "scripts/sessionstart-handoff.sh",
-      "sha256": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6"
+    "claude-code": {
+      "version": "0.30.0",
+      "files": [
+        ".agent/engines/subagent-dispatch.md",
+        ".claude/commands/brainstorm-idea.md",
+        ".claude/commands/brainstorm-phase.md",
+        ".claude/commands/complete-phase.md",
+        ".claude/commands/continue.md",
+        ".claude/commands/dispatch.md",
+        ".claude/commands/ecosystem.md",
+        ".claude/commands/handoff.md",
+        ".claude/commands/hotfix.md",
+        ".claude/commands/initiative.md",
+        ".claude/commands/lanes.md",
+        ".claude/commands/log.md",
+        ".claude/commands/migrate.md",
+        ".claude/commands/review-code.md",
+        ".claude/commands/review.md",
+        ".claude/commands/scout.md",
+        ".claude/commands/session.md",
+        ".claude/commands/start-phase.md",
+        ".claude/commands/start-project.md",
+        ".claude/commands/swarm.md",
+        ".claude/commands/sync-docs.md",
+        ".claude/commands/systematic-debug.md",
+        ".claude/commands/track.md",
+        ".claude/commands/validate.md",
+        ".claude/settings.json",
+        ".githooks/commit-msg",
+        ".githooks/contract.js",
+        ".githooks/pre-push",
+        ".githooks/run-check.js",
+        "CLAUDE.md",
+        "scripts/brainstorm-gate.sh",
+        "scripts/check-history-reminder.sh",
+        "scripts/session-append.sh",
+        "scripts/sessionstart-handoff.sh"
+      ]
     }
-  ]
+  }
 }
