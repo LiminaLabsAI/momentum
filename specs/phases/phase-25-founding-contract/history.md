@@ -54,3 +54,10 @@ Affects-specs: core/commands/brainstorm-phase.md, core/commands/start-phase.md, 
 Detail: The founded predicate (charter + roadmap exist) now gates /brainstorm-phase step 1 and /start-phase setup step 1 (STOP → route to /start-project, offer to draft foundation docs from conversation context); /validate gains check 2b (phases ⟹ founded = failure; unfounded-no-phases = valid Installed state); /migrate declares foundation docs non-gaps and reports Founded: yes/no; /brainstorm-idea routes through founding language. Rule 1 gained not-founded routing in core/instructions/rules-body.md (single source) — all four generated instruction surfaces regenerated per ADR-0004. Fingerprints re-baselined ×4; suite 845/845.
 
 ---
+### [NOTE] 2026-07-06 — G3 complete: verified end-to-end; v0.32.0 built, at the release gate
+Topics: verification, site-docs, foundation-docs
+Affects-phases: phase-25-founding-contract
+Affects-specs: specs/phases/phase-25-founding-contract/retrospective.md
+Detail: e2e evidence captured (fresh init NOT-FOUNDED-SHAPE-OK + okf-conformant; legacy upgrade dry-run/heal/idempotence HEALED-TO-NOT-FOUNDED-OK); site getting-started gains the founding step (walkthrough renumbered to 6 steps), skills page + README updated; site build green after a local npm ci (stale node_modules missing astro-icon — environment, not product); suite 845/845 three times; version 0.31.2 → 0.32.0. Phase stops at the Rule 6 merge/release gate.
+
+---

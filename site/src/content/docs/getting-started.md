@@ -80,12 +80,11 @@ After `init`, your project has:
 
 ```
 my-project/
-├── specs/                  # status, phases, backlog, decisions, planning
+├── specs/                  # status, phases, backlog, decisions, changelog
 │   ├── status.md           # ← first file your agent reads (Rule 1)
 │   ├── backlog/
 │   ├── phases/
 │   ├── decisions/
-│   ├── planning/
 │   └── changelog/
 ├── .agent/
 │   └── rules/
@@ -102,6 +101,12 @@ For **Codex**, you get `AGENTS.md` + `.codex/` (config + hooks). For
 **Antigravity**, `AGENTS.md` only (no hook surface today). All variants
 share the same `specs/` and `.agent/` skeleton.
 
+One thing is deliberately **missing**: there's no `specs/vision/` and no
+roadmap. momentum never ships placeholder foundation docs — the charter,
+principles, success criteria, and roadmap are *authored* at founding by
+`/start-project` (see Step 2). Until then, `specs/status.md` reads
+"Not founded" and phase commands route you to founding first.
+
 ## Your first phase — end-to-end
 
 This is the loop. Run it once and you've seen everything momentum does.
@@ -117,7 +122,29 @@ To verify the agent is oriented: ask "what phase is this project on?" The
 agent should read `specs/status.md` and answer — that's Rule 1 (Always
 Orient First) firing.
 
-### Step 2 — Brainstorm the phase
+### Step 2 — Found the project
+
+A fresh install is **not founded** yet: no charter or roadmap exists, and
+`specs/status.md` says so. Foundation docs are authored from your actual
+idea, never scaffolded as templates.
+
+```
+> /brainstorm-idea
+```
+
+Explore the idea in conversation — nothing is written to disk. When it's
+settled:
+
+```
+> /start-project
+```
+
+The agent drafts the charter, principles, success criteria, and roadmap
+from the brainstorm, shows you the full draft, writes it only on your
+approval, and plans Phase 0. Phase commands stop and route you here until
+the project is founded.
+
+### Step 3 — Brainstorm the phase
 
 ```
 > /brainstorm-phase
@@ -150,7 +177,7 @@ tasks, and history skeleton. You say "approve" — the sentinel file gets
 removed and the files land on disk in one batch + the brainstorm gets
 committed.
 
-### Step 3 — Start the phase
+### Step 4 — Start the phase
 
 ```
 > /start-phase
@@ -175,7 +202,7 @@ Throughout, your agent narrates what it's doing. You can interrupt anytime
 — the contract is "proceed silently unless interrupted," not "execute
 without communication."
 
-### Step 4 — Watch the discipline land
+### Step 5 — Watch the discipline land
 
 While `/start-phase` runs, observe:
 
@@ -189,7 +216,7 @@ If the agent discovers a bug or tech debt during the phase (Rule 3), it
 adds the item to `backlog.md` immediately and tells you. You don't need to
 ask.
 
-### Step 5 — Complete the phase
+### Step 6 — Complete the phase
 
 ```
 > /complete-phase

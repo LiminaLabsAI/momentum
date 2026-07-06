@@ -42,8 +42,11 @@ committing to a project.
 
 ### `/start-project`
 
-Scaffold a new project from a clear idea. Creates `specs/`, the primary
-instruction file, agent rules, and hooks.
+Found the project from a clear idea — authors the charter, principles,
+success criteria, and roadmap from your brainstorm, then plans Phase 0.
+Content, not structure: `momentum init` owns the machinery, and foundation
+docs don't exist until this command writes them (their absence is the
+"not founded" signal phase commands check).
 
 ```
 > /start-project
@@ -54,7 +57,7 @@ Primary agent? (claude-code / codex / antigravity)
 ...
 ```
 
-Run after `/brainstorm-idea`. Idempotent against skip-if-exists.
+Run after `/brainstorm-idea`. Phase commands route here until the project is founded.
 [→ source](https://github.com/LiminaLabsAI/momentum/blob/main/core/commands/start-project.md)
 
 ### `/migrate`

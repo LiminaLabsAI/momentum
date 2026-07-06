@@ -32,10 +32,10 @@ type: Tasks
 - [x] Verify: fingerprints re-baselined ×4; full suite green (845/845)
 
 ## Group 3 — Verification, docs, release prep
-- [ ] e2e evidence captured (fresh init + legacy upgrade)
-- [ ] okf check/index green on fresh init
-- [ ] README + site getting-started updated
-- [ ] Full suite + smoke matrix green
-- [ ] retrospective.md with verification evidence
-- [ ] Version bump → 0.32.0
-- [ ] HARD STOP: request operator approval for merge + tag + release + publish
+- [x] e2e evidence captured (fresh init + legacy upgrade) — `evidence/`
+- [x] okf check green on fresh init (13-file conformant bundle)
+- [x] README founding sentence + site getting-started Step 2 (Found the project) + skills page rewrite; site build green (12 pages + content gate)
+- [x] Full suite green ×3 runs (845/845)
+- [x] retrospective.md with verification evidence
+- [x] Version bump → 0.32.0
+- [/] HARD STOP: request operator approval for merge + tag + release + publish
