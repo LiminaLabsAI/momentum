@@ -18,10 +18,18 @@ function rmrf(dir) {
 }
 
 function runCli(args, opts = {}) {
-  return spawnSync('node', [CLI, ...args], {
+  // v0.31.0: `init` lost its silent claude-code default (interactive picker
+  // on TTYs, hard error through pipes). The pre-v0.31 suites exercise init's
+  // FILE behavior, not agent selection, so they keep the historical default
+  // here; agent selection itself is covered by tests/init-agent-prompt.test.js,
+  // which bypasses this injection by passing rawArgs: true.
+  const injectAgent = args[0] === 'init' && !args.includes('--agent') && !opts.rawArgs;
+  const finalArgs = injectAgent ? [...args, '--agent', 'claude-code'] : args;
+  const { rawArgs, ...spawnOpts } = opts;
+  return spawnSync('node', [CLI, ...finalArgs], {
     encoding: 'utf8',
     timeout: 15000,
-    ...opts,
+    ...spawnOpts,
   });
 }
 

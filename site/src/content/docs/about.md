@@ -89,6 +89,7 @@ of work).
 
 ## Where to find it
 
+- **Maintained by**: [Limina Labs](https://github.com/LiminaLabsAI)
 - **Source**: [github.com/LiminaLabsAI/momentum](https://github.com/LiminaLabsAI/momentum)
 - **Package**: [`@limina-labs/momentum` on npm](https://www.npmjs.com/package/@limina-labs/momentum)
 - **License**: [MIT](https://github.com/LiminaLabsAI/momentum/blob/main/LICENSE)

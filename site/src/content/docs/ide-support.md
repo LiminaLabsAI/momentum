@@ -65,11 +65,10 @@ and parallel subagents, which no other adapter has validated yet.
 
 ## Claude Code
 
-Default adapter — `--agent claude-code` is implicit. The richest hook
-surface today.
+The richest hook surface today.
 
 ```bash
-npx @limina-labs/momentum@latest init
+npx @limina-labs/momentum@latest init --agent claude-code
 ```
 
 ### What you get

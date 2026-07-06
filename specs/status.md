@@ -6,7 +6,7 @@ type: Status
 
 > **Last Updated**: 2026-07-06
 > **Current Phase**: _none active_ (Phase 25 — Intelligence is next)
-> **Latest Release**: v0.30.2 — Limina Labs namespace move (ad-hoc; GitHub repo → `LiminaLabsAI/momentum`, npm → `@limina-labs/momentum`)
+> **Latest Release**: v0.31.0 — init agent picker (no default adapter) + Limina Labs branding polish (ad-hoc)
 > **Health**: On Track
 
 ## Summary
@@ -66,6 +66,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | v0.25.2 | 2026-07-03 | bugfix/patch | BUG-013 (site `postbuild` gate fails builds on empty page bodies + CI headless-shell install) + ENH-048 (`lanes land` gate reads evidence from the lane branch; `--mark-landed` bookkeeping). Parallel lanes round two — BUG-013's landing was the new gate's first production use: one `lanes land --execute`, no workarounds. Records in `specs/adhoc/fix-{BUG-013,ENH-048}-*/`. |
 | v0.30.1 | 2026-07-06 | bugfix/patch | *(row backfilled 2026-07-06 — missed at release)* Issue sweep: BUG-021 `ecosystem init` existing-project guard, ENH-050 lanes foot-guns, BUG-018 test isolation; ships the BUG-022 pointer-preservation fix to npm. Record `specs/adhoc/fix-issue-sweep-v0.30.1/`. |
 | v0.30.2 | 2026-07-06 | chore/patch | **Limina Labs namespace move** — GitHub repo transferred → `LiminaLabsAI/momentum` (old URLs 301-redirect; secret/releases/stars intact), npm renamed → `@limina-labs/momentum` (old scope deprecated with pointer; npm has no scope transfer). All functional refs updated; 4 fingerprints re-baselined; TD-009 filed. Record `specs/adhoc/2026-07-06-repo-transfer-liminalabs/`. |
+| v0.31.0 | 2026-07-06 | feature/minor | **init agent picker** — `momentum init` no longer defaults to claude-code: interactive picker (number or name) on TTYs, hard error + agent list non-interactively, `--agent` bypasses as before. Plus Limina Labs branding (README byline, site footer/about, repo description). Suite 833/833. Record `specs/adhoc/2026-07-06-liminalabs-polish/`. |
 
 ## Active Phase
 
