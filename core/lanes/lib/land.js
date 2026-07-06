@@ -168,6 +168,14 @@ function cmdLand(cwd, argv) {
   const currentBranch = (git(cwd, 'rev-parse', '--abbrev-ref', 'HEAD').stdout || '').trim();
   const into = flags.into || currentBranch;
 
+  // ENH-050: `land` merges into the CURRENT branch — invoking it from the
+  // lane's own worktree would merge the lane onto itself and mark it landed
+  // while the integration branch got nothing (observed live, twice).
+  if (into === lane.branch) {
+    console.error(`✗ refusing to land '${id}' onto its own branch ('${into}') — run this from the integration branch's checkout (e.g. main): cd <primary checkout> && momentum lanes land ${id}${flags.execute ? ' --execute' : ''}`);
+    return 1;
+  }
+
   // ── --mark-landed: bookkeeping for a merge that already happened
   // out-of-band (ENH-048). No turn/freshness/gate checks, no merge.
   if (flags['mark-landed']) {

@@ -173,6 +173,30 @@ function cmdInit(args) {
     );
   }
 
+  // BUG-021: an ecosystem root is a COORDINATION directory, not a code repo.
+  // Scaffolding into an existing project overwrites its README.md and
+  // .gitignore with ecosystem templates (observed live — destructive).
+  // Refuse when the target looks like an existing project; --force overrides.
+  if (!args.includes('--force')) {
+    const projectMarkers = [
+      ['.momentum', 'a momentum project install (.momentum/)'],
+      ['package.json', 'a package.json'],
+      ['specs', 'a specs/ tree'],
+      ['.git', 'a git repository'],
+      ['README.md', 'an existing README.md'],
+    ].filter(([marker]) => fs.existsSync(path.join(root, marker)));
+    if (projectMarkers.length > 0) {
+      throw new Error(
+        `init: ${root} looks like an existing project — it contains ` +
+        `${projectMarkers.map(([, label]) => label).join(', ')}.\n` +
+        `  An ecosystem root must be its own directory (a SIBLING of member repos).\n` +
+        `  Use: momentum ecosystem init <name>   (creates ./<name>/)\n` +
+        `  or:  momentum init --ecosystem <name> (creates ../<name>/ and registers this repo)\n` +
+        `  Pass --force only if you really want an ecosystem root here.`,
+      );
+    }
+  }
+
   fs.mkdirSync(root, { recursive: true });
   fs.mkdirSync(path.join(root, 'initiatives'), { recursive: true });
   fs.mkdirSync(path.join(root, 'sessions'), { recursive: true });
