@@ -1120,6 +1120,21 @@ function upgrade(targetDir, agent, opts = {}) {
   console.log('→ Migrating agent rules (retired surface)...');
   agentRulesResult = migrateAgentRules(src, target, dests);
 
+  // BUG-022: the marker-aware rewrite below replaces the whole managed
+  // region, which wipes the ecosystem pointer block a registered member's
+  // instruction file carries (init injects it; upgrade used to lose it).
+  // Snapshot whether the block exists BEFORE the rewrite — we only ever
+  // PRESERVE an existing block, never add one the user didn't have (adding
+  // would dirty files mid-upgrade and break autostash restores).
+  const pointerLib = require('../core/ecosystem/lib/pointer');
+  const primaryRel = adapter.primaryInstruction.destination.join('/');
+  let hadPointerBlock = false;
+  try {
+    hadPointerBlock = pointerLib.POINTER_BEGIN_RE.test(
+      fs.readFileSync(path.join(target, primaryRel), 'utf8')
+    );
+  } catch (_e) { /* absent file → nothing to preserve */ }
+
   // Upgrade adapter-owned root instruction file
   primaryInstructionResult = upgradePrimaryInstruction(
     src,
@@ -1127,6 +1142,19 @@ function upgrade(targetDir, agent, opts = {}) {
     adapterDir,
     adapter.primaryInstruction
   );
+
+  if (hadPointerBlock && !_dryRun) {
+    try {
+      const ecoState = require('../core/ecosystem/lib/state');
+      const reg = ecoState.findRegistration(target);
+      if (reg && fileExists(path.join(target, primaryRel))) {
+        pointerLib.ensurePointerInjected(target, primaryRel, reg.rootPath, reg.ecosystemName);
+        console.log(`  ↺ ecosystem pointer block preserved (member of "${reg.ecosystemName}")`);
+      }
+    } catch (_e) {
+      /* pointer restoration is best-effort — never blocks an upgrade */
+    }
+  }
 
   // Adapter overlay upgrade — per-agent commands/agent-rules/scripts (additive)
   applyOverlay(adapterDir, target, dests, upgradeOpts);

@@ -205,3 +205,34 @@ test('saveInstalledState mirrors momentumVersion for external readers (ecosystem
     rmrf(target);
   }
 });
+
+test('upgrade preserves the ecosystem pointer block for registered members (BUG-022)', () => {
+  // The marker-aware primary-instruction rewrite used to wipe the pointer
+  // block init injects for ecosystem members. Upgrade must re-inject it.
+  const { spawnSync } = require('node:child_process');
+  const tmp = mktmp('bug022-');
+  try {
+    const cli = path.join(__dirname, '..', 'bin', 'momentum.js');
+    const eco = path.join(tmp, 'eco-root');
+    const member = path.join(tmp, 'member-app');
+    fs.mkdirSync(member, { recursive: true });
+    let r = spawnSync('node', [cli, 'init', member, '--agent', 'claude-code'], { encoding: 'utf8', timeout: 60000 });
+    assert.equal(r.status, 0, `init failed: ${r.stderr}`);
+    r = spawnSync('node', [path.join(__dirname, '..', 'bin', 'momentum.js'), 'ecosystem', 'init', 'eco-root'], { cwd: tmp, encoding: 'utf8', timeout: 60000 });
+    assert.equal(r.status, 0, `eco init failed: ${r.stderr}`);
+    r = spawnSync('node', [cli, 'ecosystem', 'add', member, '--ecosystem', eco], { cwd: member, encoding: 'utf8', timeout: 60000 });
+    assert.equal(r.status, 0, `eco add failed: ${r.stderr}`);
+    const claudeMd = path.join(member, 'CLAUDE.md');
+    assert.match(fs.readFileSync(claudeMd, 'utf8'), /ecosystem:begin/, 'pointer present after registration');
+
+    r = spawnSync('node', [cli, 'upgrade', member, '--agent', 'claude-code'], { encoding: 'utf8', timeout: 60000 });
+    assert.equal(r.status, 0, `upgrade failed: ${r.stderr}`);
+    assert.match(
+      fs.readFileSync(claudeMd, 'utf8'),
+      /ecosystem:begin/,
+      'pointer block must survive upgrade (BUG-022)',
+    );
+  } finally {
+    rmrf(tmp);
+  }
+});
