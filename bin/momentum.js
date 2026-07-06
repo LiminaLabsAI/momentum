@@ -1128,6 +1128,28 @@ function upgrade(targetDir, agent, opts = {}) {
     adapter.primaryInstruction
   );
 
+  // BUG-022: the marker-aware rewrite above replaces the whole managed
+  // region, which wipes the ecosystem pointer block a registered member's
+  // instruction file carries (init injects it; upgrade used to lose it).
+  // Re-inject via the same detection init uses. Idempotent (the pointer lib
+  // preserves an up-to-date block) and best-effort — never blocks an upgrade.
+  if (!_dryRun) {
+    try {
+      const ecoState = require('../core/ecosystem/lib/state');
+      const pointerLib = require('../core/ecosystem/lib/pointer');
+      const reg = ecoState.findRegistration(target);
+      if (reg) {
+        const primaryRel = adapter.primaryInstruction.destination.join('/');
+        if (fileExists(path.join(target, primaryRel))) {
+          pointerLib.ensurePointerInjected(target, primaryRel, reg.rootPath, reg.ecosystemName);
+          console.log(`  ↺ ecosystem pointer block preserved (member of "${reg.ecosystemName}")`);
+        }
+      }
+    } catch (_e) {
+      /* pointer restoration is best-effort */
+    }
+  }
+
   // Adapter overlay upgrade — per-agent commands/agent-rules/scripts (additive)
   applyOverlay(adapterDir, target, dests, upgradeOpts);
 

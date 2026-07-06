@@ -36,7 +36,7 @@ AND opencode surfaces, and the lock was still legacy single-agent format.
 The marker-aware upgrade **stripped the ecosystem pointer block** from
 CLAUDE.md (the `<!-- ecosystem:begin v=2 -->` block init injects for
 registered members). Every fleet member will lose its pointer on upgrade
-until fixed. Restored by hand here; filed with the re-inject fix sketch.
+until fixed. FIXED in this same lane: upgrade() re-injects the pointer for registered members (same detection init uses); regression test added. The hand-restore remains as the pre-fix artifact.
 
 ## Verification Evidence
 
