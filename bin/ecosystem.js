@@ -740,7 +740,7 @@ function readMemberVersion(repoPath) {
     const m = JSON.parse(
       fs.readFileSync(path.join(repoPath, '.momentum', 'installed.json'), 'utf8'),
     );
-    return (m && m.momentumVersion) || 'unknown';
+    return (m && (m.momentumVersion || m.version)) || 'unknown'; // ADR-0007: new schema uses `version`; momentumVersion kept as compat mirror
   } catch (_e) {
     return 'none'; // pre-Phase-20 install (no lock file)
   }

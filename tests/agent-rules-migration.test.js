@@ -104,7 +104,8 @@ test('upgrade — customized copy listed in an old lock file survives orphan cle
     fs.writeFileSync(rulesPath, custom);
     const lockPath = path.join(target, '.momentum', 'installed.json');
     const lock = JSON.parse(read(lockPath));
-    lock.managedFiles.push({ path: '.agent/rules/project.md' });
+    // Phase 22c: agents[agent].files is a string array
+    lock.agents['claude-code'].files.push('.agent/rules/project.md');
     write(lockPath, JSON.stringify(lock, null, 2));
 
     const res = runCli(['upgrade', target]);

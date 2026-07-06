@@ -1,6 +1,6 @@
 {
   "meta": {
-    "captured": "2026-07-05",
+    "captured": "2026-07-06",
     "adapter": "opencode",
     "note": "Phase 22 G4 baseline — v0.28.0 opencode adapter install"
   },
@@ -39,8 +39,11 @@
     ".opencode/commands/track.md": "013a0889e0da54caca51f03e937f6a787d98a6f13feebdac9cc2376991ddfd76",
     ".opencode/commands/validate.md": "085130d594fbfbfcda53bc6831e417760ec2f3b5a2a09807af9d5aa3bd0b35f2",
     ".opencode/plugins/momentum.js": "ec379608ce169b56ce6b23a23db667627619b445d979e9b36f1ac94d5f568456",
+    ".opencode/skills/momentum-lanes/SKILL.md": "49365e931639736a7d7402f50f5d81821d29c4beadc7ddfe5eeb9c9547120cff",
     ".opencode/skills/momentum-orient/SKILL.md": "9228cab651fdcabbcda34ca553823ec15247e78992e2ff688c60a60ab8dbcea4",
-    "AGENTS.md": "b06c2c42c3fe71dcaefc7e1edffece95f09c06914635e1441ef674525eafcd8f",
+    ".opencode/skills/momentum-track/SKILL.md": "a27678aced4f3297af922b187ddd60ba12700010f9ff65a4078bcf6a859e60bf",
+    ".opencode/skills/momentum-validate/SKILL.md": "7264214df9395be48403df5cee05c02226890c5c277050da96e6ba5500647621",
+    "AGENTS.md": "13f1d3a54dc0e28cca9ed6cd9eb957f6b8fc3fc57277c7909c8344a0bb7b212e",
     "README.md": "e768da68f1998cab85a38c948b0bc0192d5e885043ddca430fdb6ee847ac68be",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

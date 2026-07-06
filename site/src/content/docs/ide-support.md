@@ -211,15 +211,18 @@ only `.claude/` and `CLAUDE.md` are Claude-specific).
 
 ## Multi-adapter projects
 
-If your team uses **multiple agents** (some on Claude Code, some on Codex),
-run `momentum init --agent claude-code` first, then `momentum upgrade
---agent codex` to layer the Codex adapter overlay on top. Both
-`CLAUDE.md` and `AGENTS.md` will exist; both will reference the same
-`specs/` and `.agent/`.
+If your team uses **multiple agents** (some on opencode, some on Claude
+Code, some on Codex), run `momentum init --agent <first>` and then
+`momentum upgrade --agent <second>` for each additional adapter. Both
+`CLAUDE.md` and `AGENTS.md` will exist; every adapter references the same
+`specs/` and shares the per-project state.
 
-The adapter contract guarantees the overlays don't conflict — installing
-both is additive. Each agent reads its own primary instruction file at
-session start; they share the per-project state.
+As of v0.30.0, `.momentum/installed.json` tracks every installed adapter
+independently (`agents` map, ADR-0007), and upgrading one adapter never
+touches another adapter's files — orphan cleanup is scoped per agent.
+(Releases before v0.30.0 had a destructive edge here — BUG-020 — where
+upgrading a second adapter removed the first one's files; upgrade to
+v0.30.0+ before layering adapters.)
 
 ## Upgrading
 

@@ -73,7 +73,8 @@ test('upgrade --dry-run — reports an orphan would be removed but does not remo
     write(orphan, '# retired\n');
     const manifestPath = path.join(target, '.momentum', 'installed.json');
     const m = JSON.parse(read(manifestPath));
-    m.managedFiles.push({ path: '.claude/commands/retired-cmd.md', sha256: 'stale' });
+    // Phase 22c: files stored as string array under agents[agent].files
+    m.agents['claude-code'].files.push('.claude/commands/retired-cmd.md');
     write(manifestPath, JSON.stringify(m, null, 2) + '\n');
     const before = snapshot(target);
 

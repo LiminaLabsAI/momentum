@@ -159,7 +159,7 @@ function cmdDoctor(args) {
     const lockPath = path.join(cwd, '.momentum', 'installed.json');
     if (fs.existsSync(lockPath)) {
       const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
-      if (lock.agent === 'antigravity') {
+      if (lock.agent === 'antigravity' || (lock.agents && lock.agents['antigravity'])) {
         const { spawnSync } = require('child_process');
         const agyBin = process.env.AGY_BIN || 'agy';
         const found = agyBin.includes(path.sep)

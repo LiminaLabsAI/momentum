@@ -1,10 +1,11 @@
 'use strict';
 
-// Phase 20 — Upgrade Hardening, Group 1.
-// Orphan cleanup (remove files a newer version dropped) + BUG-008 (init no
-// longer silently clobbers momentum-owned files). Safety invariant: only
-// files momentum previously recorded as managed are ever removed; user files
-// are never in the manifest, so they are never touched.
+// Phase 22c (ADR-0007) — Multi-adapter lock file. Orphan cleanup is scoped
+// per-agent: only the upgraded agent's files may be removed. The manifest
+// stores agents[agent].files as a string array of relative paths.
+// Safety invariant: only files momentum previously recorded as managed for
+// the upgraded agent are ever removed; other agents' files + user files are
+// never in scope.
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -21,12 +22,11 @@ test('upgrade — removes an orphaned managed file and backs it up', () => {
   try {
     runCli(['init', target]);
 
-    // Simulate a file installed by an OLDER momentum that this version no
-    // longer ships: present on disk AND recorded in the manifest.
     const orphan = path.join(target, '.claude', 'commands', 'retired-cmd.md');
     write(orphan, '# retired\n');
     const m = readManifest(target);
-    m.managedFiles.push({ path: '.claude/commands/retired-cmd.md', sha256: 'stale' });
+    // Phase 22c: files stored as simple string array under agents[agent].files
+    m.agents['claude-code'].files.push('.claude/commands/retired-cmd.md');
     write(path.join(target, MANIFEST_REL), JSON.stringify(m, null, 2) + '\n');
 
     const res = runCli(['upgrade', target]);
@@ -36,7 +36,7 @@ test('upgrade — removes an orphaned managed file and backs it up', () => {
     assert.ok(fs.existsSync(orphan + '.bak'), 'orphan backed up to .bak');
     const after = readManifest(target);
     assert.ok(
-      !after.managedFiles.some((f) => f.path === '.claude/commands/retired-cmd.md'),
+      !after.agents['claude-code'].files.includes('.claude/commands/retired-cmd.md'),
       'orphan dropped from manifest'
     );
   } finally {
@@ -49,7 +49,6 @@ test('upgrade — never removes a user file not in the manifest', () => {
   try {
     runCli(['init', target]);
 
-    // A user-authored file momentum never installed — not in the manifest.
     const userFile = path.join(target, '.claude', 'commands', 'my-notes.md');
     write(userFile, '# my notes\n');
     const userScript = path.join(target, 'scripts', 'my-custom.sh');
@@ -86,11 +85,6 @@ test('init — BUG-008: re-init backs up a user-edited shipped file (no silent c
   }
 });
 
-// Regression: orphan cleanup must NOT remove adapter-owned config that the
-// adapter installs via an identical-skip path on upgrade (settings.json /
-// hooks.json). The adapter records these via helpers.recordManaged so they
-// stay in the managed set even when not rewritten. This guards a near-miss
-// where upgrade silently deleted the agent's hook config.
 for (const { agent, file } of [
   { agent: 'claude-code', file: '.claude/settings.json' },
   { agent: 'codex', file: '.codex/hooks.json' },
@@ -111,7 +105,7 @@ for (const { agent, file } of [
       );
       const m = readManifest(target);
       assert.ok(
-        m.managedFiles.some((f) => f.path === file),
+        m.agents[agent].files.includes(file),
         `${file} must be recorded in the manifest`
       );
     } finally {

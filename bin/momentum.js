@@ -160,45 +160,107 @@ function sha256File(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
+/**
+ * Phase 22c (ADR-0007): Load installed state with one-time legacy migration.
+ *
+ * Legacy format (pre-Phase-22c):
+ *   { agent, version, files|managedFiles, schema?, momentumVersion?, installedAt?, updatedAt? }
+ *
+ * New format (Phase-22c+):
+ *   { version, agents: { [name]: { version, files: string[] } } }
+ *   — files is an array of relative path strings (simpler than old {path,sha256} objects)
+ *   — top-level version = max of all agent versions (backward compat)
+ *
+ * Migration: detects legacy format by presence of 'agent' at root and absence of 'agents',
+ * converts in-place immediately, returns the migrated state. Idempotent: the migrated
+ * file has 'agents', so repeat calls pass through without re-migrating.
+ * Returns default state ({ version: null, agents: {} }) when no manifest exists.
+ */
+function loadInstalledState(targetDir) {
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(targetDir, ...MANIFEST_REL), 'utf8'));
+
+    // Already new format
+    if (raw.agents && typeof raw.agents === 'object') {
+      return { version: raw.version || '0.0.0', agents: raw.agents };
+    }
+
+    // Legacy format detection: has 'agent' at root but no 'agents'
+    if ('agent' in raw) {
+      const version = raw.version || raw.momentumVersion || '0.0.0';
+      const rawFiles = raw.files || raw.managedFiles || [];
+      const files = Array.isArray(rawFiles)
+        ? rawFiles.map((f) => (typeof f === 'string' ? f : f.path || ''))
+            .filter(Boolean)
+            .sort()
+        : [];
+
+      const migrated = {
+        version,
+        agents: {
+          [raw.agent]: { version, files },
+        },
+      };
+
+      saveInstalledState(targetDir, migrated);
+      return migrated;
+    }
+
+    // Unknown format — return default
+    return { version: null, agents: {} };
+  } catch {
+    // Absent or unreadable
+    return { version: null, agents: {} };
+  }
+}
+
+function saveInstalledState(targetDir, state) {
+  const dest = path.join(targetDir, ...MANIFEST_REL);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  // Compat mirror (ADR-0007 review fix): external readers — including
+  // bin/ecosystem.js's fleet version lock (readMemberVersion) and any
+  // OLDER momentum CLI inspecting a newer project — read `momentumVersion`.
+  // Keep it in sync with the new top-level `version` so mixed-version
+  // fleets never see 'unknown' after migration.
+  const out = { version: state.version, momentumVersion: state.version, agents: state.agents };
+  fs.writeFileSync(dest, JSON.stringify(out, null, 2) + '\n');
+}
+
 function readInstalledManifest(targetDir) {
+  // Backward compat wrapper: returns old format for callers that need prevManagedFiles.
+  // Only used by upgrade() for orphan cleanup — returns the CURRENT agent's prior entry.
+  // Phase 22c: replaced by loadInstalledState() for new code paths.
   try {
     return JSON.parse(fs.readFileSync(path.join(targetDir, ...MANIFEST_REL), 'utf8'));
   } catch {
-    return null; // absent, unreadable, or pre-Phase-20 install
+    return null;
   }
 }
 
 /**
- * Serialize the managed-file set into `.momentum/installed.json`.
- * `files` is the collector Set of absolute paths. Returns the manifest object.
+ * Phase 22c (ADR-0007): Serialize the managed-file set into `.momentum/installed.json`.
+ * Uses the per-agent `agents` map format — only updates the specified agent's entry,
+ * preserving all other agents. `files` is the collector Set of absolute paths.
  * In dry-run mode the manifest is computed and returned but not written.
  */
 function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
-  const prev = readInstalledManifest(targetDir);
-  const today = new Date().toISOString().slice(0, 10);
+  const state = loadInstalledState(targetDir); // handles legacy migration
   const managedFiles = [...files]
     .filter((abs) => fileExists(abs))
-    .map((abs) => ({
-      path: path.relative(targetDir, abs).split(path.sep).join('/'),
-      sha256: sha256File(abs),
-    }))
-    .sort((a, b) => a.path.localeCompare(b.path));
+    .map((abs) =>
+      path.relative(targetDir, abs).split(path.sep).join('/')
+    )
+    .sort();
 
-  const manifest = {
-    schema: MANIFEST_SCHEMA,
-    momentumVersion: version,
-    agent,
-    installedAt: prev && prev.installedAt ? prev.installedAt : today,
-    updatedAt: today,
-    managedFiles,
-  };
+  state.agents[agent] = { version, files: managedFiles };
 
-  if (!dryRun) {
-    const dest = path.join(targetDir, ...MANIFEST_REL);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
-  }
-  return manifest;
+  // Top-level version = max of all agent versions (backward compat)
+  state.version = Object.values(state.agents)
+    .map((a) => a.version)
+    .reduce((max, v) => (!max || isNewerVersion(v, max) ? v : max), null) || version;
+
+  if (!dryRun) saveInstalledState(targetDir, state);
+  return state;
 }
 
 /**
@@ -351,20 +413,23 @@ function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   );
   const removed = [];
   for (const entry of prevManifest.managedFiles) {
-    if (currentRel.has(entry.path)) continue; // still managed → keep
-    if (opts.keepRel && opts.keepRel.has(entry.path)) {
-      console.log(`  ⚠️  kept (not orphan-cleaned): ${entry.path} — user-owned now`);
+    // Phase 22c: entry can be a string path (new agents-map format) or { path, sha256 } (legacy)
+    const relPath = typeof entry === 'string' ? entry : entry.path;
+    if (!relPath) continue;
+    if (currentRel.has(relPath)) continue;
+    if (opts.keepRel && opts.keepRel.has(relPath)) {
+      console.log(`  ⚠️  kept (not orphan-cleaned): ${relPath} — user-owned now`);
       continue;
     }
-    const abs = path.join(targetDir, entry.path);
-    if (!fileExists(abs)) continue; // already gone
-    removed.push(entry.path);
+    const abs = path.join(targetDir, relPath);
+    if (!fileExists(abs)) continue;
+    removed.push(relPath);
     if (!opts.dryRun) {
       fs.copyFileSync(abs, abs + '.bak');
       fs.rmSync(abs);
     }
     console.log(
-      `  ${opts.dryRun ? '✋ would remove' : '🗑  removed'}: ${entry.path}` +
+      `  ${opts.dryRun ? '✋ would remove' : '🗑  removed'}: ${relPath}` +
       `${opts.dryRun ? '' : ' (original saved as .bak)'}`
     );
   }
@@ -992,9 +1057,14 @@ function upgrade(targetDir, agent, opts = {}) {
 
   const upgradeOpts = { upgradeMode: true, root: target };
 
-  // Snapshot the prior managed set BEFORE any writes, so orphan cleanup can
-  // diff it against what this version installs (Phase 20 G1).
-  const prevManifest = readInstalledManifest(target);
+  // Phase 22c (ADR-0007): scope orphan cleanup to THIS agent's prior files only.
+  // Load the installed state (handles legacy migration), extract only the agent
+  // being upgraded — other agents' files are never eligible for removal.
+  const prevState = loadInstalledState(target);
+  const prevAgentEntry = prevState.agents[agent];
+  const prevAgentFiles = prevAgentEntry && Array.isArray(prevAgentEntry.files)
+    ? prevAgentEntry.files
+    : [];
 
   _dryRun = !!opts.dryRun;
   _managedCollector = new Set();
@@ -1090,10 +1160,9 @@ function upgrade(targetDir, agent, opts = {}) {
   console.log('→ Refreshing .gitignore...');
   gitignoreResult = refreshGitignore(src, target);
 
-  // Orphan cleanup — remove files a prior version installed but this one
-  // no longer ships (uses the snapshot taken before writes). Only ever
-  // touches files we previously recorded as managed.
-  orphans = removeOrphans(target, prevManifest, _managedCollector, {
+  // Orphan cleanup — only remove files this agent's prior version installed
+  // that this version no longer ships. Other agents' files are untouched.
+  orphans = removeOrphans(target, { managedFiles: prevAgentFiles }, _managedCollector, {
     dryRun: _dryRun,
     // A customized project.md is user-owned now — never orphan-clean it.
     keepRel: agentRulesResult === 'kept-customized'
@@ -1134,8 +1203,11 @@ function upgrade(targetDir, agent, opts = {}) {
 
 // ── Update check ─────────────────────────────────────────────────────────────
 
-/** Returns true if version `a` is strictly greater than version `b` (semver). */
+/** Returns true if version `a` is strictly greater than version `b` (semver). Null-safe — null/non-null comparisons always prefer the non-null value. */
 function isNewerVersion(a, b) {
+  if (!a && !b) return false;
+  if (!a) return false;   // null is never newer than a real version
+  if (!b) return true;    // a real version is always newer than null
   const parse = (v) => v.replace(/^v/, '').split('.').map(Number);
   const [aMaj, aMin, aPatch] = parse(a);
   const [bMaj, bMin, bPatch] = parse(b);

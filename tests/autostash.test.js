@@ -117,7 +117,7 @@ test('upgrade --autostash — dirty repo upgrades and restores WIP (CLI)', () =>
     assert.ok(fs.existsSync(path.join(dir, 'app.py')), 'WIP restored after CLI autostash upgrade');
     assert.equal(stashCount(dir), 0);
     const m = JSON.parse(read(path.join(dir, '.momentum', 'installed.json')));
-    assert.ok(m.momentumVersion, 'lock file written');
+    assert.ok(m.version, 'lock file written');
   } finally { rmrf(dir); }
 });
 

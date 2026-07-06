@@ -20,6 +20,7 @@
 * [phase-21c-lanes-fly](/phases/phase-21c-lanes-fly/overview.md) - complete
 * [phase-22-opencode-adapter](/phases/phase-22-opencode-adapter/overview.md) - complete
 * [phase-22b-antigravity-2-adoption](/phases/phase-22b-antigravity-2-adoption/overview.md) - complete
+* [phase-22c-opencode-polish](/phases/phase-22c-opencode-polish/overview.md) - complete
 * [phase-23-rules-unification](/phases/phase-23-rules-unification/overview.md) - complete
 * [phase-24-okf-adoption](/phases/phase-24-okf-adoption/overview.md) - complete
 * [phase-3-gap-fixes](/phases/phase-3-gap-fixes/overview.md) - complete
