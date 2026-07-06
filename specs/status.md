@@ -6,7 +6,7 @@ type: Status
 
 > **Last Updated**: 2026-07-06
 > **Current Phase**: _none active_ (Phase 25 — Intelligence is next)
-> **Latest Release**: v0.31.1 — README positioning sync (site's right-context narrative) + install-hint polish (ad-hoc)
+> **Latest Release**: v0.31.2 — README dark-mode render fixes (logo `<picture>` + adaptive mermaid) (ad-hoc)
 > **Health**: On Track
 
 ## Summary
@@ -68,6 +68,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | v0.30.2 | 2026-07-06 | chore/patch | **Limina Labs namespace move** — GitHub repo transferred → `LiminaLabsAI/momentum` (old URLs 301-redirect; secret/releases/stars intact), npm renamed → `@limina-labs/momentum` (old scope deprecated with pointer; npm has no scope transfer). All functional refs updated; 4 fingerprints re-baselined; TD-009 filed. Record `specs/adhoc/2026-07-06-repo-transfer-liminalabs/`. |
 | v0.31.0 | 2026-07-06 | feature/minor | **init agent picker** — `momentum init` no longer defaults to claude-code: interactive picker (number or name) on TTYs, hard error + agent list non-interactively, `--agent` bypasses as before. Plus Limina Labs branding (README byline, site footer/about, repo description). Suite 833/833. Record `specs/adhoc/2026-07-06-liminalabs-polish/`. |
 | v0.31.1 | 2026-07-06 | docs/patch | **README positioning sync** — README rewritten to the site's right-context narrative (tagline, with/without table, outcomes, phase loop); site install pills gain the "init asks which agent — or pass --agent" hint. Docs-only; npm patch so the package page shows the new README. Suite 833/833. Record `specs/adhoc/2026-07-06-readme-positioning/`. |
+| v0.31.2 | 2026-07-06 | docs/patch | **README dark-mode render fixes** — logo 404 (path deleted by the site redesign) → `<picture>` dark/light on absolute raw URLs + new `momentum-lockup-dark.svg`; mermaid hardcoded light fills removed for GitHub's adaptive theme. Docs-only. Suite 833/833. Record `specs/adhoc/2026-07-06-readme-render-fixes/`. |
 
 ## Active Phase
 
