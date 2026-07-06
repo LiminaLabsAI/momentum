@@ -72,7 +72,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 22c — Opencode Polish & Multi-Adapter | `phase-22c-opencode-polish` | In Progress | G0/G1/G2 complete — ADR-0007, agents map, per-agent orphan cleanup, 3 opencode skills, A3 surfaces.md run-mode docs, 819/819 green |
+| 22c — Opencode Polish & Multi-Adapter | `phase-22c-opencode-polish` | In Progress | All groups complete — ADR-0007, per-agent orphan cleanup, 3 opencode skills, A3 run-mode docs, G3 verification (6/6 pass), G4 live swarm validated, 819/819 green |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

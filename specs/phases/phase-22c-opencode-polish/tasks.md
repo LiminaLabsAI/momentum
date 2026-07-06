@@ -53,17 +53,17 @@
 
 ## Group 3 — Integration Verification
 
-- [ ] Create `scripts/verify-multi-adapter.sh` (manual verification script)
-- [ ] Execute manual verification:
-  - [ ] `momentum init /tmp/test --agent claude-code` → .claude/ exists
-  - [ ] `momentum upgrade /tmp/test --agent opencode` → .opencode/ added, .claude/ preserved
-  - [ ] `cat /tmp/test/.momentum/installed.json` → both agents in map
-  - [ ] `momentum upgrade /tmp/test --agent claude-code` → .claude/ refreshed, .opencode/ preserved
-- [ ] Run full test suite: `npm test` (769+ green)
-- [ ] Update `specs/status.md` — phase progress
-- [ ] Update `specs/phases/README.md` — phase status
+- [x] Create `scripts/verify-multi-adapter.sh` (manual verification script)
+- [x] Execute manual verification:
+  - [x] `momentum init /tmp/test --agent claude-code` → .claude/ exists
+  - [x] `momentum upgrade /tmp/test --agent opencode` → .opencode/ added, .claude/ preserved
+  - [x] `cat /tmp/test/.momentum/installed.json` → both agents in map
+  - [x] `momentum upgrade /tmp/test --agent claude-code` → .claude/ refreshed, .opencode/ preserved
+- [x] Run full test suite: `npm test` (819 green)
+- [x] Update `specs/status.md` — phase progress
+- [x] Update `specs/phases/README.md` — phase status
 
-## Group 4 — Live Swarm Validation (Deferred)
+## Group 4 — Live Swarm Validation
 
-- [ ] When opencode CLI available: run live swarm validation
-- [ ] Record evidence in `specs/adhoc/val-opencode-swarm-live/record.md`
+- [x] Run live swarm validation (opencode CLI available)
+- [x] Record evidence in `specs/adhoc/val-opencode-swarm-live/record.md`

@@ -40,6 +40,14 @@
 
 ---
 
+### [NOTE] 2026-07-06 — G3+G4 Complete: Verification Script + Live Swarm Validation
+**Topics**: verification, multi-adapter, swarm, opencode
+**Affects-phases**: phase-22c-opencode-polish
+**Affects-specs**: scripts/verify-multi-adapter.sh, specs/adhoc/val-opencode-swarm-live/record.md
+**Detail**: Created `scripts/verify-multi-adapter.sh` — automated verification of BUG-020 fix (init claude-code → upgrade opencode → verify both survive → upgrade claude-code → verify both survive, 6/6 pass). Ran live swarm validation against a synthetic ecosystem (eco + 2 opencode members): ecosystem init, add members, scout, dispatch, status all working via momentum CLI. Evidence recorded at `specs/adhoc/val-opencode-swarm-live/record.md`.
+
+---
+
 ### [NOTE] 2026-07-06 — A3 Run-Mode Docs: surfaces.md plugin caveat + AGENTS.md regenerated
 **Topics**: opencode, run-mode, surfaces, plugin
 **Affects-phases**: phase-22c-opencode-polish
