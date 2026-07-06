@@ -87,8 +87,8 @@ docs](https://opencode.ai/docs/plugins/)), auto-loaded at startup:
 | Hook | Purpose |
 |---|---|
 | `tool.execute.before` | Brainstorm gate — blocks write-class tools targeting `specs/**` while `.momentum/brainstorm-active` exists (throws to block, mirroring the Claude Code PreToolUse gate). |
-| `tool.execute.after` | History reminder — prompts for a `history.md` append when meaningful edits land during phase work (Rule 8). |
-| `session.created` | Handoff banner — surfaces pending `.momentum/inbox/` handoffs at session start. |
+| `tool.execute.after` | History reminder — prompts for a `history.md` append when meaningful edits land during phase work (Rule 8); bash tool calls additionally delegate to the installed scripts/check-history-reminder.sh, which also feeds the ecosystem session log (ENH-058). |
+| `event (session.created)` | Handoff banner — surfaces pending `.momentum/inbox/` handoffs at session start. **Run-mode caveat**: this handler is registered only in TUI/serve sessions. In `opencode run` (headless/non-interactive) the handler is skipped — its mere presence hangs `opencode run` on 1.17.x (upstream candidate, noted in ENH-058). Session banners are meaningless in headless mode anyway. |
 
 The plugin is self-contained (no npm dependencies) and reads the same
 `.momentum/` sentinels as the other adapters' hook scripts — the
