@@ -8,7 +8,7 @@ type: Ad-hoc Record
 > **Created**: 2026-07-06
 > **Branch**: chore/repo-transfer-liminalabs
 > **Backlog**: none
-> **Status**: in-progress
+> **Status**: shipped
 
 ## Current Behavior
 
