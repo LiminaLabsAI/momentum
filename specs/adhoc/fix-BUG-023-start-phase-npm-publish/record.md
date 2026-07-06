@@ -8,7 +8,7 @@ type: Ad-hoc Record
 > **Created**: 2026-07-07
 > **Branch**: fix/BUG-023-start-phase-npm-publish
 > **Backlog**: BUG-023
-> **Status**: in-progress
+> **Status**: shipped
 
 ## Current Behavior
 
