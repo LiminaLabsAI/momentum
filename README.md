@@ -26,13 +26,16 @@ momentum makes your project's memory durable. Phases, decisions, history, and ba
 npx @limina-labs/momentum@latest init
 ```
 
-That's it. The agent picks up the workflow on next session start.
+momentum asks which coding agent to scaffold for — there is no default. Pass
+`--agent` to answer up front (required in non-interactive shells). That's it.
+The agent picks up the workflow on next session start.
 
 > Always pin `@latest`. A bare `npx @limina-labs/momentum` can serve a
 > stale, cached version; `@latest` forces npx to resolve the newest release.
 
 ```bash
-# Want a specific adapter?
+# Or pick the adapter up front:
+npx @limina-labs/momentum@latest init --agent claude-code  # Claude Code
 npx @limina-labs/momentum@latest init --agent opencode     # opencode
 npx @limina-labs/momentum@latest init --agent codex        # Codex
 npx @limina-labs/momentum@latest init --agent antigravity  # Antigravity

@@ -46,12 +46,13 @@ ever as new as the CLI itself.
 
 ### Which agent are you using?
 
-`momentum init` defaults to **Claude Code**. Pass `--agent` to scaffold for
-a different one:
+`momentum init` asks which agent to scaffold for — there is no default.
+Pass `--agent` to answer up front (required in CI and other non-interactive
+shells):
 
 ```bash
-npx @limina-labs/momentum@latest init --agent opencode     # opencode
-npx @limina-labs/momentum@latest init                       # Claude Code (default)
+npx @limina-labs/momentum@latest init --agent claude-code   # Claude Code
+npx @limina-labs/momentum@latest init --agent opencode      # opencode
 npx @limina-labs/momentum@latest init --agent codex         # Codex
 npx @limina-labs/momentum@latest init --agent antigravity   # Antigravity
 ```

@@ -1415,7 +1415,8 @@ OKF — specs/ as an Open Knowledge Format bundle (Phase 24, ADR-0005):
   momentum okf index [dir]            Regenerate bundle indexes (root/phases/decisions)
 
 Options:
-  --agent <name>                      Agent to install for (default: claude-code)
+  --agent <name>                      Agent to install for. \`init\` asks when this
+                                      is omitted (and requires it without a TTY)
                                       Available: ${formatAvailableAgents()}
   --dry-run                           init/upgrade: preview the action set; write nothing
   --autostash                         upgrade: stash a dirty tree, upgrade, then restore it
@@ -1627,6 +1628,55 @@ function promptYesNo(question) {
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
+// ── init agent picker (v0.31.0) ──────────────────────────────────────────────
+//
+// `init` has no default adapter: an install that guesses is worse than one
+// that asks. Interactive shells get a numbered picker; non-interactive
+// callers (CI, agents, pipes) must pass --agent explicitly.
+// MOMENTUM_FORCE_INTERACTIVE=1 lets tests exercise the picker through pipes.
+function promptForAgent() {
+  const agents = listAvailableAgents();
+  const interactive = (process.stdin.isTTY && process.stdout.isTTY)
+    || process.env.MOMENTUM_FORCE_INTERACTIVE === '1';
+  if (!interactive) {
+    console.error('Error: --agent is required when init runs non-interactively.');
+    console.error(`Available: ${agents.join(', ')}`);
+    console.error(`Example: npx @limina-labs/momentum@latest init --agent ${agents[0] || 'claude-code'}`);
+    process.exit(1);
+  }
+  console.log('\nWhich coding agent should momentum install for?\n');
+  agents.forEach((name, i) => console.log(`  ${i + 1}. ${name}`));
+  console.log('');
+  const readline = require('node:readline');
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    let resolved = false;
+    // Piped stdin can end before an answer arrives — treat EOF as "no pick".
+    rl.on('close', () => {
+      if (!resolved) {
+        console.error('\nError: no agent selected.');
+        process.exit(1);
+      }
+    });
+    const ask = () => {
+      rl.question(`Agent [1-${agents.length}]: `, (answer) => {
+        const input = answer.trim();
+        // Accept the agent name itself or its 1-based list number.
+        const pick = agents.includes(input) ? input : agents[Number(input) - 1];
+        if (pick) {
+          resolved = true;
+          rl.close();
+          resolve(pick);
+          return;
+        }
+        console.log(`  Enter 1-${agents.length} or an agent name.`);
+        ask();
+      });
+    };
+    ask();
+  });
+}
+
 async function main() {
   const args = process.argv.slice(2);
 
@@ -1642,6 +1692,10 @@ async function main() {
   // root command surface, upgrade's sweep override — ENH-049), so an
   // explicit flag is re-injected at that dispatch rather than silently
   // swallowed here.
+  //
+  // The claude-code fallback below serves upgrade/ecosystem paths only —
+  // `init` never uses it: since v0.31.0 an omitted --agent makes init ask
+  // interactively (or fail fast when there is no TTY to ask on).
   let agent = 'claude-code';
   let agentExplicit = false;
   const agentFlagIdx = args.indexOf('--agent');
@@ -1670,6 +1724,10 @@ async function main() {
     const initOpts = extractInitFlags(args.filter((a) => a !== '--dry-run'));
     const targetDir = initOpts.target || process.cwd();
     try {
+      // v0.31.0: no silent default agent — momentum is multi-adapter, and a
+      // hidden claude-code default scaffolds the wrong surface for every
+      // other agent's users. Ask when we can, fail fast when we can't.
+      if (!agentExplicit) agent = await promptForAgent();
       init(targetDir, agent, { dryRun });
       // Ecosystem auto-detect/scaffold mutates state — skip it on a dry run.
       if (!dryRun) await postInitEcosystem(targetDir, initOpts);
