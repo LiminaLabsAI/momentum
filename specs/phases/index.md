@@ -23,6 +23,7 @@
 * [phase-22c-opencode-polish](/phases/phase-22c-opencode-polish/overview.md) - complete
 * [phase-23-rules-unification](/phases/phase-23-rules-unification/overview.md) - complete
 * [phase-24-okf-adoption](/phases/phase-24-okf-adoption/overview.md) - complete
+* [phase-25-founding-contract](/phases/phase-25-founding-contract/overview.md) - in-progress
 * [phase-3-gap-fixes](/phases/phase-3-gap-fixes/overview.md) - complete
 * [phase-4-enhanced-commands](/phases/phase-4-enhanced-commands/overview.md) - complete
 * [phase-5-rules-and-upgrade](/phases/phase-5-rules-and-upgrade/overview.md) - complete

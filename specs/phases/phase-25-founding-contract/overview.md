@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: planned
+status: in-progress
 tags: [lifecycle, init, start-project, foundation-docs, templates, upgrade-migration, commands]
 ---
 
