@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-06
-> **Current Phase**: Phase 25 — Founding Contract (`in progress`)
-> **Latest Release**: v0.31.2 — README dark-mode render fixes (logo `<picture>` + adaptive mermaid) (ad-hoc)
+> **Current Phase**: _none active_ (Phase 26 — Intelligence is next)
+> **Latest Release**: v0.32.0 — Phase 25: Founding Contract (foundation docs authored, not scaffolded)
 > **Health**: On Track
 
 ## Summary
@@ -50,6 +50,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 23 | Rules Unification (single-source agent instructions) | Complete | v0.26.0 (2026-07-04) |
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete | v0.27.0 (2026-07-05) |
 | 22c | Opencode Polish & Multi-Adapter Support | Complete | v0.30.0 (2026-07-06) |
+| 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete | v0.32.0 (2026-07-06) |
 
 ## Ad-hoc / Patch Releases
 
@@ -78,7 +79,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 25 — Founding Contract | `phase-25-founding-contract` | Built + verified — at release gate | 100% (Groups: 4/4) |
+| _(none — Phase 25 released; Phase 26 Intelligence is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

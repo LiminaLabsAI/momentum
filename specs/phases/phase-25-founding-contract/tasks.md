@@ -39,3 +39,9 @@ type: Tasks
 - [x] retrospective.md with verification evidence
 - [x] Version bump → 0.32.0
 - [/] HARD STOP: request operator approval for merge + tag + release + publish
+
+## Release (operator approved 2026-07-06)
+- [x] HARD STOP passed — operator approved merge + tag + release + publish
+- [x] Merge → main (sentinel-gated); suite green on updated main
+- [x] Tag v0.32.0 (evidence-gated) + GitHub Release (--latest)
+- [x] npm publish + both surfaces verified
