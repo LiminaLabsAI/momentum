@@ -1,25 +1,8 @@
-# macOS AppleDouble metadata (appears when this repo lives on a non-POSIX
-# filesystem, e.g. the T7 Shield external drive)
-._*
+# Ecosystem runtime state
+.state/
+
+# Standard noise
 .DS_Store
-
-# momentum runtime state is ignored via the `.momentum/*` + negation pair
-# below (the old directory-level `.momentum/` rule defeated the
-# `!installed.json` negation — git cannot re-include under an ignored dir).
-
-# Ephemeral agent worktrees (Claude Code creates these; momentum does not
-# manage them — they must never pollute tracked state)
-.claude/worktrees/
-
-# Node
-node_modules/
-*.log
-
-# Astro Starlight site build output
-/site/dist/
-/site/.astro/
-
-# Added by momentum upgrade — keep momentum + OS noise out of git
-.momentum/*
-!.momentum/installed.json
-.githooks/*.bak
+._*
+*.swp
+Thumbs.db
