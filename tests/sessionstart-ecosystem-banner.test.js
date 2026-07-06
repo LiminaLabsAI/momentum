@@ -24,14 +24,28 @@ const { mktmp, rmrf, REPO_ROOT } = require('./_helpers');
 
 const HOOK = path.join(REPO_ROOT, 'core', 'scripts', 'sessionstart-handoff.sh');
 
-function runHook(cwd) {
+function runHook(cwd, envOverrides = {}) {
   return spawnSync('bash', [HOOK], {
     cwd,
     encoding: 'utf8',
     timeout: 10000,
     stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...process.env, ...envOverrides },
   });
 }
+
+// BUG-018: tests asserting "no ecosystem reachable" must not let the
+// parent-walk + sibling-scan escape into os.tmpdir(), where CONCURRENT
+// suite runs park synthetic ecosystems (observed live: a swarm-e2e
+// fixture leaked into this file's silence assertion). Nest the cwd two
+// levels below the random tmp root and bound the walk to 1 so discovery
+// never sees tmpdir siblings.
+function isolatedProjectDir(tmp) {
+  const dir = path.join(tmp, 'iso', 'project');
+  fs.mkdirSync(dir, { recursive: true });
+  return dir;
+}
+const NO_WALK_ENV = { MOMENTUM_MAX_PARENT_WALK: '1' };
 
 function writeEcosystem(dir, name, members = [], activeInitiative = null) {
   fs.mkdirSync(dir, { recursive: true });
@@ -57,7 +71,7 @@ function writeEcosystem(dir, name, members = [], activeInitiative = null) {
 test('SessionStart: silent when no ecosystem reachable + no inbox', () => {
   const tmp = mktmp();
   try {
-    const r = runHook(tmp);
+    const r = runHook(isolatedProjectDir(tmp), NO_WALK_ENV);
     assert.equal(r.status, 0);
     assert.equal(r.stderr.trim(), '', 'stderr should be empty');
     assert.equal(r.stdout.trim(), '', 'stdout should be empty');

@@ -168,3 +168,22 @@ test('lanes help prints the surface; unknown subcommand exits 1', () => {
     rmrf(container);
   }
 });
+
+test('ENH-050: a new lane branch bases on main even when another branch is checked out', () => {
+  const { container, dir } = makeRepo();
+  try {
+    // Park the checkout on a side branch with an extra commit.
+    git(dir, 'checkout', '-q', '-b', 'side/parked');
+    write(path.join(dir, 'side.txt'), 'side\n');
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '--no-verify', '-m', 'feat: side');
+    const mainSha = git(dir, 'rev-parse', 'main');
+    const r = lanes(dir, 'open', 'feat/from-default', '--grade', 'quick-task');
+    assert.equal(r.status, 0, r.stderr);
+    const baseSha = git(dir, 'rev-parse', 'feat/from-default');
+    assert.equal(baseSha, mainSha, 'new lane must base on main, not the parked HEAD');
+    assert.match(r.stdout, /branched from main/, 'open must report the base it used');
+  } finally {
+    rmrf(container);
+  }
+});

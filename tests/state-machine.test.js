@@ -28,11 +28,17 @@ const lib = require('../core/ecosystem/lib');
 
 test('detectState — standalone: bare momentum-installed repo with no ecosystem', () => {
   const tmp = mktmp();
+  // BUG-018: bound the walk so sibling-discovery cannot escape into
+  // os.tmpdir(), where concurrent suite runs park synthetic ecosystems.
+  const saved = process.env.MOMENTUM_MAX_PARENT_WALK;
+  process.env.MOMENTUM_MAX_PARENT_WALK = '0';
   try {
     const repo = mkStandaloneRepo(path.join(tmp, 'solo'));
     lib._clearRootCache();
     assert.equal(state.detectState(repo), 'standalone');
   } finally {
+    if (saved === undefined) delete process.env.MOMENTUM_MAX_PARENT_WALK;
+    else process.env.MOMENTUM_MAX_PARENT_WALK = saved;
     rmrf(tmp);
   }
 });

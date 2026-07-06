@@ -304,3 +304,28 @@ test('ENH-048: --mark-landed refused when the lane is not done, and when the bra
     rmrf(container);
   }
 });
+
+test('ENH-050: land refuses to merge a lane onto its own branch (self-landing guard)', () => {
+  const { container, dir } = makeRepo();
+  try {
+    makeBranchWithCommit(dir, 'fix/self', 'self.txt');
+    let r = lanes(dir, 'open', 'fix/self', '--no-worktree');
+    assert.equal(r.status, 0, r.stderr);
+    write(path.join(dir, 'specs/adhoc/fix-self/record.md'), '# rec\n');
+    git(dir, 'checkout', '-q', 'fix/self');
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '--no-verify', '-m', 'docs: record');
+    r = lanes(dir, 'done', 'fix-self');
+    assert.equal(r.status, 0, r.stderr);
+    // Invoke land FROM THE LANE BRANCH's checkout — must refuse.
+    r = lanes(dir, 'land', 'fix-self', '--execute');
+    assert.notEqual(r.status, 0, 'self-landing must be refused');
+    assert.match(r.stderr + r.stdout, /own branch/, 'message must explain the self-landing refusal');
+    // From main it proceeds.
+    git(dir, 'checkout', '-q', 'main');
+    r = lanes(dir, 'land', 'fix-self', '--execute');
+    assert.equal(r.status, 0, `land from main failed: ${r.stderr}\n${r.stdout}`);
+  } finally {
+    rmrf(container);
+  }
+});

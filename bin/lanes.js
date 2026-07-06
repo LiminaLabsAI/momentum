@@ -125,13 +125,25 @@ function cmdOpen(cwd, argv) {
     if (!worktree) {
       const home = flags.path ||
         path.join(path.dirname(repoRoot), `${path.basename(repoRoot)}.lanes`, id);
-      const args = branchExists(cwd, branch)
+      // ENH-050: a NEW lane branch bases on the integration branch (main)
+      // by default — basing on the invoking checkout's HEAD silently stacked
+      // lanes on whatever branch happened to be checked out. `--from HEAD`
+      // (or any explicit ref) remains available for deliberate stacking.
+      const preExisting = branchExists(cwd, branch);
+      let base = flags.from;
+      if (!base && !preExisting) {
+        const headRef = git(cwd, 'symbolic-ref', '--short', 'refs/remotes/origin/HEAD');
+        base = headRef.status === 0 && headRef.stdout.trim()
+          ? headRef.stdout.trim().replace(/^origin\//, '')
+          : (git(cwd, 'rev-parse', '--verify', 'main').status === 0 ? 'main' : 'HEAD');
+      }
+      const args = preExisting
         ? ['worktree', 'add', home, branch]
-        : ['worktree', 'add', home, '-b', branch, flags.from || 'HEAD'];
+        : ['worktree', 'add', home, '-b', branch, base];
       const res = git(cwd, ...args);
       if (res.status !== 0) return fail(`git worktree add failed:\n${res.stderr}`);
       worktree = home;
-      console.log(`✓ worktree created at ${home}`);
+      console.log(`✓ worktree created at ${home}${preExisting ? '' : ` (branched from ${base})`}`);
     } else {
       console.log(`✓ reusing existing checkout at ${worktree}`);
     }
