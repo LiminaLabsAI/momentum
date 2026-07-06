@@ -160,45 +160,101 @@ function sha256File(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
+/**
+ * Phase 22c (ADR-0007): Load installed state with one-time legacy migration.
+ *
+ * Legacy format (pre-Phase-22c):
+ *   { agent, version, files|managedFiles, schema?, momentumVersion?, installedAt?, updatedAt? }
+ *
+ * New format (Phase-22c+):
+ *   { version, agents: { [name]: { version, files: string[] } } }
+ *   — files is an array of relative path strings (simpler than old {path,sha256} objects)
+ *   — top-level version = max of all agent versions (backward compat)
+ *
+ * Migration: detects legacy format by presence of 'agent' at root and absence of 'agents',
+ * converts in-place immediately, returns the migrated state. Idempotent: the migrated
+ * file has 'agents', so repeat calls pass through without re-migrating.
+ * Returns default state ({ version: null, agents: {} }) when no manifest exists.
+ */
+function loadInstalledState(targetDir) {
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(targetDir, ...MANIFEST_REL), 'utf8'));
+
+    // Already new format
+    if (raw.agents && typeof raw.agents === 'object') {
+      return { version: raw.version || '0.0.0', agents: raw.agents };
+    }
+
+    // Legacy format detection: has 'agent' at root but no 'agents'
+    if ('agent' in raw) {
+      const version = raw.version || raw.momentumVersion || '0.0.0';
+      const rawFiles = raw.files || raw.managedFiles || [];
+      const files = Array.isArray(rawFiles)
+        ? rawFiles.map((f) => (typeof f === 'string' ? f : f.path || ''))
+            .filter(Boolean)
+            .sort()
+        : [];
+
+      const migrated = {
+        version,
+        agents: {
+          [raw.agent]: { version, files },
+        },
+      };
+
+      saveInstalledState(targetDir, migrated);
+      return migrated;
+    }
+
+    // Unknown format — return default
+    return { version: null, agents: {} };
+  } catch {
+    // Absent or unreadable
+    return { version: null, agents: {} };
+  }
+}
+
+function saveInstalledState(targetDir, state) {
+  const dest = path.join(targetDir, ...MANIFEST_REL);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.writeFileSync(dest, JSON.stringify(state, null, 2) + '\n');
+}
+
 function readInstalledManifest(targetDir) {
+  // Backward compat wrapper: returns old format for callers that need prevManagedFiles.
+  // Only used by upgrade() for orphan cleanup — returns the CURRENT agent's prior entry.
+  // Phase 22c: replaced by loadInstalledState() for new code paths.
   try {
     return JSON.parse(fs.readFileSync(path.join(targetDir, ...MANIFEST_REL), 'utf8'));
   } catch {
-    return null; // absent, unreadable, or pre-Phase-20 install
+    return null;
   }
 }
 
 /**
- * Serialize the managed-file set into `.momentum/installed.json`.
- * `files` is the collector Set of absolute paths. Returns the manifest object.
+ * Phase 22c (ADR-0007): Serialize the managed-file set into `.momentum/installed.json`.
+ * Uses the per-agent `agents` map format — only updates the specified agent's entry,
+ * preserving all other agents. `files` is the collector Set of absolute paths.
  * In dry-run mode the manifest is computed and returned but not written.
  */
 function writeInstalledManifest(targetDir, { version, agent, files, dryRun }) {
-  const prev = readInstalledManifest(targetDir);
-  const today = new Date().toISOString().slice(0, 10);
+  const state = loadInstalledState(targetDir); // handles legacy migration
   const managedFiles = [...files]
     .filter((abs) => fileExists(abs))
-    .map((abs) => ({
-      path: path.relative(targetDir, abs).split(path.sep).join('/'),
-      sha256: sha256File(abs),
-    }))
-    .sort((a, b) => a.path.localeCompare(b.path));
+    .map((abs) =>
+      path.relative(targetDir, abs).split(path.sep).join('/')
+    )
+    .sort();
 
-  const manifest = {
-    schema: MANIFEST_SCHEMA,
-    momentumVersion: version,
-    agent,
-    installedAt: prev && prev.installedAt ? prev.installedAt : today,
-    updatedAt: today,
-    managedFiles,
-  };
+  state.agents[agent] = { version, files: managedFiles };
 
-  if (!dryRun) {
-    const dest = path.join(targetDir, ...MANIFEST_REL);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
-  }
-  return manifest;
+  // Top-level version = max of all agent versions (backward compat)
+  state.version = Object.values(state.agents)
+    .map((a) => a.version)
+    .reduce((max, v) => (!max || isNewerVersion(v, max) ? v : max), null) || version;
+
+  if (!dryRun) saveInstalledState(targetDir, state);
+  return state;
 }
 
 /**
