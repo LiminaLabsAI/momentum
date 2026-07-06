@@ -1,5 +1,8 @@
 <div align="center">
-  <img src="site/src/assets/logo/wordmark.svg" width="280" alt="momentum" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/LiminaLabsAI/momentum/main/site/public/brand/momentum-lockup-dark.svg">
+    <img src="https://raw.githubusercontent.com/LiminaLabsAI/momentum/main/site/public/brand/momentum-lockup.svg" width="280" alt="momentum" />
+  </picture>
 
   ### The right context for your coding agent
 
@@ -194,9 +197,6 @@ flowchart LR
         B2 --> B4[project-b/]
         B2 --> B5[project-c/]
     end
-
-    style single fill:#F8FAFC,stroke:#94A3B8,stroke-width:1px
-    style multi fill:#EEF2FF,stroke:#4F46E5,stroke-width:1px
 ```
 
 **Hard invariant**: a project running `momentum init` without `--ecosystem` sees zero difference from before ecosystem mode existed. Ecosystem mode is purely additive.
