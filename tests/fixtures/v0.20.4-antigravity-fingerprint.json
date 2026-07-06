@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-06",
-    "capturedFrom": "chore/repo-transfer-liminalabs",
+    "capturedFrom": "phase-25-founding-contract",
     "adapter": "antigravity",
-    "note": "repo transferred to LiminaLabsAI org — specs-templates README repo URL updated (chore/repo-transfer-liminalabs)"
+    "note": "Phase 25 / ADR-0008: foundation docs authored, not scaffolded — init no longer ships specs/vision/{project-charter,principles,success-criteria}.md + specs/planning/roadmap.md; status.md template gains the Not-founded router state; specs README + index.md updated"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -30,7 +30,7 @@
     ".agents/workflows/scout.md": "09070c09413821d2c89cb8788fa5cd58a2b8824c9826c8966449a5728b8c3b26",
     ".agents/workflows/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
     ".agents/workflows/start-phase.md": "ccf727d6539a3953ab26ff1907f1d71d0194bea3800174912d33f911058c8ff1",
-    ".agents/workflows/start-project.md": "e4d31c3cd4fe9bb8b61c7578240148c6e28222f642aa3af01e263018f045eefa",
+    ".agents/workflows/start-project.md": "2f77ceb9b9632fec5aacacfd4fda0e4459dd4c927c14a8f20ff621fdf4b258b0",
     ".agents/workflows/swarm.md": "8cb40729932ff77b6f537e11349dad4d4706b951d58881c4d57d72ec3b264fe6",
     ".agents/workflows/sync-docs.md": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b",
     ".agents/workflows/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
@@ -48,7 +48,7 @@
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6",
-    "specs/README.md": "8677c7e4099415042715bf104e7286f723cb317752d59580b8134d2186827c77",
+    "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",
     "specs/adhoc/README.md": "d96209eb2fa482722a62b96c37d7db8b34d0932c213d9ae53c208a92b40d8460",
     "specs/adhoc/_TEMPLATE.md": "3444f1054de72aedc2d181fbaaa16c089be3bb18207d8ef788c42e294e0ef9b1",
     "specs/architecture/ecosystem.md": "129f612a201fa3b007ab1ffef3b89685439ea3c7e4a5a94de2f98e8207e85d23",
@@ -59,13 +59,9 @@
     "specs/decisions/README.md": "c2944038b26d6ff869e450106ef385aba59b34c56a0944fe4a439a9a9d8cf9f5",
     "specs/decisions/impact-map.md": "9d6d3cd8b25e3dc16c310449ec808d5e41c99274ffbd608354ec44ee41f3335d",
     "specs/decisions/index.md": "44d6dbfcce2e8cc20ca7cd84e35d27d116422978c1751eececd718ab4e7bab9f",
-    "specs/index.md": "3a89fe8c9b95e8faeac9d5f92b09b91af563ea1ad84570f42b8813e0a1d7ff42",
+    "specs/index.md": "1ea68f580e529501673d6f793cc137725254a1a188b6a7d61ade34d3a111d744",
     "specs/phases/README.md": "9e2243b6184e10adcff0dac9b71cabdce9202fe99db10093427898d2eb970d49",
     "specs/phases/index.md": "ae581dbfc0864d24917d3866f1eea379862eadb0db603239e3e5e7e07b031e41",
-    "specs/planning/roadmap.md": "66bca056454a5ac07a52beb283c98de95b00b2c7945258ace3fd3a141c11a520",
-    "specs/status.md": "30b6667c93cf6e71af05019a56dee8b87e9b55847f6abba69e3b1100facdb6ad",
-    "specs/vision/principles.md": "95c893e14e765aa1c376686dcc48fc3fb1a0e50aa590b221013243180da490a6",
-    "specs/vision/project-charter.md": "50ca7a72fead91ac53c4aff18a9b0fc0cb4646c292015f872b800c41b4e63c27",
-    "specs/vision/success-criteria.md": "2d20eb6eb8341e8f82ec4587e3771dd8d47a243364fc150d730bc1c4948be146"
+    "specs/status.md": "cad2517e8982eb451abbbcac917b3a7e0da698f5144dd87478e3855b86c754cc"
   }
 }

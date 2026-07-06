@@ -404,6 +404,53 @@ function migrateAgentRules(srcRoot, target, dests) {
   return 'kept-customized';
 }
 
+/**
+ * Foundation docs are authored, not scaffolded (Phase 25 / ADR-0008).
+ * Legacy installs (≤ v0.31.2) shipped four placeholder foundation docs
+ * (vision/charter/principles/success-criteria + planning/roadmap.md). A copy
+ * whose frontmatter-stripped, whitespace-normalized body sha256 matches a
+ * historically shipped template (core/foundation-placeholder-hashes.json —
+ * frozen forever) carries provably zero user content: remove it, returning
+ * the project to the clean "not founded" signal that /start-project fills.
+ * Any file with user edits is untouched. specs/ is user content — never
+ * recorded in the managed manifest, so orphan cleanup can never touch it.
+ * Returns { removed: [rel], wouldRemove: [rel], keptAuthored, absent }.
+ */
+function migrateFoundationDocs(srcRoot, target) {
+  const crypto = require('crypto');
+  const manifest = JSON.parse(
+    fs.readFileSync(
+      path.join(srcRoot, 'core', 'foundation-placeholder-hashes.json'),
+      'utf8'
+    )
+  );
+  const result = { removed: [], wouldRemove: [], keptAuthored: 0, absent: 0 };
+  for (const [rel, hashes] of Object.entries(manifest.paths)) {
+    const abs = path.join(target, ...rel.split('/'));
+    if (!fileExists(abs)) { result.absent++; continue; }
+    // Normalization mirrors the manifest's recorded contract exactly:
+    // CRLF→LF, strip one leading YAML frontmatter block, trim, single \n.
+    let body = fs.readFileSync(abs, 'utf8').replace(/\r\n/g, '\n');
+    body = body.replace(/^---\n[\s\S]*?\n---\n/, '');
+    body = body.trim() + '\n';
+    const hash = crypto.createHash('sha256').update(body).digest('hex');
+    if (!hashes.includes(hash)) { result.keptAuthored++; continue; }
+    if (_dryRun) {
+      console.log(`  ✋ would remove: ${rel} (untouched init placeholder — foundation docs are authored via /start-project, ADR-0008)`);
+      result.wouldRemove.push(rel);
+      continue;
+    }
+    fs.rmSync(abs);
+    try { fs.rmdirSync(path.dirname(abs)); } catch { /* dir not empty — fine */ }
+    console.log(`  🗑  removed: ${rel} (untouched init placeholder — foundation docs are authored via /start-project)`);
+    result.removed.push(rel);
+  }
+  if (result.removed.length || result.wouldRemove.length) {
+    console.log('  → project is not yet founded — run /start-project to author the foundation docs.');
+  }
+  return result;
+}
+
 function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   if (!prevManifest || !Array.isArray(prevManifest.managedFiles)) return [];
   const currentRel = new Set(
@@ -1023,13 +1070,13 @@ function init(targetDir, agent, opts = {}) {
   console.log('Next steps:');
   console.log('');
   const displayName = adapter.displayName || agent;
-  console.log('  Explore an idea first:');
+  console.log('  Explore the idea first (writes nothing):');
   console.log(`    Open ${displayName} and run: /brainstorm-idea`);
   console.log('');
-  console.log('  Ready to scaffold a project:');
+  console.log('  Found the project — author the charter + roadmap, plan Phase 0:');
   console.log(`    Open ${displayName} and run: /start-project`);
   console.log('');
-  console.log('  Existing project — plan your next phase:');
+  console.log('  Already founded — plan your next phase:');
   console.log(`    Open ${displayName} and run: /brainstorm-phase`);
   console.log('');
   console.log('  See docs: https://github.com/LiminaLabsAI/momentum');
@@ -1068,7 +1115,7 @@ function upgrade(targetDir, agent, opts = {}) {
 
   _dryRun = !!opts.dryRun;
   _managedCollector = new Set();
-  let agentRulesResult, primaryInstructionResult, gitignoreResult, orphans = [];
+  let agentRulesResult, primaryInstructionResult, gitignoreResult, foundationResult, orphans = [];
   try {
   // Upgrade slash commands
   console.log('→ Upgrading slash commands...');
@@ -1188,6 +1235,14 @@ function upgrade(targetDir, agent, opts = {}) {
   console.log('→ Refreshing .gitignore...');
   gitignoreResult = refreshGitignore(src, target);
 
+  // Foundation docs — authored, not scaffolded (Phase 25 / ADR-0008).
+  // Remove provably-untouched init placeholders; authored files stay.
+  console.log('→ Checking foundation docs (authored, not scaffolded)...');
+  foundationResult = migrateFoundationDocs(src, target);
+  if (!foundationResult.removed.length && !foundationResult.wouldRemove.length) {
+    console.log('  = no untouched placeholders (foundation docs are authored or absent)');
+  }
+
   // Orphan cleanup — only remove files this agent's prior version installed
   // that this version no longer ships. Other agents' files are untouched.
   orphans = removeOrphans(target, { managedFiles: prevAgentFiles }, _managedCollector, {
@@ -1223,6 +1278,9 @@ function upgrade(targetDir, agent, opts = {}) {
   }
   console.log(`  agent-rules:         ${agentRulesResult}`);
   console.log(`  .gitignore:          ${gitignoreResult}`);
+  if (foundationResult && foundationResult.removed.length) {
+    console.log(`  foundation docs:     removed ${foundationResult.removed.length} untouched placeholder(s) — not yet founded; run /start-project`);
+  }
   if (orphans.length) {
     console.log(`  removed (orphaned):  ${orphans.length} file(s) — see 🗑 lines above`);
   }

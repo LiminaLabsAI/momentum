@@ -40,3 +40,10 @@ Affects-specs: specs/decisions/0008-foundation-docs-authored-not-scaffolded.md, 
 Detail: ADR-0008 formalizes the three-state lifecycle (Installed/Founded/Phase loop) with the founded predicate (charter + roadmap exist) and the frozen-hash upgrade migration; core/project-lifecycle.md is the normative contract referenced by command docs. Renumber executed: 25 = Founding Contract (v0.32.0), Intelligence → 26 (v0.33.0+), Platform → 27 (v1.0). Impact-map gains lifecycle/foundation-docs/founding/start-project topics.
 
 ---
+### [NOTE] 2026-07-06 — G1 complete: init ships no placeholders; upgrade heals legacy installs
+Topics: init-templates, upgrade-migration, foundation-docs, lifecycle
+Affects-phases: phase-25-founding-contract
+Affects-specs: core/foundation-placeholder-hashes.json, core/specs-templates/specs/status.md
+Detail: History audit found each foundation template had exactly ONE normalized-body hash across all shipped versions (the v0.27.0 OKF revision was frontmatter-only), so the frozen manifest is 4 hashes. migrateFoundationDocs() follows the migrateAgentRules() pattern (hash-match → remove + report, dry-run aware); slotted after gitignore refresh, before orphan cleanup. The G2 start-project.md rewrite rides in the G1 commit because the fingerprint snapshot captures the whole install tree — remaining G2 docs get their own re-baseline. Suite 833 → 845 (+12 founding-contract tests).
+
+---

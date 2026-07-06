@@ -1,0 +1,18 @@
+{
+  "$comment": "ADR-0008 — FROZEN FOREVER. Normalized-body sha256 of every version of the four foundation templates ever shipped by momentum init (v0.4.0 'feat(core): add specs-templates tree' 2026-04-21 through v0.31.2; the v0.27.0 OKF revision was frontmatter-only, so each path has exactly one normalized hash). momentum upgrade removes a foundation file ONLY if its normalized body hashes into this set — proof the user never edited it. The templates were deleted from core/specs-templates in Phase 25, so this set can never grow. Normalization: CRLF→LF, strip one leading YAML frontmatter block, String.trim(), append a single trailing newline.",
+  "normalization": "crlf-to-lf | strip-one-leading-yaml-frontmatter-block | trim | append-single-newline",
+  "paths": {
+    "specs/vision/project-charter.md": [
+      "7cf00ea97e544d1b1fa940733f2dda8fcbdaebd61a8e632603dccbac51e3b2fa"
+    ],
+    "specs/vision/principles.md": [
+      "033c7bced5f46ad40c163e74873dfcbc036f6e9141471917871a883846a0b01f"
+    ],
+    "specs/vision/success-criteria.md": [
+      "b48b942ce86f1628fa72863e8d5c5c72641ac761d28ecc4adafcfc3e63314271"
+    ],
+    "specs/planning/roadmap.md": [
+      "37edbdc1e812d72c19031a1a1e44b9d4125d0e7380f3c1b2131dbfa2a4d1dcad"
+    ]
+  }
+}

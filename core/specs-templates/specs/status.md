@@ -5,13 +5,19 @@ type: Status
 # Project Status
 
 > **Last Updated**: YYYY-MM-DD
-> **Current Phase**: Phase 0 — Bootstrap (`not started`)
+> **Current Phase**: _Not founded_ — run `/brainstorm-idea`, then `/start-project`
 > **Latest Release**: None
 > **Health**: On Track
 
 ## Summary
 
-<!-- One paragraph describing what this project is and what it does. -->
+_Not founded yet. momentum machinery is installed, but this project has no
+foundation docs (charter, principles, success criteria, roadmap) — they are
+authored at founding, never scaffolded. Explore the idea with
+`/brainstorm-idea` (writes nothing), then run `/start-project` to found the
+project: it authors the foundation docs from your brainstorm and plans
+Phase 0. Phase commands stop and route you here until the project is
+founded._
 
 ## Completed Phases
 
@@ -37,13 +43,13 @@ type: Status
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — no active phase)_ | | | |
+| _(none — project not founded yet)_ | | | |
 
 ## Upcoming Phases
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| _(TBD)_ | | | |
+| _(defined at founding — see `/start-project`)_ | | | |
 
 ## Blockers
 
@@ -59,7 +65,8 @@ type: Status
 
 ## Next Actions
 
-1. Run `/brainstorm-idea` to explore the concept, then `/start-project` to scaffold
+1. Run `/brainstorm-idea` to explore the idea (conversation only — writes nothing)
+2. Run `/start-project` to found the project — authors charter, principles, success criteria, and roadmap, then plans Phase 0
 
 ## Key Decisions Made
 

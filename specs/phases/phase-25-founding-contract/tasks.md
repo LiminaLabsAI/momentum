@@ -10,15 +10,15 @@ type: Tasks
 - [x] Roadmap/status/phases-README renumbered (25 Founding Contract / 26 Intelligence / 27 Platform); stale-ref grep clean
 
 ## Group 1 — CLI mechanics
-- [ ] 4 foundation templates deleted from core/specs-templates/
-- [ ] status.md template: Not-founded state + router text
-- [ ] Historical hash set generated + checked in (frontmatter-normalized)
-- [ ] upgrade: auto-remove + report; --dry-run preview
-- [ ] OKF-frontmatter-injected variant matched (test)
-- [ ] Edited-charter survival (test)
-- [ ] init success message updated
-- [ ] tests/founding-contract.test.js green ×4 adapters; fingerprints re-baselined
-- [ ] Verify: full suite green
+- [x] 4 foundation templates deleted from core/specs-templates/
+- [x] status.md template: Not-founded state + router text
+- [x] Historical hash set generated + checked in (frontmatter-normalized; audit: 1 hash per path across ALL history — OKF rev was frontmatter-only)
+- [x] upgrade: auto-remove + report; --dry-run preview
+- [x] OKF-frontmatter-injected variant matched (test)
+- [x] Edited-charter survival (test)
+- [x] init success message updated
+- [x] tests/founding-contract.test.js green ×4 adapters (12 tests); fingerprints re-baselined ×4
+- [x] Verify: full suite green (845/845)
 
 ## Group 2 — Command + rules surface
 - [ ] start-project.md rewritten (founding; inline authoring templates; gate intact)
