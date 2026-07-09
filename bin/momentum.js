@@ -1983,12 +1983,27 @@ async function main() {
       // upgrade can only ever install files as new as the CLI itself.
       const staleWarning = formatStaleCliWarning(pkg.version, await updateCheckPromise);
       if (staleWarning) console.log(staleWarning);
-      // --autostash: stash a dirty tree, upgrade, restore. Dry-run writes
-      // nothing, so it never needs to stash.
-      if (autostash && !dryRun) {
-        withAutostash(path.resolve(targetDir), () => upgrade(targetDir, agent, { dryRun }));
+      // Phase 28 (ADR-0010): with no explicit --agent, refresh EVERY installed
+      // agent so no agent's instruction file silently drifts (cause #1 of the
+      // CLAUDE.md/AGENTS.md divergence). Explicit --agent targets that one.
+      let agentsToUpgrade;
+      if (agentExplicit) {
+        agentsToUpgrade = [agent];
       } else {
-        upgrade(targetDir, agent, { dryRun });
+        const installed = loadInstalledState(path.resolve(targetDir));
+        const names = Object.keys(installed.agents || {});
+        agentsToUpgrade = names.length ? names : [agent];
+      }
+      if (agentsToUpgrade.length > 1) {
+        console.log(`Upgrading all installed agents: ${agentsToUpgrade.join(', ')}\n`);
+      }
+      // --autostash: stash a dirty tree, upgrade, restore — once around all
+      // agents. Dry-run writes nothing, so it never needs to stash.
+      const runAll = () => { for (const a of agentsToUpgrade) upgrade(targetDir, a, { dryRun }); };
+      if (autostash && !dryRun) {
+        withAutostash(path.resolve(targetDir), runAll);
+      } else {
+        runAll();
       }
     } catch (err) {
       console.error(`\nError: ${err.message}`);

@@ -50,6 +50,14 @@ Detail: Most of CLAUDE.md's release checklist (gh release create, npm publish) i
 
 ---
 
+### [FEATURE] 2026-07-09 — G1: upgrade refreshes every installed agent (cause #1)
+Topics: upgrade, multi-agent, drift
+Affects-phases: phase-28-instruction-consistency
+Affects-specs: bin/momentum.js
+Detail: The staleness root cause: `agent` defaults to 'claude-code' and `upgrade()` writes only that one agent → a project with claude-code + opencode only ever refreshed claude-code, leaving AGENTS.md behind. Fix at the dispatch layer (not inside `upgrade()`, which stays cleanly single-agent + keeps per-agent orphan cleanup, ADR-0007): with no explicit `--agent`, read `installed.json.agents` and call `upgrade()` once per installed agent (autostash wraps the whole loop once); `--agent X` still targets one. 2 tests; 956 → 958.
+
+---
+
 ### [FEATURE] 2026-07-09 — G0: ADR-0010 + project-rules.js migration core + BUG-027
 Topics: project-rules, migration, okf-type, BUG-027, ADR-0010
 Affects-phases: phase-28-instruction-consistency

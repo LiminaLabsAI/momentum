@@ -13,10 +13,10 @@ type: Tasks
 - [x] G0.6 Verify: `npm test` green — **956/956 (+5)**; codex+opencode fingerprints re-baselined (BUG-027)
 
 ## Group 1 — upgrade syncs all installed agents (cause #1)
-- [ ] G1.1 `upgrade` (no `--agent`) iterates `installed.json.agents`, refreshes each; `--agent X` still targets one
-- [ ] G1.2 Preserve per-agent orphan cleanup (ADR-0007) + ecosystem-root guard (BUG-016)
-- [ ] G1.3 Test: 2-agent project → one `upgrade` refreshes both; stale second agent gets current rules
-- [ ] G1.4 Verify: `npm test` green
+- [x] G1.1 `upgrade` (no `--agent`) iterates `installed.json.agents` (dispatch-level loop), refreshes each; `--agent X` still targets one
+- [x] G1.2 Per-agent orphan cleanup (ADR-0007) + ecosystem-root guard (BUG-016) preserved — `upgrade()` itself unchanged, called once per agent
+- [x] G1.3 Test: `upgrade-all-agents.test.js` — 2-agent project, plain `upgrade` restores drifted AGENTS.md; `--agent X` leaves the other alone
+- [x] G1.4 Verify: `npm test` green — **958/958 (+2)**
 
 ## Group 2 — ecosystem pointer into all instruction files (cause #2)
 - [ ] G2.1 `pointer.js` `ensurePointerInjected` injects/refreshes into EVERY present instruction file
