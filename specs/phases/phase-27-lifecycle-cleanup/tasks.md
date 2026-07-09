@@ -26,13 +26,13 @@ type: Tasks
 - [x] G2.5 Verify: `npm test` green — **943/943 (+6)**; 4 fingerprints re-baselined (complete-phase drift)
 
 ## Group 3 — Reconcile + human handshake + open-pr (BUG-026 / ENH-063)
-- [ ] G3.1 `momentum lanes reconcile` (fetch + detect-merged-upstream → `cleanupTarget()`; report unmerged)
-- [ ] G3.2 Human confirm→verify→clean handshake for `staging-promotion` / `feature-branch-only` / `open-pr`
-- [ ] G3.3 `lanes close` routes through `cleanupTarget()` (deletes branch + state) — ENH-063
-- [ ] G3.4 Add `end_state: open-pr` to config enum + recipe branches (agent pushes + opens PR, stops)
-- [ ] G3.5 Wire `lanes reconcile` into the session-start branch-hygiene self-audit
-- [ ] G3.6 Tests: reconcile cleans/leaves; open-pr round-trip; close deletes branch; handshake verify-gate
-- [ ] G3.7 Verify: `npm test` green
+- [x] G3.1 `momentum lanes reconcile` (fetch + classify landed/pending by terminal-branch containment → `cleanupTarget()`)
+- [x] G3.2 Human confirm→verify→clean handshake in `/complete-phase` for non-`merge-after-yes` end_states (reconcile verifies before cleaning)
+- [x] G3.3 `lanes close` routes through `cleanupTarget()` (deletes branch + state, worktree with --rm-worktree) — ENH-063
+- [x] G3.4 `end_state: open-pr` added to config enum + start-phase hard-stop + complete-phase release variants
+- [x] G3.5 Wired `momentum lanes reconcile` into the session-start branch-hygiene self-audit (CLAUDE.md) + complete-phase step 14
+- [x] G3.6 Tests: `lanes-reconcile.test.js` (landed/pending, execute, open-pr config, ENH-063 close) + open-close assertion update
+- [x] G3.7 Verify: `npm test` green — **947/947 (+4)**; 4 fingerprints re-baselined (start-phase + complete-phase drift)
 
 ## Group 4 — Upgrade / transform hygiene
 - [ ] G4.1 Skills transform filters `._*`/`.DS_Store` inputs (no `._<name>/SKILL.md` junk)

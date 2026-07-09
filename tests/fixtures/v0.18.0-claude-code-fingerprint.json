@@ -2,14 +2,14 @@
   "meta": {
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
-    "note": "Phase 27 re-baseline — recipe changes: start-phase BUG-025 default-branch guard + start-project pointer (G1); complete-phase default-branch-safe cleanup step + tracking-before-release Gate B (G2)",
+    "note": "Phase 27 re-baseline — recipe changes across G1-G3: start-phase BUG-025 guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr variant + human confirm→verify→clean handshake",
     "adapter": "claude-code"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".claude/commands/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
     ".claude/commands/brainstorm-phase.md": "6cd06fc828a9a0bbf1f2828622f3bd51139b924cafe0300261a3a86b73a92d40",
-    ".claude/commands/complete-phase.md": "62845ee7d7c96465224cf90651fc0242ff933b7d87b5ca437ebfa48db904fa5d",
+    ".claude/commands/complete-phase.md": "3da74017966a4f8dfba7e369376b50618674a1b3442a94fbbbbafe88a6544ac3",
     ".claude/commands/continue.md": "ca2e18b81dce9c1086b14f57fa7798137a86e6956878bee08b822920869f06c2",
     ".claude/commands/dispatch.md": "461e6dca4e3bbb45b35862d1434bdc8f888f5151792042c455ae659f9634d673",
     ".claude/commands/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
@@ -23,7 +23,7 @@
     ".claude/commands/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
     ".claude/commands/scout.md": "d17142b3c0ba2e2b8bb3a061aa0ac890b5734bbaa7a048eba7564fdead2960df",
     ".claude/commands/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
-    ".claude/commands/start-phase.md": "c61a2bbd422ee231a17952f368b9623b969ddf9fa7d9fff55ac56265181818f4",
+    ".claude/commands/start-phase.md": "d83edb557f06b83df6059ed4600b6500657f1a501b1ff3eaf3b32b8a8fcac6be",
     ".claude/commands/start-project.md": "e5b4f9561b0e9aa3b4e3fd71646627185cd1a43186f303fa176e318455a6d717",
     ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7",
     ".claude/commands/sync-config.md": "41c320731ae77538a87a7347769d4051aedeb502e7625f7f28190dfeba51c0fa",

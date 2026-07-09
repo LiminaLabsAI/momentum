@@ -18,6 +18,7 @@ const { spawnSync } = require('child_process');
 
 const MOMENTUM_ROOT = path.resolve(__dirname, '..');
 const state = require(path.join(MOMENTUM_ROOT, 'core', 'lanes', 'lib', 'state'));
+const cleanup = require(path.join(MOMENTUM_ROOT, 'core', 'lanes', 'lib', 'cleanup'));
 
 // ─── small helpers ───────────────────────────────────────────────────────
 
@@ -39,7 +40,7 @@ function parseFlags(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--no-worktree' || a === '--rm-worktree' || a === '--execute' ||
-        a === '--force' || a === '--json' || a === '--ack-all') {
+        a === '--force' || a === '--json' || a === '--ack-all' || a === '--no-remote') {
       flags[a.slice(2)] = true;
     } else if (a.startsWith('--')) {
       flags[a.slice(2)] = argv[++i];
@@ -197,7 +198,7 @@ function cmdDone(cwd, argv) {
 function cmdClose(cwd, argv) {
   const { flags, positional } = parseFlags(argv);
   const id = positional[0];
-  if (!id) return fail('usage: momentum lanes close <lane-id> [--rm-worktree]');
+  if (!id) return fail('usage: momentum lanes close <lane-id> [--rm-worktree] [--force] [--no-remote]');
   const anchor = requireAnchor(cwd);
   if (!anchor) return;
   let lane;
@@ -206,10 +207,21 @@ function cmdClose(cwd, argv) {
   } catch (err) {
     return fail(err.message);
   }
-  if (flags['rm-worktree'] && lane.worktree) {
-    const res = git(cwd, 'worktree', 'remove', lane.worktree, '--force');
-    if (res.status === 0) console.log(`✓ worktree removed: ${lane.worktree}`);
-    else console.log(`⚠ could not remove worktree (${res.stderr.trim()}) — remove manually`);
+  // ENH-063: close does FULL cleanup — local + remote branch (default-branch-
+  // safe) + lane state, plus the worktree with --rm-worktree. Best-effort: an
+  // unmerged branch is refused (never force-deleted) but that does not fail close.
+  const res = cleanup.cleanupTarget({
+    cwd,
+    branch: lane.branch,
+    worktree: flags['rm-worktree'] ? lane.worktree : null,
+    laneId: id,
+    deleteRemote: !flags['no-remote'],
+    force: Boolean(flags.force),
+  });
+  const glyph = { removed: '✓', deleted: '✓', cleared: '✓', skipped: 'ℹ', blocked: '⚠' };
+  for (const a of res.actions) console.log(`  ${glyph[a.status] || '·'} ${a.step}: ${a.detail}`);
+  if (!res.ok) {
+    console.log(`⚠ some cleanup refused (${res.blocked.join(', ')}) — e.g. an unmerged branch; rerun with --force only if intended`);
   }
   console.log(`✓ lane '${id}' closed`);
 }

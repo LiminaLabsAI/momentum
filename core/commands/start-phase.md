@@ -147,6 +147,10 @@ defaults below) and ask the user the gate question matching the project's
 - **`feature-branch-only`**: "All groups complete and verified. The feature
   branch `<phase-branch>` is pushed. Merge, tag, and release are yours to
   do. Review the branch?"
+- **`open-pr`**: "All groups complete and verified. Ready to push
+  `<phase-branch>` and open a PR for review? Merge + release happen when a
+  human approves and merges the PR on the forge; then `momentum lanes
+  reconcile --execute` cleans up the branch + worktree + state."
 
 Then append: "Project-specific release/publish/deploy steps (e.g.
 `npm publish`, forge release creation) run from `## Project Extensions` in

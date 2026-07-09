@@ -124,7 +124,7 @@ test('done stamps doneAt and reports queue position; close --rm-worktree removes
 
     const c = lanes(dir, 'close', 'feat-b', '--rm-worktree');
     assert.equal(c.status, 0, c.stderr);
-    assert.match(c.stdout, /worktree removed/);
+    assert.match(c.stdout, /worktree: .*feat-b/); // ENH-063: cleanup action output
     assert.ok(!fs.existsSync(wt), 'worktree gone after close --rm-worktree');
     assert.equal(state.readManifest(anchor, 'feat-b').status, 'closed');
   } finally {

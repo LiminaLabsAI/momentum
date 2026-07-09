@@ -3,13 +3,13 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "codex",
-    "note": "Phase 27 re-baseline — recipe changes: start-phase BUG-025 default-branch guard + start-project pointer (G1); complete-phase default-branch-safe cleanup step + tracking-before-release Gate B (G2)"
+    "note": "Phase 27 re-baseline — recipe changes across G1-G3: start-phase BUG-025 guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr variant + human confirm→verify→clean handshake"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".agents/skills/brainstorm-idea/SKILL.md": "4003f2d585ba32d477255efbe65e9c53e0a6bbaeb70ee36ccfe0d6efbe576d63",
     ".agents/skills/brainstorm-phase/SKILL.md": "f905e5522b6e94d3d837d58976dd1c56d76f6a56757bae8c60f1555db412529b",
-    ".agents/skills/complete-phase/SKILL.md": "df9559df4c87c5b80050a3c08f59a93eddda0c14b437055c1b079bb47433c7cf",
+    ".agents/skills/complete-phase/SKILL.md": "12d0a1c7271abbbe24a86d44a040471c7a8ca2ac79e4996ca32c035a9f34d3ae",
     ".agents/skills/continue/SKILL.md": "ca2916ecb23efcf4b874bad4ee8793f79dfd05465d8aae70d0219dbfebc9b120",
     ".agents/skills/dispatch/SKILL.md": "392dd19d1e8b7d149e115c96bf80f42e447ea6f0f8c141954ab6f72f379c6d2a",
     ".agents/skills/ecosystem/SKILL.md": "3c534500e7280235d75cb83a32b119691d61218fbe1db910904328a4aa1bee54",
@@ -23,7 +23,7 @@
     ".agents/skills/review/SKILL.md": "392bdd47fafda7c0f3cbfcf8a65d4699274f4a58f869abf73004e22929627bf4",
     ".agents/skills/scout/SKILL.md": "6bcea40696129cfec40c90c0e244327f6e83838fb15abca750744aae8e9c4900",
     ".agents/skills/session/SKILL.md": "671e2fdd84eef9aa1097319274dbd25bb245c3e6d1a081fbb3e534aa507c5198",
-    ".agents/skills/start-phase/SKILL.md": "6772a6451a99b6a12b8da38c2de2cd35aa9aa0bc8148ad623e3596e0a893a8d6",
+    ".agents/skills/start-phase/SKILL.md": "e3e70be12159bca14a7cb5c7bae469265127da02206e95793ed418f21bac5b86",
     ".agents/skills/start-project/SKILL.md": "8ea3d6d52ca418d898de6de4ca2a8b1ad1b47390b429dea73c19c50bb99d74fb",
     ".agents/skills/swarm/SKILL.md": "c00f6b116f14c579ec9d8eff21d02a56aba452658149035032822daafa535c5f",
     ".agents/skills/sync-config/SKILL.md": "f3bd9ff1f1c67865c1d4439c20f55a3a1fee685d0ff9cbb979de79bd31dfff55",

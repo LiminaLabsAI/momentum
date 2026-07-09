@@ -130,11 +130,26 @@ Verify, finalize, and release a completed phase.
     git tag -a vX.Y.Z -m "Phase N: {phase name}"
     git push origin vX.Y.Z
     ```
-    For `end_state: feature-branch-only` (config), SKIP the merge
-    sequence — the branch is already pushed; only tag (if the project tags
-    releases on the feature branch) per `## Project Extensions`. For
-    `end_state: staging-promotion`, merge to `branch_flow[0]` only and stop;
-    tag + release happen after the user promotes to `main`.
+    **`end_state` variants** (config; the sequence above is the
+    `merge-after-yes` default):
+    - `feature-branch-only` — SKIP the merge/tag; the branch is pushed, the
+      human owns merge + release.
+    - `staging-promotion` — merge to `branch_flow[0]` only, then STOP; the human
+      promotes to `main` and tags.
+    - `open-pr` — do NOT merge; push the branch and open a PR for review
+      (config-gated, agent-run — `git_forge=github`: `gh pr create`; GitLab:
+      `glab mr create`), then STOP. Merge happens on the forge on human approval.
+
+    **Human handshake → verify → clean** (every non-`merge-after-yes`
+    end_state). Step-13 auto-cleanup only fires when the AGENT did the terminal
+    merge. When a human/forge does it, NEVER clean on trust: ask the user to
+    confirm once they have merged/promoted, then verify + clean in one step —
+    ```bash
+    momentum lanes reconcile            # is the branch a verified ancestor of the terminal branch yet?
+    momentum lanes reconcile --execute  # only once it shows 'landed' — cleans worktree + branch + state
+    ```
+    `reconcile` refuses to clean a lane whose branch is not yet contained in the
+    terminal branch — a "yes, I merged it" is never taken on trust (Rule 12).
 
 12. Report summary to user:
     - What was delivered

@@ -528,7 +528,7 @@ Every release MUST do **all three** of these — missing any one leaves the rele
 
 **Self-audit (catches missed releases):** at session start in this repo, compare `git tag -l` against `gh release list`. If there's a tag without a matching release, surface it immediately.
 
-**Branch-hygiene self-audit (ENH-042):** at session start in this repo, run `git branch -r | grep -E 'origin/(phase-|chore/|audit/)'`. For any branch belonging to an already-released phase, confirm it is merged into `main` and delete it (`git push origin --delete <branch>`); leave unmerged branches alone and surface them. Keeps Rule 6's "delete merged branch" honest.
+**Branch-hygiene self-audit (ENH-042 / BUG-026):** at session start in this repo, run `momentum lanes reconcile` — it sweeps every lane whose branch is now contained in the terminal branch (a merge that landed out-of-band) and reports them cleanable; `momentum lanes reconcile --execute` then removes their worktree + branch + state (default-branch-safe). Also run `git branch -r | grep -E 'origin/(phase-|chore/|audit/)'` and `git worktree list` for anything reconcile doesn't track (non-lane branches, orphan worktrees): confirm each is merged into `main`, then `momentum lanes cleanup <branch>` (or `git push origin --delete <branch>`); leave unmerged branches alone and surface them. Keeps Rule 6's "delete merged branch" honest.
 
 ### Project-Specific Constraint
 

@@ -90,6 +90,14 @@ Detail: Operator raised a PR-review release flow (agent pushes + opens PR, human
 
 ---
 
+### [FEATURE] 2026-07-09 — G3: reconcile + human handshake + open-pr end_state + full-cleanup close
+Topics: reconcile, handshake, open-pr, lanes-close, ENH-063, session-audit
+Affects-phases: phase-27-lifecycle-cleanup
+Affects-specs: core/lanes/lib/reconcile.js, bin/lanes.js, core/config.js, core/commands/complete-phase.md, core/commands/start-phase.md, CLAUDE.md
+Detail: `momentum lanes reconcile` sweeps lanes whose terminal merge happened out-of-band — `git fetch --prune`, classify each lane landed (branch is a verified ancestor of origin/<terminal>, or already gone) vs pending, and (--execute) run cleanupTarget on the landed ones. Verify-before-clean (Rule 12): a human's "yes I merged it" is never trusted — only ancestor-containment. `/complete-phase` gained the confirm→verify→clean handshake for every non-merge-after-yes end_state, and both recipes gained the `end_state: open-pr` variant (agent pushes + opens a PR via config-gated gh/glab, stops; reconcile cleans after the forge merge). `end_state: open-pr` added to the config enum. `lanes close` now routes through cleanupTarget (ENH-063 — deletes the branch + clears state, not just the worktree; best-effort, never force). The self-repo session-start branch-hygiene audit now runs `momentum lanes reconcile`. +4 tests; 943 → 947; 4 fingerprints re-baselined.
+
+---
+
 ### [FEATURE] 2026-07-09 — G2: synchronous cleanup on land + tracking-before-release gate
 Topics: cleanup, lanes-land, complete-phase, release-gate, tracking-order
 Affects-phases: phase-27-lifecycle-cleanup
