@@ -26,6 +26,12 @@ This command fills gaps without overwriting anything the project already has.
    `brainstorm-idea`, `brainstorm-phase`, `start-project`, `start-phase`, `complete-phase`,
    `log`, `sync-docs`, `track`, `migrate`, `validate`
 
+   **Foundation docs are NOT migration gaps** (`core/project-lifecycle.md`,
+   ADR-0008): `specs/vision/*` and `specs/planning/roadmap.md` are authored
+   via `/start-project`, never copied from templates. If they're missing,
+   report "not founded — run `/start-project`" in the result; do NOT create
+   them here.
+
 2. **Report gap summary** — present findings before making any changes:
    ```
    Found: 8 / Missing: 4 items
@@ -68,6 +74,7 @@ This command fills gaps without overwriting anything the project already has.
    ✓ Migration complete.
    Added: 4 items
    Skipped: 6 items (already existed — not overwritten)
+   Founded: no — charter/roadmap missing; run /start-project to author them
    Needs manual attention:
      - 3 phases marked status 'unknown' in overview.md frontmatter — verify manually
      - specs/status.md: already exists — verify Current Phase matches the phase frontmatter

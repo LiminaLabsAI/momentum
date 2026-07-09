@@ -44,14 +44,21 @@ const MARKER_COMMENT = [
   "     Everything above '## Project Extensions' may be replaced by `momentum upgrade`. -->",
 ].join('\n');
 
+// Phase 28 (ADR-0010): the instruction file is a projection of specs/. Its
+// `## Project Extensions` section is a managed POINTER to specs/project-rules.md
+// (the single shared home for project-specific prose) — NOT an authoring surface.
+// Kept byte-identical to core/lib/project-rules.js renderPointerBlock().
 const EXTENSIONS_TAIL = [
   '---',
   '',
   '## Project Extensions',
   '',
-  '> Everything below this heading is preserved across `momentum upgrade`.',
-  '> Add project-specific navigation, rules, cross-repo references, etc. here.',
-  '> Anything above this heading is managed by momentum and may be replaced on upgrade.',
+  '<!-- momentum:project-rules-pointer -->',
+  '> **Project-specific rules live in `specs/project-rules.md`** — read it now.',
+  '> Session-start self-audits, project constraints, and any project-specific',
+  '> guidance are there, shared identically by every agent (ADR-0010). This',
+  '> section is a momentum-managed pointer; edit `specs/project-rules.md`, not',
+  '> this file.',
 ].join('\n');
 
 function readFragment(rel) {

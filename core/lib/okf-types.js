@@ -23,6 +23,7 @@ function isReserved(relPath) {
 const RULES = [
   [/^status\.md$/, 'Status'],
   [/^config\.md$/, 'Config'],
+  [/^project-rules\.md$/, 'Project Rules'],
   [/^backlog\/backlog\.md$/, 'Backlog'],
   [/^backlog\/details\/.+\.md$/, 'Backlog Detail'],
   [/^planning\/roadmap\.md$/, 'Roadmap'],

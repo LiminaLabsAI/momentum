@@ -1348,11 +1348,32 @@ function upgrade(targetDir, agent, opts = {}) {
   // would dirty files mid-upgrade and break autostash restores).
   const pointerLib = require('../core/ecosystem/lib/pointer');
   const primaryRel = adapter.primaryInstruction.destination.join('/');
+
+  // Phase 28 (ADR-0010): migrate any authored `## Project Extensions` prose into
+  // specs/project-rules.md and rewrite that section as the managed pointer,
+  // BEFORE the marker-aware rewrite preserves it. Migrate-never-drop, idempotent.
+  if (!_dryRun) {
+    const projectRules = require('../core/lib/project-rules');
+    const migRes = projectRules.migrateProjectExtensions(
+      path.join(target, primaryRel),
+      path.join(target, 'specs'),
+      { projectName: getProjectName(target) }
+    );
+    if (migRes.appended) {
+      console.log(`  ↳ migrated ${primaryRel} Project Extensions → specs/project-rules.md (ADR-0010)`);
+    }
+  }
+
+  // Snapshot whether THIS agent's instruction file carries the pointer BEFORE
+  // the managed rewrite — we only ever PRESERVE it (BUG-022), never add one the
+  // file didn't have (adding would dirty files mid-upgrade and break autostash
+  // restores). Phase 28: since `upgrade` now runs per installed agent (G1), this
+  // preserves every agent's pointer; ADDING a missing pointer (cause #2) is
+  // `momentum ecosystem add`'s job, which now injects into all instruction files.
   let hadPointerBlock = false;
   try {
-    hadPointerBlock = pointerLib.POINTER_BEGIN_RE.test(
-      fs.readFileSync(path.join(target, primaryRel), 'utf8')
-    );
+    hadPointerBlock = fs.readFileSync(path.join(target, primaryRel), 'utf8')
+      .includes(pointerLib.POINTER_BEGIN_PREFIX);
   } catch (_e) { /* absent file → nothing to preserve */ }
 
   // Upgrade adapter-owned root instruction file
@@ -1983,12 +2004,27 @@ async function main() {
       // upgrade can only ever install files as new as the CLI itself.
       const staleWarning = formatStaleCliWarning(pkg.version, await updateCheckPromise);
       if (staleWarning) console.log(staleWarning);
-      // --autostash: stash a dirty tree, upgrade, restore. Dry-run writes
-      // nothing, so it never needs to stash.
-      if (autostash && !dryRun) {
-        withAutostash(path.resolve(targetDir), () => upgrade(targetDir, agent, { dryRun }));
+      // Phase 28 (ADR-0010): with no explicit --agent, refresh EVERY installed
+      // agent so no agent's instruction file silently drifts (cause #1 of the
+      // CLAUDE.md/AGENTS.md divergence). Explicit --agent targets that one.
+      let agentsToUpgrade;
+      if (agentExplicit) {
+        agentsToUpgrade = [agent];
       } else {
-        upgrade(targetDir, agent, { dryRun });
+        const installed = loadInstalledState(path.resolve(targetDir));
+        const names = Object.keys(installed.agents || {});
+        agentsToUpgrade = names.length ? names : [agent];
+      }
+      if (agentsToUpgrade.length > 1) {
+        console.log(`Upgrading all installed agents: ${agentsToUpgrade.join(', ')}\n`);
+      }
+      // --autostash: stash a dirty tree, upgrade, restore — once around all
+      // agents. Dry-run writes nothing, so it never needs to stash.
+      const runAll = () => { for (const a of agentsToUpgrade) upgrade(targetDir, a, { dryRun }); };
+      if (autostash && !dryRun) {
+        withAutostash(path.resolve(targetDir), runAll);
+      } else {
+        runAll();
       }
     } catch (err) {
       console.error(`\nError: ${err.message}`);

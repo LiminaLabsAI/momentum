@@ -30,6 +30,9 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
    - Not founded with no phase directories is the VALID Installed state —
      report informationally ("not founded yet — `/start-project` when
      ready"), never as a failure
+   - founded AND no `specs/project-rules.md` (ADR-0010) → WARNING: "project
+     rules surface missing — run `momentum upgrade` to create it; every agent
+     instruction file's `## Project Extensions` pointer expects it"
 
 2c. Config (ADR-0009) — WARNING, never a failure (recipes fall back to
     npm/GitHub defaults when absent):

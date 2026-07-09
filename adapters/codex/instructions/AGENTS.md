@@ -48,7 +48,7 @@ The shipped recipe set (one skill per recipe, all under
 | log | Append a manual narrative entry to the history of the phase bound to your branch (fallback: status.md) |
 | migrate | Onboard an existing project into momentum |
 | validate | Check spec structure health |
-| sync-config | Re-infer project shape, show config drift, apply on approval (ENH-062)
+| sync-config | Re-infer project shape, show config drift, apply on approval (ENH-062) |
 | ecosystem | Cross-repo ecosystem coordination |
 | initiative | Manage cross-repo initiatives |
 | session | Append a manual narrative entry to today's ecosystem session log |
@@ -692,6 +692,9 @@ Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that d
 
 ## Project Extensions
 
-> Everything below this heading is preserved across `momentum upgrade`.
-> Add project-specific navigation, rules, cross-repo references, etc. here.
-> Anything above this heading is managed by momentum and may be replaced on upgrade.
+<!-- momentum:project-rules-pointer -->
+> **Project-specific rules live in `specs/project-rules.md`** — read it now.
+> Session-start self-audits, project constraints, and any project-specific
+> guidance are there, shared identically by every agent (ADR-0010). This
+> section is a momentum-managed pointer; edit `specs/project-rules.md`, not
+> this file.

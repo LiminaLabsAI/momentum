@@ -160,6 +160,45 @@ function ensurePointerInjected(absRepo, primaryFile, root, ecosystemName) {
 }
 
 /**
+ * All present primary instruction files in a member repo (not just the first).
+ * Phase 28 (ADR-0010): the ecosystem pointer must reach EVERY agent's file, so
+ * a Codex/opencode session reading AGENTS.md is not blind to the ecosystem.
+ */
+function findAllInstructionFiles(repoPath) {
+  return PRIMARY_INSTRUCTION_CANDIDATES.filter((name) =>
+    fs.existsSync(path.join(repoPath, name)));
+}
+
+/**
+ * Inject/refresh the pointer block in EVERY present instruction file
+ * (Phase 28). Returns the list of files touched. When none exist, returns [].
+ */
+function ensurePointerInjectedAll(absRepo, root, ecosystemName) {
+  const files = findAllInstructionFiles(absRepo);
+  for (const primaryFile of files) {
+    ensurePointerInjected(absRepo, primaryFile, root, ecosystemName);
+  }
+  return files;
+}
+
+/**
+ * Strip the pointer block from EVERY present instruction file (Phase 28).
+ * Returns only the files that actually HAD a pointer (so callers can report
+ * "nothing to strip" accurately).
+ */
+function stripPointerAll(absRepo) {
+  const stripped = [];
+  for (const primaryFile of findAllInstructionFiles(absRepo)) {
+    const fp = path.join(absRepo, primaryFile);
+    let had = false;
+    try { had = fs.readFileSync(fp, 'utf8').includes(POINTER_BEGIN_PREFIX); } catch { /* absent */ }
+    stripPointer(fp);
+    if (had) stripped.push(primaryFile);
+  }
+  return stripped;
+}
+
+/**
  * Strip the pointer block (any version) and one surrounding blank
  * line from the given file. Idempotent: silently no-ops if the file
  * is missing or no pointer block is present.
@@ -191,8 +230,11 @@ module.exports = {
   POINTER_BLOCK_RE,
   PRIMARY_INSTRUCTION_CANDIDATES,
   findPrimaryInstructionFile,
+  findAllInstructionFiles,
   hasPointerBlock,
   ensurePointerInjected,
+  ensurePointerInjectedAll,
   stripPointer,
+  stripPointerAll,
   renderPointerBody,
 };

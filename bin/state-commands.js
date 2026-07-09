@@ -103,10 +103,9 @@ function cmdLeave(args) {
   }
 
   if (state === 'broken-pointer') {
-    // Pointer present but no registration. Just strip pointer to recover.
-    const primary = pointerLib.findPrimaryInstructionFile(cwd);
-    if (primary) {
-      pointerLib.stripPointer(path.join(cwd, primary));
+    // Pointer present but no registration. Strip from every instruction file.
+    const stripped = pointerLib.stripPointerAll(cwd);
+    if (stripped.length) {
       console.log('Stripped dangling pointer. Now standalone.');
     } else {
       console.log('No pointer block found. No changes.');

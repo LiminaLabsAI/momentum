@@ -499,37 +499,9 @@ Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that d
 
 ## Project Extensions
 
-> Everything below this heading is preserved across `momentum upgrade`.
-> Add project-specific navigation, rules, cross-repo references, etc. here.
-> Anything above this heading is managed by momentum and may be replaced on upgrade.
-
-### Project-Specific: Release Checklist (After `git tag` + `git push <tag>`)
-
-Every release MUST do **all three** of these — missing any one leaves the release incomplete:
-
-1. **`gh release create <tag>`** — create the GitHub Release with notes drawn from the phase retrospective. Mark the newest as `--latest`. Without this, the tag exists at `/tags` but not at `/releases`, and users browsing the project see stale "Latest release" badges.
-
-   ```bash
-   gh release create v0.X.Y \
-     --title "v0.X.Y — Phase N: <phase name>" \
-     --notes "<retrospective summary with highlights + verification + acceptance>" \
-     --latest --verify-tag
-   ```
-
-2. **`npm publish --access public`** — momentum is an npm package. Skip this and the registry stays on the previous version.
-
-3. **Verify both surfaces are live** —
-   - `gh release list --limit 3` shows the new release as `Latest`.
-   - `npm view @limina-labs/momentum version` returns the new version.
-
-**Approval required**: Both `gh release create` and `npm publish` are "shared system" actions — never run either without explicit user OK.
-
-**Both steps are project-specific** — neither is in the global `/complete-phase` command yet. Filed as ENH-030 to add `gh release create` to the upstream template; until that lands, this checklist is the contract.
-
-**Self-audit (catches missed releases):** at session start in this repo, compare `git tag -l` against `gh release list`. If there's a tag without a matching release, surface it immediately.
-
-**Branch-hygiene self-audit (ENH-042 / BUG-026):** at session start in this repo, run `momentum lanes reconcile` — it sweeps every lane whose branch is now contained in the terminal branch (a merge that landed out-of-band) and reports them cleanable; `momentum lanes reconcile --execute` then removes their worktree + branch + state (default-branch-safe). Also run `git branch -r | grep -E 'origin/(phase-|chore/|audit/)'` and `git worktree list` for anything reconcile doesn't track (non-lane branches, orphan worktrees): confirm each is merged into `main`, then `momentum lanes cleanup <branch>` (or `git push origin --delete <branch>`); leave unmerged branches alone and surface them. Keeps Rule 6's "delete merged branch" honest.
-
-### Project-Specific Constraint
-
-**Template files must be generic** — anything in `core/specs-templates/`, `core/agent-rules/`, `core/commands/`, or `core/scripts/` must contain no project-specific names, paths, or references. Project-specific content for momentum itself goes here, under `## Project Extensions`, not into the templates.
+<!-- momentum:project-rules-pointer -->
+> **Project-specific rules live in `specs/project-rules.md`** — read it now.
+> Session-start self-audits, project constraints, and any project-specific
+> guidance are there, shared identically by every agent (ADR-0010). This
+> section is a momentum-managed pointer; edit `specs/project-rules.md`, not
+> this file.

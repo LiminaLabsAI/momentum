@@ -79,15 +79,14 @@ If you're still exploring the idea, run `/brainstorm-idea` first.
    - `specs/planning/roadmap.md`
    - `specs/config.md` (from the config table above; overwrite the
      `momentum init`-inferred file if present — founding owns the content)
+   - `specs/project-rules.md` (project-specific prose rules; each instruction
+     file's `## Project Extensions` points here — ADR-0010)
    - Update `specs/status.md`: Summary, Current Phase (Phase 0 `not started`),
      Upcoming Phases, Next Actions
    - For monorepo: `specs/architecture/` first-pass doc(s)
    - `specs/phases/phase-0-shortname/{overview,plan,tasks,history}.md`
      (log the founding decisions from this conversation in `history.md`)
-   - Refresh the derived cache: `core/config.js` →
-     `writeConfigCache('.', readConfig('specs'))` so the pre-push
-     hook's `protected_branches` matches the authored `branch_flow`;
-     then `momentum okf index` to refresh bundle listings
+   - Refresh derived cache (`writeConfigCache`) + `momentum okf index`
 
 7. Commit the founding:
     ```bash
@@ -96,7 +95,9 @@ If you're still exploring the idea, run `/brainstorm-idea` first.
     ```
     (On a brand-new repo this may be the first content commit on the default
     branch — the bootstrap exception to Rule 6. On a repo with existing code,
-    normal branch discipline applies.)
+    normal branch discipline applies. Founding pushes nothing; `/start-phase`
+    establishes the terminal branch as the remote default before it pushes the
+    first phase branch — BUG-025.)
 
 8. Report to user:
    - Summary of what was founded

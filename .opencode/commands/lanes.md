@@ -79,7 +79,7 @@ landing) and ack what you've acted on.
 momentum lanes done <id>          # enter the landing queue
 momentum lanes land <id>          # validate: turn, freshness, graded gate
 momentum lanes land <id> --execute# merge --no-ff into the CURRENT branch
-momentum lanes close <id> [--rm-worktree]
+momentum lanes close <id> [--rm-worktree]   # retire: full cleanup (branch + state)
 ```
 
 Landing follows the Rule 6 **Landing Order**: one lane at a time, run the
@@ -90,6 +90,23 @@ needs its `specs/adhoc/<id>/record.md`; a `phase` needs a retrospective
 with a non-empty `## Verification Evidence` section (Rule 12).
 `land` never pushes — pushes to protected branches keep their own
 approval gate.
+
+### Cleanup — a landed lane is spent (BUG-026)
+
+```bash
+momentum lanes reconcile             # report lanes now merged out-of-band (human/forge)
+momentum lanes reconcile --execute   # clean them: worktree + branch + state
+momentum lanes cleanup <branch> [--worktree P] [--dry-run]   # one branch, manually
+```
+
+When the AGENT lands on the terminal branch (`branch_flow` last entry),
+`land --execute` **auto-cleans** the worktree + branch + lane state
+(default-branch-safe; `--keep` opts out). When a HUMAN or the FORGE does
+the terminal merge (`end_state` `staging-promotion` / `feature-branch-only`
+/ `open-pr`), cleanup is deferred: run `momentum lanes reconcile` — it
+cleans only lanes whose branch is a **verified ancestor** of the terminal
+branch (a "yes, I merged it" is never trusted, Rule 12). Cleanup never
+deletes a branch that is the forge default (the BUG-025 guard).
 
 ## Tracking
 
