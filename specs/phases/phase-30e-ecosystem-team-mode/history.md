@@ -57,3 +57,16 @@ G0 before consumers. Extends ADR-0012/0013/0014 (single-repo Team Mode) to the
 multi-repo layer; relates ADR-0001/0002/0003 (lanes) + the ecosystem layer.
 
 ---
+### [DECISION] 2026-07-10 — G0 complete: ADR-0015 authored
+Topics: adr-0015, g0, contracts
+Affects-phases: phase-30e-ecosystem-team-mode
+Affects-specs: specs/decisions/0015-ecosystem-team-mode.md
+Detail: Group 0 done — ADR-0015 defines the ecosystem team-mode contract:
+git-native via the ecosystem repo (fragments) + refs/momentum leases; remote-URL
+member schema (`remote` git URL alongside `path`); ecosystem fragment views
+(active-initiative/initiatives/presence via core/team/lib/fragments); swarm
+ownership = ref-CAS leases as source of truth (default-on with a remote,
+single-machine byte-unchanged, 231 swarm tests the gate). Suite 1008/1008
+(docs-only). Next: G1 (remote-URL members) ∥ G2 (ecosystem-state fragments).
+
+---

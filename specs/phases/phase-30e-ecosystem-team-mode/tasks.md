@@ -10,7 +10,7 @@ status: planned
 > ENH-065. Target v0.39.0. Lane `phase-30e-ecosystem-team-mode`.
 
 ## Group 0 — Contracts & ADR-0015 *(blocks)*
-- [ ] Author **ADR-0015** (ecosystem team mode; leases-as-source-of-truth; single-machine invariance)
+- [x] Author **ADR-0015** (ecosystem team mode; leases-as-source-of-truth; single-machine invariance)
 - [ ] Remote-URL member schema (`remote` git URL on `ecosystem.json` members; back-compat with `path`)
 - [ ] Ecosystem fragment views (`active-initiative`/`initiatives`/`presence` via `core/team/lib/fragments`)
 - [ ] Commit G0
