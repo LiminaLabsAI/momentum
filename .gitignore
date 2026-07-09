@@ -22,4 +22,8 @@ node_modules/
 # Added by momentum upgrade — keep momentum + OS noise out of git
 .momentum/*
 !.momentum/installed.json
+# Team-mode coordination fragments are COMMITTED (ADR-0012) — the one exception
+# to the ignored .momentum/. They carry cross-machine coordination state.
+!.momentum/team/
+!.momentum/team/**
 .githooks/*.bak
