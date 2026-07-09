@@ -108,7 +108,11 @@ function migrateProjectExtensions(instructionFile, specsDir, opts = {}) {
   if (isPointerized(content)) { result.alreadyPointer = true; return result; }
 
   const idx = content.indexOf('\n' + MARKER);
-  const extensionsRegion = idx === -1 ? '' : content.slice(idx);
+  // No `## Project Extensions` marker → a pre-marker / custom file. Leave it to
+  // the standard upgrade's pre-marker path (backup .bak + append under marker),
+  // which preserves the user's content; never pointerize it here.
+  if (idx === -1) { result.noMarker = true; return result; }
+  const extensionsRegion = content.slice(idx);
   const prose = extractAuthoredProse(extensionsRegion);
   result.proseChars = prose.length;
 
@@ -138,6 +142,14 @@ function migrateProjectExtensions(instructionFile, specsDir, opts = {}) {
   if (pointerized !== content) {
     if (!dryRun) fs.writeFileSync(instructionFile, pointerized);
     result.changed = true;
+  }
+
+  // The pointer must resolve: ensure project-rules.md exists (scaffold if the
+  // section had no prose to migrate), so we never leave a dangling pointer.
+  if (result.changed && !fs.existsSync(rulesPath) && !dryRun) {
+    fs.mkdirSync(specsDir, { recursive: true });
+    fs.writeFileSync(rulesPath, renderProjectRules(opts.projectName, ''));
+    result.scaffolded = true;
   }
   return result;
 }

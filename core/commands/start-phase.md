@@ -153,14 +153,14 @@ defaults below) and ask the user the gate question matching the project's
   reconcile --execute` cleans up the branch + worktree + state."
 
 Then append: "Project-specific release/publish/deploy steps (e.g.
-`npm publish`, forge release creation) run from `## Project Extensions` in
+`npm publish`, forge release creation) run from `specs/project-rules.md` in
 CLAUDE.md/AGENTS.md — consult them now if any apply."
 
 The gate stops at the truly universal git primitives — `git merge` +
 `git tag -a` + `git push origin <tag>`. Forge-specific release creation
 (`gh release create`, `glab release create`, …) and registry publishes
 (`npm publish`, `twine upload`, …) are NOT in this template; they live in
-`## Project Extensions` + `specs/config.md` (`release_command`,
+`specs/project-rules.md` + `specs/config.md` (`release_command`,
 `publish_target`, `release_flow`).
 
 This is the only place the engine asks. Do NOT skip it.

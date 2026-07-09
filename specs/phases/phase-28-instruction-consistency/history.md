@@ -50,6 +50,14 @@ Detail: Most of CLAUDE.md's release checklist (gh release create, npm publish) i
 
 ---
 
+### [FEATURE] 2026-07-09 — G3: templates project specs/; upgrade migrates Project Extensions → project-rules.md
+Topics: templates, projection, migration, generate-instructions, validate, config-driven-release
+Affects-phases: phase-28-instruction-consistency
+Affects-specs: scripts/generate-instructions.js, core/lib/project-rules.js, bin/momentum.js, core/commands/{start-project,complete-phase,start-phase,validate}.md
+Detail: The `## Project Extensions` section is now a managed POINTER across all 4 instruction templates — edited the generator's `EXTENSIONS_TAIL` (the canonical source; editing the committed outputs directly desyncs the drift guard) + `npm run generate-instructions`. `upgrade` runs `migrateProjectExtensions` before the marker rewrite (migrate-never-drop; **skips marker-less/pre-marker files** so the BUG-008 backup path still preserves custom instruction files; **scaffolds project-rules.md** on pointerize so the pointer never dangles). `/start-project` authors project-rules.md at founding; `/complete-phase` + `/start-phase` point release prose to project-rules.md + config (fully config-driven — finishes Phase 26); `/validate` warns when founded but project-rules.md missing. Two pre-existing tests updated for the new home (template-no-forge-leak, migration scaffold). e2e smoke confirms fresh-install-points + upgrade-migrates-prose. 4 fingerprints re-baselined. 958 → 961 (net; +2 migration/pointer, tests adjusted).
+
+---
+
 ### [FEATURE] 2026-07-09 — G2: ecosystem pointer reaches every instruction file (cause #2)
 Topics: ecosystem-pointer, pointer, autostash, multi-file
 Affects-phases: phase-28-instruction-consistency

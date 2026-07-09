@@ -95,9 +95,12 @@ test('migrateProjectExtensions with only boilerplate rewrites to pointer without
     const agents = path.join(dir, 'AGENTS.md');
     fs.writeFileSync(agents, '# Rules\n\n' + BOILERPLATE);
     const r = pr.migrateProjectExtensions(agents, specs, {});
-    assert.ok(r.changed && !r.appended, JSON.stringify(r));
+    assert.ok(r.changed && !r.appended && r.scaffolded, JSON.stringify(r));
     assert.ok(pr.isPointerized(fs.readFileSync(agents, 'utf8')));
-    assert.ok(!fs.existsSync(path.join(specs, 'project-rules.md')), 'nothing to migrate → no file');
+    // pointer must resolve — scaffolded even with no prose to migrate
+    const rules = fs.readFileSync(path.join(specs, 'project-rules.md'), 'utf8');
+    assert.match(rules, /type: Project Rules/);
+    assert.match(rules, /no project-specific rules yet/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

@@ -25,13 +25,13 @@ type: Tasks
 - [x] G2.4 Verify: `npm test` green — **961/961 (+3)**; autostash regression caught + fixed (preserve-only in upgrade is load-bearing)
 
 ## Group 3 — templates + recipes
-- [ ] G3.1 Instruction templates: `## Project Extensions` → managed pointer block (identical across adapters)
-- [ ] G3.2 install/upgrade run `migrateProjectExtensions` on existing files
-- [ ] G3.3 `/start-project` authors `specs/project-rules.md` at founding
-- [ ] G3.4 `/complete-phase` release fully config-driven (drop residual per-project prose)
-- [ ] G3.5 `/validate` invariant: founded ⟹ `project-rules.md` exists
-- [ ] G3.6 Regenerate adapter surfaces; re-baseline drifted fingerprints
-- [ ] G3.7 Verify: `npm test` green; fresh multi-adapter install identical managed rules + pointers
+- [x] G3.1 Generator `EXTENSIONS_TAIL` → managed pointer block; regenerated all 4 templates (drift guard green)
+- [x] G3.2 `upgrade` runs `migrateProjectExtensions` before the marker rewrite (marker-less/pre-marker files skipped — preserves BUG-008 backup path); scaffolds `project-rules.md` so the pointer always resolves
+- [x] G3.3 `/start-project` authors `specs/project-rules.md` at founding (trimmed cache line to stay under Antigravity 12k)
+- [x] G3.4 `/complete-phase` + `/start-phase` point release prose to `specs/project-rules.md` + config (fully config-driven)
+- [x] G3.5 `/validate` invariant: founded ⟹ `project-rules.md` exists (WARNING)
+- [x] G3.6 Regenerated templates + re-baselined all 4 fingerprints (CLAUDE.md/AGENTS.md pointer block)
+- [x] G3.7 Verify: `npm test` **961/961**; e2e smoke — fresh install points; upgrade migrates authored prose → project-rules.md
 
 ## Group 4 — Self-repo dogfood + release
 - [ ] G4.1 Dogfood: migrate momentum's CLAUDE.md + AGENTS.md Project-Extensions prose → `project-rules.md`; sync both agents

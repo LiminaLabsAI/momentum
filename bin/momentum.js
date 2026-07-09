@@ -1348,6 +1348,22 @@ function upgrade(targetDir, agent, opts = {}) {
   // would dirty files mid-upgrade and break autostash restores).
   const pointerLib = require('../core/ecosystem/lib/pointer');
   const primaryRel = adapter.primaryInstruction.destination.join('/');
+
+  // Phase 28 (ADR-0010): migrate any authored `## Project Extensions` prose into
+  // specs/project-rules.md and rewrite that section as the managed pointer,
+  // BEFORE the marker-aware rewrite preserves it. Migrate-never-drop, idempotent.
+  if (!_dryRun) {
+    const projectRules = require('../core/lib/project-rules');
+    const migRes = projectRules.migrateProjectExtensions(
+      path.join(target, primaryRel),
+      path.join(target, 'specs'),
+      { projectName: getProjectName(target) }
+    );
+    if (migRes.appended) {
+      console.log(`  ↳ migrated ${primaryRel} Project Extensions → specs/project-rules.md (ADR-0010)`);
+    }
+  }
+
   // Snapshot whether THIS agent's instruction file carries the pointer BEFORE
   // the managed rewrite — we only ever PRESERVE it (BUG-022), never add one the
   // file didn't have (adding would dirty files mid-upgrade and break autostash

@@ -692,6 +692,9 @@ Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that d
 
 ## Project Extensions
 
-> Everything below this heading is preserved across `momentum upgrade`.
-> Add project-specific navigation, rules, cross-repo references, etc. here.
-> Anything above this heading is managed by momentum and may be replaced on upgrade.
+<!-- momentum:project-rules-pointer -->
+> **Project-specific rules live in `specs/project-rules.md`** — read it now.
+> Session-start self-audits, project constraints, and any project-specific
+> guidance are there, shared identically by every agent (ADR-0010). This
+> section is a momentum-managed pointer; edit `specs/project-rules.md`, not
+> this file.
