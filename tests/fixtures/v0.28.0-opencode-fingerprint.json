@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-09",
-    "capturedFrom": "phase-29-instruction-variation-model",
+    "capturedFrom": "feat-team-integration",
     "adapter": "opencode",
-    "note": "Phase 29 ADR-0011 — agent-neutral header scaffold + In-Session Task Tool note; task-tool token lifted out of the neutral spine"
+    "note": "Phase 30d G0 (ENH-064) — momentum claim wired into brainstorm-phase/complete-phase recipes + Rule 15 fragment/CAS mechanism note"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -17,8 +17,8 @@
     ".opencode/agents/momentum-reviewer-security.md": "48f4eb012373c3c77bf4dc4e37128fef59bc482b13cc9d8822863bdf96ecb90a",
     ".opencode/agents/swarm-supervisor.md": "a1431fbc6f81ba844d8f86fa92c2d5ba7f715de9712aa8b95f131e5f00203289",
     ".opencode/commands/brainstorm-idea.md": "3fc56d85484b16f6642845e99068323612f52b7ffc2d71b0778b0ed57c67e5bd",
-    ".opencode/commands/brainstorm-phase.md": "855d8a168e7981a5ab760203594ce43d6be5b7b778d89a868a0f19e34d6f21b8",
-    ".opencode/commands/complete-phase.md": "a4b951a6c3b32d1aba54cdb306e31b893d274f7ea5054a3dde2738b514d6f6b4",
+    ".opencode/commands/brainstorm-phase.md": "fa1b8ed1865a1527a05c806cb1f24aa84f5d106d72da3ef6d4968d3523741f9c",
+    ".opencode/commands/complete-phase.md": "2a514692f6d04d4be5bdf4ba31b57bd38f30c5547e48f3d5f2dbef97b58f7a61",
     ".opencode/commands/continue.md": "1537cee5fefdfaf7a64924a39b9d5ab31edf73095a0a894794d26cd04a23f659",
     ".opencode/commands/dispatch.md": "a935f04722ecaeaf9d30b302c04ae24a2ea007551550d7f4f594302caed4d547",
     ".opencode/commands/ecosystem.md": "a6b27f06cc72c590e07705d8ca50f0469efd2cb194ddaa9f9b92ef122e126a14",
@@ -45,7 +45,7 @@
     ".opencode/skills/momentum-orient/SKILL.md": "9228cab651fdcabbcda34ca553823ec15247e78992e2ff688c60a60ab8dbcea4",
     ".opencode/skills/momentum-track/SKILL.md": "a27678aced4f3297af922b187ddd60ba12700010f9ff65a4078bcf6a859e60bf",
     ".opencode/skills/momentum-validate/SKILL.md": "7264214df9395be48403df5cee05c02226890c5c277050da96e6ba5500647621",
-    "AGENTS.md": "682c7bb767c4f564bca41c2a36de6185dd421296aac60f96daf13eb68c3c0d28",
+    "AGENTS.md": "d9a6fabaf516a4d72a4007fd161fd6763c4aedb39dff93bc23bffe6f343d0f79",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

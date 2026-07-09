@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-09",
-    "capturedFrom": "phase-29-instruction-variation-model",
+    "capturedFrom": "feat-team-integration",
     "adapter": "antigravity",
-    "note": "Phase 29 ADR-0011 — agent-neutral header scaffold + In-Session Task Tool note; task-tool token lifted out of the neutral spine"
+    "note": "Phase 30d G0 (ENH-064) — momentum claim wired into brainstorm-phase/complete-phase recipes + Rule 15 fragment/CAS mechanism note"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,8 +14,8 @@
     ".agents/skills/momentum-reviewer-security/SKILL.md": "0a6aecfb260ae7174a20d9afc4137c0d2f541052c59d6011680c2688bf347e54",
     ".agents/skills/swarm-supervisor/SKILL.md": "5cbd3f3267944b9e29a0255459850388d080865c681363ccbb936d2080b18493",
     ".agents/workflows/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
-    ".agents/workflows/brainstorm-phase.md": "6cd06fc828a9a0bbf1f2828622f3bd51139b924cafe0300261a3a86b73a92d40",
-    ".agents/workflows/complete-phase.md": "be8b5b1c2198ca313680be7511f102293577ff62f0724e2ca0b74a6af1928f80",
+    ".agents/workflows/brainstorm-phase.md": "1f3fb30d1b71d8d7e15e81dff0726f650d599770eabd3336f9ddba436731faca",
+    ".agents/workflows/complete-phase.md": "df9484cd6b6601cbd88917dc8bf12599ca62be61736a04ed944376f4224c05c2",
     ".agents/workflows/continue.md": "e1ee768a3ff36d6a4c00e2d5226e9cdb8fff8746db4f2bc90e8a5dafe100c08c",
     ".agents/workflows/dispatch.md": "9ebf4ebb8ff7848c0b5d8316e29bdd6b55a29c1971e67797b3785d888489782b",
     ".agents/workflows/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
@@ -42,7 +42,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "AGENTS.md": "e6c0463ad3b74cffb5b4eb6ba10666c1e0d314c52ebec90d7b78517607a07ffa",
+    "AGENTS.md": "68b39184872ab97a18550a7b79a935856c080e46673b8b98f2ed8f7ad43a7aa4",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/antigravity-hook-adapter.sh": "42ca379a46f94a71eabd12d9dff85566bc7bfd46f30e5037e6d912855cc1881b",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",

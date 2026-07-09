@@ -1,15 +1,15 @@
 {
   "meta": {
     "captured": "2026-07-09",
-    "capturedFrom": "phase-29-instruction-variation-model",
+    "capturedFrom": "feat-team-integration",
     "adapter": "codex",
-    "note": "Phase 29 ADR-0011 — agent-neutral header scaffold + In-Session Task Tool note; task-tool token lifted out of the neutral spine"
+    "note": "Phase 30d G0 (ENH-064) — momentum claim wired into brainstorm-phase/complete-phase recipes + Rule 15 fragment/CAS mechanism note"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".agents/skills/brainstorm-idea/SKILL.md": "4003f2d585ba32d477255efbe65e9c53e0a6bbaeb70ee36ccfe0d6efbe576d63",
-    ".agents/skills/brainstorm-phase/SKILL.md": "f905e5522b6e94d3d837d58976dd1c56d76f6a56757bae8c60f1555db412529b",
-    ".agents/skills/complete-phase/SKILL.md": "86937f000ee6e127916938efa2ad3daff88542eba7790c46f816e8f8de1ba23d",
+    ".agents/skills/brainstorm-phase/SKILL.md": "f04e503b9ee5e0be17f124addeb22f7ae84954f85b50896ce4e223c8ab398dd7",
+    ".agents/skills/complete-phase/SKILL.md": "1003758161b7211583f09a2de2a1ddfb30c6a5b3f2a4094e3102e620cdebf966",
     ".agents/skills/continue/SKILL.md": "ca2916ecb23efcf4b874bad4ee8793f79dfd05465d8aae70d0219dbfebc9b120",
     ".agents/skills/dispatch/SKILL.md": "392dd19d1e8b7d149e115c96bf80f42e447ea6f0f8c141954ab6f72f379c6d2a",
     ".agents/skills/ecosystem/SKILL.md": "3c534500e7280235d75cb83a32b119691d61218fbe1db910904328a4aa1bee54",
@@ -41,7 +41,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "AGENTS.md": "aab2205cc52a44df6d5df31dfdc8b18d7a42e3a03466adec6bf1489305ad2a8c",
+    "AGENTS.md": "7ca3824d1e25bfca000e612edc4fc70c74e0da65a2ff09ad56544c2ed364850e",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
