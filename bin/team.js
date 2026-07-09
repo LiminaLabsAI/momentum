@@ -19,6 +19,9 @@ const compile = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'compile
 const presenceLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'presence'));
 const approvalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'approvals'));
 const queueLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'queue'));
+const leaseLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'lease'));
+const { createRelay } = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'relay', 'server'));
+const { CONTRACT } = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'contract'));
 const identity = require(path.join(MOMENTUM_ROOT, 'core', 'identity'));
 
 function repoRoot(cwd) {
@@ -183,7 +186,37 @@ function runTeam(argv) {
     console.error('usage: momentum team turn <take|release|holder> [runway]');
     return 1;
   }
-  console.error('usage: momentum team <whoami|sync|board|record|compile|heartbeat|presence|approve|check|turn>');
+  if (sub === 'lease') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const action = argv[1];
+    const resource = argv[2];
+    if (!action || !resource) { console.error('usage: momentum team lease <acquire|release|owner> <resource>'); return 1; }
+    const actor = identity.resolveActor(root).id;
+    if (action === 'acquire') {
+      const r = leaseLib.acquireLease(root, resource, actor);
+      if (r.held) { console.log(`✓ leased '${resource}' as '${actor}'`); return 0; }
+      console.error(`✗ '${resource}' leased by '${r.owner}'`); return 2;
+    }
+    if (action === 'release') { leaseLib.releaseLease(root, resource); console.log(`✓ released lease '${resource}'`); return 0; }
+    if (action === 'owner') { const o = leaseLib.leaseOwner(root, resource); console.log(o ? `${resource}: owned by '${o}'` : `${resource}: free`); return 0; }
+    console.error('usage: momentum team lease <acquire|release|owner> <resource>');
+    return 1;
+  }
+  if (sub === 'contract') {
+    console.log(JSON.stringify(CONTRACT, null, 2));
+    return 0;
+  }
+  if (sub === 'relay') {
+    const { flags } = parseFlags(argv.slice(1));
+    const relay = createRelay({ port: flags.port ? parseInt(flags.port, 10) : 0 });
+    relay.listen((port) => {
+      console.log(`✓ momentum coordination relay (authority-free) on http://127.0.0.1:${port}`);
+      console.log(`  set relay_url=http://127.0.0.1:${port} for teammates; Ctrl-C to stop.`);
+    });
+    return 0; // server keeps the process alive
+  }
+  console.error('usage: momentum team <whoami|sync|board|record|compile|heartbeat|presence|approve|check|turn|lease|contract|relay>');
   return 1;
 }
 
