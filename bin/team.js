@@ -16,6 +16,9 @@ const MOMENTUM_ROOT = path.resolve(__dirname, '..');
 const claimLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'claim'));
 const refcas = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'refcas'));
 const compile = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'compile'));
+const presenceLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'presence'));
+const approvalsLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'approvals'));
+const queueLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'queue'));
 const identity = require(path.join(MOMENTUM_ROOT, 'core', 'identity'));
 
 function repoRoot(cwd) {
@@ -117,7 +120,70 @@ function runTeam(argv) {
     console.log(`✓ recorded active-phase row for '${flags.branch}' as '${actor}'`);
     return 0;
   }
-  console.error('usage: momentum team <whoami|sync|board|record|compile>');
+  if (sub === 'heartbeat') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const { flags } = parseFlags(argv.slice(1));
+    const actor = flags.actor || identity.resolveActor(root).id;
+    presenceLib.heartbeat(root, actor, { branch: flags.branch, lane: flags.lane, activity: flags.activity });
+    console.log(`✓ heartbeat for '${actor}'`);
+    return 0;
+  }
+  if (sub === 'presence') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const now = Date.now();
+    const list = presenceLib.presence(root, now);
+    if (!list.length) { console.log('(no presence recorded)'); return 0; }
+    for (const p of list) {
+      console.log(`${p.liveness === 'active' ? '●' : p.liveness === 'idle' ? '◐' : '○'} ${p.actor}  ${p.liveness}  ${p.branch || ''}${p.activity ? '  — ' + p.activity : ''}`);
+    }
+    return 0;
+  }
+  if (sub === 'approve') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const { flags, positional } = parseFlags(argv.slice(1));
+    const change = positional[0];
+    if (!change) { console.error('usage: momentum team approve <change> [--verdict approve|reject]'); return 1; }
+    const actor = flags.actor || identity.resolveActor(root).id;
+    approvalsLib.approve(root, actor, change, { verdict: flags.verdict || 'approve' });
+    console.log(`✓ ${flags.verdict === 'reject' ? 'rejected' : 'approved'} '${change}' as '${actor}'`);
+    return 0;
+  }
+  if (sub === 'check') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const { flags, positional } = parseFlags(argv.slice(1));
+    const change = positional[0];
+    if (!change || !flags.author) { console.error('usage: momentum team check <change> --author <a> [--threshold N] [--allow-self]'); return 1; }
+    const threshold = flags.threshold ? parseInt(flags.threshold, 10) : 1;
+    const allowSelf = argv.includes('--allow-self');
+    const approvers = approvalsLib.approversFor(root, change, flags.author, allowSelf);
+    if (approvers.length >= threshold) {
+      console.log(`✓ '${change}' satisfied — ${approvers.length}/${threshold} approval(s): ${approvers.join(', ')}`);
+      return 0;
+    }
+    console.error(`✗ '${change}' not satisfied — ${approvers.length}/${threshold} peer approval(s)${allowSelf ? '' : ' (author self-approval does not count)'}`);
+    return 2;
+  }
+  if (sub === 'turn') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const action = argv[1];
+    const runway = argv[2] || 'main';
+    const actor = identity.resolveActor(root).id;
+    if (action === 'take') {
+      const r = queueLib.takeTurn(root, runway, actor);
+      if (r.held) { console.log(`✓ took the '${runway}' landing turn as '${actor}'`); return 0; }
+      console.error(`✗ '${runway}' turn held by '${r.holder}' — wait or coordinate`); return 2;
+    }
+    if (action === 'release') { queueLib.releaseTurn(root, runway); console.log(`✓ released the '${runway}' turn`); return 0; }
+    if (action === 'holder') { const h = queueLib.turnHolder(root, runway); console.log(h ? `${runway}: held by '${h}'` : `${runway}: free`); return 0; }
+    console.error('usage: momentum team turn <take|release|holder> [runway]');
+    return 1;
+  }
+  console.error('usage: momentum team <whoami|sync|board|record|compile|heartbeat|presence|approve|check|turn>');
   return 1;
 }
 
