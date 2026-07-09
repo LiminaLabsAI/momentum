@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: not-started
+status: in-progress
 tags: [instructions, consistency, projection, project-rules, upgrade, ecosystem-pointer, config]
 ---
 
