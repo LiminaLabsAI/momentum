@@ -89,3 +89,11 @@ Affects-specs: core/config.js, bin/momentum.js, specs/config.md
 Detail: Operator raised a PR-review release flow (agent pushes + opens PR, human reviews+merges) → add first-class `end_state: open-pr` (G3). Operator chose to keep all 6 groups in one phase (add G4 upgrade/transform hygiene for the ._*/.bak leaks + a doctor sweep) and to clean this repo's real cruft as the G5 dogfood rather than a pre-phase hygiene commit.
 
 ---
+
+### [FEATURE] 2026-07-09 — G0: shared cleanupTarget() + default-branch helpers landed
+Topics: cleanup, default-branch, lanes
+Affects-phases: phase-27-lifecycle-cleanup
+Affects-specs: core/lanes/lib/cleanup.js, bin/lanes.js, tests/lane-cleanup.test.js
+Detail: `core/lanes/lib/cleanup.js` ships `cleanupTarget()` (worktree → local branch → remote-if-not-default → lane-state tombstone; idempotent, forge-neutral, default-branch-safe) + `remoteDefaultBranch()` / `ensureTerminalBranchIsRemoteDefault()` (BUG-025 push-terminal-first) + `momentum lanes cleanup` CLI. The remote-default guard is load-bearing — a hijacked default branch can never be deleted. macOS /var→/private/var symlink required realpath-based self-worktree detection. 8 new tests; suite 927 → 935.
+
+---

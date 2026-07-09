@@ -5,10 +5,10 @@ type: Tasks
 # Phase 27 — Tasks
 
 ## Group 0 — Cleanup contract + shared action
-- [ ] G0.1 `cleanupTarget()` shared module (worktree → local branch → remote-if-not-default → lane state + tombstone)
-- [ ] G0.2 `remoteDefaultBranch()` + `ensureTerminalBranchIsRemoteDefault()` git helpers (unborn-remote resilient)
-- [ ] G0.3 `tests/lane-cleanup.test.js` — removal, unmerged refusal, default-safe remote skip, teardown, idempotency
-- [ ] G0.4 Verify: `npm test` green, no lane-suite regression
+- [x] G0.1 `cleanupTarget()` shared module (worktree → local branch → remote-if-not-default → lane state + tombstone)
+- [x] G0.2 `remoteDefaultBranch()` + `ensureTerminalBranchIsRemoteDefault()` git helpers (unborn-remote resilient)
+- [x] G0.3 `tests/lane-cleanup.test.js` — removal, unmerged refusal, default-safe remote skip, teardown, idempotency
+- [x] G0.4 Verify: `npm test` green, no lane-suite regression — **935/935 (was 927; +8)**
 
 ## Group 1 — Default-branch protection (BUG-025)
 - [ ] G1.1 `/start-project` founding: push terminal branch to origin FIRST (recipe + helper call)

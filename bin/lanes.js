@@ -243,6 +243,13 @@ Usage:
   momentum lanes land <id> [--into <ref>] [--execute] [--force] [--mark-landed]
       --mark-landed      bookkeeping only: record an out-of-band merge that
                          already happened (done + merged lane → landed)
+  momentum lanes cleanup <branch> [--worktree P] [--lane ID] [flags]
+      Remove a spent branch's worktree + branch + lane state, default-branch-safe
+      --no-remote  skip origin delete   --force  allow -D / dirty worktree
+      --dry-run    report only          --keep-state  leave lane dir untouched
+  momentum lanes reconcile [--execute] [--into <ref>] [--json]
+      Sweep landed/merged lanes whose terminal merge happened out-of-band
+      (human/forge) and clean them once verified contained in <ref>
 
 State lives at <git-common-dir>/momentum/lanes — shared by all worktrees,
 untracked, no daemon. Substrate: plain git worktrees by default; treehouse
@@ -287,6 +294,10 @@ function dispatch(argv, cwd) {
       return delegate('signals', 'cmdInbox', rest);
     case 'land':
       return delegate('land', 'cmdLand', rest);
+    case 'cleanup':
+      return delegate('cleanup', 'cmdCleanup', rest);
+    case 'reconcile':
+      return delegate('reconcile', 'cmdReconcile', rest);
     case '--help':
     case '-h':
     case 'help':
