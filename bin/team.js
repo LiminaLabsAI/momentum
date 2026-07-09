@@ -15,7 +15,13 @@ const { spawnSync } = require('child_process');
 const MOMENTUM_ROOT = path.resolve(__dirname, '..');
 const claimLib = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'claim'));
 const refcas = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'refcas'));
+const compile = require(path.join(MOMENTUM_ROOT, 'core', 'team', 'lib', 'compile'));
 const identity = require(path.join(MOMENTUM_ROOT, 'core', 'identity'));
+
+function repoRoot(cwd) {
+  const r = spawnSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' });
+  return r.status === 0 ? r.stdout.trim() : null;
+}
 
 function parseFlags(argv) {
   const flags = {};
@@ -77,11 +83,29 @@ function runTeam(argv) {
     const remote = argv[1] && !argv[1].startsWith('--') ? argv[1] : 'origin';
     const ok = refcas.fetchAll(cwd, remote);
     console.log(ok
-      ? `✓ synced coordination refs from ${remote} (refs/momentum/*)`
+      ? `✓ synced coordination refs from ${remote} (refs/momentum/*). Fragments arrive via branch integration.`
       : `⚠ could not fetch from ${remote} — working offline; coordination is eventually consistent`);
     return 0;
   }
-  console.error('usage: momentum team <whoami|sync>');
+  if (sub === 'board') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    console.log(compile.compileActivePhase(root));
+    return 0;
+  }
+  if (sub === 'record') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const { flags } = parseFlags(argv.slice(1));
+    if (!flags.branch) { console.error('usage: momentum team record --branch B [--phase P] [--status S] [--progress "..."]'); return 1; }
+    const actor = flags.actor || identity.resolveActor(root).id;
+    compile.recordActivePhase(root, actor, {
+      branch: flags.branch, phase: flags.phase || '', status: flags.status || '', progress: flags.progress || '',
+    });
+    console.log(`✓ recorded active-phase row for '${flags.branch}' as '${actor}'`);
+    return 0;
+  }
+  console.error('usage: momentum team <whoami|sync|board|record>');
   return 1;
 }
 
