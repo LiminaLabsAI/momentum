@@ -54,6 +54,16 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 26 | Project Preferences | Complete | v0.33.0 (2026-07-09) |
 | 27 | Lifecycle Cleanup & Default-Branch Hardening | Complete | v0.34.0 (2026-07-09) |
 | 28 | Instruction Consistency | Complete | v0.35.0 (2026-07-09) |
+| 29 | Instruction Variation Model (Agent-Neutral Projection) | Complete | v0.36.0 (2026-07-10) |
+| 30a | Team-Walk (Multiplayer-Correct Coordination) | Complete | v0.37.0 (2026-07-10) |
+| 30b | Team-Run (Shared Board + Landing) | Complete | v0.37.0 (2026-07-10) |
+| 30c | Team-Fly (Relay + Ecosystem) | Complete¹ | v0.37.0 (2026-07-10) |
+
+> ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
+> (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
+> recipe `claim`-wiring, `lanes land`/`pre-push` gate, ecosystem team mode, and
+> adapter fingerprint re-baselines — is deferred to **ENH-064** (additive,
+> non-blocking).
 
 ## Ad-hoc / Patch Releases
 
@@ -82,7 +92,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 29 — Instruction Variation Model | `phase-29-instruction-variation-model` | Verified — at release gate | G0–G4 complete; suite 970/970; self-repo dogfooded; v0.36.0 |
+| _(none active — Phase 29 released v0.36.0; Team-mode family 30a/b/c released v0.37.0; all lanes closed)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -92,8 +102,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 30 | Intelligence | Not Started (target v0.37.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 31 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+| 31 | Intelligence | Not Started (target v0.38.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 32 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+| ENH-064 | Team-mode integration follow-ups | Not Started | Rule 15 reword + recipe `claim`-wiring + legacy-writer identity; `lanes land`/`pre-push` review-gate + team-wide freshness; `backlog.md`→fragments; ecosystem team mode (remote-URL members, ecosystem-state fragments, swarm-manifest lease-CAS wiring); adapter fingerprint re-baselines. Additive to the shipped v0.37.0 core. |
 
 ## Unscheduled Future Work
 

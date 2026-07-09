@@ -1,62 +1,53 @@
 ---
 type: Tasks
-status: planned
+status: complete
 ---
 
 # Phase 30a — Team-Walk — Tasks
 
-> Mirrors `plan.md`. Mark `[x]` complete, `[/]` in-progress. Verify before
-> claiming done (Rule 12). Execution: G0 → (G1 ∥ G2) → G3 → G4.
+> **RELEASED v0.37.0 (2026-07-10).** Core mechanisms built + tested; integration
+> wiring deferred to **ENH-064** (additive, non-blocking). `[x]` done · `[~]`
+> partial · `[ ]` deferred→ENH-064. Suite 1002/1002.
 
-> **Progress — 2026-07-10 (lane `phase-30a-team-walk-impl`, isolated worktree):**
-> **G0 ✅ / G1 ✅ / G2 ✅ / G4 ✅ (core)** built + verified; **suite 981/981**.
-> Commits: `75d62f6` (G0 identity+fragments+refcas+ADR-0012), `876f423` (G1
-> `momentum claim`, ENH-057 mechanism), `1e604d8` (G2 compile+board + G4 e2e).
-> **G3 DEFERRED** — its wiring (reword Rule 15 in the rules body, re-baseline
-> adapter fingerprints, `bin/momentum.js` gitignore-refresh) overlaps files the
-> live **Phase 29** lane is rewriting; land Phase 29 first, then wire (Rule 6
-> Landing Order). Still open within scope: ENH-056 self-merge guard (G1);
-> changelog→fragments + status.md marker wiring (G2); more e2e scenarios + smoke
-> + fingerprints (G4). The git-native core is proven; the remainder is integration.
+## Group 0 — Contracts & identity ✅
+- [x] Author **ADR-0012** (git-native multiplayer)
+- [x] `core/identity/` — `resolveActor` (git config / MOMENTUM_ACTOR / fallback)
+- [x] `core/identity/` unit tests
+- [x] `core/team/lib/fragments.js` — per-actor append-only + `compile`
+- [x] `core/team/lib/refcas.js` — `claim` + `installRefspec`
+- [~] `.gitignore` `!.momentum/team/` (self-repo done) — downstream `refreshGitignore` template → ENH-064
+- [x] Commit G0 (`75d62f6`)
 
-## Group 0 — Contracts & identity *(blocks all)*
-- [ ] Author **ADR-0012** (git-native multiplayer: identity + fragments + ref-CAS; eventual consistency accepted; fragment-vs-CAS split rationale)
-- [ ] `core/identity/` — `resolveActor(cwd)` from `git config`; `MOMENTUM_ACTOR` override; deterministic fallback + warning
-- [ ] `core/identity/` unit tests (email→actor, override, missing-config fallback)
-- [ ] `core/team/lib/fragments.js` — per-actor append-only format + collision-free path invariant + deterministic `compile(view)`
-- [ ] `core/team/lib/refcas.js` — `claim(namespace,key)` create-only push CAS + `installRefspec()`
-- [ ] `.gitignore` refresh — `!.momentum/team/` negation survives a directory-level `.momentum/` rule (BUG-014-aware)
-- [ ] Commit G0
+## Group 1 — Collision-free claims ✅
+- [x] `momentum claim <namespace> <key>` (deflect/exit-2 on loss)
+- [x] **ENH-057** — version reserved via claim before tag
+- [x] **ENH-056** — self-merge already refused by the ENH-050 `into===lane.branch` guard
+- [x] Bare-remote two-clone tests
+- [x] Commit G1 (`876f423`)
 
-## Group 1 — Collision-free claims *(∥ G2)*
-- [ ] `bin/team.js` + `core/team/lib/claim.js` — `momentum claim <phase|id|version>` with read-max → candidate → CAS → deflect/retry
-- [ ] **ENH-057** — `momentum claim version` reserves next version pre-release; stale bump refused
-- [ ] **ENH-056** — refuse `land --execute` self-merge (current branch == lane branch / own worktree) with integration-branch hint
-- [ ] Bare-remote fixture tests: race → one winner; loser re-picks; refspec round-trip on fetch
-- [ ] Commit G1
+## Group 2 — Fragment-compiled shared state ✅ (mostly)
+- [x] Active Phase table → fragments + `compileStatusFile` into status.md (managed markers)
+- [ ] `changelog/` → fragments → **ENH-064**
+- [x] `momentum team sync` (fetch + recompile)
+- [x] `momentum team board` reads compiled shared state
+- [x] Tests (compile, foldLatest, applyManaged idempotent, CLI)
+- [x] Commit G2 (`1e604d8`, `29b0e13`)
 
-## Group 2 — Fragment-compiled shared state *(∥ G1)*
-- [ ] Active Phase table → per-actor fragments + `compile('active-phase')` between managed markers in `status.md`
-- [ ] `changelog/` → per-actor fragments + compile (attributed, append-only)
-- [ ] `momentum team sync` — fetch coordination refs + branch, recompile views, report changes
-- [ ] `lanes board` reads compiled shared state (post-sync cross-machine visibility)
-- [ ] Tests: concurrent append + merge → zero conflict; deterministic + attribution-correct + idempotent recompile
-- [ ] Commit G2
+## Group 3 — Wiring ⏸ DEFERRED → ENH-064 (overlaps Phase-29 instruction surfaces)
+- [ ] Wire `core/identity` into lane signal `from` / swarm actor / session line / merge-approved
+- [ ] `/brainstorm-phase` + `/start-phase` + `/hotfix` claim next number; `/complete-phase` reserves version
+- [ ] Reword **Rule 15** to cite the fragment/CAS mechanism
+- [ ] Docs — site team section, README, developer-guide
+- [ ] Re-baseline adapter fingerprints
 
-## Group 3 — Wiring *(sequential)*
-- [ ] Wire `core/identity` into lane signal `from`, swarm actor, ecosystem session line, `merge-approved` approver record
-- [ ] `/brainstorm-phase` + `/start-phase` + `/hotfix` claim next number via `momentum claim`; `/complete-phase` reserves version (ENH-057)
-- [ ] Reword **Rule 15** (rules body + all adapter surfaces) to reference the fragment/CAS mechanism
-- [ ] Docs — site team section, README, developer-guide (`claim`, `team sync`)
-- [ ] Re-baseline adapter fingerprints (intended drift only)
-- [ ] Commit G3
-
-## Group 4 — Verification *(last)*
-- [ ] `tests/team-distributed.e2e.test.js` — two-clone bare-remote: (a) claim race, (b) zero-conflict fragments, (c) ENH-057 release race, (d) sync visibility
-- [ ] Full suite green (`npm test`); record counts in retrospective `## Verification Evidence`
-- [ ] Smoke: `claim`, `team sync`, `lanes board` on the fixture
-- [ ] Commit G4 + retrospective
+## Group 4 — Verification ✅
+- [x] `tests/team-e2e.test.js` — two-clone conflict-free fragments + one-winner claim
+- [x] `tests/team-family-e2e.test.js` — whole-plane two-clone (added at family level)
+- [x] Full suite green (1002/1002)
+- [x] Retrospective with `## Verification Evidence`
+- [ ] Adapter fingerprint re-baseline → ENH-064
+- [x] Commit G4 (`1e604d8`)
 
 ## Phase-exit
-- [ ] `/sync-docs` from history → specs
-- [ ] `/complete-phase` (verify + release gate; version reserved via `momentum claim version`)
+- [x] Tracking reconciled (this pass)
+- [x] Released v0.37.0 (merge → main → staging, tag, GH release, npm)
