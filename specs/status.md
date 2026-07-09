@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-09
-> **Current Phase**: Phase 27 — Lifecycle Cleanup & Default-Branch Hardening (in progress, target v0.34.0)
-> **Latest Release**: v0.33.0 — Phase 26: Project Preferences (trust-layer invariant + mechanisms-as-preferences)
+> **Current Phase**: _none active_ (Phase 28 — Intelligence is next)
+> **Latest Release**: v0.34.0 — Phase 27: Lifecycle Cleanup & Default-Branch Hardening (default-branch-safe reusable cleanup; auto-clean on land + reconcile; tracking-before-release gate; open-pr; `._*`/`.bak` hygiene + `doctor --clean`)
 > **Health**: On Track
 
 ## Summary
@@ -52,6 +52,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 22c | Opencode Polish & Multi-Adapter Support | Complete | v0.30.0 (2026-07-06) |
 | 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete | v0.32.0 (2026-07-06) |
 | 26 | Project Preferences | Complete | v0.33.0 (2026-07-09) |
+| 27 | Lifecycle Cleanup & Default-Branch Hardening | Complete | v0.34.0 (2026-07-09) |
 
 ## Ad-hoc / Patch Releases
 
@@ -80,7 +81,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 27 — Lifecycle Cleanup & Default-Branch Hardening | phase-27-lifecycle-cleanup | Verified — awaiting release | G0–G5 done (v0.34.0; suite 951/951) |
+| _(none — Phase 27 released as v0.34.0; Phase 28 Intelligence is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -140,6 +141,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-09**: **Phase 27 — Lifecycle Cleanup & Default-Branch Hardening RELEASED as v0.34.0** (merged → staging → main; tag `v0.34.0`). Closes **BUG-025** (a fresh-repo phase branch hijacking the forge default — the first push momentum makes is the phase branch, so `/start-phase` now establishes the terminal `branch_flow` branch on origin FIRST, resilient to an unborn remote, with an optional `git_forge=github` `gh` repair) and **BUG-026** (nothing cleaned worktrees/branches/lane-state after work landed). One reusable, git-only, **default-branch-safe** `cleanupTarget()` (`core/lanes/lib/cleanup.js`) whose trigger is `end_state`: the agent auto-cleans when it performs the terminal merge (`lanes land --execute`, `complete-phase`; `--keep` opts out), and a human/forge merge defers to new **`momentum lanes reconcile`** (verify-before-clean — a "yes I merged it" is never trusted, Rule 12). Operator requirements shipped as decisions: the **confirm→verify→clean handshake** for non-`merge-after-yes` end_states and a **tracking-before-release Gate B** (tracking committed before any tag). New **`end_state: open-pr`**; **ENH-063** — `lanes close` now does full cleanup (branch + state). G4 fixed the `._*` skills-transform leak at source (codex/opencode accepted `._x.md`) + added **`momentum doctor --clean`**. **Self-repo dogfood**: cleaned this repo's real cruft with the new tools — 2 stale lane worktrees for released work, an orphan Claude worktree, 19 `._*`, 8 `.bak` — tree provably clean. Suite 927 → **951**. Filed BUG-027 (cosmetic AGENTS.md table-row defect). Renumber: Intelligence → 28, Platform → 29.
 
 - **2026-07-09**: **Phase 26 — Project Config RELEASED as v0.33.0** (merged → main → staging; tag `v0.33.0` pushed; GitHub Release + `npm publish --access public` live; phase branch deleted). ADR-0009 ships the separation of concerns the BUG-023 → BUG-024 family exposed: the **trust layer** (human authorization for protected-branch pushes) is invariant and non-configurable; the **mechanisms** (which branches are protected, how far the agent goes, which release/publish/verify commands run) are **project config** in `specs/config.md`, read by recipe templates at execution time. `core/config.js` (read/write/infer/derive/cache + founded predicate); `momentum init`/`upgrade` infer from manifests + git remote (founded-only migration; never clobber user edits); `pre-push` hook reads `protected_branches` from `specs/config.md` (source of truth) + the derived cache, UNIONed with the invariant floor `['main','master','staging']` (never weaker). Six recipes rewritten (start-phase/complete-phase/brainstorm-phase/brainstorm-idea/start-project/validate); **BUG-024 closed** — `gh release create` + `npm publish` removed from global templates (gate stops at `git tag` + `git push origin <tag>`; forge/registry commands live in `## Project Extensions` + config). A post-review hardening pass re-renamed `preferences`→`config` and closed a `/review-code` Critical (cache could silently downgrade the trust layer) + 4 Important/8 Minor findings. **ENH-062** shipped in-phase: `momentum config sync` — proactive config-drift detection → approval-gated apply. Navigation table + 4 adapter instruction surfaces regenerated; 4 fingerprints re-baselined; self-repo dogfooded (its own `specs/config.md`); site + README docs. Suite 909 → 927; OKF bundle 256 files conformant. Closes ENH-061, BUG-024; ships ENH-062. Renumber: Intelligence → 27, Platform → 28.
 
