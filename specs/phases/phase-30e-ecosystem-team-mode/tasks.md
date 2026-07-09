@@ -16,9 +16,9 @@ status: planned
 - [ ] Commit G0
 
 ## Group 1 — Remote-URL members *(∥ G2)*
-- [ ] `ecosystem.json` members accept `remote`; validation accepts `path` and/or `remote`
-- [ ] Discovery + `ecosystem status` resolve remote-identified members; relative paths still work
-- [ ] Tests (two-clone URL members); commit G1
+- [x] `ecosystem.json` members accept `remote`; validation accepts `path` and/or `remote`
+- [x] Discovery + `ecosystem status` resolve remote-identified members; relative paths still work
+- [x] Tests (two-clone URL members); commit G1
 
 ## Group 2 — Ecosystem-state → fragments *(∥ G1)*
 - [ ] `active-initiative` → per-actor fragment + compile

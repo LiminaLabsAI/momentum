@@ -569,17 +569,31 @@ function ensureRootCommandSurface(root, agent, dryRun) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function cmdAdd(args) {
-  if (args.length === 0) {
-    throw new Error('add: missing <repo-path> argument.');
-  }
-  const repoPath = args[0];
-  const opts = parseFlags(args.slice(1), {
+  // The repo-path positional is optional when registering a remote-only member
+  // (ADR-0015): `momentum ecosystem add --remote <git-url> --id <id> --role r`.
+  const hasPositional = args.length > 0 && !args[0].startsWith('--');
+  const repoPath = hasPositional ? args[0] : null;
+  const opts = parseFlags(hasPositional ? args.slice(1) : args, {
     role: 'string',
     id: 'string',
+    remote: 'string',
     ecosystem: 'string',
   });
 
   const root = resolveEcosystemRoot(opts.ecosystem, 'add');
+
+  // ── Remote-only member: no local checkout, no pointer injection. ──────────
+  if (!repoPath) {
+    if (!opts.remote) {
+      throw new Error(
+        'add: missing <repo-path> argument (or pass --remote <git-url> --id <id> to register a remote member).',
+      );
+    }
+    if (!opts.id) {
+      throw new Error('add: --remote requires --id <slug> (no local path to derive it from).');
+    }
+    return addRemoteMember(root, opts);
+  }
 
   const absRepo = path.resolve(root, repoPath);
   if (!fs.existsSync(absRepo)) {
@@ -628,7 +642,9 @@ function cmdAdd(args) {
       `or \`remove ${id}\` first.`,
     );
   }
-  manifest.members.push({ id, path: relPath, role });
+  const entry = { id, path: relPath, role };
+  if (opts.remote) entry.remote = opts.remote; // co-located AND shareable (ADR-0015)
+  manifest.members.push(entry);
 
   const v = lib.validateManifest(manifest);
   if (!v.ok) {
@@ -648,8 +664,53 @@ function cmdAdd(args) {
   // agent, not just the preferred one).
   const injected = ensurePointerInjectedAll(absRepo, root, manifest.name);
 
-  console.log(`Added member "${id}" (${role}) at ${relPath}.`);
+  console.log(`Added member "${id}" (${role}) at ${relPath}${opts.remote ? ` (remote: ${opts.remote})` : ''}.`);
   console.log(`Pointer injected into ${injected.map((f) => path.relative(root, path.join(absRepo, f))).join(', ')}.`);
+}
+
+/**
+ * Register a remote-only member (ADR-0015) — a member a teammate hasn't checked
+ * out on this machine. No local repo, so no pointer injection: the manifest
+ * entry alone is enough for `ecosystem status` to resolve it by URL.
+ */
+function addRemoteMember(root, opts) {
+  const id = opts.id;
+  if (!/^[a-z][a-z0-9-]*$/.test(id)) {
+    throw new Error(`add: --id "${id}" must match /^[a-z][a-z0-9-]*$/.`);
+  }
+  const role = opts.role || 'other';
+  const validRoles = ['platform', 'client', 'library', 'infra', 'bench', 'other'];
+  if (!validRoles.includes(role)) {
+    throw new Error(`add: invalid --role "${role}". Must be one of: ${validRoles.join(', ')}`);
+  }
+
+  const manifest = lib.loadManifest(root);
+  const existing = lib.findMember(manifest, id);
+  if (existing) {
+    if (existing.remote === opts.remote && !existing.path) {
+      console.log(`add: "${id}" is already registered (remote ${opts.remote}). No changes.`);
+      return;
+    }
+    throw new Error(
+      `add: member id "${id}" already registered. Use a different --id, or \`remove ${id}\` first.`,
+    );
+  }
+  manifest.members.push({ id, remote: opts.remote, role });
+
+  const v = lib.validateManifest(manifest);
+  if (!v.ok) {
+    throw new Error(
+      `add: resulting manifest fails validation:\n` +
+      v.errors.map((e) => `  ${e.path}: ${e.message}`).join('\n'),
+    );
+  }
+  fs.writeFileSync(
+    path.join(root, lib.MANIFEST_FILENAME),
+    JSON.stringify(manifest, null, 2) + '\n',
+    'utf8',
+  );
+  console.log(`Added remote member "${id}" (${role}) at ${opts.remote}.`);
+  console.log('(no local checkout — no pointer injected; teammates resolve it by URL)');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -686,11 +747,15 @@ function cmdRemove(args) {
   );
 
   // Best-effort: strip the fenced pointer from the target's CLAUDE.md /
-  // AGENTS.md. If the target no longer exists on disk we skip silently —
-  // remove must succeed even when the member repo is gone.
-  const absRepo = path.resolve(root, member.path);
-  if (fs.existsSync(absRepo)) {
-    stripPointerAll(absRepo); // Phase 28 — strip from every instruction file
+  // AGENTS.md. Remote-only members (ADR-0015) have no local path and never
+  // got a pointer, so there's nothing to strip. If the target no longer
+  // exists on disk we skip silently — remove must succeed even when the
+  // member repo is gone.
+  if (typeof member.path === 'string' && member.path.length > 0) {
+    const absRepo = path.resolve(root, member.path);
+    if (fs.existsSync(absRepo)) {
+      stripPointerAll(absRepo); // Phase 28 — strip from every instruction file
+    }
   }
 
   console.log(`Removed member "${id}".`);
@@ -716,12 +781,22 @@ function cmdStatus(args) {
   }
 
   for (const m of manifest.members) {
-    const absRepo = path.resolve(root, m.path);
-    const exists = fs.existsSync(absRepo);
+    const loc = lib.resolveMemberLocation(root, m);
     console.log('');
-    console.log(`  ${m.id}  [${m.role}]  ${m.path}${exists ? '' : '  (MISSING)'}`);
-    if (exists && !opts['no-git']) {
-      printGitState(absRepo);
+    if (loc.hasLocal) {
+      // Co-located member (may also carry a remote for teammates). Local wins.
+      console.log(`  ${m.id}  [${m.role}]  ${loc.path}${loc.remote ? `  (remote: ${loc.remote})` : ''}`);
+      if (!opts['no-git']) printGitState(loc.localPath);
+    } else if (loc.remote) {
+      // Remote-URL member with no local checkout (ADR-0015) — resolve by URL.
+      console.log(`  ${m.id}  [${m.role}]  remote: ${loc.remote}`);
+      if (!opts['no-git']) {
+        const reach = remoteReachable(loc.remote);
+        console.log(`    remote: ${reach ? 'reachable' : 'unreachable (offline or no access)'}`);
+      }
+    } else {
+      // path was declared but the checkout is absent on this machine.
+      console.log(`  ${m.id}  [${m.role}]  ${loc.path || '(no path)'}  (MISSING)`);
     }
   }
 
@@ -1172,6 +1247,27 @@ function printGitState(repoPath) {
     if (log) console.log(`    last: ${log}`);
   } catch (_e) {
     // ignore — no commits yet
+  }
+}
+
+/**
+ * Best-effort reachability probe for a remote-URL member (ADR-0015). Uses
+ * `git ls-remote` against the member's git URL. Bounded by a short timeout so
+ * `ecosystem status` never hangs on an unreachable host; any failure (offline,
+ * no access, bad URL) reports false rather than throwing. `file://` and bare
+ * paths resolve offline, which is what the two-clone tests exercise.
+ */
+function remoteReachable(url) {
+  try {
+    const { spawnSync } = require('child_process');
+    const r = spawnSync('git', ['ls-remote', '--exit-code', url, 'HEAD'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 5000,
+    });
+    return r.status === 0;
+  } catch (_e) {
+    return false;
   }
 }
 

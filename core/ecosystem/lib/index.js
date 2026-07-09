@@ -116,6 +116,39 @@ function findMember(manifest, id) {
 }
 
 /**
+ * Resolve where a member lives (ADR-0015 remote-URL members). A member may be
+ * co-located (`path`), remote-only (`remote` git URL), or both. Returns:
+ *   {
+ *     id, role, remote,
+ *     localPath   — absolute path if `path` is set, else null,
+ *     hasLocal    — whether a local checkout exists on THIS machine,
+ *     kind        — 'local' | 'remote' | 'local+remote'
+ *   }
+ * `hasLocal` is a filesystem check; a remote-only member (or a co-located one
+ * a teammate hasn't checked out) resolves with hasLocal:false, so `ecosystem
+ * status` can still render it from its URL. Pure over the manifest + fs.
+ */
+function resolveMemberLocation(rootPath, member) {
+  const remote = typeof member.remote === 'string' && member.remote.length > 0 ? member.remote : null;
+  const relPath = typeof member.path === 'string' && member.path.length > 0 ? member.path : null;
+  const localPath = relPath ? path.resolve(rootPath, relPath) : null;
+  let hasLocal = false;
+  if (localPath) {
+    try { hasLocal = fs.existsSync(localPath); } catch (_e) { hasLocal = false; }
+  }
+  const kind = relPath && remote ? 'local+remote' : remote ? 'remote' : 'local';
+  return {
+    id: member.id,
+    role: member.role,
+    path: relPath,
+    remote,
+    localPath,
+    hasLocal,
+    kind,
+  };
+}
+
+/**
  * Hand-rolled structural validation. Returns
  *   { ok: true } on success
  *   { ok: false, errors: [{ path, message }] } on failure.
@@ -172,8 +205,19 @@ function validateManifest(obj) {
         if (seenIds.has(m.id)) errors.push({ path: `${base}.id`, message: `duplicate member id "${m.id}"` });
         seenIds.add(m.id);
       }
-      if (typeof m.path !== 'string' || m.path.length === 0) {
-        errors.push({ path: `${base}.path`, message: 'required non-empty string' });
+      // A member needs at least one of `path` (co-located on disk) or `remote`
+      // (a git URL) — ADR-0015. Both may be present. This lets a distributed
+      // team share one ecosystem without identical folder layouts.
+      const hasPath = typeof m.path === 'string' && m.path.length > 0;
+      const hasRemote = typeof m.remote === 'string' && m.remote.length > 0;
+      if (!hasPath && !hasRemote) {
+        errors.push({ path: base, message: 'must have at least one of `path` or `remote`' });
+      }
+      if (m.path !== undefined && (typeof m.path !== 'string' || m.path.length === 0)) {
+        errors.push({ path: `${base}.path`, message: 'must be a non-empty string when present' });
+      }
+      if (m.remote !== undefined && (typeof m.remote !== 'string' || m.remote.length === 0)) {
+        errors.push({ path: `${base}.remote`, message: 'must be a non-empty git URL string when present' });
       }
       const validRoles = ['platform', 'client', 'library', 'infra', 'bench', 'other'];
       if (!validRoles.includes(m.role)) {
@@ -240,6 +284,7 @@ module.exports = {
   loadManifest,
   listMembers,
   findMember,
+  resolveMemberLocation,
   validateManifest,
   _clearRootCache,
 };

@@ -57,6 +57,21 @@ G0 before consumers. Extends ADR-0012/0013/0014 (single-repo Team Mode) to the
 multi-repo layer; relates ADR-0001/0002/0003 (lanes) + the ecosystem layer.
 
 ---
+### [FEATURE] 2026-07-10 — G1 complete: remote-URL members
+Topics: remote-members, ecosystem-schema, discovery, adr-0015
+Affects-phases: phase-30e-ecosystem-team-mode
+Affects-specs: core/ecosystem/schema/ecosystem.schema.json, core/ecosystem/lib/index.js
+Detail: `ecosystem.json` members now accept an optional `remote` (git URL)
+alongside `path`; validation requires at least one of the two (path-only
+back-compat preserved). New `lib.resolveMemberLocation()` classifies each member
+as local / remote / local+remote. `ecosystem status` renders remote-URL members
+by URL with a best-effort `git ls-remote` reachability probe (5s timeout,
+offline-safe via file://); relative paths unaffected. `ecosystem add --remote
+<url> --id <id>` registers a remote-only member (no pointer injection); `remove`
+tolerates the missing local path. New tests/ecosystem-remote-members.test.js (12
+cases). Suite +12; existing ecosystem tests green.
+
+---
 ### [DECISION] 2026-07-10 — G0 complete: ADR-0015 authored
 Topics: adr-0015, g0, contracts
 Affects-phases: phase-30e-ecosystem-team-mode
