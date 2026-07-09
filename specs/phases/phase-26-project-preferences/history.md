@@ -57,3 +57,11 @@ Affects-specs: core/git-hooks/pre-push.sh, core/git-hooks/contract.js
 Detail: branch_flow is a recipe-consumed preference (agent reads it for /complete-phase merge sequence). protected_branches is derived by the CLI from branch_flow and written to .momentum/preferences-cache.json (state, not content — gitignored). The pre-push hook reads the cache; falls back to ['main','master','staging'] if missing. Source of truth = specs/preferences.md (content); cache = derived build artifact.
 
 ---
+
+### [SCOPE_CHANGE] 2026-07-09 — BUG-024 folded into Phase 26 G2 (Rule 14 escalation)
+Topics: bug-024, forge-aware, release-gate, recipe-templates
+Affects-phases: phase-26-project-preferences
+Affects-specs: core/commands/start-phase.md, core/commands/complete-phase.md
+Detail: BUG-024 (forge-specific `gh release create` leaking into global recipe templates) was originally filed for a standalone quick-task; a `fix/BUG-024` adhoc record stub was started. Escalated to a phase per Rule 14 — the preferences surface is the structural fix (git_forge field picks the right release command), and G2 already rewrites the same recipe templates. The premature adhoc stub was withdrawn; BUG-024's template edits ship as G2.1–G2.2. Backlog row re-slotted unscheduled → phase-26, status open → in-progress.
+
+---

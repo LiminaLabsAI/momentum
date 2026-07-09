@@ -4,8 +4,8 @@ type: Status
 
 # Project Status
 
-> **Last Updated**: 2026-07-06
-> **Current Phase**: _none active_ (Phase 26 — Intelligence is next)
+> **Last Updated**: 2026-07-09
+> **Current Phase**: Phase 26 — Project Preferences
 > **Latest Release**: v0.32.0 — Phase 25: Founding Contract (foundation docs authored, not scaffolded)
 > **Health**: On Track
 
@@ -79,7 +79,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 25 released; Phase 26 Intelligence is next)_ | | | |
+| 26 — Project Preferences | phase-26-project-preferences | In Progress | Setup → G0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

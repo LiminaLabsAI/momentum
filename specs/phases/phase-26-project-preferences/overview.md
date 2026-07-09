@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: not-started
+status: in-progress
 tags: [preferences, lifecycle, release-gate, forge-aware, workflow-config]
 ---
 
