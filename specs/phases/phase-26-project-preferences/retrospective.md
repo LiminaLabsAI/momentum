@@ -28,7 +28,9 @@ date: 2026-07-09
 - Navigation table + 4 adapter instruction surfaces regenerated; 4 fingerprints
   re-baselined; self-repo dogfooded (its own `specs/preferences.md`); site + README docs.
 
-## Test / verification evidence (Rule 12 — fresh this session)
+## Verification Evidence
+
+Rule 12 — fresh this session (post-G5, pre-release):
 
 | Check | Result |
 |-------|--------|
