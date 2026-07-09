@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-09
-> **Current Phase**: _none active_ (Phase 28 — Intelligence is next)
-> **Latest Release**: v0.34.0 — Phase 27: Lifecycle Cleanup & Default-Branch Hardening (default-branch-safe reusable cleanup; auto-clean on land + reconcile; tracking-before-release gate; open-pr; `._*`/`.bak` hygiene + `doctor --clean`)
+> **Current Phase**: _none active_ (Phase 29 — Intelligence is next)
+> **Latest Release**: v0.35.0 — Phase 28: Instruction Consistency (instruction file = projection of specs/, ADR-0010; upgrade syncs all agents; ecosystem pointer everywhere; shared `specs/project-rules.md`; config-driven release; BUG-027)
 > **Health**: On Track
 
 ## Summary
@@ -53,6 +53,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete | v0.32.0 (2026-07-06) |
 | 26 | Project Preferences | Complete | v0.33.0 (2026-07-09) |
 | 27 | Lifecycle Cleanup & Default-Branch Hardening | Complete | v0.34.0 (2026-07-09) |
+| 28 | Instruction Consistency | Complete | v0.35.0 (2026-07-09) |
 
 ## Ad-hoc / Patch Releases
 
@@ -81,7 +82,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 27 released as v0.34.0; Phase 28 Intelligence is next)_ | | | |
+| _(none — Phase 28 released as v0.35.0; Phase 29 Intelligence is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -91,8 +92,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 28 | Intelligence | Not Started (target v0.35.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 29 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+| 29 | Intelligence | Not Started (target v0.36.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 30 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
 
 ## Unscheduled Future Work
 
@@ -141,6 +142,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-09**: **Phase 28 — Instruction Consistency RELEASED as v0.35.0** (merged → staging → main; tag `v0.35.0`). Fixes the CLAUDE.md/AGENTS.md divergence (a claude-code-first project later given opencode drifted apart). Investigation found **four causes, two bugs**: (1) `upgrade` refreshed only ONE agent → opencode AGENTS.md fell behind; (2) the ecosystem pointer injected into only one file; (3) per-file `## Project Extensions` prose edited independently; (4) intentional per-adapter differences (correct). **ADR-0010** sets the principle that closes them structurally: **the instruction file is a pure projection of `specs/`, never authored** — project prose lives once in `specs/project-rules.md` (a new OKF type, pointed to by every instruction file's `## Project Extensions`), structured facts in `config.md`, ecosystem context in the injected pointer. Mechanisms: `momentum upgrade` (no `--agent`) now iterates **all** installed agents; `pointer.js` `ensurePointerInjectedAll` + `ecosystem add` injects into every instruction file; `core/lib/project-rules.js` `migrateProjectExtensions` moves authored prose out of instruction files into `project-rules.md` on upgrade (**migrate-never-drop**, scaffolds so the pointer resolves, skips marker-less files to preserve the BUG-008 backup path); `/complete-phase` + `/start-phase` point release to `project-rules.md` + config; `/validate` invariant. **BUG-027** fixed (sync-config recipe-row pipe). **Self-repo dogfood**: `momentum upgrade .` on the divergent repo → **CLAUDE.md ≡ AGENTS.md** (managed region identical modulo the 4 intended per-adapter task-tool lines), both carrying the ecosystem + project-rules pointers; prose migrated once into `specs/project-rules.md`. Stale backlog statuses flipped (BUG-024/025/026 + ENH-061 → resolved). Suite 951 → **963**; `instruction-consistency.test.js` guards it. Renumber: Intelligence → 29, Platform → 30.
 
 - **2026-07-09**: **Phase 27 — Lifecycle Cleanup & Default-Branch Hardening RELEASED as v0.34.0** (merged → staging → main; tag `v0.34.0`). Closes **BUG-025** (a fresh-repo phase branch hijacking the forge default — the first push momentum makes is the phase branch, so `/start-phase` now establishes the terminal `branch_flow` branch on origin FIRST, resilient to an unborn remote, with an optional `git_forge=github` `gh` repair) and **BUG-026** (nothing cleaned worktrees/branches/lane-state after work landed). One reusable, git-only, **default-branch-safe** `cleanupTarget()` (`core/lanes/lib/cleanup.js`) whose trigger is `end_state`: the agent auto-cleans when it performs the terminal merge (`lanes land --execute`, `complete-phase`; `--keep` opts out), and a human/forge merge defers to new **`momentum lanes reconcile`** (verify-before-clean — a "yes I merged it" is never trusted, Rule 12). Operator requirements shipped as decisions: the **confirm→verify→clean handshake** for non-`merge-after-yes` end_states and a **tracking-before-release Gate B** (tracking committed before any tag). New **`end_state: open-pr`**; **ENH-063** — `lanes close` now does full cleanup (branch + state). G4 fixed the `._*` skills-transform leak at source (codex/opencode accepted `._x.md`) + added **`momentum doctor --clean`**. **Self-repo dogfood**: cleaned this repo's real cruft with the new tools — 2 stale lane worktrees for released work, an orphan Claude worktree, 19 `._*`, 8 `.bak` — tree provably clean. Suite 927 → **951**. Filed BUG-027 (cosmetic AGENTS.md table-row defect). Renumber: Intelligence → 28, Platform → 29.
 

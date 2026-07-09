@@ -24,8 +24,11 @@ const {
   POINTER_END,
   PRIMARY_INSTRUCTION_CANDIDATES,
   findPrimaryInstructionFile,
+  findAllInstructionFiles,
   ensurePointerInjected,
+  ensurePointerInjectedAll,
   stripPointer,
+  stripPointerAll,
 } = require('../core/ecosystem/lib/pointer');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -616,7 +619,7 @@ function cmdAdd(args) {
     // Idempotent: if the path matches, do nothing. If it differs, fail loud.
     if (existing.path === relPath) {
       console.log(`add: "${id}" is already registered (path ${relPath}). No changes.`);
-      ensurePointerInjected(absRepo, primary, root, manifest.name);
+      ensurePointerInjectedAll(absRepo, root, manifest.name);
       return;
     }
     throw new Error(
@@ -641,11 +644,12 @@ function cmdAdd(args) {
     'utf8',
   );
 
-  // Inject the fenced pointer into the target's primary instruction.
-  ensurePointerInjected(absRepo, primary, root, manifest.name);
+  // Inject the fenced pointer into EVERY instruction file (Phase 28 — every
+  // agent, not just the preferred one).
+  const injected = ensurePointerInjectedAll(absRepo, root, manifest.name);
 
   console.log(`Added member "${id}" (${role}) at ${relPath}.`);
-  console.log(`Pointer injected into ${path.relative(root, path.join(absRepo, primary))}.`);
+  console.log(`Pointer injected into ${injected.map((f) => path.relative(root, path.join(absRepo, f))).join(', ')}.`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -686,10 +690,7 @@ function cmdRemove(args) {
   // remove must succeed even when the member repo is gone.
   const absRepo = path.resolve(root, member.path);
   if (fs.existsSync(absRepo)) {
-    const primary = findPrimaryInstructionFile(absRepo);
-    if (primary) {
-      stripPointer(path.join(absRepo, primary));
-    }
+    stripPointerAll(absRepo); // Phase 28 — strip from every instruction file
   }
 
   console.log(`Removed member "${id}".`);

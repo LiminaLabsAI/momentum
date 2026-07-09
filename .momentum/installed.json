@@ -1,9 +1,9 @@
 {
-  "version": "0.32.0",
-  "momentumVersion": "0.32.0",
+  "version": "0.34.0",
+  "momentumVersion": "0.34.0",
   "agents": {
     "opencode": {
-      "version": "0.30.0",
+      "version": "0.34.0",
       "files": [
         ".agent/engines/subagent-dispatch.md",
         ".githooks/commit-msg",
@@ -33,6 +33,7 @@
         ".opencode/commands/start-phase.md",
         ".opencode/commands/start-project.md",
         ".opencode/commands/swarm.md",
+        ".opencode/commands/sync-config.md",
         ".opencode/commands/sync-docs.md",
         ".opencode/commands/systematic-debug.md",
         ".opencode/commands/track.md",
@@ -50,7 +51,7 @@
       ]
     },
     "claude-code": {
-      "version": "0.32.0",
+      "version": "0.34.0",
       "files": [
         ".agent/engines/subagent-dispatch.md",
         ".claude/commands/brainstorm-idea.md",
@@ -72,6 +73,7 @@
         ".claude/commands/start-phase.md",
         ".claude/commands/start-project.md",
         ".claude/commands/swarm.md",
+        ".claude/commands/sync-config.md",
         ".claude/commands/sync-docs.md",
         ".claude/commands/systematic-debug.md",
         ".claude/commands/track.md",

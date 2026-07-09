@@ -64,10 +64,10 @@ test('BUG-024: start-phase.md hard-stop does not name a forge ("GitHub Release")
   assert.match(hardStop, /tag `v<version>`/i, 'hard-stop asks for a tag (universal git)');
 });
 
-test('forge/release commands are pointed to ## Project Extensions + config, not run globally', () => {
+test('forge/release commands are pointed to specs/project-rules.md + config, not run globally (ADR-0010)', () => {
   for (const f of ['start-phase.md', 'complete-phase.md']) {
     const body = readCmd(f);
-    assert.match(body, /## Project Extensions/, `${f} should point project-specific release/publish to ## Project Extensions`);
+    assert.match(body, /specs\/project-rules\.md/, `${f} should point project-specific release/publish prose to specs/project-rules.md (the ## Project Extensions authoring surface is retired — ADR-0010)`);
     assert.match(body, /specs\/config\.md/, `${f} should reference specs/config.md for release_command/publish_target`);
   }
 });

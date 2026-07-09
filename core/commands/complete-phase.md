@@ -89,7 +89,7 @@ Verify, finalize, and release a completed phase.
    `[staging, main]`) in order. The plan stops at the universal git primitives
    (`git merge` + `git tag -a` + `git push origin <tag>`); forge-specific
    release creation and registry publishes are NOT listed here — they run
-   from `## Project Extensions` + `specs/config.md` (`release_command`,
+   from `specs/project-rules.md` + `specs/config.md` (`release_command`,
    `publish_target`, `release_flow`) after the tag is pushed.
    ```
    Ready to release vX.Y.Z. This will:
@@ -98,7 +98,7 @@ Verify, finalize, and release a completed phase.
      3. Tag vX.Y.Z and push the tag
 
    Project-specific release/publish/deploy (forge release, npm publish, …)
-   run from ## Project Extensions + specs/config.md after the tag lands.
+   run from specs/project-rules.md + specs/config.md after the tag lands.
 
    Proceed?
    ```
@@ -126,7 +126,7 @@ Verify, finalize, and release a completed phase.
     git push origin <branch_flow[1]>
 
     # final step — tag + push the tag (universal git; forge release + publish
-    # are project-specific — run them from ## Project Extensions now)
+    # are project-specific — run them from specs/project-rules.md now)
     git tag -a vX.Y.Z -m "Phase N: {phase name}"
     git push origin vX.Y.Z
     ```
@@ -154,7 +154,7 @@ Verify, finalize, and release a completed phase.
 12. Report summary to user:
     - What was delivered
     - Tag URL (`git push origin vX.Y.Z` output) — forge release/publish
-      status from `## Project Extensions` if any ran
+      status from `specs/project-rules.md` if any ran
     - What's next
 
 13. Clean up the spent phase branch (ENH-042 / BUG-026 — now that merge → main

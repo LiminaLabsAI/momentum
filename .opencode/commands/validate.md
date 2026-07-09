@@ -25,6 +25,33 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
    - Bugs, Features, Tech Debt, Enhancements
    - Report any missing table as a failure
 
+2b. Founded state (`core/project-lifecycle.md`, ADR-0008):
+   - founded ⟺ `specs/vision/project-charter.md` AND
+     `specs/planning/roadmap.md` both exist
+   - Phase directories exist under `specs/phases/` while NOT founded →
+     FAILURE: "phase work exists but the project is not founded — run
+     `/start-project` to author the foundation docs"
+   - Not founded with no phase directories is the VALID Installed state —
+     report informationally ("not founded yet — `/start-project` when
+     ready"), never as a failure
+   - founded AND no `specs/project-rules.md` (ADR-0010) → WARNING: "project
+     rules surface missing — run `momentum upgrade` to create it; every agent
+     instruction file's `## Project Extensions` pointer expects it"
+
+2c. Config (ADR-0009) — WARNING, never a failure (recipes fall back to
+    npm/GitHub defaults when absent):
+    - founded AND no `specs/config.md` → WARNING: "config not set
+      — recipes will use npm/GitHub defaults; run `momentum upgrade` to
+      infer them, or author at `/start-project`"
+    - `specs/config.md` exists → drift check: compare the
+      machine-inferable fields (`language`, `framework`, `publish_target`,
+      `git_forge`) against the manifests + `git remote get-url origin`
+      (`core/config.js` → `inferConfig('.')` vs
+      `readConfig('specs')`); on mismatch → WARNING: "config
+      drifted from manifests on: <fields> — edit by hand or delete the file
+      + re-run `momentum upgrade`"
+    - Not founded → skip (config author at founding)
+
 3. For each phase directory under `specs/phases/` (OKF bundle, ADR-0005):
    - Verify all 4 files present: `overview.md`, `plan.md`, `tasks.md`, `history.md`
    - Verify `overview.md` frontmatter carries `type: Phase` and a `status:`
