@@ -1348,11 +1348,16 @@ function upgrade(targetDir, agent, opts = {}) {
   // would dirty files mid-upgrade and break autostash restores).
   const pointerLib = require('../core/ecosystem/lib/pointer');
   const primaryRel = adapter.primaryInstruction.destination.join('/');
+  // Snapshot whether THIS agent's instruction file carries the pointer BEFORE
+  // the managed rewrite — we only ever PRESERVE it (BUG-022), never add one the
+  // file didn't have (adding would dirty files mid-upgrade and break autostash
+  // restores). Phase 28: since `upgrade` now runs per installed agent (G1), this
+  // preserves every agent's pointer; ADDING a missing pointer (cause #2) is
+  // `momentum ecosystem add`'s job, which now injects into all instruction files.
   let hadPointerBlock = false;
   try {
-    hadPointerBlock = pointerLib.POINTER_BEGIN_RE.test(
-      fs.readFileSync(path.join(target, primaryRel), 'utf8')
-    );
+    hadPointerBlock = fs.readFileSync(path.join(target, primaryRel), 'utf8')
+      .includes(pointerLib.POINTER_BEGIN_PREFIX);
   } catch (_e) { /* absent file → nothing to preserve */ }
 
   // Upgrade adapter-owned root instruction file

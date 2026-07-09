@@ -19,10 +19,10 @@ type: Tasks
 - [x] G1.4 Verify: `npm test` green — **958/958 (+2)**
 
 ## Group 2 — ecosystem pointer into all instruction files (cause #2)
-- [ ] G2.1 `pointer.js` `ensurePointerInjected` injects/refreshes into EVERY present instruction file
-- [ ] G2.2 Wire multi-file injection into init/upgrade/ecosystem-add; preserve BUG-022 re-injection
-- [ ] G2.3 Test: member repo with CLAUDE.md + AGENTS.md → pointer in both; idempotent
-- [ ] G2.4 Verify: `npm test` green
+- [x] G2.1 `pointer.js`: `findAllInstructionFiles` + `ensurePointerInjectedAll` + `stripPointerAll` (returns only files that had one)
+- [x] G2.2 `ecosystem add` injects into ALL files (the fix); `remove`/`leave` strip all; upgrade PRESERVES per-agent (BUG-022 + G1) — add-missing is add's job, keeping autostash safe
+- [x] G2.3 Test: `pointer-all-files.test.js` — inject/strip both CLAUDE.md + AGENTS.md, idempotent
+- [x] G2.4 Verify: `npm test` green — **961/961 (+3)**; autostash regression caught + fixed (preserve-only in upgrade is load-bearing)
 
 ## Group 3 — templates + recipes
 - [ ] G3.1 Instruction templates: `## Project Extensions` → managed pointer block (identical across adapters)

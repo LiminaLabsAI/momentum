@@ -50,6 +50,14 @@ Detail: Most of CLAUDE.md's release checklist (gh release create, npm publish) i
 
 ---
 
+### [FEATURE] 2026-07-09 — G2: ecosystem pointer reaches every instruction file (cause #2)
+Topics: ecosystem-pointer, pointer, autostash, multi-file
+Affects-phases: phase-28-instruction-consistency
+Affects-specs: core/ecosystem/lib/pointer.js, bin/ecosystem.js, bin/state-commands.js, bin/momentum.js
+Detail: pointer.js gains `findAllInstructionFiles` + `ensurePointerInjectedAll` + `stripPointerAll`. The cause-#2 fix is at the INJECTION site: `ecosystem add` now injects the pointer into every present instruction file (was one); `remove`/`leave` strip from all. [ARCH_CHANGE] The upgrade path deliberately stays PRESERVE-ONLY (BUG-022): it re-injects only a pointer the file had at upgrade-time — a load-bearing invariant for autostash (my first attempt made upgrade inject-all-for-members, which double-added the pointer against the stash and produced an autostash CONFLICT; reverted). Since `upgrade` now runs per installed agent (G1), preserve-only already covers every agent's file; ADDING a missing pointer to a stale AGENTS.md is `ecosystem add`'s job (idempotent re-add heals existing divergent repos). 3 tests; 958 → 961.
+
+---
+
 ### [FEATURE] 2026-07-09 — G1: upgrade refreshes every installed agent (cause #1)
 Topics: upgrade, multi-agent, drift
 Affects-phases: phase-28-instruction-consistency
