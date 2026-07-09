@@ -41,9 +41,21 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const state = require('./state');
+const cleanup = require('./cleanup');
+const config = require('../../config');
 
 function git(cwd, ...args) {
   return spawnSync('git', args, { cwd, encoding: 'utf8' });
+}
+
+/** Terminal integration branch = last branch_flow entry (config), default 'main'. */
+function terminalBranch(repoRoot) {
+  try {
+    const cfg = config.readConfig(path.join(repoRoot, 'specs'));
+    const bf = cfg && cfg.branch_flow;
+    if (Array.isArray(bf) && bf.length) return bf[bf.length - 1];
+  } catch { /* config absent/unreadable — fall through */ }
+  return 'main';
 }
 
 function parseFlags(argv) {
@@ -51,7 +63,7 @@ function parseFlags(argv) {
   const positional = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--execute' || a === '--force' || a === '--json' || a === '--mark-landed') flags[a.slice(2)] = true;
+    if (a === '--execute' || a === '--force' || a === '--json' || a === '--mark-landed' || a === '--keep') flags[a.slice(2)] = true;
     else if (a.startsWith('--')) flags[a.slice(2)] = argv[++i];
     else positional.push(a);
   }
@@ -294,6 +306,27 @@ function cmdLand(cwd, argv) {
   if (others.length) {
     console.log(`ℹ advisory rebase signal sent to ${others.length} open lane(s): ${others.map((l) => l.id).join(', ')}`);
   }
+
+  // Phase 27 (BUG-026): a lane that landed on the TERMINAL integration branch is
+  // spent — clean its worktree + branch + lane state now (default-branch-safe),
+  // unless --keep. Landing into an intermediate branch (e.g. staging under
+  // staging-promotion) is NOT spent — cleanup defers to `lanes reconcile`.
+  const terminal = terminalBranch(repoRoot);
+  if (flags.keep) {
+    console.log('ℹ --keep: worktree, branch, and lane state left in place');
+  } else if (into === terminal) {
+    const res = cleanup.cleanupTarget({
+      cwd, branch: lane.branch, worktree: lane.worktree, laneId: id, deleteRemote: true,
+    });
+    const glyph = { removed: '✓', deleted: '✓', cleared: '✓', skipped: 'ℹ', blocked: '⚠' };
+    for (const a of res.actions) console.log(`  ${glyph[a.status] || '·'} cleanup ${a.step}: ${a.detail}`);
+    if (!res.ok) {
+      console.log(`⚠ cleanup incomplete (${res.blocked.join(', ')}) — resolve, then: momentum lanes cleanup ${lane.branch}`);
+    }
+  } else {
+    console.log(`ℹ landed on '${into}' (not the terminal branch '${terminal}') — cleanup deferred to \`momentum lanes reconcile\` once it reaches '${terminal}'`);
+  }
+
   console.log('ℹ run the suite on the updated branch before the next landing (Rule 6 Landing Order)');
   return 0;
 }

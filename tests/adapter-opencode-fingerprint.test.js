@@ -67,7 +67,7 @@ if (process.env.MOMENTUM_RESNAPSHOT_OPENCODE === '1') {
         meta: {
           captured: new Date().toISOString().slice(0, 10),
           adapter: 'opencode',
-          note: 'Phase 26 G2 re-baseline — config-aware recipes + navigation row + init writes specs/config.md',
+          note: 'Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard + start-project pointer',
         },
         files: fingerprintInstall(target),
       };

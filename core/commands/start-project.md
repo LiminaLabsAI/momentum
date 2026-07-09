@@ -96,7 +96,9 @@ If you're still exploring the idea, run `/brainstorm-idea` first.
     ```
     (On a brand-new repo this may be the first content commit on the default
     branch — the bootstrap exception to Rule 6. On a repo with existing code,
-    normal branch discipline applies.)
+    normal branch discipline applies. Founding pushes nothing; `/start-phase`
+    establishes the terminal branch as the remote default before it pushes the
+    first phase branch — BUG-025.)
 
 8. Report to user:
    - Summary of what was founded

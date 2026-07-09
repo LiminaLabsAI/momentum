@@ -29,6 +29,7 @@ const PLUGIN_NAME = 'momentum';
 function copyDirRecursive(src, dest, dryRun, log) {
   const entries = fs.readdirSync(src, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name.startsWith('._') || entry.name === '.DS_Store') continue; // Phase 27 G4 — no AppleDouble litter
     const s = path.join(src, entry.name);
     const d = path.join(dest, entry.name);
     if (entry.isDirectory()) {
