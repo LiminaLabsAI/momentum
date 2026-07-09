@@ -57,6 +57,29 @@ G0 before consumers. Extends ADR-0012/0013/0014 (single-repo Team Mode) to the
 multi-repo layer; relates ADR-0001/0002/0003 (lanes) + the ecosystem layer.
 
 ---
+### [ARCH_CHANGE] 2026-07-10 — G3 complete: swarm leases-as-source-of-truth (default-on-with-remote)
+Topics: swarm, lease-cas, ref-cas, ownership, liveness, invariance, adr-0015
+Affects-phases: phase-30e-ecosystem-team-mode
+Affects-specs: core/swarm/lib/manifest.js
+Detail: The 30d opt-in cross-machine lease fence becomes the DEFAULT when the
+ecosystem root has a git remote (ADR-0015 #3/#4): refs/momentum/leases/* CAS is
+the source of truth for contended swarm repo ownership; the manifest owner/lease_*
+fields are the local projection. Two surgical changes to core/swarm/lib/manifest.js:
+(1) leaseFence activation flips from opt-in (`!== '1'`) to default-on-when-remote
+with a `MOMENTUM_SWARM_LEASE_CAS=0` escape hatch (force single-machine) and `=1`
+still forcing on; no remote → inactive (wall-clock byte-unchanged). (2) The CAS
+key now includes the SUPERSEDED lease generation (current lease_expires_at), so
+each takeover is a fresh single-winner race — concurrent takers of the same
+expired lease resolve to exactly one winner (no double-own), while a crashed
+owner's stale ref can never wedge the NEXT legitimate takeover (liveness).
+Residual (accepted): generation-keyed refs accumulate under refs/momentum/leases/*
+(space, not correctness) — cleanup deferred. Invariance gate: 233/233 swarm tests
+green (no-remote path unchanged); the one 30d lease-cas test's seed updated to the
+generation-keyed name. New tests/swarm-lease-cas-ecosystem.test.js (two-clone
+default-on: skew can't double-own; fresh-generation liveness; single-machine
+unchanged). RISKY-group diff surfaced for operator review before landing.
+
+---
 ### [FEATURE] 2026-07-10 — G2 complete: ecosystem-state → fragments
 Topics: fragments, active-initiative, presence, ecosystem-repo, adr-0015
 Affects-phases: phase-30e-ecosystem-team-mode

@@ -27,10 +27,10 @@ status: planned
 - [x] Tests (two-clone concurrent active-initiative → zero conflict); commit G2
 
 ## Group 3 — Swarm leases-as-source-of-truth *(RISKY)*
-- [ ] Ref-CAS ownership = source of truth when a remote is present; manifest → projection
-- [ ] Renewals = ref refresh; takeover = win the CAS (30d fence, default-on-with-remote)
-- [ ] **Single-machine invariance** — no remote → wall-clock path byte-unchanged; **231 swarm tests green**
-- [ ] Tests (two-clone swarm ownership; skew can't double-own); commit G3
+- [x] Ref-CAS ownership = source of truth when a remote is present; manifest → projection
+- [x] Renewals = ref refresh; takeover = win the CAS (30d fence, default-on-with-remote)
+- [x] **Single-machine invariance** — no remote → wall-clock path byte-unchanged; **231 swarm tests green** (233/233)
+- [x] Tests (two-clone swarm ownership; skew can't double-own); commit G3
 
 ## Group 4 — Reader + docs + demo + tidy
 - [ ] Sample third-party contract reader

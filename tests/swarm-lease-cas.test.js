@@ -60,8 +60,10 @@ test('swarm lease-CAS fence: blocks a takeover when another machine holds the re
   manifestLib.updateManifest(tmp, '0001-foo', (m) => {
     m.repos.a.owner = 'sess-A'; m.repos.a.lease_expires_at = '2000-01-01T00:00:00Z';
   });
-  // another machine already fenced this repo
-  lease.acquireLease(tmp, 'swarm-0001-foo-a', 'other-machine');
+  // Another machine already fenced this repo for THIS lease generation. The
+  // fence keys the CAS by the superseded lease_expires_at (30e G3), so the
+  // seed must match the repo's current expiry.
+  lease.acquireLease(tmp, 'swarm-0001-foo-a-2000-01-01T00:00:00Z', 'other-machine');
   process.env.MOMENTUM_SWARM_LEASE_CAS = '1';
   try {
     assert.throws(() => {

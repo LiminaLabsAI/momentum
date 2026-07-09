@@ -489,20 +489,30 @@ function assertOwnership(manifest, repo, sessionId, nowIso) {
 }
 
 /**
- * Cross-machine lease fence (Phase 30d, ENH-064). OPT-IN via
- * MOMENTUM_SWARM_LEASE_CAS=1: when active AND the ecosystem root is a git repo
- * with a remote, taking over an EXPIRED lease must also win a
- * refs/momentum/leases/* compare-and-swap — so clock skew can't let two machines
- * both take over. Fail-open: only BLOCKS on a positively-confirmed different
- * owner; never blocks on absence/network (the wall-clock lease then governs, as
- * before). Default OFF → single-machine swarm behavior is unchanged.
+ * Cross-machine ownership fence. Built opt-in in Phase 30d (ENH-064); Phase 30e
+ * (ADR-0015 G3) makes it the DEFAULT when the ecosystem root has a git remote —
+ * the `refs/momentum/leases/*` compare-and-swap becomes the source of truth for
+ * who wins a contended takeover, so clock skew can't let two machines both take
+ * over. The manifest `owner`/`lease_*` fields are the local projection.
+ *
+ * Activation:
+ *   remote present, env unset (default) → ON  (leases-as-source-of-truth)
+ *   MOMENTUM_SWARM_LEASE_CAS=0          → OFF  (force single-machine, even with a remote)
+ *   MOMENTUM_SWARM_LEASE_CAS=1          → ON   (back-compat; no-op without a remote)
+ *   no remote                          → OFF  (single-machine — byte-unchanged)
+ *
+ * Fail-open: only BLOCKS on a positively-confirmed different owner; never blocks
+ * on absence/network (the wall-clock lease then governs). With no remote the
+ * fence is inactive and the wall-clock path is untouched — single-machine
+ * invariance, the 231 swarm tests are the gate.
  */
 function leaseFence(ecosystemRoot, key, holder) {
-  if (process.env.MOMENTUM_SWARM_LEASE_CAS !== '1') return { fenced: true, active: false };
+  if (process.env.MOMENTUM_SWARM_LEASE_CAS === '0') return { fenced: true, active: false };
   try {
     const { spawnSync } = require('child_process');
     const remotes = spawnSync('git', ['remote'], { cwd: ecosystemRoot, encoding: 'utf8' });
-    if (remotes.status !== 0 || !remotes.stdout.trim()) return { fenced: true, active: false };
+    const hasRemote = remotes.status === 0 && !!remotes.stdout.trim();
+    if (!hasRemote) return { fenced: true, active: false }; // no remote → single-machine, unchanged
     const lease = require('../../team/lib/lease');
     const res = lease.acquireLease(ecosystemRoot, key, holder);
     if (res.held) return { fenced: true, active: true };
@@ -545,10 +555,16 @@ function updateManifestAsOwner(args) {
       err.decision = decision;
       throw err;
     }
-    // Cross-machine fence: a wall-clock takeover must also win the ref-CAS
-    // lease (opt-in; no-op by default). Closes the clock-skew double-own hazard.
+    // Cross-machine fence: a wall-clock takeover must also win the ref-CAS lease
+    // (default-on with a remote; no-op single-machine). Closes the clock-skew
+    // double-own hazard. The CAS key includes the lease generation being
+    // SUPERSEDED (the current lease_expires_at), so each takeover is a fresh
+    // single-winner race: concurrent takers of the same expired lease resolve to
+    // exactly one winner, while a crashed owner's stale ref can never block the
+    // NEXT legitimate takeover (which supersedes a different generation) — liveness.
     if (decision.expired) {
-      const fence = leaseFence(ecosystemRoot, `swarm-${swarmId}-${repo}`, sessionId);
+      const superseded = (current.repos[repo] && current.repos[repo].lease_expires_at) || 'none';
+      const fence = leaseFence(ecosystemRoot, `swarm-${swarmId}-${repo}-${superseded}`, sessionId);
       if (!fence.fenced) {
         const err = new Error(`updateManifestAsOwner: takeover fenced — "${repo}" lease held by ${fence.owner} (refs/momentum/leases)`);
         err.code = 'EOWNERSHIP';
