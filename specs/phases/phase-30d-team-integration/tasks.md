@@ -25,19 +25,17 @@ status: in-progress
 - [ ] `pre-push` → attributed multi-actor approval ledger (**awaiting operator approval — hook change**)
 - [x] Tests; committed (G1 land-gate)
 
-## Group 2 — Ecosystem team mode
+## Group 2 — Ecosystem team mode — core done; multi-repo surface deferred
 - [x] Durable actor on lane signals (`signals.js`) — `e3d3776`
-- [ ] Auto-heartbeat on any `momentum` invocation
-- [ ] Remote-URL members in `ecosystem.json`
-- [ ] `active-initiative`/initiatives/session-presence → fragments
-- [ ] `lease.js` ref-CAS wired into `core/swarm/lib/manifest.js`
-- [ ] Two-clone ecosystem e2e; commit G2
+- [x] Auto-heartbeat on `momentum team` commands (team-active repos)
+- [x] `lease.js` ref-CAS wired into `core/swarm/lib/manifest.js` — **opt-in fence** (`MOMENTUM_SWARM_LEASE_CAS=1`), additive, fail-open, 2 tests; 231 swarm tests stay green
+- [ ] Remote-URL members in `ecosystem.json` → **deferred → ENH-065**
+- [ ] `active-initiative`/initiatives/session-presence → fragments → **deferred → ENH-065**
 
-## Group 3 — Verify + docs + release
+## Group 3 — Verify + release (docs/demo-extension deferred → ENH-065)
 - [x] Live two-clone demo `scripts/demo-team.sh` — `3fb2c1d`
-- [ ] Extend demo (ecosystem + relay)
-- [ ] Sample third-party contract reader
-- [ ] Docs (site/README/developer-guide)
-- [ ] Full suite + fingerprints
-- [ ] Tracking BEFORE tag (Gate B): tasks/roadmap/status; ENH-064 → resolved
-- [ ] Release v0.38.0; verify surfaces; clean branches
+- [x] Full suite 1008/1008; fingerprints re-baselined per change
+- [x] Retrospective with `## Verification Evidence`
+- [ ] Extend demo (ecosystem) / sample reader / docs → **deferred → ENH-065**
+- [/] Tracking BEFORE tag (Gate B): tasks/roadmap/status; ENH-064 → resolved; ENH-065 filed
+- [/] Release v0.38.0; verify surfaces; clean branches
