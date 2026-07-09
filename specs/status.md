@@ -82,7 +82,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 29 — Instruction Variation Model | `phase-29-instruction-variation-model` | In Progress | Setup (G0 next) |
+| 29 — Instruction Variation Model | `phase-29-instruction-variation-model` | Verified — at release gate | G0–G4 complete; suite 970/970; self-repo dogfooded; v0.36.0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
