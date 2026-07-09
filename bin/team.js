@@ -82,9 +82,21 @@ function runTeam(argv) {
     if (!insideRepo(cwd)) { console.error('✗ not inside a git repository'); return 1; }
     const remote = argv[1] && !argv[1].startsWith('--') ? argv[1] : 'origin';
     const ok = refcas.fetchAll(cwd, remote);
+    const root = repoRoot(cwd);
+    const rec = root ? compile.compileStatusFile(root) : { changed: false };
     console.log(ok
       ? `✓ synced coordination refs from ${remote} (refs/momentum/*). Fragments arrive via branch integration.`
       : `⚠ could not fetch from ${remote} — working offline; coordination is eventually consistent`);
+    if (rec.changed) console.log('✓ recompiled the Active-Phase table in specs/status.md');
+    return 0;
+  }
+  if (sub === 'compile') {
+    const root = repoRoot(cwd);
+    if (!root) { console.error('✗ not inside a git repository'); return 1; }
+    const rec = compile.compileStatusFile(root);
+    console.log(rec.path
+      ? (rec.changed ? '✓ recompiled Active-Phase table in specs/status.md' : '✓ specs/status.md already current')
+      : 'ℹ no specs/status.md to compile into');
     return 0;
   }
   if (sub === 'board') {
@@ -105,7 +117,7 @@ function runTeam(argv) {
     console.log(`✓ recorded active-phase row for '${flags.branch}' as '${actor}'`);
     return 0;
   }
-  console.error('usage: momentum team <whoami|sync|board|record>');
+  console.error('usage: momentum team <whoami|sync|board|record|compile>');
   return 1;
 }
 

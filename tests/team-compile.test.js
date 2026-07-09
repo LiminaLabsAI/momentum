@@ -73,3 +73,22 @@ test('momentum team record + board round-trip', () => {
     assert.match(board.stdout, /alice/);
   } finally { rmrf(tmp); }
 });
+
+test('compileStatusFile: renders the Active-Phase table into status.md (idempotent)', () => {
+  const tmp = mktmp('team-comp-');
+  try {
+    const r = path.join(tmp, 'r'); fs.mkdirSync(path.join(r, 'specs'), { recursive: true });
+    fs.writeFileSync(path.join(r, 'specs', 'status.md'), '# Status\n\n## Active Phase\n\nplaceholder\n');
+    compile.recordActivePhase(r, 'alice', { branch: 'phase-30a-team-walk', phase: '30a', status: 'in-progress', progress: 'G3' }, { ts: '2026-07-10T00:00:00Z' });
+    compile.recordActivePhase(r, 'bob', { branch: 'phase-30b-team-run', phase: '30b', status: 'open', progress: 'G0' }, { ts: '2026-07-10T00:00:01Z' });
+    const first = compile.compileStatusFile(r);
+    assert.equal(first.changed, true);
+    const out = fs.readFileSync(path.join(r, 'specs', 'status.md'), 'utf8');
+    assert.match(out, /momentum:team:active-phase:begin/);
+    assert.match(out, /phase-30a-team-walk/); assert.match(out, /phase-30b-team-run/);
+    assert.match(out, /alice/); assert.match(out, /bob/);
+    // idempotent: no change on a second compile with the same fragments
+    const second = compile.compileStatusFile(r);
+    assert.equal(second.changed, false);
+  } finally { rmrf(tmp); }
+});

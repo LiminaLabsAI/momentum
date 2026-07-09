@@ -75,6 +75,26 @@ function applyManaged(content, name, rendered) {
   return `${content.trimEnd()}\n\n${block}\n`;
 }
 
+const fs = require('fs');
+const path = require('path');
+
+/**
+ * Render the Active-Phase table from fragments into `specs/status.md`, spliced
+ * between managed markers (inserted if absent). Returns { changed, path } or
+ * { changed:false } when there is no status file. This is what makes the shared
+ * board real: N actors' fragments compile into one conflict-free table.
+ */
+function compileStatusFile(repoRoot) {
+  const statusPath = path.join(repoRoot, 'specs', 'status.md');
+  let content;
+  try { content = fs.readFileSync(statusPath, 'utf8'); } catch { return { changed: false }; }
+  const rendered = compileActivePhase(repoRoot);
+  const next = applyManaged(content, ACTIVE_PHASE_VIEW, rendered);
+  if (next === content) return { changed: false, path: statusPath };
+  fs.writeFileSync(statusPath, next);
+  return { changed: true, path: statusPath };
+}
+
 module.exports = {
   ACTIVE_PHASE_VIEW,
   recordActivePhase,
@@ -82,4 +102,5 @@ module.exports = {
   renderActivePhaseTable,
   compileActivePhase,
   applyManaged,
+  compileStatusFile,
 };
