@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "feat-team-integration",
     "adapter": "antigravity",
-    "note": "Phase 30d G0 tail (ENH-064) — claim id in /hotfix + .momentum/team negation in installed .gitignore"
+    "note": "Phase 30d G1 (ENH-064) — team config keys (review_min_approvals/review_self_approval/presence_*) in config.md template"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -56,7 +56,7 @@
     "specs/backlog/backlog.md": "f5eac2c40940c5cfd6e2c63dcfdef97212ce64af12f5d5e29134dbc7e8229cbc",
     "specs/backlog/details/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "specs/changelog/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "specs/config.md": "67cb965f91cec51cd8fd59cd123abc9c9618bd232a8ab825232c738678229676",
+    "specs/config.md": "0a5ec9656c6e52897e208aa178d13278c1be7fa491460503e0c459c23f567b08",
     "specs/decisions/0000-template.md": "eff1f138437e864499ba05c7680eda9fb3f3f79d3bee0cca27ea9ab3712cd449",
     "specs/decisions/README.md": "c2944038b26d6ff869e450106ef385aba59b34c56a0944fe4a439a9a9d8cf9f5",
     "specs/decisions/impact-map.md": "9d6d3cd8b25e3dc16c310449ec808d5e41c99274ffbd608354ec44ee41f3335d",
