@@ -51,9 +51,9 @@ If you're still exploring the idea, run `/brainstorm-idea` first.
    - `status.md` Summary paragraph (what this project is)
    - For monorepo: first-pass architecture sketch (core abstractions, interfaces)
    - Phase 0 contents using the [Group Execution Pattern](#group-execution-pattern)
-   - **Preferences** (`specs/preferences.md`, ADR-0009): the project-shape
+   - **Config** (`specs/config.md`, ADR-0009): the project-shape
      settings recipe templates read at execution time (forge, publish target,
-     branch flow, verification commands — see the [Preferences Format](#preferences-format)).
+     branch flow, verification commands — see the [Config Format](#config-format)).
      Carry the values settled during `/brainstorm-idea`; when `momentum init`
      already inferred them, confirm the inferred file. `protected_branches`
      is derived from `branch_flow`.
@@ -63,8 +63,8 @@ If you're still exploring the idea, run `/brainstorm-idea` first.
      mark the specific line `<!-- refine: ... -->`, and ask the user.
 
 4. Present the founding draft for approval:
-   - Show the charter, roadmap, preferences table, and key Phase 0 sections in chat
-   - List every file that will be created (including `specs/preferences.md`)
+   - Show the charter, roadmap, config table, and key Phase 0 sections in chat
+   - List every file that will be created (including `specs/config.md`)
    - Ask: "Ready to found the project? This will write N files. Approve to proceed."
 
 5. **On approval — exit the gate**:
@@ -77,15 +77,15 @@ If you're still exploring the idea, run `/brainstorm-idea` first.
    - `specs/vision/principles.md`
    - `specs/vision/success-criteria.md`
    - `specs/planning/roadmap.md`
-   - `specs/preferences.md` (from the preferences table above; overwrite the
+   - `specs/config.md` (from the config table above; overwrite the
      `momentum init`-inferred file if present — founding owns the content)
    - Update `specs/status.md`: Summary, Current Phase (Phase 0 `not started`),
      Upcoming Phases, Next Actions
    - For monorepo: `specs/architecture/` first-pass doc(s)
    - `specs/phases/phase-0-shortname/{overview,plan,tasks,history}.md`
      (log the founding decisions from this conversation in `history.md`)
-   - Refresh the derived cache: `core/preferences.js` →
-     `writePreferencesCache('.', readPreferences('specs'))` so the pre-push
+   - Refresh the derived cache: `core/config.js` →
+     `writeConfigCache('.', readConfig('specs'))` so the pre-push
      hook's `protected_branches` matches the authored `branch_flow`;
      then `momentum okf index` to refresh bundle listings
 
@@ -213,9 +213,9 @@ type: Roadmap
 
 ---
 
-## Preferences Format
+## Config Format
 
-Author `specs/preferences.md` in this shape (`type: Preferences` → OKF bundle).
+Author `specs/config.md` in this shape (`type: Config` → OKF bundle).
 Lists (`branch_flow`, `protected_branches`) are comma-separated;
 `protected_branches` is derived from `branch_flow`. The trust layer (human
 authorization for protected-branch pushes) is invariant, NOT a preference
@@ -223,10 +223,10 @@ authorization for protected-branch pushes) is invariant, NOT a preference
 
 ```markdown
 ---
-type: Preferences
+type: Config
 ---
 
-# Project Preferences
+# Project Config
 
 > Recipes read these at execution time; missing values fall back to npm/GitHub
 > defaults. Edit freely.

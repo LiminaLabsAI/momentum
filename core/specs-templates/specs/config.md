@@ -1,8 +1,8 @@
 ---
-type: Preferences
+type: Config
 ---
 
-# Project Preferences
+# Project Config
 
 > Inferred by momentum init — confirm at `/start-project` or edit anytime.
 > Recipes read these at execution time; missing/unknown values fall back to
@@ -14,7 +14,7 @@ type: Preferences
 | language | node |
 | framework | none |
 | test_command | npm test |
-| build_command | none |
+| build_command | npm run build |
 | publish_target | npm |
 | git_forge | github |
 | release_command | gh release create |
@@ -25,4 +25,7 @@ type: Preferences
 
 ## Notes
 
-_(none — edit freely)_
+_(none — edit freely. `momentum init`/`upgrade` overwrite this file ONLY when
+it is absent; once you edit it, your content is preserved. The
+`protected_branches` row is derived from `branch_flow` — edit `branch_flow`
+and re-run `momentum upgrade` to refresh it.)_

@@ -1,13 +1,13 @@
 'use strict';
 
 /**
- * Phase 26 — Project Preferences, Group 0.
+ * Phase 26 — Project Config, Group 0.
  *
- * Unit tests for the preferences core library (core/preferences.js) + the
- * markdown renderer (core/preferences-templates.js). Covers the reader
+ * Unit tests for the config core library (core/config.js) + the
+ * markdown renderer (core/config-templates.js). Covers the reader
  * (valid/empty/missing/unknown-value-fails-closed), writer (round-trip),
  * pure inference helpers (language/forge/framework/commands), the fs-bound
- * inferPreferences against real tmp dirs, deriveProtectedBranches, the cache
+ * inferConfig against real tmp dirs, deriveProtectedBranches, the cache
  * read/write, and the founded predicate.
  */
 
@@ -17,37 +17,37 @@ const os = require('node:os');
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
-const P = require('../core/preferences');
-const { renderPreferencesMarkdown } = require('../core/preferences-templates');
+const P = require('../core/config');
+const { renderConfigMarkdown } = require('../core/config-templates');
 const { mktmp, rmrf } = require('./_helpers');
 
 function writeTmpPrefs(specsDir, md) {
   fs.mkdirSync(specsDir, { recursive: true });
-  fs.writeFileSync(path.join(specsDir, 'preferences.md'), md);
+  fs.writeFileSync(path.join(specsDir, 'config.md'), md);
 }
 
-// ── parsePreferencesMarkdown ──────────────────────────────────────────────────
+// ── parseConfigMarkdown ──────────────────────────────────────────────────
 
-test('parsePreferencesMarkdown: extracts known scalar + list keys', () => {
-  const md = renderPreferencesMarkdown({
+test('parseConfigMarkdown: extracts known scalar + list keys', () => {
+  const md = renderConfigMarkdown({
     language: 'python', framework: 'fastapi', test_command: 'pytest',
     build_command: 'none', publish_target: 'pypi', git_forge: 'gitlab',
     release_command: 'glab release create', release_flow: 'tag-and-publish',
     end_state: 'merge-after-yes', branch_flow: ['main'], protected_branches: ['main'],
   });
-  const raw = P.parsePreferencesMarkdown(md);
+  const raw = P.parseConfigMarkdown(md);
   assert.equal(raw.language, 'python');
   assert.equal(raw.git_forge, 'gitlab');
   assert.deepEqual(raw.branch_flow, ['main']);
   assert.deepEqual(raw.protected_branches, ['main']);
 });
 
-test('parsePreferencesMarkdown: empty / table-less content → {}', () => {
-  assert.deepEqual(P.parsePreferencesMarkdown(''), {});
-  assert.deepEqual(P.parsePreferencesMarkdown('# Project Preferences\n\nNo table here.\n'), {});
+test('parseConfigMarkdown: empty / table-less content → {}', () => {
+  assert.deepEqual(P.parseConfigMarkdown(''), {});
+  assert.deepEqual(P.parseConfigMarkdown('# Project Config\n\nNo table here.\n'), {});
 });
 
-test('parsePreferencesMarkdown: ignores unknown keys + header/separator rows', () => {
+test('parseConfigMarkdown: ignores unknown keys + header/separator rows', () => {
   const md = [
     '| Key | Value |',
     '|-----|-------|',
@@ -55,39 +55,39 @@ test('parsePreferencesMarkdown: ignores unknown keys + header/separator rows', (
     '| favorite_color | blue |',
     '| build_command | cargo build --release |',
   ].join('\n');
-  const raw = P.parsePreferencesMarkdown(md);
+  const raw = P.parseConfigMarkdown(md);
   assert.equal(raw.language, 'rust');
   assert.equal(raw.build_command, 'cargo build --release');
   assert.equal(raw.favorite_color, undefined, 'unknown key ignored');
 });
 
-test('parsePreferencesMarkdown: list values split on comma + trimmed', () => {
-  const raw = P.parsePreferencesMarkdown('| branch_flow | uat, staging ,  main |');
+test('parseConfigMarkdown: list values split on comma + trimmed', () => {
+  const raw = P.parseConfigMarkdown('| branch_flow | uat, staging ,  main |');
   assert.deepEqual(raw.branch_flow, ['uat', 'staging', 'main']);
 });
 
-// ── normalizePreferences (fail-closed) ────────────────────────────────────────
+// ── normalizeConfig (fail-closed) ────────────────────────────────────────
 
-test('normalizePreferences: fills every default for an empty map', () => {
-  const prefs = P.normalizePreferences({});
+test('normalizeConfig: fills every default for an empty map', () => {
+  const prefs = P.normalizeConfig({});
   for (const k of P.KNOWN_KEYS) assert.ok(k in prefs, `missing ${k}`);
   assert.equal(prefs.git_forge, 'github');
   assert.equal(prefs.end_state, 'merge-after-yes');
   assert.deepEqual(prefs.branch_flow, ['staging', 'main']);
 });
 
-test('normalizePreferences: unknown enum value → default (no throw)', () => {
-  const prefs = P.normalizePreferences({ git_forge: 'sourceforge', end_state: 'ship-it' });
+test('normalizeConfig: unknown enum value → default (no throw)', () => {
+  const prefs = P.normalizeConfig({ git_forge: 'sourceforge', end_state: 'ship-it' });
   assert.equal(prefs.git_forge, 'github');
   assert.equal(prefs.end_state, 'merge-after-yes');
 });
 
-test('normalizePreferences: string list key coerced to array', () => {
-  const prefs = P.normalizePreferences({ branch_flow: 'main' });
+test('normalizeConfig: string list key coerced to array', () => {
+  const prefs = P.normalizeConfig({ branch_flow: 'main' });
   assert.deepEqual(prefs.branch_flow, ['main']);
 });
 
-test('normalizePreferences: round-trips a valid set unchanged', () => {
+test('normalizeConfig: round-trips a valid set unchanged', () => {
   const orig = {
     language: 'rust', framework: 'actix', test_command: 'cargo test',
     build_command: 'cargo build --release', publish_target: 'crates-io',
@@ -95,28 +95,28 @@ test('normalizePreferences: round-trips a valid set unchanged', () => {
     release_flow: 'tag-and-publish', end_state: 'feature-branch-only',
     branch_flow: ['main'], protected_branches: ['main'],
   };
-  assert.deepEqual(P.normalizePreferences(orig), orig);
+  assert.deepEqual(P.normalizeConfig(orig), orig);
 });
 
-// ── readPreferences ───────────────────────────────────────────────────────────
+// ── readConfig ───────────────────────────────────────────────────────────
 
-test('readPreferences: missing file → null', () => {
+test('readConfig: missing file → null', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
-    assert.equal(P.readPreferences(tmp), null);
+    assert.equal(P.readConfig(tmp), null);
   } finally { rmrf(tmp); }
 });
 
-test('readPreferences: valid file → normalized object', () => {
+test('readConfig: valid file → normalized object', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
-    writeTmpPrefs(tmp, renderPreferencesMarkdown({
+    writeTmpPrefs(tmp, renderConfigMarkdown({
       language: 'go', framework: 'none', test_command: 'go test ./...',
       build_command: 'go build', publish_target: 'none', git_forge: 'gitea',
       release_command: 'tea release create', release_flow: 'tag-only',
       end_state: 'feature-branch-only', branch_flow: ['main'], protected_branches: ['main'],
     }));
-    const prefs = P.readPreferences(tmp);
+    const prefs = P.readConfig(tmp);
     assert.equal(prefs.language, 'go');
     assert.equal(prefs.git_forge, 'gitea');
     assert.equal(prefs.end_state, 'feature-branch-only');
@@ -124,21 +124,21 @@ test('readPreferences: valid file → normalized object', () => {
   } finally { rmrf(tmp); }
 });
 
-// ── writePreferences (round-trip) ─────────────────────────────────────────────
+// ── writeConfig (round-trip) ─────────────────────────────────────────────
 
-test('writePreferences: writes a file readPreferences parses back', () => {
+test('writeConfig: writes a file readConfig parses back', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
-    const orig = P.inferPreferences(tmp, { remoteUrl: 'git@gitlab.com:org/repo.git' });
-    P.writePreferences(tmp, orig, { inferred: true });
-    const back = P.readPreferences(tmp);
+    const orig = P.inferConfig(tmp, { remoteUrl: 'git@gitlab.com:org/repo.git' });
+    P.writeConfig(tmp, orig, { inferred: true });
+    const back = P.readConfig(tmp);
     assert.equal(back.language, orig.language);
     assert.equal(back.git_forge, 'gitlab');
     assert.equal(back.release_command, 'glab release create');
     assert.deepEqual(back.branch_flow, orig.branch_flow);
     // frontmatter type line present
-    const body = fs.readFileSync(path.join(tmp, 'preferences.md'), 'utf8');
-    assert.match(body, /^type: Preferences$/m);
+    const body = fs.readFileSync(path.join(tmp, 'config.md'), 'utf8');
+    assert.match(body, /^type: Config$/m);
   } finally { rmrf(tmp); }
 });
 
@@ -164,7 +164,7 @@ test('inferForge: recognizes the major forges + falls back to github', () => {
   assert.equal(P.inferForge('https://gitlab.com/org/repo.git'), 'gitlab');
   assert.equal(P.inferForge('git@bitbucket.org:org/repo.git'), 'bitbucket');
   assert.equal(P.inferForge('https://gitea.example.com/org/repo'), 'gitea');
-  assert.equal(P.inferForge('https://codeberg.org/forgejo/forgejo'), 'forgejo');
+  assert.equal(P.inferForge('https://codeberg.org/forgejo/forgejo'), 'gitea'); // Codeberg is a Gitea instance
   assert.equal(P.inferForge('git@git.internal.local:org/repo.git'), 'bare-ssh');
   assert.equal(P.inferForge(''), 'github');
   assert.equal(P.inferForge('https://unknown.example.com/repo'), 'github');
@@ -172,11 +172,16 @@ test('inferForge: recognizes the major forges + falls back to github', () => {
 
 // ── inferFramework ────────────────────────────────────────────────────────────
 
-test('inferFramework: next/astro from deps, none otherwise', () => {
-  assert.equal(P.inferFramework({ dependencies: { next: '^14' } }), 'nextjs');
-  assert.equal(P.inferFramework({ dependencies: { astro: '^4' } }), 'astro');
-  assert.equal(P.inferFramework({ dependencies: { express: '^4' } }), 'none');
-  assert.equal(P.inferFramework({}), 'none');
+test('inferFramework: node/next/astro/express by deps; python + rust reachable by language', () => {
+  assert.equal(P.inferFramework('node', { dependencies: { next: '^14' } }), 'nextjs');
+  assert.equal(P.inferFramework('node', { dependencies: { astro: '^4' } }), 'astro');
+  assert.equal(P.inferFramework('node', { dependencies: { express: '^4' } }), 'express');
+  assert.equal(P.inferFramework('python', { dependencies: { fastapi: '^0.110' } }), 'fastapi');
+  assert.equal(P.inferFramework('python', { dependencies: { django: '^5' } }), 'django');
+  assert.equal(P.inferFramework('rust', { dependencies: { actix_web: '^0.13' } }), 'actix');
+  assert.equal(P.inferFramework('rust', { dependencies: { axum: '^0.7' } }), 'axum');
+  assert.equal(P.inferFramework('node', {}), 'none');
+  assert.equal(P.inferFramework('go', {}), 'none');
 });
 
 // ── inferCommands ─────────────────────────────────────────────────────────────
@@ -202,15 +207,15 @@ test('inferCommands: python/rust/go/dotnet/unknown', () => {
   assert.equal(P.inferCommands('none').test_command, 'npm test');
 });
 
-// ── inferPreferences (fs-bound, real tmp dirs) ────────────────────────────────
+// ── inferConfig (fs-bound, real tmp dirs) ────────────────────────────────
 
-test('inferPreferences: node project with build script + github remote', () => {
+test('inferConfig: node project with build script + github remote', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
     fs.writeFileSync(path.join(tmp, 'package.json'), JSON.stringify({
       name: 'demo', scripts: { test: 'node --test', build: 'astro build' },
     }));
-    const prefs = P.inferPreferences(tmp, { remoteUrl: 'git@github.com:org/demo.git' });
+    const prefs = P.inferConfig(tmp, { remoteUrl: 'git@github.com:org/demo.git' });
     assert.equal(prefs.language, 'node');
     assert.equal(prefs.build_command, 'npm run build');
     assert.equal(prefs.publish_target, 'npm');
@@ -221,11 +226,11 @@ test('inferPreferences: node project with build script + github remote', () => {
   } finally { rmrf(tmp); }
 });
 
-test('inferPreferences: python project on gitlab', () => {
+test('inferConfig: python project on gitlab', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
     fs.writeFileSync(path.join(tmp, 'pyproject.toml'), '[project]\nname = "demo"\n');
-    const prefs = P.inferPreferences(tmp, { remoteUrl: 'https://gitlab.com/org/demo.git' });
+    const prefs = P.inferConfig(tmp, { remoteUrl: 'https://gitlab.com/org/demo.git' });
     assert.equal(prefs.language, 'python');
     assert.equal(prefs.test_command, 'pytest');
     assert.equal(prefs.publish_target, 'pypi');
@@ -234,21 +239,21 @@ test('inferPreferences: python project on gitlab', () => {
   } finally { rmrf(tmp); }
 });
 
-test('inferPreferences: rust project, no remote → bare-ssh-ish fallback stays github default', () => {
+test('inferConfig: rust project, no remote → bare-ssh-ish fallback stays github default', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
     fs.writeFileSync(path.join(tmp, 'Cargo.toml'), '[package]\nname = "demo"\n');
-    const prefs = P.inferPreferences(tmp, { remoteUrl: '' });
+    const prefs = P.inferConfig(tmp, { remoteUrl: '' });
     assert.equal(prefs.language, 'rust');
     assert.equal(prefs.publish_target, 'crates-io');
     assert.equal(prefs.git_forge, 'github');
   } finally { rmrf(tmp); }
 });
 
-test('inferPreferences: no manifest → language none, defaults', () => {
+test('inferConfig: no manifest → language none, defaults', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
-    const prefs = P.inferPreferences(tmp, { remoteUrl: 'git@github.com:org/repo.git' });
+    const prefs = P.inferConfig(tmp, { remoteUrl: 'git@github.com:org/repo.git' });
     assert.equal(prefs.language, 'none');
     assert.equal(prefs.test_command, 'npm test');
     assert.equal(prefs.publish_target, 'none');
@@ -268,22 +273,22 @@ test('deriveProtectedBranches: empty/non-array → default', () => {
 
 // ── cache read/write ──────────────────────────────────────────────────────────
 
-test('writePreferencesCache + readPreferencesCache: round-trip', () => {
+test('writeConfigCache + readConfigCache: round-trip', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
     const prefs = { protected_branches: ['main'], branch_flow: ['main'], end_state: 'feature-branch-only' };
-    P.writePreferencesCache(tmp, prefs);
-    const cache = P.readPreferencesCache(tmp);
+    P.writeConfigCache(tmp, prefs);
+    const cache = P.readConfigCache(tmp);
     assert.deepEqual(cache.protected_branches, ['main']);
     assert.equal(cache.end_state, 'feature-branch-only');
     assert.equal(cache.version, 1);
   } finally { rmrf(tmp); }
 });
 
-test('readPreferencesCache: missing → null', () => {
+test('readConfigCache: missing → null', () => {
   const tmp = mktmp('momentum-prefs-');
   try {
-    assert.equal(P.readPreferencesCache(tmp), null);
+    assert.equal(P.readConfigCache(tmp), null);
   } finally { rmrf(tmp); }
 });
 
@@ -299,5 +304,62 @@ test('isFounded: charter + roadmap → true; one or none → false', () => {
     assert.equal(P.isFounded(tmp), false, 'roadmap missing → not founded');
     fs.writeFileSync(path.join(tmp, 'specs', 'planning', 'roadmap.md'), '# roadmap\n');
     assert.equal(P.isFounded(tmp), true);
+  } finally { rmrf(tmp); }
+});
+
+// ── review-finding regression tests ──────────────────────────────────────────
+
+test('inferLanguage: dual manifest node+pyproject → node wins (priority)', () => {
+  // A repo can legitimately carry both a package.json and a pyproject.toml;
+  // node must win so the CLI does not mis-detect a python project.
+  assert.equal(P.inferLanguage({ packageJson: true, pyproject: true }), 'node');
+  assert.equal(P.inferLanguage({ packageJson: true, setupPy: true, cargo: true }), 'node');
+});
+
+test('normalizeConfig: unknown enum → default for language / publish_target / release_flow', () => {
+  // M2 — the fail-closed path advertised in the header, asserted for the
+  // values most likely hand-mis-typed in specs/config.md.
+  assert.equal(P.normalizeConfig({ language: 'cobol' }).language, 'none');
+  assert.equal(P.normalizeConfig({ publish_target: 'npm2' }).publish_target, 'none');
+  assert.equal(P.normalizeConfig({ release_flow: 'ship-it' }).release_flow, 'tag-only');
+});
+
+test('normalizeConfig: unknown value emits stderr warning when opts.warn', () => {
+  // M5 — the advertised "resolves to default WITH a stderr warning".
+  const chunks = [];
+  const orig = process.stderr.write;
+  process.stderr.write = (c) => { chunks.push(String(c)); return true; };
+  try {
+    const out = P.normalizeConfig({ git_forge: 'bogus' }, { warn: true });
+    assert.equal(out.git_forge, 'github');
+    assert.ok(chunks.join('').includes("unknown 'git_forge' value 'bogus'"), 'stderr warned');
+  } finally {
+    process.stderr.write = orig;
+  }
+});
+
+test('inferCommands: node test_command is always npm test (no dead branch)', () => {
+  // M3 — scripts.test presence must not change the resolved command.
+  assert.equal(P.inferCommands('node', { scripts: { test: 'jest' } }).test_command, 'npm test');
+  assert.equal(P.inferCommands('node', { scripts: {} }).test_command, 'npm test');
+});
+
+test('writeConfigCache: protected_branches DERIVED from branch_flow, extras unioned (I3)', () => {
+  // ADR-0009: protected_branches is derived from branch_flow; an explicit
+  // extra branch is added on top, but the flow is always authoritative.
+  const tmp = mktmp('momentum-prefs-');
+  try {
+    P.writeConfigCache(tmp, { branch_flow: ['staging', 'main'], protected_branches: ['main', 'release'] });
+    const cache = P.readConfigCache(tmp);
+    assert.deepEqual(cache.protected_branches, ['staging', 'main', 'release']);
+  } finally { rmrf(tmp); }
+});
+
+test('writeConfigCache: empty protected_branches → derives from flow only', () => {
+  const tmp = mktmp('momentum-prefs-');
+  try {
+    P.writeConfigCache(tmp, { branch_flow: ['uat', 'main'], protected_branches: [] });
+    const cache = P.readConfigCache(tmp);
+    assert.deepEqual(cache.protected_branches, ['uat', 'main']);
   } finally { rmrf(tmp); }
 });

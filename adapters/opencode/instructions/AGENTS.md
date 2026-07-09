@@ -15,7 +15,7 @@
 | Phase tasks/progress? | `specs/phases/phase-N-*/tasks.md` |
 | Why was X chosen? | `specs/decisions/NNNN-*.md` |
 | Roadmap / timeline? | `specs/planning/roadmap.md` (authored at founding — `/start-project`) |
-| Project preferences (forge, publish, branch flow)? | `specs/preferences.md` (inferred by `momentum init`, authored at `/start-project`) |
+| Project config (forge, publish, branch flow)? | `specs/config.md` (inferred by `momentum init`, authored at `/start-project`) |
 | How to contribute? | `docs/developer-guide.md` |
 
 > **First file to read: ALWAYS `specs/status.md`.**

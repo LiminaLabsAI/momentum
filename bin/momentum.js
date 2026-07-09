@@ -452,56 +452,70 @@ function migrateFoundationDocs(srcRoot, target) {
 }
 
 /**
- * Phase 26 — Project Preferences (ADR-0009).
+ * Phase 26 — Project Config (ADR-0009).
  *
- * init: after the specs skeleton, infer + write `specs/preferences.md` and the
- * derived `.momentum/preferences-cache.json` (only when the file is absent —
+ * init: after the specs skeleton, infer + write `specs/config.md` and the
+ * derived `.momentum/config-cache.json` (only when the file is absent —
  * re-init leaves an authored file alone).
  *
- * upgrade: write inferred preferences for FOUNDED projects only (charter +
+ * upgrade: write inferred config for FOUNDED projects only (charter +
  * roadmap exist — ADR-0008); unfounded projects author them at /start-project.
  * When the file exists, refresh the derived cache from the content source of
  * truth and report any drift on the machine-inferable fields (never clobber
  * user edits).
  *
- * specs/ is user content — the preferences file is NOT recorded in the managed
+ * specs/ is user content — the config file is NOT recorded in the managed
  * manifest (orphan cleanup must never touch it). The cache is gitignored by the
  * existing `.momentum/*` rule.
  */
-function installPreferences(target, { dryRun, upgradeMode } = {}) {
-  const prefsLib = require('../core/preferences');
+function installConfig(target, { dryRun, upgradeMode } = {}) {
+  const prefsLib = require('../core/config');
   const specsDir = path.join(target, 'specs');
   if (!fileExists(specsDir)) return; // no specs skeleton → nothing to do
-  const prefsPath = path.join(specsDir, 'preferences.md');
+  const prefsPath = path.join(specsDir, 'config.md');
   const exists = fileExists(prefsPath);
 
   if (!exists) {
-    // upgrade only writes preferences for founded projects (migration).
+    // upgrade only writes config for founded projects (migration).
     if (upgradeMode && !prefsLib.isFounded(target)) return;
-    const prefs = prefsLib.inferPreferences(target);
+    const prefs = prefsLib.inferConfig(target);
     if (dryRun) {
-      console.log(`  ✋ would add:     specs/preferences.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
+      console.log(`  ✋ would add:     specs/config.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
       return;
     }
-    prefsLib.writePreferences(specsDir, prefs, { inferred: true });
-    prefsLib.writePreferencesCache(target, prefs);
-    console.log(`  + added:    specs/preferences.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
+    prefsLib.writeConfig(specsDir, prefs, { inferred: true });
+    prefsLib.writeConfigCache(target, prefs);
+    console.log(`  + added:    specs/config.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
     return;
   }
 
   // File exists: refresh the derived cache from the content source of truth.
-  const stored = prefsLib.readPreferences(specsDir);
-  if (!stored) return; // unparseable — leave it (user content)
-  if (!dryRun) prefsLib.writePreferencesCache(target, stored);
+  // A present-but-garbage file parses to an all-defaults object; detect that
+  // (zero known keys present in the raw file) and LEAVE it untouched rather
+  // than silently overwriting the user's (broken) content with defaults.
+  const raw = (() => {
+    try {
+      return prefsLib.parseConfigMarkdown(fs.readFileSync(prefsPath, 'utf8'));
+    } catch {
+      return {};
+    }
+  })();
+  const hasAnyKey = prefsLib.KNOWN_KEYS.some((k) => k in raw);
+  if (!hasAnyKey) {
+    console.log(`  ⚠️  specs/config.md exists but is empty/unparseable — left untouched (fix or delete it)`);
+    return;
+  }
+  const stored = prefsLib.readConfig(specsDir);
+  if (!dryRun) prefsLib.writeConfigCache(target, stored);
 
   // Drift detection (upgrade only, founded only): report changed inferable
   // fields. Never clobber user edits — the user re-infers by deleting the file
   // or editing by hand.
   if (upgradeMode && prefsLib.isFounded(target)) {
-    const inferred = prefsLib.inferPreferences(target);
+    const inferred = prefsLib.inferConfig(target);
     const drifted = prefsLib.INFERABLE_KEYS.filter((k) => inferred[k] !== stored[k]);
     if (drifted.length) {
-      console.log(`  ⚠️  specs/preferences.md drifted from manifests on: ${drifted.join(', ')} (edit by hand or delete the file + re-run 'momentum upgrade')`);
+      console.log(`  ⚠️  specs/config.md drifted from manifests on: ${drifted.join(', ')} (edit by hand or delete the file + re-run 'momentum upgrade')`);
     }
   }
 }
@@ -1093,16 +1107,16 @@ function init(targetDir, agent, opts = {}) {
   const specsSrc = path.join(src, 'core', 'specs-templates');
   copyDir(specsSrc, target, {
     skipIfExists: true,
-    // CLAUDE.md is adapter-owned (written separately); preferences.md is
-    // inferred per-project by installPreferences (Phase 26) — neither is
+    // CLAUDE.md is adapter-owned (written separately); config.md is
+    // inferred per-project by installConfig (Phase 26) — neither is
     // copied as a static template.
-    skipRelPaths: new Set(['CLAUDE.md', 'preferences.md']),
+    skipRelPaths: new Set(['CLAUDE.md', 'config.md']),
     record: false, // specs are install-once / user-owned — never orphan them
   });
 
-  // Phase 26 — infer + write specs/preferences.md + the derived hook cache.
-  console.log('→ Inferring project preferences...');
-  installPreferences(target, { dryRun: _dryRun });
+  // Phase 26 — infer + write specs/config.md + the derived hook cache.
+  console.log('→ Inferring project config...');
+  installConfig(target, { dryRun: _dryRun });
 
   installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
 
@@ -1305,11 +1319,11 @@ function upgrade(targetDir, agent, opts = {}) {
     console.log('  = no untouched placeholders (foundation docs are authored or absent)');
   }
 
-  // Phase 26 — project preferences (ADR-0009). Founded projects get an
-  // inferred specs/preferences.md on first upgrade; existing files get their
+  // Phase 26 — project config (ADR-0009). Founded projects get an
+  // inferred specs/config.md on first upgrade; existing files get their
   // derived cache refreshed + drift reported (never clobbered).
-  console.log('→ Inferring project preferences...');
-  installPreferences(target, { dryRun: _dryRun, upgradeMode: true });
+  console.log('→ Inferring project config...');
+  installConfig(target, { dryRun: _dryRun, upgradeMode: true });
 
   // Orphan cleanup — only remove files this agent's prior version installed
   // that this version no longer ships. Other agents' files are untouched.

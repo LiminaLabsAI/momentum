@@ -48,21 +48,22 @@ function commitMsg(msgFile) {
 // ── pre-push ──────────────────────────────────────────────────────────────────
 
 /**
- * Phase 26 (ADR-0009) — resolve this project's protected-branch list from the
- * derived preferences cache (.momentum/preferences-cache.json). Falls back to
- * the hardcoded CONTRACT.protectedBranches when the cache is absent or
- * unparseable, so enforcement stays real with zero configuration.
+ * Phase 26 (ADR-0009) — resolve this project's protected-branch list. Source
+ * of truth is `specs/config.md` (read directly, so a hand-edit never leaves
+ * the hook enforcing a stale set — review finding I1); the derived cache is
+ * only a fallback when config.md is absent. The result is always UNIONed with
+ * the invariant floor CONTRACT.protectedBranches, so enforcement can never be
+ * weaker than the trust layer requires, even if the cache is edited by hand.
  */
 function resolveProtectedBranches(root) {
-  const cachePath = path.join(root, C.CONTRACT.preferencesCache);
+  const cachePath = path.join(root, C.CONTRACT.configCache);
+  let cache = null;
   try {
-    const cache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-    const list = C.protectedBranchesFromCache(cache);
-    if (list) return list;
+    cache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
   } catch {
-    /* absent / unparseable — fall back */
+    /* absent / unparseable — config.md (if present) is the source of truth */
   }
-  return C.CONTRACT.protectedBranches;
+  return C.resolveProtectedBranchesList(root, cache);
 }
 
 function findLatestRetro(root) {

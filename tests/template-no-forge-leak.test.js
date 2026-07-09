@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Phase 26 — Project Preferences, Group 2 (BUG-024 fix).
+ * Phase 26 — Project Config, Group 2 (BUG-024 fix).
  *
  * Guards that the GLOBAL recipe templates (core/commands/*.md) never instruct
  * the agent to run forge-specific or registry-specific release commands. The
@@ -9,9 +9,9 @@
  * `git push origin <tag>`); forge release creation (`gh release create`,
  * `glab release create`, …) and registry publishes (`npm publish --access
  * public`, `twine upload`, …) live in `## Project Extensions` +
- * `specs/preferences.md` (ADR-0009).
+ * `specs/config.md` (ADR-0009).
  *
- * Example/illustration mentions (preferences discovery questions, "NOT in this
+ * Example/illustration mentions (config discovery questions, "NOT in this
  * template" notes, format samples) are permitted — the guard targets the
  * INSTRUCTIONAL code-block context, not prose examples.
  */
@@ -64,10 +64,10 @@ test('BUG-024: start-phase.md hard-stop does not name a forge ("GitHub Release")
   assert.match(hardStop, /tag `v<version>`/i, 'hard-stop asks for a tag (universal git)');
 });
 
-test('forge/release commands are pointed to ## Project Extensions + preferences, not run globally', () => {
+test('forge/release commands are pointed to ## Project Extensions + config, not run globally', () => {
   for (const f of ['start-phase.md', 'complete-phase.md']) {
     const body = readCmd(f);
     assert.match(body, /## Project Extensions/, `${f} should point project-specific release/publish to ## Project Extensions`);
-    assert.match(body, /specs\/preferences\.md/, `${f} should reference specs/preferences.md for release_command/publish_target`);
+    assert.match(body, /specs\/config\.md/, `${f} should reference specs/config.md for release_command/publish_target`);
   }
 });

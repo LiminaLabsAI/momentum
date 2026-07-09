@@ -329,7 +329,7 @@ Some behaviors that feel like they could be rules deliberately aren't:
 - **Asking before every action** — the autonomous execution contract for
   `/start-phase` pre-authorizes most actions. Rules 5, 6, and Rule 12 each
   carve out the specific decisions that *do* require user input.
-- **Style preferences** — opinions about code formatting, naming, comment
+- **Style config** — opinions about code formatting, naming, comment
   style live in CLAUDE.md / AGENTS.md project extensions, not in the rules
   file. Rules are universals; style is per-project.
 

@@ -131,9 +131,9 @@ The agent (per Rule 3) **auto-tracks discoveries**: any bug, tech debt, or
 enhancement noticed during work lands in the backlog immediately, with the
 user notified.
 
-## Preferences
+## Config
 
-`specs/preferences.md` is the project-shape settings file recipe templates
+`specs/config.md` is the project-shape settings file recipe templates
 read at execution time (ADR-0009). It tells momentum **what kind of project
 this is** so gates and release steps adapt instead of assuming npm + GitHub +
 a `staging → main` flow:

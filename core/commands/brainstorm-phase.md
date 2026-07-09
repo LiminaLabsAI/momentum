@@ -34,8 +34,8 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    - Read `specs/planning/roadmap.md` — what's the next planned phase?
    - Is the planned phase still the right next step given what was learned?
 
-2b. Read verification defaults from preferences:
-    - Read `specs/preferences.md` (`core/preferences.js` → `readPreferences('specs')`)
+2b. Read verification defaults from config:
+    - Read `specs/config.md` (`core/config.js` → `readConfig('specs')`)
       for `test_command` and `build_command`. When absent, default to
       `npm test` / no build. Use these as the default verification commands in
       the phase's deliverables table (overview.md) unless the phase needs

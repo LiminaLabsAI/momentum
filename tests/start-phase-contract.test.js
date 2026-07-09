@@ -16,10 +16,10 @@ test('start-phase.md contains the Autonomous Execution Contract section', () => 
 test('start-phase.md declares the hard stop at merge + release (preference-aware)', () => {
   const content = read(START_PHASE);
   assert.match(content, /### Hard stop — always/);
-  // Phase 26 (ADR-0009): the gate reads end_state + branch_flow from preferences
+  // Phase 26 (ADR-0009): the gate reads end_state + branch_flow from config
   // and stops at the universal git primitives (merge + tag), not a forge release.
   assert.match(content, /Merge to a protected branch \+ release/);
-  assert.match(content, /specs\/preferences\.md/);
+  assert.match(content, /specs\/config\.md/);
   assert.match(content, /end_state/);
   assert.match(content, /branch_flow/);
   assert.ok(!/create the GitHub Release/i.test(content), 'no forge-specific "GitHub Release" gate step (BUG-024)');

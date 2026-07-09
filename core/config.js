@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Phase 26 — Project Preferences (ADR-0009).
+ * Phase 26 — Project Config (ADR-0009).
  *
- * Structured project preferences (`specs/preferences.md`) consumed by recipe
+ * Structured project config (`specs/config.md`) consumed by recipe
  * templates at execution time, so gate copy, verification/release commands,
  * and the merge flow ADAPT to the actual project instead of hardcoding
  * npm/GitHub/staging-main assumptions.
@@ -11,26 +11,26 @@
  * Layers (ADR-0009):
  *   - TRUST LAYER (invariant, non-configurable): human authorization for a
  *     protected-branch push. Enforced in core/git-hooks; NEVER a preference.
- *   - MECHANISMS (preferences): which branches are protected, how far the
+ *   - MECHANISMS (config): which branches are protected, how far the
  *     agent goes, which commands run.
  *
- * Fail-closed: readPreferences() returns null when the file is absent
+ * Fail-closed: readConfig() returns null when the file is absent
  * (recipes keep the current npm/GitHub behavior). A present file with a
  * missing/unknown value resolves to the field default WITH a stderr warning,
  * never to a wrong action.
  *
- * Source of truth = specs/preferences.md (content, version-controlled).
- * Derived cache    = .momentum/preferences-cache.json (gitignored) read by
+ * Source of truth = specs/config.md (content, version-controlled).
+ * Derived cache    = .momentum/config-cache.json (gitignored) read by
  * the pre-push hook; falls back to ['main','master','staging'] when missing.
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { KNOWN_KEYS, LIST_KEYS, renderPreferencesMarkdown } = require('./preferences-templates');
+const { KNOWN_KEYS, LIST_KEYS, renderConfigMarkdown } = require('./config-templates');
 
-const PREFS_FILE = 'specs/preferences.md';
-const CACHE_FILE = '.momentum/preferences-cache.json';
+const CONFIG_FILE = 'specs/config.md';
+const CACHE_FILE = '.momentum/config-cache.json';
 
 const DEFAULTS = Object.freeze({
   language: 'none',
@@ -59,18 +59,21 @@ const ENUMS = {
 const INFERABLE_KEYS = ['language', 'framework', 'publish_target', 'git_forge'];
 
 function warn(msg) {
-  try { process.stderr.write(`momentum preferences: ${msg}\n`); } catch { /* no stderr */ }
+  try { process.stderr.write(`momentum config: ${msg}\n`); } catch { /* no stderr */ }
 }
 
 /**
- * Parse a `specs/preferences.md` body into a raw key→value map. Pure.
+ * Parse a `specs/config.md` body into a raw key→value map. Pure.
  * Tolerant: scans every `| key | value |` row; known keys are collected,
- * unknown keys ignored. List keys split on comma. Returns {} for empty /
- * table-less content. Never throws.
+ * unknown keys are dropped (with a stderr warning when opts.warn). List
+ * keys split on comma. Returns {} for empty / table-less content. Never
+ * throws.
  * @param {string} content
+ * @param {object} [opts] { warn: boolean }
  * @returns {Record<string, string|string[]>}
  */
-function parsePreferencesMarkdown(content) {
+function parseConfigMarkdown(content, opts = {}) {
+  const doWarn = opts.warn === true;
   const out = {};
   if (!content || typeof content !== 'string') return out;
   for (const line of content.split(/\r?\n/)) {
@@ -79,7 +82,10 @@ function parsePreferencesMarkdown(content) {
     const key = m[1];
     const raw = m[2];
     if (key === 'Key' || /^-{3,}$/.test(raw)) continue; // header / separator
-    if (!KNOWN_KEYS.includes(key)) continue;
+    if (!KNOWN_KEYS.includes(key)) {
+      if (doWarn && key && key !== 'Value') warn(`unknown config key '${key}' — ignored`);
+      continue;
+    }
     out[key] = LIST_KEYS.has(key)
       ? raw.split(',').map((s) => s.trim()).filter(Boolean)
       : raw.trim();
@@ -88,14 +94,14 @@ function parsePreferencesMarkdown(content) {
 }
 
 /**
- * Normalize a raw parsed map into a complete Preferences object: fill defaults
+ * Normalize a raw parsed map into a complete Config object: fill defaults
  * for missing keys, validate enums, coerce list shapes. Pure (warning goes to
  * stderr only when `opts.warn` is true — disabled in tests by default).
  * @param {Record<string, string|string[]>} raw
  * @param {object} [opts] { warn: boolean }
- * @returns {object} a fresh Preferences object with every KNOWN_KEYS key set
+ * @returns {object} a fresh Config object with every KNOWN_KEYS key set
  */
-function normalizePreferences(raw, opts = {}) {
+function normalizeConfig(raw, opts = {}) {
   const doWarn = opts.warn === true;
   const prefs = {};
   for (const key of KNOWN_KEYS) {
@@ -128,34 +134,34 @@ function normalizePreferences(raw, opts = {}) {
 }
 
 /**
- * Read + parse `specs/preferences.md`. Returns null when the file is absent
+ * Read + parse `specs/config.md`. Returns null when the file is absent
  * (recipes keep the current npm/GitHub behavior). A present file is
  * normalized (missing/unknown values → default + stderr warning).
  * @param {string} specsDir  absolute path to the project's specs/ directory
  * @returns {object|null}
  */
-function readPreferences(specsDir) {
-  const file = path.join(specsDir, 'preferences.md');
+function readConfig(specsDir) {
+  const file = path.join(specsDir, 'config.md');
   let content;
   try {
     content = fs.readFileSync(file, 'utf8');
   } catch {
     return null;
   }
-  return normalizePreferences(parsePreferencesMarkdown(content), { warn: true });
+  return normalizeConfig(parseConfigMarkdown(content, { warn: true }), { warn: true });
 }
 
 /**
- * Render + write `specs/preferences.md`. Creates the parent dir if needed.
+ * Render + write `specs/config.md`. Creates the parent dir if needed.
  * @param {string} specsDir
- * @param {object} prefs   normalized Preferences object
- * @param {object} [opts]  passed through to renderPreferencesMarkdown
+ * @param {object} prefs   normalized Config object
+ * @param {object} [opts]  passed through to renderConfigMarkdown
  * @returns {string} the written file path
  */
-function writePreferences(specsDir, prefs, opts = {}) {
-  const file = path.join(specsDir, 'preferences.md');
+function writeConfig(specsDir, prefs, opts = {}) {
+  const file = path.join(specsDir, 'config.md');
   fs.mkdirSync(specsDir, { recursive: true });
-  const body = renderPreferencesMarkdown(prefs, opts);
+  const body = renderConfigMarkdown(prefs, opts);
   fs.writeFileSync(file, body);
   return file;
 }
@@ -192,6 +198,7 @@ function inferForge(url) {
   if (u.includes('github.com')) return 'github';
   if (u.includes('gitlab.com')) return 'gitlab';
   if (u.includes('bitbucket.org')) return 'bitbucket';
+  if (u.includes('codeberg.org')) return 'gitea'; // Codeberg is a Gitea instance
   if (u.includes('forgejo')) return 'forgejo';
   if (u.includes('gitea')) return 'gitea';
   // ssh bare remotes like git@host:org/repo or host:org/repo with no .com TLD
@@ -211,7 +218,7 @@ function inferCommands(language, pkg) {
   switch (language) {
     case 'node':
       return {
-        test_command: scripts.test ? 'npm test' : 'npm test',
+        test_command: 'npm test',
         build_command: scripts.build ? 'npm run build' : 'none',
         publish_target: 'npm',
         release_flow: 'tag-and-publish',
@@ -243,17 +250,30 @@ const FORGE_RELEASE_COMMAND = {
 };
 
 /**
- * Infer a framework string from package.json dependencies. Pure.
- * @param {object} [pkg]
+ * Infer a framework string from manifest dependencies, scoped by language.
+ * Pure. Only detects frameworks whose deps can actually appear for the
+ * given language (node: next/astro/express; python: fastapi/django;
+ * rust: actix/axum). Everything else → 'none'.
+ * @param {string} [language]
+ * @param {object} [pkg]  parsed package.json / pyproject deps
  * @returns {string}
  */
-function inferFramework(pkg) {
-  const deps = { ...(pkg && pkg.dependencies), ...(pkg && pkg.devDependencies) };
-  if (!deps) return 'none';
+function inferFramework(language, pkg) {
+  const deps = (pkg && (pkg.dependencies || pkg.devDependencies)) || {};
+  if (language === 'python') {
+    if (deps.fastapi) return 'fastapi';
+    if (deps.django) return 'django';
+    return 'none';
+  }
+  if (language === 'rust') {
+    if (deps.actix_web || deps.actix) return 'actix';
+    if (deps.axum) return 'axum';
+    return 'none';
+  }
+  // node (or unknown): detect common JS frameworks
   if (deps.next) return 'nextjs';
   if (deps.astro) return 'astro';
-  if (deps.fastapi) return 'fastapi';
-  if (deps.actix_web) return 'actix';
+  if (deps.express) return 'express';
   return 'none';
 }
 
@@ -277,12 +297,12 @@ function hasCsproj(dir) {
 }
 
 /**
- * Infer a full Preferences object from the target dir's manifests + git remote.
+ * Infer a full Config object from the target dir's manifests + git remote.
  * @param {string} targetDir  project root
  * @param {object} [opts]  { remoteUrl?: string } — override the git remote lookup (tests)
- * @returns {object} a normalized Preferences object (all KNOWN_KEYS set)
+ * @returns {object} a normalized Config object (all KNOWN_KEYS set)
  */
-function inferPreferences(targetDir, opts = {}) {
+function inferConfig(targetDir, opts = {}) {
   const manifests = {
     packageJson: !!readJsonIfExists(path.join(targetDir, 'package.json')),
     pyproject: fs.existsSync(path.join(targetDir, 'pyproject.toml')),
@@ -297,7 +317,7 @@ function inferPreferences(targetDir, opts = {}) {
   };
   const pkg = readJsonIfExists(path.join(targetDir, 'package.json')) || {};
   const language = inferLanguage(manifests);
-  const framework = language === 'node' ? inferFramework(pkg) : 'none';
+  const framework = inferFramework(language, pkg);
   const cmds = inferCommands(language, pkg);
 
   let remoteUrl = opts.remoteUrl;
@@ -345,34 +365,47 @@ function deriveProtectedBranches(branchFlow) {
 // ── cache (derived build artifact for the pre-push hook) ──────────────────────
 
 /**
- * Write `.momentum/preferences-cache.json` (gitignored). The pre-push hook
- * reads `protected_branches` from here, falling back to
- * ['main','master','staging'] when the cache is missing.
+ * Write `.momentum/config-cache.json` (gitignored). ADR-0009: `protected_branches`
+ * is DERIVED from `branch_flow` (the source of truth for which branches get
+ * touched). Any branches the user also listed explicitly in `protected_branches`
+ * are unioned on top, so the file can name *extra* protected branches but never
+ * contradict the flow. The pre-push hook unions this with the invariant floor.
  * @param {string} rootDir  repo root (where .momentum/ lives)
  * @param {object} prefs
  */
-function writePreferencesCache(rootDir, prefs) {
+function writeConfigCache(rootDir, prefs) {
   const dir = path.join(rootDir, '.momentum');
   fs.mkdirSync(dir, { recursive: true });
+  const derived = deriveProtectedBranches(prefs.branch_flow);
+  const explicit = Array.isArray(prefs.protected_branches) ? prefs.protected_branches : [];
+  const seen = new Set(derived);
+  const protectedBranches = derived.slice();
+  for (const b of explicit) {
+    const s = String(b).trim();
+    if (s && !seen.has(s)) {
+      seen.add(s);
+      protectedBranches.push(s);
+    }
+  }
   const cache = {
     version: 1,
     generatedAt: new Date().toISOString(),
-    protected_branches: prefs.protected_branches || deriveProtectedBranches(prefs.branch_flow),
+    protected_branches: protectedBranches,
     branch_flow: prefs.branch_flow || [],
     end_state: prefs.end_state || DEFAULTS.end_state,
   };
-  fs.writeFileSync(path.join(dir, 'preferences-cache.json'), JSON.stringify(cache, null, 2) + '\n');
-  return path.join(dir, 'preferences-cache.json');
+  fs.writeFileSync(path.join(dir, 'config-cache.json'), JSON.stringify(cache, null, 2) + '\n');
+  return path.join(dir, 'config-cache.json');
 }
 
 /**
- * Read `.momentum/preferences-cache.json`. Returns null when absent or
+ * Read `.momentum/config-cache.json`. Returns null when absent or
  * unparseable (callers fall back to the hardcoded default list).
  * @param {string} rootDir
  * @returns {object|null}
  */
-function readPreferencesCache(rootDir) {
-  const file = path.join(rootDir, '.momentum', 'preferences-cache.json');
+function readConfigCache(rootDir) {
+  const file = path.join(rootDir, '.momentum', 'config-cache.json');
   try {
     return JSON.parse(fs.readFileSync(file, 'utf8'));
   } catch {
@@ -383,7 +416,7 @@ function readPreferencesCache(rootDir) {
 // ── founded predicate (ADR-0008) ──────────────────────────────────────────────
 
 /**
- * True when the project is founded (charter + roadmap both exist). Preferences
+ * True when the project is founded (charter + roadmap both exist). Config
  * are migrated by `momentum upgrade` only for founded projects.
  * @param {string} targetDir
  * @returns {boolean}
@@ -394,26 +427,26 @@ function isFounded(targetDir) {
 }
 
 module.exports = {
-  PREFS_FILE,
+  CONFIG_FILE,
   CACHE_FILE,
   KNOWN_KEYS,
   LIST_KEYS,
   DEFAULTS,
   ENUMS,
   INFERABLE_KEYS,
-  parsePreferencesMarkdown,
-  normalizePreferences,
-  readPreferences,
-  writePreferences,
-  renderPreferencesMarkdown,
+  parseConfigMarkdown,
+  normalizeConfig,
+  readConfig,
+  writeConfig,
+  renderConfigMarkdown,
   inferLanguage,
   inferForge,
   inferFramework,
   inferCommands,
-  inferPreferences,
+  inferConfig,
   deriveProtectedBranches,
-  writePreferencesCache,
-  readPreferencesCache,
+  writeConfigCache,
+  readConfigCache,
   isFounded,
   FORGE_RELEASE_COMMAND,
 };

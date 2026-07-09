@@ -61,3 +61,14 @@ type: Tasks
 - [x] G3.11 Retrospective + verification evidence
 - [x] G3.12 Commit G3
 - [ ] G3.13 Stop at release gate — ask user for merge + tag approval
+
+## Group 4 — post-review fixes (security/QA/arch)
+- [x] G4.1 Rename preferences → config (file, type, cache, identifiers) across code/templates/tests/adapters/docs
+- [x] G4.2 Critical: hook UNIONs sources; never weaker than invariant floor (silently-downgradable bypass closed)
+- [x] G4.3 I1: hook reads protected_branches from specs/config.md source of truth (no stale-cache gap)
+- [x] G4.4 I3: writeConfigCache DERIVES protected_branches from branch_flow (extras unioned)
+- [x] G4.5 I2: byte-identity parity guard for .githooks/* vs core/git-hooks/*
+- [x] G4.6 I4: installConfig leaves empty/unparseable config.md untouched (warns)
+- [x] G4.7 Minor: inferLanguage priority test, unknown-enum coverage, dead-ternary removed, inferFramework python/rust reachable, codeberg→gitea, unknown-key stderr warning
+- [x] G4.8 Re-baseline 4 adapter fingerprints; full suite 918 green; OKF 256 conformant; site build green
+- [x] G4.9 Commit G4

@@ -182,7 +182,7 @@ and is idempotent. (ADR-0005.)
 | 🧭 **Phases** | Plan → execute → verify → release. Every phase has a brainstorm, plan, tasks, history. |
 | 📋 **Backlog** | Bugs / features / tech debt / enhancements with priorities and per-item context. |
 | 📜 **History** | Append-only log of decisions, discoveries, scope changes. The *why* outlives any session. |
-| ⚙️ **Preferences** | `specs/preferences.md` — forge, publish target, branch flow, test/build commands. Recipes adapt to your project, not npm+GitHub defaults. |
+| ⚙️ **Config** | `specs/config.md` — forge, publish target, branch flow, test/build commands. Recipes adapt to your project, not npm+GitHub defaults. |
 | ⚖️ **Rules** | 13 autonomous agent rules — orient first, verify before claim, log every decision. |
 | 🛠️ **Skills** | ~15 slash commands your agent runs — start, complete, sync, review, validate. |
 | 🌐 **Multi-project** | Ecosystem mode (state layer) + Orchestration primitives (action layer) for cross-project work. |

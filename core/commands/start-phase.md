@@ -120,9 +120,9 @@ Once a phase plan is approved, this command executes the plan end-to-end without
 ### Hard stop — always
 
 **Merge to a protected branch + release.** After the final group's
-verification passes, STOP. Read the project's preferences
-(`specs/preferences.md` via `core/preferences.js` →
-`readPreferences('<repo>/specs')`; returns `null` when absent → use the
+verification passes, STOP. Read the project's config
+(`specs/config.md` via `core/config.js` →
+`readConfig('<repo>/specs')`; returns `null` when absent → use the
 defaults below) and ask the user the gate question matching the project's
 `end_state`:
 
@@ -144,7 +144,7 @@ The gate stops at the truly universal git primitives — `git merge` +
 `git tag -a` + `git push origin <tag>`. Forge-specific release creation
 (`gh release create`, `glab release create`, …) and registry publishes
 (`npm publish`, `twine upload`, …) are NOT in this template; they live in
-`## Project Extensions` + `specs/preferences.md` (`release_command`,
+`## Project Extensions` + `specs/config.md` (`release_command`,
 `publish_target`, `release_flow`).
 
 This is the only place the engine asks. Do NOT skip it.

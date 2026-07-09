@@ -1,5 +1,11 @@
 'use strict';
 
+const fs = require('node:fs');
+const path = require('node:path');
+
+/** Source-of-truth config file (ADR-0009); the derived cache is a fallback. */
+const CONFIG_FILE = 'specs/config.md';
+
 /**
  * Phase 19 — Lifecycle Hardening, Group 0.
  *
@@ -28,13 +34,13 @@ const CONTRACT = {
 
   // Direct pushes to these branches are blocked unless the sentinel exists.
   // 'master' included for downstream repos that haven't renamed to 'main'.
-  // Default fallback when no preferences cache is present (ADR-0009).
+  // Default fallback when no config cache is present (ADR-0009).
   protectedBranches: ['main', 'master', 'staging'],
 
-  // Phase 26 — derived preferences cache read by the pre-push hook to resolve
+  // Phase 26 — derived config cache read by the pre-push hook to resolve
   // the protected-branch list for THIS project (ADR-0009). Gitignored state,
   // not content. Absent/unparseable → fall back to `protectedBranches` above.
-  preferencesCache: '.momentum/preferences-cache.json',
+  configCache: '.momentum/config-cache.json',
 
   // Canonical Verification-Evidence heading in retrospective.md (Rule 12).
   // The same heading gates ad-hoc records (specs/adhoc/<id>/record.md).
@@ -136,17 +142,85 @@ function branchIsProtected(branch, list) {
 
 /**
  * Phase 26 (ADR-0009) — resolve the protected-branch list from a parsed
- * preferences cache object. Returns the cache's `protected_branches` when it
- * is a non-empty array, else null (caller falls back to the hardcoded
- * CONTRACT.protectedBranches). Pure — no fs.
+ * config cache object. ADR-0009 makes the trust layer invariant: the
+ * protected set can NEVER be weaker than CONTRACT.protectedBranches (the
+ * branches that always require human authorization). The cache may only
+ * ADD branches to that invariant floor — it can never remove one. So we
+ * UNION the cache's `protected_branches` with CONTRACT.protectedBranches.
+ * A user-editable, gitignored cache file therefore cannot silently
+ * downgrade enforcement (the exact bypass ADR-0009 forbids). Pure — no fs.
  * @param {object|null} cache
- * @returns {string[]|null}
+ * @returns {string[]} never weaker than CONTRACT.protectedBranches
  */
 function protectedBranchesFromCache(cache) {
-  if (cache && Array.isArray(cache.protected_branches) && cache.protected_branches.length) {
-    return cache.protected_branches.map((b) => String(b)).filter(Boolean);
+  const base = CONTRACT.protectedBranches.slice();
+  const extra = [];
+  if (cache && Array.isArray(cache.protected_branches)) {
+    for (const b of cache.protected_branches) {
+      const s = String(b).trim();
+      if (s && !base.includes(s) && !extra.includes(s)) extra.push(s);
+    }
   }
-  return null;
+  return base.concat(extra);
+}
+
+/**
+ * Extract the `protected_branches` CSV list from the SOURCE OF TRUTH
+ * (`specs/config.md`) directly. The derived cache can go stale after a
+ * hand-edit; reading the source of truth at push time closes that gap
+ * (review finding I1) while staying fully self-contained (no config lib
+ * needed — just one table row). Returns null when the file/row is absent.
+ * @param {string} root
+ * @returns {string[]|null}
+ */
+function protectedBranchesFromConfigFile(root) {
+  const file = path.join(root, CONFIG_FILE);
+  let body;
+  try {
+    body = fs.readFileSync(file, 'utf8');
+  } catch {
+    return null;
+  }
+  const m = /^\s*\|?\s*protected_branches\s*\|?\s*([^\n|]+)/m.exec(body);
+  if (!m) return null;
+  const list = m[1]
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return list.length ? list : null;
+}
+
+/**
+ * Resolve the protected-branch list the pre-push hook enforces. Source of
+ * truth is `specs/config.md` (never stale after a hand-edit — review
+ * finding I1); the derived cache is a fallback when config.md is absent.
+ * Either way the result is UNIONed with the invariant floor
+ * (CONTRACT.protectedBranches) so enforcement can never be weaker than
+ * ADR-0009 requires. Reads files only as a fallback; pure w.r.t. the floor.
+ * @param {string} root
+ * @param {object|null} [cache]  parsed config-cache object (optional)
+ * @returns {string[]}
+ */
+function resolveProtectedBranchesList(root, cache) {
+  const floor = CONTRACT.protectedBranches;
+  const seen = new Set(floor);
+  const out = floor.slice();
+  const add = (list) => {
+    if (!Array.isArray(list)) return;
+    for (const b of list) {
+      const s = String(b).trim();
+      if (s && !seen.has(s)) {
+        seen.add(s);
+        out.push(s);
+      }
+    }
+  };
+  // Union every source. config.md is the source of truth for branch_flow-derived
+  // branches; the cache may add extras; the floor is the non-removable invariant.
+  // No source can REMOVE a branch the floor (or another source) protects.
+  add(protectedBranchesFromConfigFile(root));
+  if (cache) add(protectedBranchesFromCache(cache));
+  return out;
 }
 
 /**
@@ -193,6 +267,8 @@ module.exports = {
   isReleaseTag,
   branchIsProtected,
   protectedBranchesFromCache,
+  protectedBranchesFromConfigFile,
+  resolveProtectedBranchesList,
   retroHasEvidence,
   parsePrePushLine,
 };

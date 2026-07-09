@@ -18,7 +18,7 @@ Verify, finalize, and release a completed phase.
    - If any `[ ]` unchecked items remain → report to user, do NOT proceed
 
 3. **Run project-specific validation and capture fresh evidence** (per Rule 12 — Verify Before Claim):
-   - Read `specs/preferences.md` (`core/preferences.js` → `readPreferences('specs')`)
+   - Read `specs/config.md` (`core/config.js` → `readConfig('specs')`)
      for `test_command` and `build_command`. When the file is absent or a
      value is missing, fall back to `npm test` / no build (the historical
      defaults). Run `test_command` always; run `build_command` when it is not
@@ -73,11 +73,11 @@ Verify, finalize, and release a completed phase.
    ```
 
 9. Ask the user ONCE for approval to release — present the full plan, walking
-   the project's `branch_flow` (from `specs/preferences.md`; default
+   the project's `branch_flow` (from `specs/config.md`; default
    `[staging, main]`) in order. The plan stops at the universal git primitives
    (`git merge` + `git tag -a` + `git push origin <tag>`); forge-specific
    release creation and registry publishes are NOT listed here — they run
-   from `## Project Extensions` + `specs/preferences.md` (`release_command`,
+   from `## Project Extensions` + `specs/config.md` (`release_command`,
    `publish_target`, `release_flow`) after the tag is pushed.
    ```
    Ready to release vX.Y.Z. This will:
@@ -86,7 +86,7 @@ Verify, finalize, and release a completed phase.
      3. Tag vX.Y.Z and push the tag
 
    Project-specific release/publish/deploy (forge release, npm publish, …)
-   run from ## Project Extensions + specs/preferences.md after the tag lands.
+   run from ## Project Extensions + specs/config.md after the tag lands.
 
    Proceed?
    ```
@@ -118,7 +118,7 @@ Verify, finalize, and release a completed phase.
     git tag -a vX.Y.Z -m "Phase N: {phase name}"
     git push origin vX.Y.Z
     ```
-    For `end_state: feature-branch-only` (preferences), SKIP the merge
+    For `end_state: feature-branch-only` (config), SKIP the merge
     sequence — the branch is already pushed; only tag (if the project tags
     releases on the feature branch) per `## Project Extensions`. For
     `end_state: staging-promotion`, merge to `branch_flow[0]` only and stop;

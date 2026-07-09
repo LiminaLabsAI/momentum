@@ -31,19 +31,19 @@ Run with no arguments for a fast index-first check, or pass `--deep` for a full 
      report informationally ("not founded yet — `/start-project` when
      ready"), never as a failure
 
-2c. Preferences (ADR-0009) — WARNING, never a failure (recipes fall back to
+2c. Config (ADR-0009) — WARNING, never a failure (recipes fall back to
     npm/GitHub defaults when absent):
-    - founded AND no `specs/preferences.md` → WARNING: "preferences not set
+    - founded AND no `specs/config.md` → WARNING: "config not set
       — recipes will use npm/GitHub defaults; run `momentum upgrade` to
       infer them, or author at `/start-project`"
-    - `specs/preferences.md` exists → drift check: compare the
+    - `specs/config.md` exists → drift check: compare the
       machine-inferable fields (`language`, `framework`, `publish_target`,
       `git_forge`) against the manifests + `git remote get-url origin`
-      (`core/preferences.js` → `inferPreferences('.')` vs
-      `readPreferences('specs')`); on mismatch → WARNING: "preferences
+      (`core/config.js` → `inferConfig('.')` vs
+      `readConfig('specs')`); on mismatch → WARNING: "config
       drifted from manifests on: <fields> — edit by hand or delete the file
       + re-run `momentum upgrade`"
-    - Not founded → skip (preferences author at founding)
+    - Not founded → skip (config author at founding)
 
 3. For each phase directory under `specs/phases/` (OKF bundle, ADR-0005):
    - Verify all 4 files present: `overview.md`, `plan.md`, `tasks.md`, `history.md`

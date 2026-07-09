@@ -141,7 +141,7 @@ settled:
 
 The agent drafts the charter, principles, success criteria, and roadmap
 from the brainstorm, shows you the full draft, writes it only on your
-approval, and plans Phase 0. It also authors `specs/preferences.md` — the
+approval, and plans Phase 0. It also authors `specs/config.md` — the
 project-shape settings (git forge, publish target, branch flow, test/build
 commands) recipe templates read at execution time, so gates and release
 steps adapt to your project instead of assuming npm + GitHub. Phase

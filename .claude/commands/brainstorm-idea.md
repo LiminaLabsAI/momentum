@@ -44,9 +44,9 @@ When you're ready to turn the result into a project, run `/start-project` — it
 
 4. Iterate until the idea is clear.
 
-4b. **Preferences discovery** — once the idea is settled, gather the
-    project-shape preferences that `/start-project` will author into
-    `specs/preferences.md` (ADR-0009). Ask one question at a time; if the
+4b. **Config discovery** — once the idea is settled, gather the
+    project-shape config that `/start-project` will author into
+    `specs/config.md` (ADR-0009). Ask one question at a time; if the
     user is unsure, suggest a default from the idea's context:
     - **Git forge**: "Which forge? GitHub / GitLab / Bitbucket / Gitea /
       Forgejo / bare-ssh?" (default from `git remote get-url origin` if a
@@ -60,8 +60,8 @@ When you're ready to turn the result into a project, run `/start-project` — it
     - **Branch flow**: "How do changes land? feature → staging → main /
       feature → main / feature-branch-only?" (sets `branch_flow` +
       `end_state`; default `feature → staging → main`)
-    Carry the settled preferences as context into `/start-project` so it
-    authors `specs/preferences.md` alongside the charter/roadmap in one batch.
+    Carry the settled config as context into `/start-project` so it
+    authors `specs/config.md` alongside the charter/roadmap in one batch.
 
 5. **Exit the brainstorm gate** before any follow-up command:
    ```bash
