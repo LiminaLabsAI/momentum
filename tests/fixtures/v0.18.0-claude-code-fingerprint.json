@@ -2,14 +2,14 @@
   "meta": {
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
-    "note": "Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard (establish terminal branch on origin before pushing the phase branch) + start-project pointer",
+    "note": "Phase 27 re-baseline — recipe changes: start-phase BUG-025 default-branch guard + start-project pointer (G1); complete-phase default-branch-safe cleanup step + tracking-before-release Gate B (G2)",
     "adapter": "claude-code"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".claude/commands/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
     ".claude/commands/brainstorm-phase.md": "6cd06fc828a9a0bbf1f2828622f3bd51139b924cafe0300261a3a86b73a92d40",
-    ".claude/commands/complete-phase.md": "08596ebd50ae2b71cc9fd6f8aa1fdfd7cb779a18308970a4fb09d5f0a86c57aa",
+    ".claude/commands/complete-phase.md": "62845ee7d7c96465224cf90651fc0242ff933b7d87b5ca437ebfa48db904fa5d",
     ".claude/commands/continue.md": "ca2e18b81dce9c1086b14f57fa7798137a86e6956878bee08b822920869f06c2",
     ".claude/commands/dispatch.md": "461e6dca4e3bbb45b35862d1434bdc8f888f5151792042c455ae659f9634d673",
     ".claude/commands/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",

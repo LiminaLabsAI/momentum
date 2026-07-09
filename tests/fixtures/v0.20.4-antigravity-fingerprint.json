@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "antigravity",
-    "note": "Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard (establish terminal branch on origin before pushing the phase branch) + start-project pointer"
+    "note": "Phase 27 re-baseline — recipe changes: start-phase BUG-025 default-branch guard + start-project pointer (G1); complete-phase default-branch-safe cleanup step + tracking-before-release Gate B (G2)"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -15,7 +15,7 @@
     ".agents/skills/swarm-supervisor/SKILL.md": "5cbd3f3267944b9e29a0255459850388d080865c681363ccbb936d2080b18493",
     ".agents/workflows/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
     ".agents/workflows/brainstorm-phase.md": "6cd06fc828a9a0bbf1f2828622f3bd51139b924cafe0300261a3a86b73a92d40",
-    ".agents/workflows/complete-phase.md": "08596ebd50ae2b71cc9fd6f8aa1fdfd7cb779a18308970a4fb09d5f0a86c57aa",
+    ".agents/workflows/complete-phase.md": "62845ee7d7c96465224cf90651fc0242ff933b7d87b5ca437ebfa48db904fa5d",
     ".agents/workflows/continue.md": "e1ee768a3ff36d6a4c00e2d5226e9cdb8fff8746db4f2bc90e8a5dafe100c08c",
     ".agents/workflows/dispatch.md": "9ebf4ebb8ff7848c0b5d8316e29bdd6b55a29c1971e67797b3785d888489782b",
     ".agents/workflows/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",

@@ -3,13 +3,13 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "codex",
-    "note": "Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard (establish terminal branch on origin before pushing the phase branch) + start-project pointer"
+    "note": "Phase 27 re-baseline — recipe changes: start-phase BUG-025 default-branch guard + start-project pointer (G1); complete-phase default-branch-safe cleanup step + tracking-before-release Gate B (G2)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".agents/skills/brainstorm-idea/SKILL.md": "4003f2d585ba32d477255efbe65e9c53e0a6bbaeb70ee36ccfe0d6efbe576d63",
     ".agents/skills/brainstorm-phase/SKILL.md": "f905e5522b6e94d3d837d58976dd1c56d76f6a56757bae8c60f1555db412529b",
-    ".agents/skills/complete-phase/SKILL.md": "b125a90769408a404997c77a004bfdc17175e94d1c5464b7e94965f802167480",
+    ".agents/skills/complete-phase/SKILL.md": "df9559df4c87c5b80050a3c08f59a93eddda0c14b437055c1b079bb47433c7cf",
     ".agents/skills/continue/SKILL.md": "ca2916ecb23efcf4b874bad4ee8793f79dfd05465d8aae70d0219dbfebc9b120",
     ".agents/skills/dispatch/SKILL.md": "392dd19d1e8b7d149e115c96bf80f42e447ea6f0f8c141954ab6f72f379c6d2a",
     ".agents/skills/ecosystem/SKILL.md": "3c534500e7280235d75cb83a32b119691d61218fbe1db910904328a4aa1bee54",

@@ -90,6 +90,14 @@ Detail: Operator raised a PR-review release flow (agent pushes + opens PR, human
 
 ---
 
+### [FEATURE] 2026-07-09 — G2: synchronous cleanup on land + tracking-before-release gate
+Topics: cleanup, lanes-land, complete-phase, release-gate, tracking-order
+Affects-phases: phase-27-lifecycle-cleanup
+Affects-specs: core/lanes/lib/land.js, core/commands/complete-phase.md
+Detail: `lanes land --execute` now auto-runs cleanupTarget() when the lane lands on the TERMINAL branch (branch_flow last entry, read from config; default main) — worktree + branch + lane-state tombstone; `--keep` opts out; landing on a non-terminal branch (e.g. staging) prints a deferral notice pointing at `lanes reconcile`. `/complete-phase` step 13 replaced its bare `git branch -d` + `git push --delete` with `momentum lanes cleanup` (default-branch-safe; surfaces the BUG-025 hijack instead of failing) and its self-audit now also checks `git worktree list`. Added **Gate B (tracking-before-release)**: tracking (status Latest-Release + Completed-Phases row, README, roadmap, changelog) must be committed before the merge/tag — the release can never precede tracking. 6 tests (land-autoclean ×3, complete-phase-gates ×3); 937 → 943; 4 fingerprints re-baselined (complete-phase drift).
+
+---
+
 ### [ARCH_CHANGE] 2026-07-09 — G1: default-branch protection moved to start-phase (the actual first-push site)
 Topics: default-branch, start-phase, start-project, founding, antigravity-size-limit
 Affects-phases: phase-27-lifecycle-cleanup

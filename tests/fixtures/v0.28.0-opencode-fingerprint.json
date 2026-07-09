@@ -2,7 +2,7 @@
   "meta": {
     "captured": "2026-07-09",
     "adapter": "opencode",
-    "note": "Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard (establish terminal branch on origin before pushing the phase branch) + start-project pointer"
+    "note": "Phase 27 re-baseline — recipe changes: start-phase BUG-025 default-branch guard + start-project pointer (G1); complete-phase default-branch-safe cleanup step + tracking-before-release Gate B (G2)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -17,7 +17,7 @@
     ".opencode/agents/swarm-supervisor.md": "a1431fbc6f81ba844d8f86fa92c2d5ba7f715de9712aa8b95f131e5f00203289",
     ".opencode/commands/brainstorm-idea.md": "3fc56d85484b16f6642845e99068323612f52b7ffc2d71b0778b0ed57c67e5bd",
     ".opencode/commands/brainstorm-phase.md": "855d8a168e7981a5ab760203594ce43d6be5b7b778d89a868a0f19e34d6f21b8",
-    ".opencode/commands/complete-phase.md": "19fec606d611ba6246d120d4fe8b469ff515e23231d7eb3b673910fd46f3c580",
+    ".opencode/commands/complete-phase.md": "3d8b4d51d5e803b8a9acafbced39205418bc0c24aa9ed82a40ca0701f5ce35ee",
     ".opencode/commands/continue.md": "1537cee5fefdfaf7a64924a39b9d5ab31edf73095a0a894794d26cd04a23f659",
     ".opencode/commands/dispatch.md": "a935f04722ecaeaf9d30b302c04ae24a2ea007551550d7f4f594302caed4d547",
     ".opencode/commands/ecosystem.md": "a6b27f06cc72c590e07705d8ca50f0469efd2cb194ddaa9f9b92ef122e126a14",

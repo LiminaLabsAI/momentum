@@ -19,11 +19,11 @@ type: Tasks
 - [x] G1.6 Verify: `npm test` green — **937/937 (+2)**
 
 ## Group 2 — Synchronous cleanup + tracking-before-release gate (BUG-026)
-- [ ] G2.1 `lanes land --execute`: auto `cleanupTarget()` on terminal-branch merge; `--keep` opt-out
-- [ ] G2.2 `/complete-phase` step 13: replace bare delete with `cleanupTarget()` (worktree + branch + state)
-- [ ] G2.3 Tracking-before-release gate in `/complete-phase` (refuse Release until tracking committed)
-- [ ] G2.4 Tests: land-then-clean; complete cleanup; tracking-gate refusal
-- [ ] G2.5 Verify: `npm test` green; land e2e clean tree
+- [x] G2.1 `lanes land --execute`: auto `cleanupTarget()` on terminal-branch merge; `--keep` opt-out; non-terminal → defer
+- [x] G2.2 `/complete-phase` step 13: `momentum lanes cleanup` (worktree + branch + state, default-branch-safe) replaces bare delete
+- [x] G2.3 Tracking-before-release Gate B in `/complete-phase` (tracking committed before merge/tag; `git status --porcelain` clean check)
+- [x] G2.4 Tests: `land-autoclean.test.js` (clean/keep/defer) + `complete-phase-gates.test.js` (Gate A/B + cleanup step)
+- [x] G2.5 Verify: `npm test` green — **943/943 (+6)**; 4 fingerprints re-baselined (complete-phase drift)
 
 ## Group 3 — Reconcile + human handshake + open-pr (BUG-026 / ENH-063)
 - [ ] G3.1 `momentum lanes reconcile` (fetch + detect-merged-upstream → `cleanupTarget()`; report unmerged)
