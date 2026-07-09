@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "codex",
-    "note": "Phase 27 re-baseline — recipe changes across G1-G3: start-phase BUG-025 guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr variant + human confirm→verify→clean handshake"
+    "note": "Phase 27 (v0.34.0) re-baseline — recipe changes: start-phase BUG-025 default-branch guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr + confirm→verify→clean handshake; lanes.md reconcile/cleanup docs"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -16,7 +16,7 @@
     ".agents/skills/handoff/SKILL.md": "afd25e2b57d0320c27a6cc24bcbb9cc8d68b8f9d696105af325d004c41653368",
     ".agents/skills/hotfix/SKILL.md": "fa5820942d5c1489f46c45d47ef343d6cadfe1e110e88926aa373d51c3a2de99",
     ".agents/skills/initiative/SKILL.md": "cff23175884d0470e39c7108608b7dddf8d13ee029ac6a3f0353d45185d8f051",
-    ".agents/skills/lanes/SKILL.md": "e94845a61b24363d3900a8aa96fe8e1ea8bf88436d066c74c9e462aac4a117f6",
+    ".agents/skills/lanes/SKILL.md": "f97382b49f6a3eb9f0d95b704d6f2e476059bf6aa336f2ede62709e088b3ea42",
     ".agents/skills/log/SKILL.md": "f0b161bb186824eaa368167f272b46dbf3d5006208fcfa770ecbb4fb5195a23e",
     ".agents/skills/migrate/SKILL.md": "898783684ee95a5160389d33443fc7900d51ad74e7f1d0c562378b9792873800",
     ".agents/skills/momentum-orient/SKILL.md": "9228cab651fdcabbcda34ca553823ec15247e78992e2ff688c60a60ab8dbcea4",

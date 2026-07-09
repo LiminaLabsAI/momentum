@@ -96,6 +96,29 @@ test('land --keep leaves the worktree, branch, and state untouched', () => {
   }
 });
 
+test('the terminal branch is config-driven (branch_flow), not a hardcoded main', () => {
+  const { container, dir } = makeRepo();
+  try {
+    // config: branch_flow terminal is 'release' (not main)
+    write(path.join(dir, 'specs', 'config.md'),
+      '---\ntype: Config\n---\n\n# Project Config\n\n| Key | Value |\n|-----|-------|\n| branch_flow | dev, release |\n');
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '--no-verify', '-m', 'chore: config');
+    git(dir, 'checkout', '-q', '-b', 'release');
+
+    const wt = openWorkedDone(dir, 'feat/rel', 'release');
+    git(dir, 'checkout', '-q', 'release');
+    const res = lanes(dir, 'land', 'feat-rel', '--execute');
+    assert.equal(res.status, 0, res.stderr);
+    assert.match(res.stdout, /landed on 'release'/);
+    // 'release' IS the configured terminal → auto-clean fires
+    assert.match(res.stdout, /cleanup worktree: .*feat-rel/);
+    assert.ok(!fs.existsSync(wt), 'auto-cleaned on the configured terminal branch');
+  } finally {
+    rmrf(container);
+  }
+});
+
 test('land on a non-terminal branch defers cleanup to reconcile', () => {
   const { container, dir } = makeRepo();
   try {

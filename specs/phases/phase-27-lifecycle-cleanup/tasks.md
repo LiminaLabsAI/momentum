@@ -42,9 +42,9 @@ type: Tasks
 - [x] G4.5 Verify: `npm test` green — **950/950 (+3)**; no fingerprint drift (source-only changes)
 
 ## Group 5 — Verification & release (dogfood)
-- [ ] G5.1 Per-`end_state` e2e cleanup matrix (auto + reconcile paths)
-- [ ] G5.2 Dogfood: remove 2 stale lane worktrees + branches, orphan `.claude/worktrees/*`, 19 `._*`, 8 `.bak`; commit `sync-config.md`
-- [ ] G5.3 Docs: recipes, `specs/config.md` notes (open-pr + cleanup), site/README; re-baseline fingerprints
-- [ ] G5.4 Retrospective with `## Verification Evidence` (Rule 12)
-- [ ] G5.5 `/sync-docs` → version bump v0.34.0 → `/complete-phase`
-- [ ] G5.6 Verify: full `npm test` green; `git worktree list` clean; no `._*`/`.bak` in tree
+- [x] G5.1 Per-`end_state` e2e matrix: auto (merge-after-yes) + config-driven terminal + non-terminal defer + reconcile (out-of-band)
+- [x] G5.2 Dogfood DONE: 2 stale lane worktrees + branches, orphan `.claude/worktrees/*`, 19 `._*`, 8 `.bak` all removed with the new tools; tree provably clean
+- [x] G5.3 Docs: `lanes.md` reconcile/cleanup section + `specs/config.md` notes (open-pr + cleanup); 4 fingerprints re-baselined (lanes.md)
+- [x] G5.4 Retrospective with `## Verification Evidence` (Rule 12) — written
+- [/] G5.5 Version bumped v0.34.0; `/sync-docs` + `/complete-phase` merge/tag/release **pending operator approval** (Rule 6 hard stop)
+- [x] G5.6 Verify: full `npm test` **951/951**; `git worktree list` = primary only; `doctor --clean` = "none — tree is clean"

@@ -2,7 +2,7 @@
   "meta": {
     "captured": "2026-07-09",
     "adapter": "opencode",
-    "note": "Phase 27 re-baseline — recipe changes across G1-G3: start-phase BUG-025 guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr variant + human confirm→verify→clean handshake"
+    "note": "Phase 27 (v0.34.0) re-baseline — recipe changes: start-phase BUG-025 default-branch guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr + confirm→verify→clean handshake; lanes.md reconcile/cleanup docs"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -24,7 +24,7 @@
     ".opencode/commands/handoff.md": "b7661a41ac3dc5560456b2259b9358b3b53a18950c0c5943b5cd21de6fe8f744",
     ".opencode/commands/hotfix.md": "8926d897df43dcb6e557579ccbf9a0db2c86a821a4417765165f566ae64ac99d",
     ".opencode/commands/initiative.md": "350b83f3e8c53d535a6fca50eefaf676e86188f2144b0c19fa4f2de6d586b5b6",
-    ".opencode/commands/lanes.md": "4ad54e7691145627853b5c3b56947caeeae467ae9d68c6c3acfc820a577352d1",
+    ".opencode/commands/lanes.md": "bb6b0f0d2f59a9944a8b85d7b550dca3729a62aee61ee0927eb09a483a65503d",
     ".opencode/commands/log.md": "94877de62241a6db0c9b15270f25188731a82a99300a9a3ee42a0a0bf6692bb7",
     ".opencode/commands/migrate.md": "44ddd6fbb9ffe9f4f05f95e4ca45c29448ce0183a1217c207b68d6009955eb2e",
     ".opencode/commands/review-code.md": "0859120394ce9a551ea375d45d8be26d378cb420fb45adebfdc749123c0fb03d",

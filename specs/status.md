@@ -80,7 +80,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 27 — Lifecycle Cleanup & Default-Branch Hardening | phase-27-lifecycle-cleanup | In Progress | G0 |
+| 27 — Lifecycle Cleanup & Default-Branch Hardening | phase-27-lifecycle-cleanup | Verified — awaiting release | G0–G5 done (v0.34.0; suite 951/951) |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

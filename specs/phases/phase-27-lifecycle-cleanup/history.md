@@ -90,6 +90,14 @@ Detail: Operator raised a PR-review release flow (agent pushes + opens PR, human
 
 ---
 
+### [NOTE] 2026-07-09 — G5: verification + self-repo dogfood; v0.34.0 staged at the release gate
+Topics: dogfood, verification, release-gate, BUG-027
+Affects-phases: phase-27-lifecycle-cleanup
+Affects-specs: core/commands/lanes.md, specs/config.md, package.json, retrospective.md
+Detail: Suite 927 → 951 (+24). Self-repo dogfood cleaned its real accumulated cruft WITH the new tools — `lanes reconcile --execute` (feat-site-redesign, a registered landed lane), `lanes cleanup feat/open-knowledge-format` (non-lane worktree), `doctor --clean --execute` (19 `._*` + 8 `.bak` + orphan `.claude/worktrees/thirsty-euler-781615`). Tree now provably clean (`doctor --clean` = "none"; 1 worktree; 0 feat/* branches). Attempted a full `momentum upgrade .` install-copy sync but reverted it — it surfaced pre-existing Phase-25/26 opencode/AGENTS.md drift + a table-render defect (BUG-027, filed) unrelated to this phase. lanes.md gained a reconcile/cleanup section; specs/config.md notes the open-pr + cleanup behavior. Version bumped to 0.34.0; retrospective written with `## Verification Evidence`. Merge/tag/release held at the Rule 6 operator gate.
+
+---
+
 ### [FEATURE] 2026-07-09 — G4: upgrade/transform hygiene — `._*` leak fixed at source + `doctor --clean`
 Topics: upgrade-hygiene, appledouble, skills-transform, doctor
 Affects-phases: phase-27-lifecycle-cleanup

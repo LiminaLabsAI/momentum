@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "antigravity",
-    "note": "Phase 27 re-baseline — recipe changes across G1-G3: start-phase BUG-025 guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr variant + human confirm→verify→clean handshake"
+    "note": "Phase 27 (v0.34.0) re-baseline — recipe changes: start-phase BUG-025 default-branch guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr + confirm→verify→clean handshake; lanes.md reconcile/cleanup docs"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -22,7 +22,7 @@
     ".agents/workflows/handoff.md": "6493635ed74539ec8ed221225643db3f29c5af1ff5214525a5a86a794daf03b2",
     ".agents/workflows/hotfix.md": "2699a61bdf5b219f2297a6c1ca95d25e3d63a44e37ed77ffdab88077c4715b12",
     ".agents/workflows/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
-    ".agents/workflows/lanes.md": "f5db61a79ebbc7f540ee5a8a6e5ad3d657d352f18777bb5e4725e2cd1009c478",
+    ".agents/workflows/lanes.md": "eebc4a1d97f020fd2754311aaa36db7cbb7da6ba88417b2ed6fc95f32bf09392",
     ".agents/workflows/log.md": "b2728ec55d95996cb6c8bbc24411cfd0a99f618e4c0374ac054f6229feac50a6",
     ".agents/workflows/migrate.md": "467e8ac615a47c09d9e0994d1a879676428bfdeff79b15e73076ebfcfe6e74b8",
     ".agents/workflows/review-code.md": "53d3e436efcb35623ea6ab14c189b223a35875c4d760ee0c6c83605b17c8760b",
