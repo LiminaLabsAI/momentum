@@ -25,6 +25,10 @@ const KNOWN_KEYS = [
   'end_state',
   'branch_flow',
   'protected_branches',
+  'review_min_approvals',
+  'review_self_approval',
+  'presence_idle_seconds',
+  'presence_offline_seconds',
 ];
 
 const LIST_KEYS = new Set(['branch_flow', 'protected_branches']);

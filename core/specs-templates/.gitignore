@@ -8,6 +8,10 @@
 # the contents (.momentum/*) rather than the dir, then negate the lock file.
 .momentum/*
 !.momentum/installed.json
+# Team-mode coordination fragments are COMMITTED (ADR-0012) — cross-machine
+# coordination state; the one exception to the ignored .momentum/.
+!.momentum/team/
+!.momentum/team/**
 
 # Ephemeral agent worktrees (momentum does not manage these — your coding
 # agent creates them; they must never pollute tracked state)

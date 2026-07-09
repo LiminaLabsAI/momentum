@@ -94,6 +94,8 @@ test('normalizeConfig: round-trips a valid set unchanged', () => {
     git_forge: 'github', release_command: 'gh release create',
     release_flow: 'tag-and-publish', end_state: 'feature-branch-only',
     branch_flow: ['main'], protected_branches: ['main'],
+    review_min_approvals: '2', review_self_approval: 'true',
+    presence_idle_seconds: '300', presence_offline_seconds: '1800',
   };
   assert.deepEqual(P.normalizeConfig(orig), orig);
 });

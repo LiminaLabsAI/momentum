@@ -489,6 +489,31 @@ function assertOwnership(manifest, repo, sessionId, nowIso) {
 }
 
 /**
+ * Cross-machine lease fence (Phase 30d, ENH-064). OPT-IN via
+ * MOMENTUM_SWARM_LEASE_CAS=1: when active AND the ecosystem root is a git repo
+ * with a remote, taking over an EXPIRED lease must also win a
+ * refs/momentum/leases/* compare-and-swap — so clock skew can't let two machines
+ * both take over. Fail-open: only BLOCKS on a positively-confirmed different
+ * owner; never blocks on absence/network (the wall-clock lease then governs, as
+ * before). Default OFF → single-machine swarm behavior is unchanged.
+ */
+function leaseFence(ecosystemRoot, key, holder) {
+  if (process.env.MOMENTUM_SWARM_LEASE_CAS !== '1') return { fenced: true, active: false };
+  try {
+    const { spawnSync } = require('child_process');
+    const remotes = spawnSync('git', ['remote'], { cwd: ecosystemRoot, encoding: 'utf8' });
+    if (remotes.status !== 0 || !remotes.stdout.trim()) return { fenced: true, active: false };
+    const lease = require('../../team/lib/lease');
+    const res = lease.acquireLease(ecosystemRoot, key, holder);
+    if (res.held) return { fenced: true, active: true };
+    if (res.owner && res.owner !== holder) return { fenced: false, active: true, owner: res.owner };
+    return { fenced: true, active: false }; // couldn't positively confirm → fail-open
+  } catch {
+    return { fenced: true, active: false };
+  }
+}
+
+/**
  * Read-modify-write that enforces ownership of a specific repo BEFORE
  * applying the mutation. Throws on rejection.
  *
@@ -519,6 +544,16 @@ function updateManifestAsOwner(args) {
       err.code = 'EOWNERSHIP';
       err.decision = decision;
       throw err;
+    }
+    // Cross-machine fence: a wall-clock takeover must also win the ref-CAS
+    // lease (opt-in; no-op by default). Closes the clock-skew double-own hazard.
+    if (decision.expired) {
+      const fence = leaseFence(ecosystemRoot, `swarm-${swarmId}-${repo}`, sessionId);
+      if (!fence.fenced) {
+        const err = new Error(`updateManifestAsOwner: takeover fenced — "${repo}" lease held by ${fence.owner} (refs/momentum/leases)`);
+        err.code = 'EOWNERSHIP';
+        throw err;
+      }
     }
     const result = mutate(current, decision);
     let mutated = current;

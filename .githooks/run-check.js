@@ -128,6 +128,16 @@ function prePush() {
         } catch {
           /* ignore */
         }
+        // Team-mode (Phase 30d): record WHO authorized this protected push
+        // (attributed audit). Best-effort — an audit-log failure must NEVER
+        // block a push, so the whole thing is wrapped and swallowed.
+        try {
+          const who = (require('child_process')
+            .execSync('git config user.email', { cwd: root }).toString().trim()) || 'unknown';
+          const line = `${new Date().toISOString()}  ${who}  authorized push to ${branch}  (${parsed.localSha.slice(0, 7)})\n`;
+          fs.mkdirSync(path.join(root, '.momentum', 'team'), { recursive: true });
+          fs.appendFileSync(path.join(root, '.momentum', 'team', 'merge-approvals.log'), line);
+        } catch { /* never block a push on an audit-log failure */ }
         process.stderr.write(
           `  momentum: '${C.CONTRACT.mergeApprovedSentinel}' consumed — push to '${branch}' authorized.\n`
         );

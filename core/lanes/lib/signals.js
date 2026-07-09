@@ -25,6 +25,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const state = require('./state');
+const identity = require('../../identity');
 
 const SEQ_WIDTH = 4;
 
@@ -120,6 +121,7 @@ function cmdSignal(cwd, argv) {
         type,
         text: text || null,
         from: currentBranch(cwd),
+        actor: identity.resolveActor(cwd).id, // Team-mode: durable "who" (ENH-064)
         at: new Date().toISOString(),
       });
     });

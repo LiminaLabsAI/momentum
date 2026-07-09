@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: _none active_ — **Team-mode family (30a Walk / 30b Run / 30c Fly) shipped v0.37.0**; Phase 29 released v0.36.0
-> **Latest Release**: v0.37.0 — Phase 30 Team Mode (Walk + Run + Fly): git-native multiplayer coordination for N humans on N clones (ADR-0012/0013/0014) — durable actor identity, per-actor conflict-free fragments + `refs/momentum/*` compare-and-swap claims, presence, one shared merge-queue turn, reviewer≠author ledger, cross-machine lease-CAS, optional authority-free relay. Closes ENH-057. _(v0.36.0 — Phase 29 Instruction Variation Model released 2026-07-10.)_
+> **Current Phase**: _none active_ — **Phase 30d Team Integration shipped v0.38.0**; Team-mode family 30a/b/c shipped v0.37.0
+> **Latest Release**: v0.38.0 — Phase 30d Team Integration (ENH-064): the v0.37.0 Team-mode primitives wired into the real workflows — `momentum claim` in `/brainstorm-phase`+`/complete-phase`+`/hotfix`; Rule 15 cites the mechanism; **reviewer≠author gate in `lanes land`** + attributed **pre-push merge-approval audit**; team config keys; auto-heartbeat presence; **opt-in swarm lease-CAS fence**. Suite 1008/1008. _(v0.37.0 Team Mode Walk+Run+Fly; v0.36.0 Phase 29 — both 2026-07-10.)_
 > **Health**: On Track
 
 ## Summary
@@ -58,12 +58,18 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 30a | Team-Walk (Multiplayer-Correct Coordination) | Complete | v0.37.0 (2026-07-10) |
 | 30b | Team-Run (Shared Board + Landing) | Complete | v0.37.0 (2026-07-10) |
 | 30c | Team-Fly (Relay + Ecosystem) | Complete¹ | v0.37.0 (2026-07-10) |
+| 30d | Team Integration (primitives wired into workflows) | Complete² | v0.38.0 (2026-07-10) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
 > recipe `claim`-wiring, `lanes land`/`pre-push` gate, ecosystem team mode, and
 > adapter fingerprint re-baselines — is deferred to **ENH-064** (additive,
 > non-blocking).
+>
+> ² Phase 30d (v0.38.0) landed most of ENH-064: `claim` in the recipes, Rule 15,
+> reviewer≠author land gate, pre-push audit, team config keys, auto-heartbeat,
+> and the opt-in swarm lease-CAS fence. The remaining multi-repo surface
+> (remote-URL members, ecosystem-state fragments) + docs are deferred to **ENH-065**.
 
 ## Ad-hoc / Patch Releases
 
@@ -92,7 +98,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none active — Phase 29 released v0.36.0; Team-mode family 30a/b/c released v0.37.0; all lanes closed)_ | | | |
+| _(none active — Phase 30d Team Integration released v0.38.0; all lanes closed)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -153,6 +159,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-10**: **Phase 30d — Team Integration RELEASED as v0.38.0** (isolated lane `feat-team-integration`, opened with `momentum lanes open` — the discipline held). Wires the shipped v0.37.0 Team-mode primitives into momentum's **real workflows** (closes ENH-064): **G0** — `momentum claim` in `/brainstorm-phase` (phase-number reservation), `/complete-phase` (version reservation, ENH-057), `/hotfix` (backlog-ID reservation); Rule 15 cites the fragment/CAS mechanism; downstream `.gitignore` commits `.momentum/team/`; all 4 adapter fingerprints re-baselined via a new **`scripts/rebaseline-fingerprints.js`** (proven zero-drift before use). **G1** — **reviewer≠author gate in `lanes land`** (`review_min_approvals ≥ 1`, config-gated, OFF by default = solo-safe); attributed **pre-push merge-approval audit** (operator-approved hook change, additive/best-effort); 4 team config keys registered. **G2** — auto-heartbeat presence (any `momentum team` command, no daemon); **opt-in cross-machine swarm lease-CAS fence** (`MOMENTUM_SWARM_LEASE_CAS=1`, additive/fail-open — closes the clock-skew double-own hazard; **231 swarm tests stay green**). **Verification: suite 1008/1008** (+6 net-new tests, zero regressions on swarm/hooks/lanes with the new paths off by default). **Deferred → ENH-065:** remote-URL members, ecosystem-state fragments, sample contract reader, docs (multi-repo surface, not rushed at session tail). Merged → main → staging; tag v0.38.0; GH Release; npm 0.38.0.
 
 - **2026-07-10**: **Phase 30 — Team Mode (Walk + Run + Fly) BUILT + VERIFIED; v0.37.0 at the release gate.** Momentum from single-operator to a **git-native multiplayer coordination plane for N humans on N clones sharing one git remote** — no server, no daemon, offline-first (operator decision D1). Built in an **isolated lane** (`phase-30a-team-walk-impl`, opened with `momentum lanes open` after an initial shared-checkout tangle was corrected). **Walk (ADR-0012):** `core/identity` durable actor from git config; `core/team/lib/fragments` per-actor append-only fragments (conflict-free by own-prefix construction) + `compile` into `status.md`; `core/team/lib/refcas` git-ref compare-and-swap; `momentum claim` (**closes ENH-057** — reserve the version before tagging) + `team board/record/sync/compile`. **Run (ADR-0013):** `presence` (heartbeat-on-invocation + liveness), `approvals` (reviewer≠author ledger, client-side-honest, ADR-0009 intact), `queue` (one shared landing turn across clones via ref-CAS — Rule 6 Landing Order for N humans); `team heartbeat/presence/approve/check/turn` (ENH-056 confirmed covered by the ENH-050 guard). **Fly (ADR-0014):** `lease` (cross-machine lease-CAS — fixes swarm wall-clock double-ownership), `relay/` (self-hostable, authority-free, graceful absence), `contract/` (versioned coordination contract). **Verification: full suite 1001/1001** (Phase-29 `main` 970 + 31 Team tests incl. bare-remote two-clone claim race, conflict-free fragment merge, shared turn, reviewer≠author, lease-CAS, relay, **+ a whole-plane two-clone family e2e**); lane rebased cleanly onto the Phase-29 `main`. Deferred (additive, non-blocking): Rule 15 reword + recipe `claim` wiring + legacy-writer identity + fingerprint re-baselines. **Release (merge → main, tag v0.37.0, gh release, npm publish) at the operator gate.**
 

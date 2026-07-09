@@ -44,6 +44,12 @@ const DEFAULTS = Object.freeze({
   end_state: 'merge-after-yes',
   branch_flow: ['staging', 'main'],
   protected_branches: ['staging', 'main'],
+  // Team-mode (30d, ENH-064) — off by default so single-operator behavior is
+  // unchanged. review_min_approvals ≥ 1 turns on the reviewer≠author land gate.
+  review_min_approvals: '0',
+  review_self_approval: 'false',
+  presence_idle_seconds: '600',
+  presence_offline_seconds: '3600',
 });
 
 // Enumerations — a value outside the set resolves to the default + warning.

@@ -43,6 +43,8 @@ const { spawnSync } = require('child_process');
 const state = require('./state');
 const cleanup = require('./cleanup');
 const config = require('../../config');
+const approvals = require('../../team/lib/approvals');
+const identity = require('../../identity');
 
 function git(cwd, ...args) {
   return spawnSync('git', args, { cwd, encoding: 'utf8' });
@@ -256,6 +258,23 @@ function cmdLand(cwd, argv) {
   const gate = gateCheck(cwd, repoRoot, lane);
   checks.push(`${gate.ok ? '✓' : '✗'} gate[${lane.grade}]: ${gate.detail}`);
   if (!gate.ok) ok = false;
+
+  // 4b. reviewer≠author gate (Team-mode, config-gated — ENH-064). Off by default
+  // (review_min_approvals=0) so single-operator behavior is unchanged.
+  let reviewCfg = {};
+  try { reviewCfg = config.readConfig(path.join(repoRoot, 'specs')) || {}; } catch { /* absent */ }
+  const minApprovals = parseInt(reviewCfg.review_min_approvals, 10) || 0;
+  if (minApprovals >= 1) {
+    const lander = identity.resolveActor(cwd).id;
+    const allowSelf = String(reviewCfg.review_self_approval).toLowerCase() === 'true';
+    const peers = approvals.approversFor(repoRoot, id, lander, allowSelf);
+    if (peers.length >= minApprovals) {
+      checks.push(`✓ review: ${peers.length}/${minApprovals} approval(s) (${peers.join(', ')})`);
+    } else {
+      checks.push(`✗ review: ${peers.length}/${minApprovals} peer approval(s) — needs review by someone other than '${lander}' (they run: momentum team approve ${id})`);
+      ok = false;
+    }
+  }
 
   // 5. overlap advisory
   for (const w of state.overlapWarnings(anchor, id, lane.touches)) {

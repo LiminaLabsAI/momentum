@@ -73,6 +73,11 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    ```bash
    rm .momentum/brainstorm-active
    ```
+   **Reserve the phase number first (team-safe — multi-session):** run
+   `momentum claim phase <N>`. If a concurrent session already grabbed that
+   number the claim loses (exit 2) — pick the next free number before writing,
+   so two people brainstorming at once can't both create "Phase N".
+
    Then write all four files to `specs/phases/phase-N-shortname/` and commit:
    ```bash
    git add specs/phases/phase-N-shortname/

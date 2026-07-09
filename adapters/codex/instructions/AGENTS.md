@@ -607,6 +607,13 @@ worktree) bound to one phase or ad-hoc record.
 - The Active Phase table holds **one row per active lane**
   (Phase | Branch | Status | Progress). Add your row at phase start; update
   only your row; mark it at completion.
+- **Across machines (Team Mode, v0.37.0+):** this convention is now backed by a
+  *mechanism*, not only discipline — per-actor coordination fragments
+  (`.momentum/team/`, collision-free by own-prefix construction) + `refs/momentum/*`
+  compare-and-swap for allocation (`momentum claim <phase|id|version>`).
+  `momentum team sync`/`board` compile the shared view. This makes **N humans on
+  N clones** trivially mergeable, not just N sessions on one disk; the social
+  discipline above is the fallback. See ADR-0012/0013/0014.
 
 #### Landing
 
