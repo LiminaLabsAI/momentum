@@ -133,3 +133,21 @@ entry carries matching `Topics:`.
 | start-project | core/commands/start-project.md |  |
 | init-templates | core/specs-templates/specs/status.md |  |
 | upgrade-migration | specs/decisions/0008-foundation-docs-authored-not-scaffolded.md | Key design points |
+| preferences | core/preferences.js |  |
+| preferences | core/commands/start-project.md |  |
+| preferences | core/commands/start-phase.md |  |
+| preferences | core/commands/complete-phase.md |  |
+| preferences | core/commands/brainstorm-idea.md |  |
+| preferences | core/commands/brainstorm-phase.md |  |
+| preferences | core/commands/validate.md |  |
+| trust-layer | specs/decisions/0009-trust-layer-invariant-mechanisms-preferences.md |  |
+| trust-layer | core/git-hooks/contract.js |  |
+| end-state | core/commands/start-phase.md | Autonomous Execution Contract |
+| end-state | core/commands/complete-phase.md | Release |
+| branch-flow | core/commands/complete-phase.md | Release |
+| branch-flow | core/git-hooks/pre-push.sh |  |
+| protected-branches | core/git-hooks/contract.js | protectedBranches |
+| protected-branches | core/git-hooks/pre-push.sh |  |
+| forge-aware | core/commands/start-phase.md |  |
+| forge-aware | core/commands/complete-phase.md |  |
+| merge-gate | specs/decisions/0009-trust-layer-invariant-mechanisms-preferences.md |  |
