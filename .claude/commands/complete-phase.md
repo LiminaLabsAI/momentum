@@ -53,22 +53,34 @@ Verify, finalize, and release a completed phase.
      - Format as fenced code blocks with the command as the heading
      - This is the durable record that Rule 12 was honored — it must exist before the release section runs
 
-7. Update all tracking:
+7. Update all tracking (this happens BEFORE the release — see the Release
+   gate below; the release must never precede tracking):
    - `specs/phases/README.md` → mark `Complete`
-   - `specs/status.md` → remove this lane's row from the Active Phase table
-     (leave other lanes' rows untouched — Rule 15), update current phase,
-     add release version
-   - `specs/planning/roadmap.md` → update phase status
+   - `specs/status.md` → (a) header **`Latest Release`** = this version + name;
+     (b) add the phase's row to the **Completed Phases** table; (c) remove this
+     lane's row from the Active Phase table (leave other lanes' rows untouched —
+     Rule 15); (d) update Current Phase
+   - `specs/planning/roadmap.md` → update phase status → Complete (+ version)
    - `specs/changelog/YYYY-MM.md` → add release entry
 
 ### Release
 
-> **Gate (Rule 12):** Do NOT enter Release if `retrospective.md` lacks a `## Verification Evidence` section. If evidence is missing, return to Step 3 and capture it.
+> **Gate A (Rule 12):** Do NOT enter Release if `retrospective.md` lacks a `## Verification Evidence` section. If evidence is missing, return to Step 3 and capture it.
+>
+> **Gate B (tracking-before-release):** Do NOT merge, tag, or release until ALL
+> tracking that reflects this release (Step 7 — `status.md` `Latest Release` +
+> Completed Phases row, `specs/phases/README.md`, `roadmap.md`, the changelog)
+> is written AND committed on the phase branch (Step 8). The release must never
+> precede tracking — otherwise `status.md` says "in progress" while the tag is
+> already public. Confirm the working tree is clean of tracking edits (Step 8
+> committed them) before Step 9's approval and Step 10's merge/tag.
 
-8. Commit all remaining changes and push:
+8. Commit all remaining changes (retrospective + ALL Step-7 tracking) and push.
+   This commit MUST land before the merge/tag — it is Gate B:
    ```bash
    git add -A
    git commit -m "docs: complete Phase N - {phase name}"
+   git status --porcelain   # expect empty — tracking is committed (Gate B satisfied)
    git push origin phase-N-shortname
    ```
 
@@ -77,7 +89,7 @@ Verify, finalize, and release a completed phase.
    `[staging, main]`) in order. The plan stops at the universal git primitives
    (`git merge` + `git tag -a` + `git push origin <tag>`); forge-specific
    release creation and registry publishes are NOT listed here — they run
-   from `## Project Extensions` + `specs/config.md` (`release_command`,
+   from `specs/project-rules.md` + `specs/config.md` (`release_command`,
    `publish_target`, `release_flow`) after the tag is pushed.
    ```
    Ready to release vX.Y.Z. This will:
@@ -86,7 +98,7 @@ Verify, finalize, and release a completed phase.
      3. Tag vX.Y.Z and push the tag
 
    Project-specific release/publish/deploy (forge release, npm publish, …)
-   run from ## Project Extensions + specs/config.md after the tag lands.
+   run from specs/project-rules.md + specs/config.md after the tag lands.
 
    Proceed?
    ```
@@ -114,35 +126,60 @@ Verify, finalize, and release a completed phase.
     git push origin <branch_flow[1]>
 
     # final step — tag + push the tag (universal git; forge release + publish
-    # are project-specific — run them from ## Project Extensions now)
+    # are project-specific — run them from specs/project-rules.md now)
     git tag -a vX.Y.Z -m "Phase N: {phase name}"
     git push origin vX.Y.Z
     ```
-    For `end_state: feature-branch-only` (config), SKIP the merge
-    sequence — the branch is already pushed; only tag (if the project tags
-    releases on the feature branch) per `## Project Extensions`. For
-    `end_state: staging-promotion`, merge to `branch_flow[0]` only and stop;
-    tag + release happen after the user promotes to `main`.
+    **`end_state` variants** (config; the sequence above is the
+    `merge-after-yes` default):
+    - `feature-branch-only` — SKIP the merge/tag; the branch is pushed, the
+      human owns merge + release.
+    - `staging-promotion` — merge to `branch_flow[0]` only, then STOP; the human
+      promotes to `main` and tags.
+    - `open-pr` — do NOT merge; push the branch and open a PR for review
+      (config-gated, agent-run — `git_forge=github`: `gh pr create`; GitLab:
+      `glab mr create`), then STOP. Merge happens on the forge on human approval.
+
+    **Human handshake → verify → clean** (every non-`merge-after-yes`
+    end_state). Step-13 auto-cleanup only fires when the AGENT did the terminal
+    merge. When a human/forge does it, NEVER clean on trust: ask the user to
+    confirm once they have merged/promoted, then verify + clean in one step —
+    ```bash
+    momentum lanes reconcile            # is the branch a verified ancestor of the terminal branch yet?
+    momentum lanes reconcile --execute  # only once it shows 'landed' — cleans worktree + branch + state
+    ```
+    `reconcile` refuses to clean a lane whose branch is not yet contained in the
+    terminal branch — a "yes, I merged it" is never taken on trust (Rule 12).
 
 12. Report summary to user:
     - What was delivered
     - Tag URL (`git push origin vX.Y.Z` output) — forge release/publish
-      status from `## Project Extensions` if any ran
+      status from `specs/project-rules.md` if any ran
     - What's next
 
-13. Delete the merged phase branch (ENH-042 — now that merge → main + release
-    are confirmed; do NOT skip this, or stale branches accumulate on origin):
+13. Clean up the spent phase branch (ENH-042 / BUG-026 — now that merge → main
+    + release are confirmed; do NOT skip, or stale branches/worktrees/state
+    accumulate). One command removes ALL of it, default-branch-safe:
     ```bash
-    git branch -d phase-N-shortname             # local — `-d` (not `-D`) refuses if unmerged
-    git push origin --delete phase-N-shortname  # remote
+    # worktree (if the phase ran in a lane) + local branch + remote branch
+    # (skipped when it is the forge default — BUG-025 guard) + lane state.
+    momentum lanes cleanup phase-N-shortname
+    #   --lane <id>   if this phase ran as a registered `momentum lanes` lane
+    #   --force       only to override an unmerged-branch refusal AFTER you have
+    #                 verified the branch actually landed
     ```
+    If cleanup reports `blocked` on the remote branch because it is the forge
+    DEFAULT, STOP — that is the BUG-025 hijack. Reassign the default to the
+    terminal branch first (e.g. `git_forge=github`: `gh repo edit
+    --default-branch main`), then rerun. `-d` (not `-D`) refuses an unmerged
+    branch by design — investigate rather than force.
 
 14. Branch-hygiene self-audit (ENH-042) — confirm no released phase left a
-    dangling branch:
+    dangling branch or worktree:
     ```bash
-    # Any origin branch for an already-released phase should be gone.
     git branch -r | grep -E 'origin/(phase-|chore/|audit/)' || echo "✓ clean — no stale branches"
+    git worktree list                                        # no leftover lane worktrees for landed work
     ```
-    For each match, verify it is fully merged into `main`
-    (`git branch -r --merged main`) and delete it per step 13. Leave any
+    For each stale match, verify it is fully merged into `main`
+    (`git branch -r --merged main`) and clean it per step 13. Leave any
     *unmerged* branch alone and surface it to the user.

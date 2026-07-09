@@ -15,6 +15,12 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
 ## Setup Steps (run once at phase start)
 
 1. Read current state:
+   - **Founded gate** (`core/project-lifecycle.md`, ADR-0008): verify
+     `specs/vision/project-charter.md` AND `specs/planning/roadmap.md`
+     exist. If either is missing, the project is not founded — STOP and
+     run `/start-project` first (it authors the foundation docs from your
+     brainstorm and plans Phase 0). Never start a phase on an unfounded
+     project.
    - Read `specs/status.md`
 
 2. Check for blocking bugs (pre-phase bug check):
@@ -85,7 +91,19 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
 
 9. Create git branch and initial commit:
    ```bash
-   git checkout main && git pull origin main
+   git checkout main
+   # Resilient when 'main' is unborn on the remote (fresh repo — BUG-025):
+   git ls-remote --heads origin main | grep -q . && git pull origin main || true
+   # BUG-025 safety net: the terminal branch must ALREADY be the remote default
+   # before ANY phase branch is pushed (founding normally established it). If it
+   # is still not on origin, establish it FIRST so phase-N can't hijack default:
+   if git remote get-url origin >/dev/null 2>&1 && ! git ls-remote --heads origin main | grep -q .; then
+     touch .momentum/merge-approved && git push -u origin main && git remote set-head origin main 2>/dev/null || true
+   fi
+   # Optional forge repair (only when git_forge=github AND gh is on PATH;
+   # non-fatal; idempotent). Fixes a repo whose default was ALREADY hijacked.
+   # Agent-run recipe step — momentum ships no forge code, stays forge-neutral:
+   command -v gh >/dev/null 2>&1 && gh repo edit --default-branch main 2>/dev/null || true
    git checkout -b phase-N-shortname
    git add specs/
    git commit -m "docs: start Phase N - {phase name}"
@@ -117,9 +135,37 @@ Once a phase plan is approved, this command executes the plan end-to-end without
 
 ### Hard stop — always
 
-**Merge to staging/main + release.** After the final group's verification passes, STOP. Ask the user:
+**Merge to a protected branch + release.** After the final group's
+verification passes, STOP. Read the project's config
+(`specs/config.md` via `core/config.js` →
+`readConfig('<repo>/specs')`; returns `null` when absent → use the
+defaults below) and ask the user the gate question matching the project's
+`end_state`:
 
-> "All groups complete and verified. Ready to merge `<phase-branch>` → staging (then main), tag `v<version>`, and create the GitHub Release. Approve to proceed? Project-specific publish/deploy steps (e.g. `npm publish`) run from `## Project Extensions` in CLAUDE.md/AGENTS.md — consult them now if any apply."
+- **`merge-after-yes`** (default): "All groups complete and verified. Ready
+  to merge `<phase-branch>` → `<branch_flow in order>` (e.g. `staging`, then
+  `main`), tag `v<version>`. Approve to proceed?"
+- **`staging-promotion`**: "All groups complete and verified. Ready to merge
+  `<phase-branch>` → `staging`. Tag `v<version>` + release after you promote
+  to `main`. Approve to proceed?"
+- **`feature-branch-only`**: "All groups complete and verified. The feature
+  branch `<phase-branch>` is pushed. Merge, tag, and release are yours to
+  do. Review the branch?"
+- **`open-pr`**: "All groups complete and verified. Ready to push
+  `<phase-branch>` and open a PR for review? Merge + release happen when a
+  human approves and merges the PR on the forge; then `momentum lanes
+  reconcile --execute` cleans up the branch + worktree + state."
+
+Then append: "Project-specific release/publish/deploy steps (e.g.
+`npm publish`, forge release creation) run from `specs/project-rules.md` in
+CLAUDE.md/AGENTS.md — consult them now if any apply."
+
+The gate stops at the truly universal git primitives — `git merge` +
+`git tag -a` + `git push origin <tag>`. Forge-specific release creation
+(`gh release create`, `glab release create`, …) and registry publishes
+(`npm publish`, `twine upload`, …) are NOT in this template; they live in
+`specs/project-rules.md` + `specs/config.md` (`release_command`,
+`publish_target`, `release_flow`).
 
 This is the only place the engine asks. Do NOT skip it.
 

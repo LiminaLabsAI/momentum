@@ -50,6 +50,14 @@ Detail: Most of CLAUDE.md's release checklist (gh release create, npm publish) i
 
 ---
 
+### [NOTE] 2026-07-09 — G4: self-repo dogfood proves the divergence is fixed; v0.35.0 at the release gate
+Topics: dogfood, consistency, backlog-hygiene, release-gate
+Affects-phases: phase-28-instruction-consistency
+Affects-specs: CLAUDE.md, AGENTS.md, specs/project-rules.md, specs/backlog/backlog.md
+Detail: Ran `momentum upgrade .` on the very project that started this — migrated CLAUDE.md + AGENTS.md Project-Extensions prose into specs/project-rules.md, refreshed the stale opencode AGENTS.md (G1), and pointerized both. Hand-consolidated the two raw `## Migrated from …` sections into one clean project-rules.md (what a maintainer does post-migration). Healed AGENTS.md's missing ecosystem pointer via ensurePointerInjectedAll (member of cerebrio-ecosystem). Result: CLAUDE.md ≡ AGENTS.md managed region except the 4 intended per-adapter task-tool lines; both carry the ecosystem + project-rules pointers. `instruction-consistency.test.js` pins this. Flipped stale backlog statuses (BUG-024/025/026 + ENH-061 → resolved). Suite 963/963. Removed an `eco/` scaffold accidentally created in the repo root by a G2 debug command. Merge/tag/release held at the Rule 6 operator gate.
+
+---
+
 ### [FEATURE] 2026-07-09 — G3: templates project specs/; upgrade migrates Project Extensions → project-rules.md
 Topics: templates, projection, migration, generate-instructions, validate, config-driven-release
 Affects-phases: phase-28-instruction-consistency

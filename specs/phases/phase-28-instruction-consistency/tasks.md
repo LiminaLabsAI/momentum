@@ -34,9 +34,9 @@ type: Tasks
 - [x] G3.7 Verify: `npm test` **961/961**; e2e smoke — fresh install points; upgrade migrates authored prose → project-rules.md
 
 ## Group 4 — Self-repo dogfood + release
-- [ ] G4.1 Dogfood: migrate momentum's CLAUDE.md + AGENTS.md Project-Extensions prose → `project-rules.md`; sync both agents
-- [ ] G4.2 Assert `CLAUDE.md` ≡ `AGENTS.md` (managed + both pointers, modulo intended per-adapter subs) — self-repo guard test
-- [ ] G4.3 Flip stale backlog statuses: BUG-024/025/026, ENH-061 → resolved
-- [ ] G4.4 Docs; retrospective with `## Verification Evidence` (Rule 12)
-- [ ] G4.5 Version bump v0.35.0; `/sync-docs` → `/complete-phase` (release at operator gate)
-- [ ] G4.6 Verify: full `npm test` green; `project-rules.md` holds migrated content; consistency guard passes
+- [x] G4.1 Dogfood: `momentum upgrade .` migrated CLAUDE.md + AGENTS.md → `project-rules.md`, synced both agents; hand-consolidated the redundant migrated sections; healed AGENTS.md ecosystem pointer
+- [x] G4.2 `instruction-consistency.test.js` — generated managed regions identical modulo the task-tool line; every file ends with the pointer, no boilerplate
+- [x] G4.3 Flipped stale backlog statuses: BUG-024/025/026 + ENH-061 → resolved
+- [x] G4.4 Retrospective with `## Verification Evidence` (Rule 12) — written
+- [/] G4.5 Version bumped v0.35.0; merge/tag/release **pending operator approval** (Rule 6 hard stop)
+- [x] G4.6 Verify: full `npm test` **963/963**; self-repo CLAUDE.md ≡ AGENTS.md (4 intended diff lines); both pointers present

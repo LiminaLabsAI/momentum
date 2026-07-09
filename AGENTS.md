@@ -4,6 +4,21 @@
 
 # Project Rules: momentum
 
+<!-- ecosystem:begin v=2 -->
+> **Member of `cerebrio-ecosystem` ecosystem** at `../cerebrio-ecosystem`.
+>
+> **Cross-repo work?** Write an initiative — never plan cross-repo features in this repo:
+> `../cerebrio-ecosystem/initiatives/<NNNN-slug>.md` (or `/initiative create <slug>`)
+>
+> Orchestration primitives (run from this repo or the ecosystem root):
+> - `/scout <repo>` — read another member's state
+> - `/dispatch <r1> <r2> "..."` — parallel multi-repo investigation (slash command — `momentum dispatch` CLI is keyword-only)
+> - `/handoff <repo>` — transfer context to another member
+> - `/continue` — resume from an inbox handoff
+>
+> See siblings + live state: `momentum ecosystem status`
+<!-- ecosystem:end -->
+
 > opencode configuration for this momentum-managed project.
 
 ## Navigation (Where to Find Things)
@@ -14,7 +29,8 @@
 | What's in the backlog? | `specs/backlog/backlog.md` |
 | Phase tasks/progress? | `specs/phases/phase-N-*/tasks.md` |
 | Why was X chosen? | `specs/decisions/NNNN-*.md` |
-| Roadmap / timeline? | `specs/planning/roadmap.md` |
+| Roadmap / timeline? | `specs/planning/roadmap.md` (authored at founding — `/start-project`) |
+| Project config (forge, publish, branch flow)? | `specs/config.md` (inferred by `momentum init`, authored at `/start-project`) |
 | How to contribute? | `docs/developer-guide.md` |
 
 > **First file to read: ALWAYS `specs/status.md`.**
@@ -150,6 +166,10 @@ Before ANY work, read `specs/status.md`. This tells you:
 - What phase is active
 - What's blocking progress
 - What P0 items need attention
+
+If `status.md` says **Not founded**, stop: the project has no charter or
+roadmap yet — foundation docs are authored at founding, never scaffolded
+(`core/project-lifecycle.md`). Route to `/start-project` before any phase work.
 
 ### Rule 2: Auto-Update Tracking After Changes
 
@@ -600,20 +620,9 @@ Use `infra:` for CI, build, deploy, tooling, and release-pipeline changes that d
 
 ## Project Extensions
 
-> Everything below this heading is preserved across `momentum upgrade`.
-> Add project-specific navigation, rules, cross-repo references, etc. here.
-> Anything above this heading is managed by momentum and may be replaced on upgrade.
-
-### Project-Specific: npm Publish on Every Release
-
-momentum is itself an npm package. After every `/complete-phase` release, run:
-```bash
-npm publish --access public
-```
-This is project-specific — it is NOT part of the global `/complete-phase` command.
-
-Approval required: `npm publish` is a "shared system" action — never run it without an explicit user OK.
-
-### Project-Specific Constraint
-
-**Template files must be generic** — anything in `core/specs-templates/`, `core/agent-rules/`, `core/commands/`, or `core/scripts/` must contain no project-specific names, paths, or references. Project-specific content for momentum itself goes here, under `## Project Extensions`, not into the templates.
+<!-- momentum:project-rules-pointer -->
+> **Project-specific rules live in `specs/project-rules.md`** — read it now.
+> Session-start self-audits, project constraints, and any project-specific
+> guidance are there, shared identically by every agent (ADR-0010). This
+> section is a momentum-managed pointer; edit `specs/project-rules.md`, not
+> this file.
