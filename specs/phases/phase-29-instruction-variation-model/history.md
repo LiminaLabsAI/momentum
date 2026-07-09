@@ -4,6 +4,17 @@ type: History
 
 # Phase 29 — History
 
+### [NOTE] 2026-07-10 — BUG-027 closed as verified-fixed + guarded (Group 3a)
+Topics: BUG-027, recipe-table, backlog-hygiene
+Affects-phases: phase-29-instruction-variation-model
+Affects-specs: specs/backlog/backlog.md, tests/instruction-generation.test.js
+Detail: Flipped the stale BUG-027 row (open → resolved/phase-29) — it was fixed
+in Phase 28 but never marked. Added a well-formed-row regression guard: every
+markdown table row in every generated instruction file must, trimmed, start and
+end with `|` (fenced code excluded). TD-009 (Group 3b) was completed in Group 1.
+
+---
+
 ### [ARCH_CHANGE] 2026-07-10 — Install-time AGENTS.md composition + collision/detection fix (Group 2)
 Topics: multi-adapter, composition, ecosystem-detection, agent-neutral
 Affects-phases: phase-29-instruction-variation-model

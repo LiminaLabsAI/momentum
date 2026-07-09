@@ -21,7 +21,7 @@ type: Tasks
 - [x] 2.3 `ecosystem.js` `detectMemberAgent` reads the ADR-0007 `agents` map (was reading the removed `m.agent` → always `codex`); heuristic gains `.opencode`
 
 ## Group 3a — BUG-027 (verified fixed) + regression guard
-- [ ] 3a.1 BUG-027 verified already fixed (Phase 28); flip stale backlog status + add well-formed-row regression test
+- [x] 3a.1 BUG-027 backlog row flipped resolved→phase-29; well-formed-row regression guard added to tests/instruction-generation.test.js
 
 ## Group 3b — TD-009
 - [x] 3b.1 `capture-fingerprints.js` covers opencode (pulled into G1 so one tool re-baselined all 4)

@@ -70,3 +70,22 @@ test('per-adapter content landed in the right output', () => {
   // The retired rules dir must not be advertised in the antigravity layout table.
   assert.ok(!byAgent['antigravity'].includes('| `.agent/rules/` |'));
 });
+
+// BUG-027 guard (Phase 29): a generated recipe row once shipped without its
+// trailing `|`. Assert every markdown table row in every generated instruction
+// file is well-formed — trimmed, it starts AND ends with `|` (fenced code blocks
+// excluded).
+test('every markdown table row in generated instruction files is well-formed (BUG-027 guard)', () => {
+  for (const o of outputs) {
+    let inFence = false;
+    o.content.split('\n').forEach((line, idx) => {
+      const t = line.trim();
+      if (t.startsWith('```')) { inFence = !inFence; return; }
+      if (inFence || !t.startsWith('|')) return;
+      assert.ok(
+        t.endsWith('|'),
+        `${o.targetRel}:${idx + 1} malformed table row (missing trailing |): ${t}`,
+      );
+    });
+  }
+});
