@@ -2198,6 +2198,22 @@ async function main() {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
     }
+  } else if (args[0] === 'claim') {
+    try {
+      const { runClaim } = require('./team');
+      exitCode = runClaim(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'team') {
+    try {
+      const { runTeam } = require('./team');
+      exitCode = runTeam(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
   } else {
     console.error(`Unknown command: ${args[0]}`);
     console.error('Run "momentum --help" for usage.');
