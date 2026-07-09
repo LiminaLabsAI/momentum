@@ -5,15 +5,15 @@ type: Tasks
 # Phase 26 — Tasks
 
 ## Group 0 — ADR + preferences core library
-- [ ] G0.1 Author ADR-0009 (trust layer invariant, mechanisms = preferences)
-- [ ] G0.2 Renumber sweep: Intelligence -> 27, Platform -> 28 (status.md, roadmap.md, phases/README.md)
-- [ ] G0.3 Create `core/preferences.js` — readPreferences (parse markdown, fail closed)
-- [ ] G0.4 Create `core/preferences.js` — writePreferences (markdown table writer)
-- [ ] G0.5 Create `core/preferences.js` — inferPreferences (manifest + git remote detection)
-- [ ] G0.6 Create `core/preferences.js` — deriveProtectedBranches + cache read/write
-- [ ] G0.7 Create `core/preferences-templates.js` — default preferences.md template
-- [ ] G0.8 Tests: `tests/preferences-library.test.js` (reader/writer/inference/derive/cache)
-- [ ] G0.9 Commit G0
+- [x] G0.1 Author ADR-0009 (trust layer invariant, mechanisms = preferences)
+- [x] G0.2 Renumber sweep: Intelligence -> 27, Platform -> 28 (status.md, roadmap.md, phases/README.md)
+- [x] G0.3 Create `core/preferences.js` — readPreferences (parse markdown, fail closed)
+- [x] G0.4 Create `core/preferences.js` — writePreferences (markdown table writer)
+- [x] G0.5 Create `core/preferences.js` — inferPreferences (manifest + git remote detection)
+- [x] G0.6 Create `core/preferences.js` — deriveProtectedBranches + cache read/write
+- [x] G0.7 Create `core/preferences-templates.js` — default preferences.md template
+- [x] G0.8 Tests: `tests/preferences-library.test.js` (reader/writer/inference/derive/cache)
+- [x] G0.9 Commit G0
 
 ## Group 1 — init + upgrade + hook cache
 - [ ] G1.1 `momentum init` writes inferred `specs/preferences.md` after skeleton

@@ -65,3 +65,11 @@ Affects-specs: core/commands/start-phase.md, core/commands/complete-phase.md
 Detail: BUG-024 (forge-specific `gh release create` leaking into global recipe templates) was originally filed for a standalone quick-task; a `fix/BUG-024` adhoc record stub was started. Escalated to a phase per Rule 14 — the preferences surface is the structural fix (git_forge field picks the right release command), and G2 already rewrites the same recipe templates. The premature adhoc stub was withdrawn; BUG-024's template edits ship as G2.1–G2.2. Backlog row re-slotted unscheduled → phase-26, status open → in-progress.
 
 ---
+
+### [FEATURE] 2026-07-09 — G0: preferences core library + ADR-0009
+Topics: preferences, trust-layer, okf, roadmap
+Affects-phases: phase-26-project-preferences
+Affects-specs: core/preferences.js, core/preferences-templates.js, core/lib/okf-types.js, specs/decisions/0009-trust-layer-invariant-mechanisms-preferences.md
+Detail: G0 landed `core/preferences.js` (read/write/infer/derive/cache + founded predicate), `core/preferences-templates.js` (markdown renderer), ADR-0009 (trust layer invariant, mechanisms = preferences), the `Preferences` OKF type, and the renumber sweep (Intelligence → 27, Platform → 28; Phase 25 roadmap drift repaired to Complete v0.32.0). The static `core/specs-templates/specs/preferences.md` was deliberately deferred to G2 so init's copyDir does not drift the 4 adapter fingerprints mid-phase (re-baseline is G2.13). Fail-closed: readPreferences → null when the file is absent (recipes keep npm/GitHub behavior); missing/unknown values → default + stderr warning. 26 library tests; full suite 845 → 871 green.
+
+---

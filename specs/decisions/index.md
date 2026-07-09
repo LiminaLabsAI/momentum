@@ -9,4 +9,5 @@
 * [ADR-0006: Antigravity canonical root `.agents/` + payload-adapter hook shim](/decisions/0006-antigravity-canonical-root-and-hook-shim.md)
 * [ADR-0007: Multi-Adapter Installed State Schema](/decisions/0007-multi-adapter-installed-state.md)
 * [ADR-0008: Foundation Docs Are Authored, Not Scaffolded](/decisions/0008-foundation-docs-authored-not-scaffolded.md)
+* [ADR-0009: The Trust Layer Is Invariant-By-Default, Mechanisms Are Preferences](/decisions/0009-trust-layer-invariant-mechanisms-preferences.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.
