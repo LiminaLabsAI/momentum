@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: not-started
+status: in-progress
 tags: [lifecycle, cleanup, default-branch, worktree, lanes, release-gate, upgrade-hygiene]
 ---
 

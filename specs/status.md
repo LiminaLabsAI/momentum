@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-09
-> **Current Phase**: _none active_ (Phase 27 — Intelligence is next)
+> **Current Phase**: Phase 27 — Lifecycle Cleanup & Default-Branch Hardening (in progress, target v0.34.0)
 > **Latest Release**: v0.33.0 — Phase 26: Project Preferences (trust-layer invariant + mechanisms-as-preferences)
 > **Health**: On Track
 
@@ -80,7 +80,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none — Phase 26 released; Phase 27 Intelligence is next)_ | | | |
+| 27 — Lifecycle Cleanup & Default-Branch Hardening | phase-27-lifecycle-cleanup | In Progress | G0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -90,8 +90,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 27 | Intelligence | Not Started (target v0.34.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 28 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
+| 28 | Intelligence | Not Started (target v0.35.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
+| 29 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
 
 ## Unscheduled Future Work
 
