@@ -39,7 +39,7 @@ type: Guide
 | 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete (v0.32.0) | [phase-25-founding-contract/](phase-25-founding-contract/) |
 | 26 | Project Preferences | Complete (v0.33.0) | [phase-26-project-preferences/](phase-26-project-preferences/) |
 | 27 | Lifecycle Cleanup & Default-Branch Hardening | Complete (v0.34.0) | [phase-27-lifecycle-cleanup/](phase-27-lifecycle-cleanup/) |
-| 28 | Instruction Consistency | In Progress | [phase-28-instruction-consistency/](phase-28-instruction-consistency/) |
+| 28 | Instruction Consistency | Complete (v0.35.0) | [phase-28-instruction-consistency/](phase-28-instruction-consistency/) |
 
 ## Phase Structure
 
