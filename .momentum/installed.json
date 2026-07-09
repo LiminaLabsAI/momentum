@@ -1,6 +1,6 @@
 {
-  "version": "0.30.0",
-  "momentumVersion": "0.30.0",
+  "version": "0.32.0",
+  "momentumVersion": "0.32.0",
   "agents": {
     "opencode": {
       "version": "0.30.0",
@@ -50,7 +50,7 @@
       ]
     },
     "claude-code": {
-      "version": "0.30.0",
+      "version": "0.32.0",
       "files": [
         ".agent/engines/subagent-dispatch.md",
         ".claude/commands/brainstorm-idea.md",

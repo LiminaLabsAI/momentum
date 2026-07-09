@@ -37,7 +37,7 @@ type: Guide
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete (v0.27.0) | [phase-24-okf-adoption/](phase-24-okf-adoption/) |
 | 22c | Opencode Polish & Multi-Adapter Support | Complete (v0.30.0) | [phase-22c-opencode-polish/](phase-22c-opencode-polish/) |
 | 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete (v0.32.0) | [phase-25-founding-contract/](phase-25-founding-contract/) |
-| 26 | Project Preferences | In Progress (target v0.33.0) | [phase-26-project-preferences/](phase-26-project-preferences/) |
+| 26 | Project Preferences | Complete (v0.33.0) | [phase-26-project-preferences/](phase-26-project-preferences/) |
 
 ## Phase Structure
 

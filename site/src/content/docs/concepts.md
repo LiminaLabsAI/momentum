@@ -131,6 +131,27 @@ The agent (per Rule 3) **auto-tracks discoveries**: any bug, tech debt, or
 enhancement noticed during work lands in the backlog immediately, with the
 user notified.
 
+## Preferences
+
+`specs/preferences.md` is the project-shape settings file recipe templates
+read at execution time (ADR-0009). It tells momentum **what kind of project
+this is** so gates and release steps adapt instead of assuming npm + GitHub +
+a `staging → main` flow:
+
+| Field | Example | What it drives |
+|---|---|---|
+| `language` / `framework` | `node` / `nextjs` | verification defaults |
+| `test_command` / `build_command` | `npm test` / `npm run build` | `/complete-phase` step 3, `/brainstorm-phase` defaults |
+| `publish_target` / `release_flow` | `npm` / `tag-and-publish` | release gate phrasing |
+| `git_forge` / `release_command` | `github` / `gh release create` | which forge release command (if any) |
+| `end_state` | `merge-after-yes` | how far the agent goes before handing back |
+| `branch_flow` / `protected_branches` | `staging, main` | the merge sequence + which branches the pre-push hook guards |
+
+`momentum init` infers these from your manifests + git remote; `/start-project`
+confirms them at founding; edit the file anytime. The **trust layer** — human
+authorization for a protected-branch push — is invariant and never a
+preference; the only bypass is the auditable `MOMENTUM_SKIP_HOOKS=1`.
+
 ## History
 
 Every phase has a `history.md` — an **append-only log** with structured

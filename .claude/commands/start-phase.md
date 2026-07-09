@@ -11,6 +11,12 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
 ## Setup Steps (run once at phase start)
 
 1. Read current state:
+   - **Founded gate** (`core/project-lifecycle.md`, ADR-0008): verify
+     `specs/vision/project-charter.md` AND `specs/planning/roadmap.md`
+     exist. If either is missing, the project is not founded — STOP and
+     run `/start-project` first (it authors the foundation docs from your
+     brainstorm and plans Phase 0). Never start a phase on an unfounded
+     project.
    - Read `specs/status.md`
 
 2. Check for blocking bugs (pre-phase bug check):
@@ -113,9 +119,33 @@ Once a phase plan is approved, this command executes the plan end-to-end without
 
 ### Hard stop — always
 
-**Merge to staging/main + release.** After the final group's verification passes, STOP. Ask the user:
+**Merge to a protected branch + release.** After the final group's
+verification passes, STOP. Read the project's preferences
+(`specs/preferences.md` via `core/preferences.js` →
+`readPreferences('<repo>/specs')`; returns `null` when absent → use the
+defaults below) and ask the user the gate question matching the project's
+`end_state`:
 
-> "All groups complete and verified. Ready to merge `<phase-branch>` → staging (then main), tag `v<version>`, and create the GitHub Release. Approve to proceed? Project-specific publish/deploy steps (e.g. `npm publish`) run from `## Project Extensions` in CLAUDE.md/AGENTS.md — consult them now if any apply."
+- **`merge-after-yes`** (default): "All groups complete and verified. Ready
+  to merge `<phase-branch>` → `<branch_flow in order>` (e.g. `staging`, then
+  `main`), tag `v<version>`. Approve to proceed?"
+- **`staging-promotion`**: "All groups complete and verified. Ready to merge
+  `<phase-branch>` → `staging`. Tag `v<version>` + release after you promote
+  to `main`. Approve to proceed?"
+- **`feature-branch-only`**: "All groups complete and verified. The feature
+  branch `<phase-branch>` is pushed. Merge, tag, and release are yours to
+  do. Review the branch?"
+
+Then append: "Project-specific release/publish/deploy steps (e.g.
+`npm publish`, forge release creation) run from `## Project Extensions` in
+CLAUDE.md/AGENTS.md — consult them now if any apply."
+
+The gate stops at the truly universal git primitives — `git merge` +
+`git tag -a` + `git push origin <tag>`. Forge-specific release creation
+(`gh release create`, `glab release create`, …) and registry publishes
+(`npm publish`, `twine upload`, …) are NOT in this template; they live in
+`## Project Extensions` + `specs/preferences.md` (`release_command`,
+`publish_target`, `release_flow`).
 
 This is the only place the engine asks. Do NOT skip it.
 

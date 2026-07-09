@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-09
-> **Current Phase**: Phase 26 — Project Preferences
-> **Latest Release**: v0.32.0 — Phase 25: Founding Contract (foundation docs authored, not scaffolded)
+> **Current Phase**: _none active_ (Phase 27 — Intelligence is next)
+> **Latest Release**: v0.33.0 — Phase 26: Project Preferences (trust-layer invariant + mechanisms-as-preferences)
 > **Health**: On Track
 
 ## Summary
@@ -51,6 +51,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 24 | Open Knowledge Format (OKF v0.1) Adoption | Complete | v0.27.0 (2026-07-05) |
 | 22c | Opencode Polish & Multi-Adapter Support | Complete | v0.30.0 (2026-07-06) |
 | 25 | Founding Contract (foundation docs authored, not scaffolded) | Complete | v0.32.0 (2026-07-06) |
+| 26 | Project Preferences | Complete | v0.33.0 (2026-07-09) |
 
 ## Ad-hoc / Patch Releases
 
@@ -79,7 +80,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 26 — Project Preferences | phase-26-project-preferences | In Progress | Setup → G0 |
+| _(none — Phase 26 released; Phase 27 Intelligence is next)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -139,6 +140,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-09**: **Phase 26 — Project Preferences COMPLETE on its branch; v0.33.0 built + verified (merge/release at operator gate).** ADR-0009 ships the separation of concerns the BUG-023 → BUG-024 family exposed: the **trust layer** (human authorization for protected-branch pushes) is invariant and non-configurable; the **mechanisms** (which branches are protected, how far the agent goes, which release/publish/verify commands run) are **preferences** in `specs/preferences.md`, read by recipe templates at execution time. `core/preferences.js` (read/write/infer/derive/cache + founded predicate); `momentum init`/`upgrade` infer from manifests + git remote (founded-only migration; never clobber user edits); `pre-push` hook reads `protected_branches` from `.momentum/preferences-cache.json`, falling back to `['main','master','staging']`. Six recipes rewritten (start-phase/complete-phase/brainstorm-phase/brainstorm-idea/start-project/validate); **BUG-024 closed** — `gh release create` + `npm publish` removed from global templates (gate stops at `git tag` + `git push origin <tag>`; forge/registry commands live in `## Project Extensions` + preferences). Navigation table + 4 adapter instruction surfaces regenerated; 4 fingerprints re-baselined; self-repo dogfooded (its own `specs/preferences.md`); site + README docs. Suite 845 → 909; OKF bundle 255 files conformant. Closes ENH-061, BUG-024. Renumber: Intelligence → 27, Platform → 28.
 
 - **2026-07-06**: **Phase 25 — Founding Contract brainstormed and planned** (`/brainstorm-phase`, gate contract honored — files written only after operator approval). Closes ENH-060 (P1, filed same day from the password-manager live dogfood): clean 3-state lifecycle (Installed → Founded → Phase loop) replacing placeholder foundation docs — init stops shipping charter/principles/success-criteria/roadmap templates; `/start-project` reframed as the founding step (content, not structure); phase commands gate on founded = charter + roadmap exist; upgrade auto-removes provably-untouched placeholders. Operator decisions: renumber (this = 25, Intelligence → 26, Platform → 27); auto-remove migration; charter+roadmap gate. Files at `specs/phases/phase-25-founding-contract/`; renumber sweep executes in G0. Branch `phase-25-founding-contract`.
 

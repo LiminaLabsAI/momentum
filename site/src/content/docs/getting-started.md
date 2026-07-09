@@ -141,8 +141,11 @@ settled:
 
 The agent drafts the charter, principles, success criteria, and roadmap
 from the brainstorm, shows you the full draft, writes it only on your
-approval, and plans Phase 0. Phase commands stop and route you here until
-the project is founded.
+approval, and plans Phase 0. It also authors `specs/preferences.md` — the
+project-shape settings (git forge, publish target, branch flow, test/build
+commands) recipe templates read at execution time, so gates and release
+steps adapt to your project instead of assuming npm + GitHub. Phase
+commands stop and route you here until the project is founded.
 
 ### Step 3 — Brainstorm the phase
 

@@ -48,16 +48,16 @@ type: Tasks
 - [x] G2.18 Commit G2
 
 ## Group 3 — self-repo dogfood + docs + release
-- [ ] G3.1 Run `momentum upgrade .` on self-repo -> writes preferences.md
-- [ ] G3.2 Review self-repo preferences (project extensions still own actual commands)
-- [ ] G3.3 `/validate` on self-repo -> green
-- [ ] G3.4 Site: getting-started walkthrough + preferences docs
-- [ ] G3.5 README: preferences in quick-start + features
-- [ ] G3.6 `momentum okf check` + `momentum okf index` (preferences.md in bundle)
-- [ ] G3.7 Full suite: `npm test` green
-- [ ] G3.8 Site build: `npm run build` green
-- [ ] G3.9 Version bump 0.32.0 -> 0.33.0
-- [ ] G3.10 Update status.md, phases/README.md, roadmap.md (renumber Intelligence->27, Platform->28)
-- [ ] G3.11 Retrospective + verification evidence
-- [ ] G3.12 Commit G3
+- [x] G3.1 Run `momentum upgrade .` on self-repo -> writes preferences.md
+- [x] G3.2 Review self-repo preferences (project extensions still own actual commands)
+- [x] G3.3 `/validate` on self-repo -> green
+- [x] G3.4 Site: getting-started walkthrough + preferences docs
+- [x] G3.5 README: preferences in quick-start + features
+- [x] G3.6 `momentum okf check` + `momentum okf index` (preferences.md in bundle)
+- [x] G3.7 Full suite: `npm test` green
+- [x] G3.8 Site build: `npm run build` green
+- [x] G3.9 Version bump 0.32.0 -> 0.33.0
+- [x] G3.10 Update status.md, phases/README.md, roadmap.md (renumber Intelligence->27, Platform->28)
+- [x] G3.11 Retrospective + verification evidence
+- [x] G3.12 Commit G3
 - [ ] G3.13 Stop at release gate — ask user for merge + tag approval
