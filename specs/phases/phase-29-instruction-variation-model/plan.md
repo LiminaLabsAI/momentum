@@ -53,12 +53,16 @@ Deps: Group 1. Commit: `feat(install): compose AGENTS.md for all installed AGENT
 - 2.3 Fix `bin/ecosystem.js:790-791` detection to read `installed.json.agents`
   instead of assuming AGENTS.md ⇒ codex.
 
-## Group 3a — BUG-027
+## Group 3a — BUG-027 (verified already fixed) + regression guard
 
 **Parallel with Group 3b.**
-Deps: Group 1. Commit: `fix(instructions): emit trailing pipe on generated recipe rows (BUG-027)`
+Deps: Group 1. Commit: `test(instructions): guard well-formed recipe-table rows; resolve BUG-027`
 
-- 3a.1 Recipe-table row generator always emits the closing `|`; regression test.
+- 3a.1 BUG-027 was already fixed in Phase 28 (verified 2026-07-10: every
+  `sync-config` row ends with `|`; the recipe table is static prose in each
+  `surfaces.md`, never dynamically generated). Flip the stale backlog row to
+  `resolved` and add a regression test asserting every markdown table row in all
+  generated instruction files is well-formed (starts and ends with `|`).
 
 ## Group 3b — TD-009
 

@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: planned
+status: in-progress
 tags: [instructions, adapters, agent-neutral, projection, manifest, solid, multi-adapter]
 ---
 

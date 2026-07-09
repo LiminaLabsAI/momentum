@@ -20,8 +20,8 @@ type: Tasks
 - [ ] 2.2 Destination collision removed
 - [ ] 2.3 `ecosystem.js` detection reads installed.json
 
-## Group 3a — BUG-027
-- [ ] 3a.1 Recipe-row generator emits trailing pipe + regression test
+## Group 3a — BUG-027 (verified fixed) + regression guard
+- [ ] 3a.1 BUG-027 verified already fixed (Phase 28); flip stale backlog status + add well-formed-row regression test
 
 ## Group 3b — TD-009
 - [ ] 3b.1 `capture-fingerprints.js` covers opencode

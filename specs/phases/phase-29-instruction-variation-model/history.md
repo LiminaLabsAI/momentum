@@ -41,6 +41,18 @@ hardcoded TARGETS switch point (OCP). Extends ADR-0004; relates ADR-0007, ADR-00
 
 ---
 
+### [DISCOVERY] 2026-07-10 — BUG-027 already fixed in Phase 28; Group 3a becomes a guard
+Topics: BUG-027, recipe-table, backlog-hygiene
+Affects-phases: phase-29-instruction-variation-model
+Affects-specs: specs/backlog/backlog.md
+Detail: Verified at start-phase — every generated instruction file's sync-config
+recipe row ends with a trailing `|`, and the recipe table is static prose in each
+adapter's surfaces.md (never dynamically generated, contrary to BUG-027's original
+note). Phase 28 fixed it but left the backlog row `open`. Group 3a is re-scoped:
+flip the stale backlog status to resolved + add a well-formed-row regression guard.
+
+---
+
 ### [DISCOVERY] 2026-07-10 — Destination collision + ecosystem detection bug confirmed
 Topics: AGENTS.md, collision, ecosystem-detection
 Affects-phases: phase-29-instruction-variation-model

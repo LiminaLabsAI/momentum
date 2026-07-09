@@ -40,6 +40,7 @@ type: Guide
 | 26 | Project Preferences | Complete (v0.33.0) | [phase-26-project-preferences/](phase-26-project-preferences/) |
 | 27 | Lifecycle Cleanup & Default-Branch Hardening | Complete (v0.34.0) | [phase-27-lifecycle-cleanup/](phase-27-lifecycle-cleanup/) |
 | 28 | Instruction Consistency | Complete (v0.35.0) | [phase-28-instruction-consistency/](phase-28-instruction-consistency/) |
+| 29 | Instruction Variation Model (Agent-Neutral Projection) | In Progress | [phase-29-instruction-variation-model/](phase-29-instruction-variation-model/) |
 
 ## Phase Structure
 
