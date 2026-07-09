@@ -12,4 +12,7 @@
 * [ADR-0009: The Trust Layer Is Invariant-By-Default, Mechanisms Are Preferences](/decisions/0009-trust-layer-invariant-mechanisms-preferences.md)
 * [ADR-0010: The Agent Instruction File Is a Projection of `specs/`, Never Authored](/decisions/0010-instruction-file-is-a-projection.md)
 * [Instruction File = Projection of (Principal Constants × Per-Agent Variation Manifest)](/decisions/0011-instruction-variation-model.md)
+* [ADR-0012: Git-Native Multiplayer Coordination](/decisions/0012-git-native-multiplayer-coordination.md)
+* [ADR-0013: Team Presence, Shared Landing & Review](/decisions/0013-team-presence-landing-review.md)
+* [ADR-0014: Optional Relay + Ecosystem Team Mode](/decisions/0014-relay-ecosystem-team-mode.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.

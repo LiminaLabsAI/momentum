@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: planned
+status: in-progress
 tags: [team, ecosystem, multi-repo, remote-members, fragments, swarm, lease-cas, ref-cas]
 ---
 

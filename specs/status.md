@@ -98,7 +98,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none active — Phase 30d Team Integration released v0.38.0; all lanes closed)_ | | | |
+| 30e — Ecosystem Team Mode | `phase-30e-ecosystem-team-mode` | In Progress | Setup done; G0 (ADR-0015 + contracts) next. Closes ENH-065. Target v0.39.0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
