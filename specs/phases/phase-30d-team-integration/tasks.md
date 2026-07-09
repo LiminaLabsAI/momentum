@@ -19,10 +19,11 @@ status: in-progress
 - [x] Recipe/rules verified — suite 1002/1002
 
 ## Group 1 — lanes land review gate + pre-push (hook approval)
-- [ ] Config keys (`review_min_approvals`/`review_self_approval`/`presence_*`)
-- [ ] `lanes land` honors shared turn + reviewer≠author (config-gated)
-- [ ] `pre-push` → attributed multi-actor approval ledger (operator approval for hook change)
-- [ ] Tests; commit G1
+- [x] Config keys (`review_min_approvals`/`review_self_approval`/`presence_*`) — KNOWN_KEYS + DEFAULTS
+- [x] `lanes land` reviewer≠author gate (config-gated, solo-safe) — `land.js` check 4b; 2 tests
+- [/] shared-turn in `lanes land` — local FIFO turn already present; cross-machine `queue.js` wiring deferred (overlaps Run)
+- [ ] `pre-push` → attributed multi-actor approval ledger (**awaiting operator approval — hook change**)
+- [x] Tests; committed (G1 land-gate)
 
 ## Group 2 — Ecosystem team mode
 - [x] Durable actor on lane signals (`signals.js`) — `e3d3776`
