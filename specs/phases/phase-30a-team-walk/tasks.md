@@ -8,6 +8,17 @@ status: planned
 > Mirrors `plan.md`. Mark `[x]` complete, `[/]` in-progress. Verify before
 > claiming done (Rule 12). Execution: G0 → (G1 ∥ G2) → G3 → G4.
 
+> **Progress — 2026-07-10 (lane `phase-30a-team-walk-impl`, isolated worktree):**
+> **G0 ✅ / G1 ✅ / G2 ✅ / G4 ✅ (core)** built + verified; **suite 981/981**.
+> Commits: `75d62f6` (G0 identity+fragments+refcas+ADR-0012), `876f423` (G1
+> `momentum claim`, ENH-057 mechanism), `1e604d8` (G2 compile+board + G4 e2e).
+> **G3 DEFERRED** — its wiring (reword Rule 15 in the rules body, re-baseline
+> adapter fingerprints, `bin/momentum.js` gitignore-refresh) overlaps files the
+> live **Phase 29** lane is rewriting; land Phase 29 first, then wire (Rule 6
+> Landing Order). Still open within scope: ENH-056 self-merge guard (G1);
+> changelog→fragments + status.md marker wiring (G2); more e2e scenarios + smoke
+> + fingerprints (G4). The git-native core is proven; the remainder is integration.
+
 ## Group 0 — Contracts & identity *(blocks all)*
 - [ ] Author **ADR-0012** (git-native multiplayer: identity + fragments + ref-CAS; eventual consistency accepted; fragment-vs-CAS split rationale)
 - [ ] `core/identity/` — `resolveActor(cwd)` from `git config`; `MOMENTUM_ACTOR` override; deterministic fallback + warning
