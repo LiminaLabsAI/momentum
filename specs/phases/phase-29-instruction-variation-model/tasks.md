@@ -16,9 +16,9 @@ type: Tasks
 - [x] 1.4 4 templates regenerated; drift guard green; full suite 963/963
 
 ## Group 2 — Install composition + collision fix
-- [ ] 2.1 Multi-AGENTS.md composition from `installed.json.agents`
-- [ ] 2.2 Destination collision removed
-- [ ] 2.3 `ecosystem.js` detection reads installed.json
+- [x] 2.1 Multi-AGENTS.md composition from `installed.json.agents` (`resolvePrimaryInstructionContent` → `composeInstruction`; single-agent stays static)
+- [x] 2.2 Destination collision removed (upgrade of a 2nd AGENTS.md agent composes both integrations instead of last-writer-wins)
+- [x] 2.3 `ecosystem.js` `detectMemberAgent` reads the ADR-0007 `agents` map (was reading the removed `m.agent` → always `codex`); heuristic gains `.opencode`
 
 ## Group 3a — BUG-027 (verified fixed) + regression guard
 - [ ] 3a.1 BUG-027 verified already fixed (Phase 28); flip stale backlog status + add well-formed-row regression test

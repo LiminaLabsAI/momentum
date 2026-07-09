@@ -4,6 +4,25 @@ type: History
 
 # Phase 29 — History
 
+### [ARCH_CHANGE] 2026-07-10 — Install-time AGENTS.md composition + collision/detection fix (Group 2)
+Topics: multi-adapter, composition, ecosystem-detection, agent-neutral
+Affects-phases: phase-29-instruction-variation-model
+Affects-specs: bin/momentum.js, bin/ecosystem.js
+Detail: bin/momentum.js `resolvePrimaryInstructionContent()` returns the static
+committed template for a claude-md agent or a lone AGENTS.md agent, but COMPOSES
+(neutral spine + one integration section per installed AGENTS.md agent, from
+installed.json.agents) when >1 AGENTS.md agent is present — threaded through
+install/upgrade/upgradeMarkedFile via an optional raw-content param, so
+project-name rendering + marker-aware upgrade + ecosystem-pointer preservation
+are untouched. Kills the last-writer-wins collision. Smoke-verified: init codex →
+upgrade opencode yields one AGENTS.md with a neutral header + both integration
+sections, managed rules region byte-identical to the single-agent template. Also
+fixed bin/ecosystem.js detectMemberAgent — it read the ADR-0007-removed `m.agent`
+field so every AGENTS.md agent fell through to the `AGENTS.md ⇒ codex` heuristic;
+now reads `agents` map + heuristic gains `.opencode`. Suite 963/963.
+
+---
+
 ### [ARCH_CHANGE] 2026-07-10 — Generator restructured; neutral spine + shipped compose lib (Group 1)
 Topics: generate-instructions, variation-manifest, neutral-spine, surface-delta
 Affects-phases: phase-29-instruction-variation-model
