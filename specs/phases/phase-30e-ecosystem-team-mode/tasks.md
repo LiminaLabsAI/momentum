@@ -21,10 +21,10 @@ status: planned
 - [x] Tests (two-clone URL members); commit G1
 
 ## Group 2 — Ecosystem-state → fragments *(∥ G1)*
-- [ ] `active-initiative` → per-actor fragment + compile
-- [ ] Initiatives + session-presence → fragments; `ecosystem status` shows shared attributed state
-- [ ] `momentum team sync` at ecosystem-root level
-- [ ] Tests (two-clone concurrent active-initiative → zero conflict); commit G2
+- [x] `active-initiative` → per-actor fragment + compile
+- [x] Initiatives + session-presence → fragments; `ecosystem status` shows shared attributed state
+- [x] `momentum team sync` at ecosystem-root level
+- [x] Tests (two-clone concurrent active-initiative → zero conflict); commit G2
 
 ## Group 3 — Swarm leases-as-source-of-truth *(RISKY)*
 - [ ] Ref-CAS ownership = source of truth when a remote is present; manifest → projection

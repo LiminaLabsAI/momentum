@@ -57,6 +57,24 @@ G0 before consumers. Extends ADR-0012/0013/0014 (single-repo Team Mode) to the
 multi-repo layer; relates ADR-0001/0002/0003 (lanes) + the ecosystem layer.
 
 ---
+### [FEATURE] 2026-07-10 — G2 complete: ecosystem-state → fragments
+Topics: fragments, active-initiative, presence, ecosystem-repo, adr-0015
+Affects-phases: phase-30e-ecosystem-team-mode
+Affects-specs: core/ecosystem/lib/team-state.js, bin/ecosystem.js
+Detail: New core/ecosystem/lib/team-state.js moves `active-initiative` (was
+per-machine `.state/`) onto the shared per-actor fragment substrate
+(core/team/lib/fragments) committed in the ecosystem repo — compiled value is
+global last-writer-wins, attributed to who set it; the legacy `.state/` file is
+kept as a per-machine cache + back-compat fallback. Session-presence reuses
+core/team/lib/presence at the ecosystem root. `ecosystem initiative create` now
+sets active via fragment (attributed); `ecosystem status` shows the shared
+active initiative + a live Presence section (auto-heartbeat gated on a
+team-active ecosystem). `momentum team sync` already works at the ecosystem root
+(it is a git repo; fragments arrive via branch integration). Two-clone test:
+concurrent active-initiative set + merge = zero git conflict (own-prefix files).
+Suite 1013 → 1023.
+
+---
 ### [FEATURE] 2026-07-10 — G1 complete: remote-URL members
 Topics: remote-members, ecosystem-schema, discovery, adr-0015
 Affects-phases: phase-30e-ecosystem-team-mode

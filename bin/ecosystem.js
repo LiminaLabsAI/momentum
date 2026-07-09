@@ -773,6 +773,16 @@ function cmdStatus(args) {
   const root = resolveEcosystemRoot(opts.ecosystem, 'status');
   const manifest = lib.loadManifest(root);
 
+  // Auto-heartbeat (ADR-0015 G2): mark this actor present when the ecosystem is
+  // team-active (a .momentum/team/ dir exists). Best-effort, gated so solo
+  // ecosystems stay quiet — mirrors bin/team.js.
+  try {
+    if (fs.existsSync(path.join(root, '.momentum', 'team'))) {
+      require('../core/ecosystem/lib/team-state')
+        .heartbeat(root, resolveActorId(root), { activity: 'ecosystem status' });
+    }
+  } catch (_e) { /* presence is best-effort; never fail status on it */ }
+
   console.log(`Ecosystem: ${manifest.name} (root: ${root})`);
   console.log(`Members: ${manifest.members.length}`);
   if (manifest.members.length === 0) {
@@ -800,13 +810,25 @@ function cmdStatus(args) {
     }
   }
 
-  // Print active initiative if any.
-  const activeFile = path.join(root, '.state', 'active-initiative');
-  if (fs.existsSync(activeFile)) {
-    const slug = fs.readFileSync(activeFile, 'utf8').trim();
-    if (slug) {
-      console.log('');
-      console.log(`Active initiative: ${slug}`);
+  // Active initiative — shared, attributed fragment (ADR-0015 G2) with a
+  // fallback to the legacy per-machine .state/ file.
+  const teamState = require('../core/ecosystem/lib/team-state');
+  const active = teamState.getActiveInitiative(root);
+  if (active) {
+    console.log('');
+    const by = active.actor ? `  (set by '${active.actor}')` : '';
+    console.log(`Active initiative: ${active.slug}${by}`);
+  }
+
+  // Team presence — who's active across the ecosystem (heartbeat-on-invocation).
+  const now = Date.now();
+  const present = teamState.listPresence(root, now).filter((p) => p.liveness !== 'offline');
+  if (present.length) {
+    console.log('');
+    console.log('Presence:');
+    for (const p of present) {
+      const dot = p.liveness === 'active' ? '●' : '◐';
+      console.log(`  ${dot} ${p.actor}  ${p.liveness}${p.activity ? '  — ' + p.activity : ''}`);
     }
   }
 }
@@ -1161,10 +1183,14 @@ function cmdInitiativeCreate(args) {
   };
 
   initLib.writeInitiative(filePath, frontmatter, body);
-  initLib.setActive(root, slug);
+  // Set active as a shared, attributed fragment (ADR-0015 G2) — also keeps the
+  // legacy per-machine .state/ cache in sync.
+  const teamState = require('../core/ecosystem/lib/team-state');
+  const actor = resolveActorId(root);
+  teamState.setActiveInitiative(root, actor, slug);
 
   console.log(`Created ${path.relative(root, filePath)} (id ${id}).`);
-  console.log(`Set as active initiative.`);
+  console.log(`Set as active initiative (as '${actor}').`);
   if (!why) {
     console.log(
       `Note: --why was not provided — the template "Why" section is a ` +
@@ -1292,6 +1318,19 @@ function sanitizeId(s) {
     .toLowerCase()
     .replace(/[^a-z0-9-]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Durable actor id for the ecosystem root (ADR-0012/0015). Git identity is the
+ * zero-config source; falls back to a deterministic slug when identity resolution
+ * is unavailable, so attribution never throws.
+ */
+function resolveActorId(root) {
+  try {
+    return require('../core/identity').resolveActor(root).id;
+  } catch (_e) {
+    return 'anon';
+  }
 }
 
 function today() {
