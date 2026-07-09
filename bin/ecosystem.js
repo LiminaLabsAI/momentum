@@ -1306,6 +1306,7 @@ module.exports = {
   ensurePointerInjected,
   stripPointer,
   findPrimaryInstructionFile,
+  detectMemberAgent,
   sanitizeId,
   POINTER_BEGIN,
   POINTER_END,

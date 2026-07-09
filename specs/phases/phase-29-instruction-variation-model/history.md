@@ -4,6 +4,21 @@ type: History
 
 # Phase 29 — History
 
+### [NOTE] 2026-07-10 — Verification + self-repo dogfood; v0.36.0 (Group 4)
+Topics: neutral-spine, agent-neutral, variation-manifest, ecosystem-detection
+Affects-phases: phase-29-instruction-variation-model
+Affects-specs: tests/instruction-variation-model.test.js, specs/phases/phase-29-instruction-variation-model/evidence/self-repo-dogfood.md
+Detail: 6 invariant tests (spine byte-identity, header scaffold, OCP synthetic
+agent, multi-agent composition golden, manifest↔adapter destination consistency,
+detectMemberAgent reads agents map) + BUG-027 guard. Self-repo `momentum upgrade .`
+dogfood: CLAUDE.md ≡ AGENTS.md spine; both headers de-branded; opencode integration
++ ecosystem + project-rules pointers preserved; project name rendered — all true
+(evidence committed). Pre-existing .opencode/commands drift reverted as out of
+scope (filed as a follow-up note in the retrospective). Version → v0.36.0. Full
+suite 963 → 969.
+
+---
+
 ### [NOTE] 2026-07-10 — BUG-027 closed as verified-fixed + guarded (Group 3a)
 Topics: BUG-027, recipe-table, backlog-hygiene
 Affects-phases: phase-29-instruction-variation-model

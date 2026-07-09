@@ -27,7 +27,7 @@ type: Tasks
 - [x] 3b.1 `capture-fingerprints.js` covers opencode (pulled into G1 so one tool re-baselined all 4)
 
 ## Group 4 — Verification
-- [ ] 4.1 Tests: spine-identity, header scaffold, OCP synthetic-agent, composition, detection
+- [x] 4.1 Tests: spine-identity, header scaffold, OCP synthetic-agent, composition, manifest↔adapter consistency, detection (`tests/instruction-variation-model.test.js`, 6/6) + BUG-027 guard
 - [x] 4.2 4 fingerprints re-baselined (done in G1 — one file drifted per adapter, the instruction file; TD-009 tool now covers all 4)
-- [ ] 4.3 Self-repo dogfood evidence captured
-- [ ] 4.4 Retrospective + v0.36.0 bump; `/sync-docs` done
+- [x] 4.3 Self-repo dogfood evidence captured (`evidence/self-repo-dogfood.md` — all assertions true)
+- [x] 4.4 Retrospective + v0.36.0 bump done; `/sync-docs` runs at `/complete-phase`
