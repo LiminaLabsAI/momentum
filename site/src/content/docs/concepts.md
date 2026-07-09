@@ -148,9 +148,12 @@ a `staging → main` flow:
 | `branch_flow` / `protected_branches` | `staging, main` | the merge sequence + which branches the pre-push hook guards |
 
 `momentum init` infers these from your manifests + git remote; `/start-project`
-confirms them at founding; edit the file anytime. The **trust layer** — human
-authorization for a protected-branch push — is invariant and never a
-preference; the only bypass is the auditable `MOMENTUM_SKIP_HOOKS=1`.
+confirms them at founding; edit the file anytime. When the project shape
+changes (you switched forge, adopted a framework), `momentum config sync`
+re-infers, shows the drift, and applies your approved changes — nothing is
+ever written without your OK. The **trust layer** — human authorization for a
+protected-branch push — is invariant and never a preference; the only bypass
+is the auditable `MOMENTUM_SKIP_HOOKS=1`.
 
 ## History
 

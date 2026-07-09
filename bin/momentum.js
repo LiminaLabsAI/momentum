@@ -509,15 +509,112 @@ function installConfig(target, { dryRun, upgradeMode } = {}) {
   if (!dryRun) prefsLib.writeConfigCache(target, stored);
 
   // Drift detection (upgrade only, founded only): report changed inferable
-  // fields. Never clobber user edits — the user re-infers by deleting the file
-  // or editing by hand.
+  // fields and point at the approval-gated fix. Never clobber user edits —
+  // the user applies the change explicitly via `momentum config sync`.
   if (upgradeMode && prefsLib.isFounded(target)) {
     const inferred = prefsLib.inferConfig(target);
-    const drifted = prefsLib.INFERABLE_KEYS.filter((k) => inferred[k] !== stored[k]);
+    const drifted = prefsLib.INFERABLE_KEYS.filter((k) => !prefsLib.valuesEqual(inferred[k], stored[k]));
     if (drifted.length) {
-      console.log(`  ⚠️  specs/config.md drifted from manifests on: ${drifted.join(', ')} (edit by hand or delete the file + re-run 'momentum upgrade')`);
+      console.log(`  ⚠️  specs/config.md drifted from manifests on: ${drifted.join(', ')} — run 'momentum config sync' to review + apply`);
     }
   }
+}
+
+/**
+ * Ask the user a single question and resolve with their trimmed answer.
+ * Works whether stdin is a TTY or piped (tests pipe input). On EOF without an
+ * answer, resolves to the empty string so callers can treat it as "skip".
+ * @param {string} query
+ * @returns {Promise<string>}
+ */
+function askQuestion(query) {
+  const readline = require('node:readline');
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => {
+      if (done) return;
+      done = true;
+      rl.close();
+      resolve(v);
+    };
+    // EOF (piped stdin, no answer) resolves to '' so callers treat it as skip.
+    rl.on('close', () => finish(''));
+    rl.question(query, (answer) => finish((answer || '').trim()));
+  });
+}
+
+/**
+ * ENH-062 — proactive, approval-gated config drift sync. Re-infers the project
+ * shape and diffs it against specs/config.md. When drift is found, shows the
+ * per-field old→new diff and asks the user which fields to apply (or "all" /
+ * "skip"). Nothing is written without explicit approval.
+ * @param {string} targetDir
+ * @param {object} [opts] { dryRun }
+ */
+async function syncConfig(targetDir, opts = {}) {
+  const prefsLib = require('../core/config');
+  const specsDir = path.join(targetDir, 'specs');
+  if (!fileExists(specsDir)) {
+    console.log('  ⚠️  no specs/ skeleton — run momentum init first');
+    return;
+  }
+  const { exists, drift } = prefsLib.diffConfig(specsDir, targetDir);
+
+  if (!exists) {
+    // Migration: a founded project with no config.md yet → create it.
+    if (prefsLib.isFounded(targetDir)) {
+      if (opts.dryRun) {
+        const p = prefsLib.inferConfig(targetDir);
+        console.log(`  ✋ would add:     specs/config.md (inferred: language=${p.language}, forge=${p.git_forge})`);
+        return;
+      }
+      const prefs = prefsLib.inferConfig(targetDir);
+      prefsLib.writeConfig(specsDir, prefs, { inferred: true });
+      prefsLib.writeConfigCache(targetDir, prefs);
+      console.log(`  + added:    specs/config.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
+    } else {
+      console.log('  ⚠️  project not founded — run /start-project to author specs/config.md');
+    }
+    return;
+  }
+
+  if (drift.length === 0) {
+    console.log('  ✓ specs/config.md matches the inferred project shape — nothing to sync');
+    return;
+  }
+
+  console.log('\n  Project shape changed since specs/config.md was written:\n');
+  for (const d of drift) {
+    console.log(`    • ${d.key}: ${JSON.stringify(d.old)} → ${JSON.stringify(d.new)}`);
+  }
+  console.log('');
+
+  if (opts.dryRun) {
+    console.log(`  ✋ would sync ${drift.length} field(s) — re-run without --dry-run to apply`);
+    return;
+  }
+
+  const answer = await askQuestion('  Apply? [a]ll / comma-separated keys / [s]kip: ');
+  const a = answer.toLowerCase();
+  if (a === 's' || a === '' || a === 'skip') {
+    console.log('  ↩️  skipped — specs/config.md left unchanged');
+    return;
+  }
+  let keys;
+  if (a === 'a' || a === 'all' || a === 'y' || a === 'yes') {
+    keys = drift.map((d) => d.key);
+  } else {
+    const wanted = new Set(a.split(',').map((s) => s.trim()));
+    keys = drift.filter((d) => wanted.has(d.key)).map((d) => d.key);
+    if (keys.length === 0) {
+      console.log('  ↩️  no matching keys — specs/config.md left unchanged');
+      return;
+    }
+  }
+  const updated = prefsLib.mergeConfigDrift(specsDir, targetDir, keys);
+  console.log(`  ✓ synced ${keys.join(', ')} → specs/config.md (cache refreshed)`);
+  return updated;
 }
 
 function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
@@ -1553,6 +1650,7 @@ Waves — wave plan from dependency annotations (Phase 21c, one engine every sca
 OKF — specs/ as an Open Knowledge Format bundle (Phase 24, ADR-0005):
   momentum okf check [dir]            OKF v0.1 conformance report for <dir>/specs
   momentum okf index [dir]            Regenerate bundle indexes (root/phases/decisions)
+  momentum config sync [target-dir]   Re-infer project shape, show config drift, apply on approval
 
 Options:
   --agent <name>                      Agent to install for. \`init\` asks when this
@@ -1997,6 +2095,22 @@ async function main() {
     try {
       const { runOkf } = require('./okf');
       exitCode = runOkf(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'config') {
+    try {
+      const sub = args[1];
+      const target = args[2] ? path.resolve(args[2]) : process.cwd();
+      if (sub === 'sync') {
+        const dryRun = args.includes('--dry-run') || _dryRun;
+        await syncConfig(target, { dryRun });
+      } else {
+        console.error(`Unknown config subcommand: ${sub || '(none)'}`);
+        console.error('Usage: momentum config sync [target-dir] [--dry-run]');
+        exitCode = 1;
+      }
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

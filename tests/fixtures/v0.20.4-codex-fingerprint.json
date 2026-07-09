@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "codex",
-    "note": "Phase 26 rename: specs/preferences.md -> specs/config.md (template + install + OKF type Preferences -> Config; cache -> config-cache.json)"
+    "note": "Phase 26 ENH-062: sync-config recipe in instruction surfaces (surfaces.md)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -26,6 +26,7 @@
     ".agents/skills/start-phase/SKILL.md": "107e2965d19f9b188360c2711b2d6ceb1f8319f873d758b8da764b26b9c90ba6",
     ".agents/skills/start-project/SKILL.md": "e568ab426a19d44773adbc078fcb13bd447b9d4ccd99e100dfd89752e2edc4ee",
     ".agents/skills/swarm/SKILL.md": "c00f6b116f14c579ec9d8eff21d02a56aba452658149035032822daafa535c5f",
+    ".agents/skills/sync-config/SKILL.md": "f3bd9ff1f1c67865c1d4439c20f55a3a1fee685d0ff9cbb979de79bd31dfff55",
     ".agents/skills/sync-docs/SKILL.md": "9293e5f8ba631905ca697a808872f474e8bc716c5214d96f48216c1ca72767ff",
     ".agents/skills/systematic-debug/SKILL.md": "cc8af476d545cca33a4d960c0fa64dc1d46f3cfe0223925d80f2c0078dd71954",
     ".agents/skills/track/SKILL.md": "03f668829b6ade703c8df9015365e16c9e5831d05d1b4dae29b5b8f5a049a252",
@@ -40,7 +41,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "AGENTS.md": "8fb204788f535d47666076c619a79f904ba95ef2a5f3111b6614e5729e1fb2f7",
+    "AGENTS.md": "c6d688a40d4baf07f4330a7c12531b0f6ff09184be2a681a3b57353afaf19036",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

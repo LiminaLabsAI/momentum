@@ -426,6 +426,71 @@ function isFounded(targetDir) {
     && fs.existsSync(path.join(targetDir, 'specs', 'planning', 'roadmap.md'));
 }
 
+// ── drift detection + approval-gated apply (ENH-062) ──────────────────────────
+
+/**
+ * Compare two config values for drift (lists order-insensitive).
+ * @param {string|string[]} a
+ * @param {string|string[]} b
+ * @returns {boolean} true when equal
+ */
+function valuesEqual(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    const sa = a.map(String).sort();
+    const sb = b.map(String).sort();
+    return sa.every((v, i) => v === sb[i]);
+  }
+  return String(a) === String(b);
+}
+
+/**
+ * Diff the stored `specs/config.md` against a fresh inference of the project
+ * shape. Only the INFERABLE_KEYS (language/framework/publish_target/git_forge)
+ * are compared — those are the values momentum can re-derive from manifests +
+ * git remote. User-authored values (branch_flow, end_state, commands) are
+ * never flagged as drift. Pure w.r.t. the filesystem (reads only).
+ * @param {string} specsDir
+ * @param {string} targetDir
+ * @returns {{exists: boolean, drift: Array<{key:string, old:*, new:*}>}}
+ */
+function diffConfig(specsDir, targetDir) {
+  const stored = readConfig(specsDir); // null when config.md absent
+  if (!stored) return { exists: false, drift: [] };
+  const inferred = inferConfig(targetDir);
+  const drift = [];
+  for (const k of INFERABLE_KEYS) {
+    if (!valuesEqual(stored[k], inferred[k])) {
+      drift.push({ key: k, old: stored[k], new: inferred[k] });
+    }
+  }
+  return { exists: true, drift };
+}
+
+/**
+ * Apply an approved set of drifted fields to `specs/config.md` and refresh the
+ * derived cache. Reads the current config, overwrites only the chosen keys
+ * with their freshly-inferred values, writes both files. Never touches keys
+ * the caller did not explicitly approve (ENH-062: approval-gated, no silent
+ * mutation).
+ * @param {string} specsDir
+ * @param {string} targetDir
+ * @param {string[]} keys  the INFERABLE_KEYS the user approved
+ * @returns {object} the updated normalized config
+ */
+function mergeConfigDrift(specsDir, targetDir, keys) {
+  const stored = readConfig(specsDir);
+  const inferred = inferConfig(targetDir);
+  const chosen = new Set(keys);
+  const updated = { ...stored };
+  for (const k of INFERABLE_KEYS) {
+    if (chosen.has(k)) updated[k] = inferred[k];
+  }
+  writeConfig(specsDir, updated);
+  writeConfigCache(targetDir, updated);
+  return updated;
+}
+
 module.exports = {
   CONFIG_FILE,
   CACHE_FILE,
@@ -448,5 +513,8 @@ module.exports = {
   writeConfigCache,
   readConfigCache,
   isFounded,
+  valuesEqual,
+  diffConfig,
+  mergeConfigDrift,
   FORGE_RELEASE_COMMAND,
 };

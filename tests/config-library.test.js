@@ -363,3 +363,54 @@ test('writeConfigCache: empty protected_branches → derives from flow only', ()
     assert.deepEqual(cache.protected_branches, ['uat', 'main']);
   } finally { rmrf(tmp); }
 });
+
+// ── ENH-062: drift detection + approval-gated apply ──────────────────────────
+
+test('diffConfig: flags inferable drift, never flags user-authored fields', () => {
+  const tmp = mktmp('momentum-prefs-');
+  try {
+    const specsDir = path.join(tmp, 'specs');
+    fs.mkdirSync(specsDir, { recursive: true });
+    fs.writeFileSync(path.join(tmp, 'package.json'), JSON.stringify({ name: 'x', scripts: {} }));
+    P.writeConfig(specsDir, { ...P.DEFAULTS, language: 'node', git_forge: 'gitlab', protected_branches: ['staging', 'main'], branch_flow: ['staging', 'main'] });
+    const { exists, drift } = P.diffConfig(specsDir, tmp);
+    assert.equal(exists, true);
+    const keys = drift.map((d) => d.key);
+    assert.ok(keys.includes('git_forge'), 'git_forge drifted from inferred github');
+    assert.ok(!keys.includes('language'), 'language matches inferred node → not drifted');
+    assert.ok(!keys.includes('protected_branches'), 'user-authored field never flagged as drift');
+  } finally { rmrf(tmp); }
+});
+
+test('diffConfig: absent config.md → exists:false (migration case)', () => {
+  const tmp = mktmp('momentum-prefs-');
+  try {
+    assert.deepEqual(P.diffConfig(path.join(tmp, 'specs'), tmp), { exists: false, drift: [] });
+  } finally { rmrf(tmp); }
+});
+
+test('valuesEqual: order-insensitive for lists, strict for scalars', () => {
+  assert.equal(P.valuesEqual(['a', 'b'], ['b', 'a']), true);
+  assert.equal(P.valuesEqual(['a'], ['a', 'b']), false);
+  assert.equal(P.valuesEqual('node', 'node'), true);
+  assert.equal(P.valuesEqual('node', 'python'), false);
+});
+
+test('mergeConfigDrift: applies only approved keys + refreshes the cache', () => {
+  const tmp = mktmp('momentum-prefs-');
+  try {
+    const specsDir = path.join(tmp, 'specs');
+    fs.mkdirSync(specsDir, { recursive: true });
+    fs.writeFileSync(path.join(tmp, 'package.json'), JSON.stringify({ name: 'x', scripts: {} }));
+    P.writeConfig(specsDir, { ...P.DEFAULTS, language: 'node', git_forge: 'gitlab', protected_branches: ['staging', 'main'], branch_flow: ['staging', 'main'] });
+    const updated = P.mergeConfigDrift(specsDir, tmp, ['git_forge']);
+    assert.equal(updated.git_forge, 'github', 'approved field applied');
+    assert.equal(updated.language, 'node', 'unapproved field untouched');
+    const cache = P.readConfigCache(tmp);
+    // The cache stores only the hook-relevant keys (protected_branches /
+    // branch_flow / end_state); git_forge is not cached. Assert the cache was
+    // rewritten with a valid derived protected_branches (branch_flow-driven).
+    assert.equal(cache.version, 1);
+    assert.deepEqual(cache.protected_branches, ['staging', 'main']);
+  } finally { rmrf(tmp); }
+});

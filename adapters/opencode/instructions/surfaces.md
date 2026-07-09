@@ -24,6 +24,7 @@ The shipped recipe set (one command per recipe):
 | lanes | Work with lanes — concurrent workstreams in one repo (Rule 15) |
 | migrate | Onboard an existing project into momentum |
 | validate | Check spec structure health |
+| sync-config | Re-infer project shape, show config drift, apply on approval (ENH-062)
 | ecosystem | Cross-repo ecosystem coordination |
 | initiative | Manage cross-repo initiatives |
 | session | Append a manual narrative entry to today's ecosystem session log |

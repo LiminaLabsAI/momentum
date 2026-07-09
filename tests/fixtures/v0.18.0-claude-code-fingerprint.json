@@ -2,7 +2,7 @@
   "meta": {
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
-    "note": "Phase 26 rename: specs/preferences.md -> specs/config.md (template + install + OKF type Preferences -> Config; cache -> config-cache.json)"
+    "note": "Phase 26 ENH-062: added momentum config sync command (core/commands/sync-config.md)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -25,6 +25,7 @@
     ".claude/commands/start-phase.md": "503abbbc60ed08eba1c1fc13318b8cc8b9bf812e5f5f5a2d47ca0a60848ec009",
     ".claude/commands/start-project.md": "9c57b748113946e2ce8ade196b681acfbb7e8223ae88a0b467231331c5159781",
     ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7",
+    ".claude/commands/sync-config.md": "41c320731ae77538a87a7347769d4051aedeb502e7625f7f28190dfeba51c0fa",
     ".claude/commands/sync-docs.md": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b",
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",

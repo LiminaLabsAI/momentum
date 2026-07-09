@@ -72,3 +72,13 @@ type: Tasks
 - [x] G4.7 Minor: inferLanguage priority test, unknown-enum coverage, dead-ternary removed, inferFramework python/rust reachable, codeberg→gitea, unknown-key stderr warning
 - [x] G4.8 Re-baseline 4 adapter fingerprints; full suite 918 green; OKF 256 conformant; site build green
 - [x] G4.9 Commit G4
+
+## Group 5 — ENH-062 proactive config-drift sync (built in-phase)
+- [x] G5.1 core/config.js: diffConfig + mergeConfigDrift + valuesEqual
+- [x] G5.2 bin/momentum.js: `momentum config sync` subcommand (interactive, approval-gated, --dry-run)
+- [x] G5.3 upgrade drift warning → points at `momentum config sync`
+- [x] G5.4 core/commands/sync-config.md recipe template
+- [x] G5.5 recipe-table rows in instruction surfaces (surfaces.md) + help text + site concepts note
+- [x] G5.6 Tests: 4 library (diff/merge/valuesEqual) + 5 CLI (apply/skip/migrate/dry-run/no-specs)
+- [x] G5.7 Re-baseline fingerprints; full suite 927 green; OKF 256; site build green
+- [x] G5.8 Commit G5
