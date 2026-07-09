@@ -106,6 +106,16 @@ test('momentum team approve + check: gate blocks self, passes peer', () => {
   } finally { rmrf(tmp); }
 });
 
+test('auto-heartbeat: a team command in a team-active repo refreshes presence', () => {
+  const tmp = mktmp('team-run-');
+  try {
+    const r = path.join(tmp, 'r'); initRepo(r, 'alice@x');
+    momentum(r, 'team', 'approve', 'x');   // activates team mode (.momentum/team/ now exists)
+    const pres = momentum(r, 'team', 'presence'); // auto-heartbeats alice, then shows presence
+    assert.match(pres.stdout, /alice\s+active/, `expected alice active, got:\n${pres.stdout}`);
+  } finally { rmrf(tmp); }
+});
+
 test('momentum team turn take/holder/release', () => {
   const tmp = mktmp('team-run-');
   try {

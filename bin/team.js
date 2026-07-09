@@ -79,6 +79,18 @@ function runClaim(argv) {
 function runTeam(argv) {
   const sub = argv[0];
   const cwd = process.cwd();
+
+  // Auto-heartbeat (30d): any `momentum team` command in a repo refreshes this
+  // actor's presence — "live" liveness with no daemon. Best-effort + gated to
+  // team-active repos (a .momentum/team/ dir exists) so solo projects stay quiet.
+  try {
+    const root = repoRoot(cwd);
+    if (root && sub !== 'record' && sub !== 'heartbeat' && sub !== 'whoami' &&
+        require('fs').existsSync(path.join(root, '.momentum', 'team'))) {
+      presenceLib.heartbeat(root, identity.resolveActor(root).id, { activity: `team ${sub}` });
+    }
+  } catch { /* presence is best-effort; never fail a command on it */ }
+
   if (sub === 'whoami') {
     const a = identity.resolveActor(cwd);
     console.log(`${a.id}  (source: ${a.source}${a.email ? `, ${a.email}` : ''})`);
