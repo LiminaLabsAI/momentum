@@ -44,6 +44,25 @@ When you're ready to turn the result into a project, run `/start-project` — it
 
 4. Iterate until the idea is clear.
 
+4b. **Preferences discovery** — once the idea is settled, gather the
+    project-shape preferences that `/start-project` will author into
+    `specs/preferences.md` (ADR-0009). Ask one question at a time; if the
+    user is unsure, suggest a default from the idea's context:
+    - **Git forge**: "Which forge? GitHub / GitLab / Bitbucket / Gitea /
+      Forgejo / bare-ssh?" (default from `git remote get-url origin` if a
+      repo exists, else GitHub)
+    - **Language + framework**: "What language/framework? Node+Next.js /
+      Python+FastAPI / Rust+Actix / Go / …?" (default from manifests if a
+      repo exists, else ask)
+    - **Publish/deploy target**: "How does this ship? npm publish / pypi /
+      crates.io / deploy-only (Vercel/Fly/…) / none?" (sets `publish_target`
+      + `release_flow`)
+    - **Branch flow**: "How do changes land? feature → staging → main /
+      feature → main / feature-branch-only?" (sets `branch_flow` +
+      `end_state`; default `feature → staging → main`)
+    Carry the settled preferences as context into `/start-project` so it
+    authors `specs/preferences.md` alongside the charter/roadmap in one batch.
+
 5. **Exit the brainstorm gate** before any follow-up command:
    ```bash
    rm .momentum/brainstorm-active

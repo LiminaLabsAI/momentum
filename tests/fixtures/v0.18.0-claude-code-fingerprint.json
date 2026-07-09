@@ -1,14 +1,14 @@
 {
   "meta": {
-    "captured": "2026-07-06",
-    "capturedFrom": "fix/BUG-023-start-phase-npm-publish",
-    "note": "BUG-023: drop project-specific npm publish clause from /start-phase Autonomous Execution Contract hard-stop text; gate now project-agnostic (merge+tag+GH release); project-specific publish/deploy reads from ## Project Extensions as ENH-030 intended."
+    "captured": "2026-07-09",
+    "capturedFrom": "phase-26-project-preferences",
+    "note": "Phase 26 G2 final: preferences-aware recipes + navigation row + init writes specs/preferences.md (start-project trimmed to ≤12k workflow limit)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
-    ".claude/commands/brainstorm-idea.md": "6ed14a4b7b2120f28c13d5ad2fb5e5fffab87a15f15c5eaa73c5eccec2c69e74",
-    ".claude/commands/brainstorm-phase.md": "8b013244611beb88803a9d1c2a003a4c3aa29cb83c236c65ce4871186574c0e2",
-    ".claude/commands/complete-phase.md": "e978ee364b7588715982cbd031de1deb8f423daf325f0b068dce21c6118f3c4a",
+    ".claude/commands/brainstorm-idea.md": "740006cede42d07f793bec11fa87c76845c8caaa2156b252ac98fb795f059d5a",
+    ".claude/commands/brainstorm-phase.md": "4055e48f6b3addfa9490fcf8417ec20bf3b4e588574a155a1ced943524d1283d",
+    ".claude/commands/complete-phase.md": "fffb2bb2391a471e50be56ce237322786feb096ae6192a04798a6b0941ee6349",
     ".claude/commands/continue.md": "ca2e18b81dce9c1086b14f57fa7798137a86e6956878bee08b822920869f06c2",
     ".claude/commands/dispatch.md": "461e6dca4e3bbb45b35862d1434bdc8f888f5151792042c455ae659f9634d673",
     ".claude/commands/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
@@ -22,20 +22,20 @@
     ".claude/commands/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
     ".claude/commands/scout.md": "d17142b3c0ba2e2b8bb3a061aa0ac890b5734bbaa7a048eba7564fdead2960df",
     ".claude/commands/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
-    ".claude/commands/start-phase.md": "4e3c9b7273fb6d2ae2c9fde681043ee33ec4b7ea00d03e7ab0358cc041f7d728",
-    ".claude/commands/start-project.md": "2f77ceb9b9632fec5aacacfd4fda0e4459dd4c927c14a8f20ff621fdf4b258b0",
+    ".claude/commands/start-phase.md": "b4c2ed57b2ce47f5573d59e3f861b8b797cfd2ac843eb62dac38185ca909db9c",
+    ".claude/commands/start-project.md": "3094e0a9a2d12a2991f7fccdc1bdaa5b3ca80a5335eea7fc722e4a186c51b96f",
     ".claude/commands/swarm.md": "f1d0d8f394ec9c6e0d013c3364fb6f9c71eefb14b0a7d59f1469c4c63ba0aef7",
     ".claude/commands/sync-docs.md": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b",
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
-    ".claude/commands/validate.md": "59cfac41de80bd8312f175d56e08634685a62527086600dd18bc13eaf16a8911",
+    ".claude/commands/validate.md": "a563182af4b2bb63ce7f0eb9ebe0e62818ef8d33ae08b46ca69811a5bbb110e8",
     ".claude/settings.json": "8e547e082fb1c4a3ad4038af974be8471e841823755b3138ceb946177ef3864d",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
-    ".githooks/contract.js": "1eaba39ce9c4dac98ef85625371325eee553c70c942927c213d487610ec8ed0c",
+    ".githooks/contract.js": "3399f213f18a578fc2c6500ff532f780d6c3e0d3f07073bf1690eb93ebfb03a1",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
+    ".githooks/run-check.js": "d81e855e432c390a11351e334d19a5ae123fa24c57f91ec346ff9ea4bd3ca769",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "CLAUDE.md": "1ab0453462fb1f8d38f3540a842476d321bd4f2b9c9f5a987ce7c6a8f12b517a",
+    "CLAUDE.md": "6e94ed4231ba06e2512ce419f62acb0586b0fb434b47f64ae22104151bd276f7",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
@@ -55,6 +55,7 @@
     "specs/index.md": "1ea68f580e529501673d6f793cc137725254a1a188b6a7d61ade34d3a111d744",
     "specs/phases/README.md": "9e2243b6184e10adcff0dac9b71cabdce9202fe99db10093427898d2eb970d49",
     "specs/phases/index.md": "ae581dbfc0864d24917d3866f1eea379862eadb0db603239e3e5e7e07b031e41",
+    "specs/preferences.md": "d2008a0455b6e8566a68b6151d2c4f484f7b74fbd3d69b80d391e6c895ae0d1e",
     "specs/status.md": "cad2517e8982eb451abbbcac917b3a7e0da698f5144dd87478e3855b86c754cc"
   }
 }

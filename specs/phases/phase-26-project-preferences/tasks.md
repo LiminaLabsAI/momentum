@@ -28,24 +28,24 @@ type: Tasks
 - [x] G1.10 Commit G1
 
 ## Group 2 — recipe templates + BUG-024 fix
-- [ ] G2.1 BUG-024: drop `gh release create` from `/start-phase` hard-stop
-- [ ] G2.2 BUG-024: drop `gh release create` from `/complete-phase` step 9 + step 10
-- [ ] G2.3 `/start-phase` rewrite: gate text reads end_state + branch_flow + release_flow
-- [ ] G2.4 `/complete-phase` rewrite: step 3 reads test_command + build_command
-- [ ] G2.5 `/complete-phase` rewrite: step 9-10 walks branch_flow in order
-- [ ] G2.6 `/brainstorm-phase` rewrite: verification defaults from preferences
-- [ ] G2.7 `/brainstorm-idea` rewrite: preferences discovery questions (suggest if unsure)
-- [ ] G2.8 `/start-project` rewrite: authors specs/preferences.md in founding batch
-- [ ] G2.9 `/start-project` rewrite: approval draft shows preferences table
-- [ ] G2.10 `/validate` rewrite: founded -> preferences warning + drift check
-- [ ] G2.11 `core/specs-templates/specs/preferences.md` template
-- [ ] G2.12 `core/instructions/rules-body.md` navigation table + regenerate 4 adapter surfaces
-- [ ] G2.13 Re-baseline 4 adapter fingerprints
-- [ ] G2.14 Tests: `tests/recipe-preferences.test.js`
-- [ ] G2.15 Tests: `tests/start-project-preferences.test.js`
-- [ ] G2.16 Tests: `tests/validate-preferences.test.js`
-- [ ] G2.17 Tests: `tests/template-no-forge-leak.test.js`
-- [ ] G2.18 Commit G2
+- [x] G2.1 BUG-024: drop `gh release create` from `/start-phase` hard-stop
+- [x] G2.2 BUG-024: drop `gh release create` from `/complete-phase` step 9 + step 10
+- [x] G2.3 `/start-phase` rewrite: gate text reads end_state + branch_flow + release_flow
+- [x] G2.4 `/complete-phase` rewrite: step 3 reads test_command + build_command
+- [x] G2.5 `/complete-phase` rewrite: step 9-10 walks branch_flow in order
+- [x] G2.6 `/brainstorm-phase` rewrite: verification defaults from preferences
+- [x] G2.7 `/brainstorm-idea` rewrite: preferences discovery questions (suggest if unsure)
+- [x] G2.8 `/start-project` rewrite: authors specs/preferences.md in founding batch
+- [x] G2.9 `/start-project` rewrite: approval draft shows preferences table
+- [x] G2.10 `/validate` rewrite: founded → preferences warning + drift check
+- [x] G2.11 `core/specs-templates/specs/preferences.md` template
+- [x] G2.12 `core/instructions/rules-body.md` navigation table + regenerate 4 adapter surfaces
+- [x] G2.13 Re-baseline 4 adapter fingerprints
+- [x] G2.14 Tests: `tests/recipe-preferences.test.js`
+- [x] G2.15 Tests: `tests/start-project-preferences.test.js`
+- [x] G2.16 Tests: `tests/validate-preferences.test.js`
+- [x] G2.17 Tests: `tests/template-no-forge-leak.test.js`
+- [x] G2.18 Commit G2
 
 ## Group 3 — self-repo dogfood + docs + release
 - [ ] G3.1 Run `momentum upgrade .` on self-repo -> writes preferences.md

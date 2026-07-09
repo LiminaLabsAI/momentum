@@ -1093,7 +1093,10 @@ function init(targetDir, agent, opts = {}) {
   const specsSrc = path.join(src, 'core', 'specs-templates');
   copyDir(specsSrc, target, {
     skipIfExists: true,
-    skipRelPaths: new Set(['CLAUDE.md']),
+    // CLAUDE.md is adapter-owned (written separately); preferences.md is
+    // inferred per-project by installPreferences (Phase 26) — neither is
+    // copied as a static template.
+    skipRelPaths: new Set(['CLAUDE.md', 'preferences.md']),
     record: false, // specs are install-once / user-owned — never orphan them
   });
 

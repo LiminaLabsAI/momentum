@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-07-06",
-    "capturedFrom": "fix/BUG-023-start-phase-npm-publish",
+    "captured": "2026-07-09",
+    "capturedFrom": "phase-26-project-preferences",
     "adapter": "antigravity",
-    "note": "BUG-023: drop project-specific npm publish clause from /start-phase Autonomous Execution Contract hard-stop text; gate now project-agnostic (merge+tag+GH release); project-specific publish/deploy reads from ## Project Extensions as ENH-030 intended."
+    "note": "Phase 26 G2 final: preferences-aware recipes + navigation row + init writes specs/preferences.md (start-project trimmed to ≤12k workflow limit)"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -13,9 +13,9 @@
     ".agents/skills/momentum-reviewer-qa/SKILL.md": "f31825222e0a3c46676d2c852e3ffa8661a667aa111e4ec42a6438591aaac26f",
     ".agents/skills/momentum-reviewer-security/SKILL.md": "0a6aecfb260ae7174a20d9afc4137c0d2f541052c59d6011680c2688bf347e54",
     ".agents/skills/swarm-supervisor/SKILL.md": "5cbd3f3267944b9e29a0255459850388d080865c681363ccbb936d2080b18493",
-    ".agents/workflows/brainstorm-idea.md": "6ed14a4b7b2120f28c13d5ad2fb5e5fffab87a15f15c5eaa73c5eccec2c69e74",
-    ".agents/workflows/brainstorm-phase.md": "8b013244611beb88803a9d1c2a003a4c3aa29cb83c236c65ce4871186574c0e2",
-    ".agents/workflows/complete-phase.md": "e978ee364b7588715982cbd031de1deb8f423daf325f0b068dce21c6118f3c4a",
+    ".agents/workflows/brainstorm-idea.md": "740006cede42d07f793bec11fa87c76845c8caaa2156b252ac98fb795f059d5a",
+    ".agents/workflows/brainstorm-phase.md": "4055e48f6b3addfa9490fcf8417ec20bf3b4e588574a155a1ced943524d1283d",
+    ".agents/workflows/complete-phase.md": "fffb2bb2391a471e50be56ce237322786feb096ae6192a04798a6b0941ee6349",
     ".agents/workflows/continue.md": "e1ee768a3ff36d6a4c00e2d5226e9cdb8fff8746db4f2bc90e8a5dafe100c08c",
     ".agents/workflows/dispatch.md": "9ebf4ebb8ff7848c0b5d8316e29bdd6b55a29c1971e67797b3785d888489782b",
     ".agents/workflows/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
@@ -29,19 +29,19 @@
     ".agents/workflows/review.md": "2c732dea693481f1223d81decdaaf7b3c813e164d1b848623911995a7299bbfc",
     ".agents/workflows/scout.md": "09070c09413821d2c89cb8788fa5cd58a2b8824c9826c8966449a5728b8c3b26",
     ".agents/workflows/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
-    ".agents/workflows/start-phase.md": "4e3c9b7273fb6d2ae2c9fde681043ee33ec4b7ea00d03e7ab0358cc041f7d728",
-    ".agents/workflows/start-project.md": "2f77ceb9b9632fec5aacacfd4fda0e4459dd4c927c14a8f20ff621fdf4b258b0",
+    ".agents/workflows/start-phase.md": "b4c2ed57b2ce47f5573d59e3f861b8b797cfd2ac843eb62dac38185ca909db9c",
+    ".agents/workflows/start-project.md": "3094e0a9a2d12a2991f7fccdc1bdaa5b3ca80a5335eea7fc722e4a186c51b96f",
     ".agents/workflows/swarm.md": "8cb40729932ff77b6f537e11349dad4d4706b951d58881c4d57d72ec3b264fe6",
     ".agents/workflows/sync-docs.md": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b",
     ".agents/workflows/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".agents/workflows/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
-    ".agents/workflows/validate.md": "59cfac41de80bd8312f175d56e08634685a62527086600dd18bc13eaf16a8911",
+    ".agents/workflows/validate.md": "a563182af4b2bb63ce7f0eb9ebe0e62818ef8d33ae08b46ca69811a5bbb110e8",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
-    ".githooks/contract.js": "1eaba39ce9c4dac98ef85625371325eee553c70c942927c213d487610ec8ed0c",
+    ".githooks/contract.js": "3399f213f18a578fc2c6500ff532f780d6c3e0d3f07073bf1690eb93ebfb03a1",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "b907d86107b7522c3ae7eaf2f275b2a06be1fb14142f70700a9393fee2a123fa",
+    ".githooks/run-check.js": "d81e855e432c390a11351e334d19a5ae123fa24c57f91ec346ff9ea4bd3ca769",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "AGENTS.md": "73fd2bdfbff6a731312d48f3bfeec8cc6868516485aab8ee871d738ac31a65af",
+    "AGENTS.md": "61b6ac5847b72855dee883a21b1f095948c9c8958a374a944e35c9986c530e0c",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/antigravity-hook-adapter.sh": "42ca379a46f94a71eabd12d9dff85566bc7bfd46f30e5037e6d912855cc1881b",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
@@ -62,6 +62,7 @@
     "specs/index.md": "1ea68f580e529501673d6f793cc137725254a1a188b6a7d61ade34d3a111d744",
     "specs/phases/README.md": "9e2243b6184e10adcff0dac9b71cabdce9202fe99db10093427898d2eb970d49",
     "specs/phases/index.md": "ae581dbfc0864d24917d3866f1eea379862eadb0db603239e3e5e7e07b031e41",
+    "specs/preferences.md": "d2008a0455b6e8566a68b6151d2c4f484f7b74fbd3d69b80d391e6c895ae0d1e",
     "specs/status.md": "cad2517e8982eb451abbbcac917b3a7e0da698f5144dd87478e3855b86c754cc"
   }
 }
