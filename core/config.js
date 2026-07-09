@@ -52,7 +52,7 @@ const ENUMS = {
   publish_target: ['npm', 'pypi', 'crates-io', 'nuget', 'none', 'custom'],
   git_forge: ['github', 'gitlab', 'bitbucket', 'gitea', 'forgejo', 'bare-ssh'],
   release_flow: ['tag-and-publish', 'tag-and-deploy', 'tag-only', 'custom'],
-  end_state: ['merge-after-yes', 'staging-promotion', 'feature-branch-only'],
+  end_state: ['merge-after-yes', 'staging-promotion', 'feature-branch-only', 'open-pr'],
 };
 
 // Fields the CLI can infer from manifests + git remote. Used by drift detection.

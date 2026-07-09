@@ -167,6 +167,10 @@ function transformCommandsIntoSkills(targetDir, recordManaged) {
 
   let count = 0;
   for (const file of fs.readdirSync(commandsDir)) {
+    // Skip macOS AppleDouble sidecars FIRST: `._complete-phase.md` ends with
+    // `.md`, so an endsWith check alone would mint a `._complete-phase/SKILL.md`
+    // junk skill dir (Phase 27 G4 — the source of the ._* skill-dir litter).
+    if (file.startsWith('._') || file === '.DS_Store') continue;
     if (!file.endsWith('.md')) continue;
     const name = file.replace(/\.md$/, '');
     const body = fs.readFileSync(path.join(commandsDir, file), 'utf8');
@@ -223,3 +227,6 @@ function renderSkillMarkdown(name, description, recipeBody) {
     recipeBody.endsWith('\n') ? recipeBody : recipeBody + '\n',
   ].join('\n');
 }
+
+// Phase 27 G4 — exported for the AppleDouble-filter regression test.
+module.exports.transformCommandsIntoSkills = transformCommandsIntoSkills;

@@ -25,4 +25,9 @@ type: Config
 
 ## Notes
 
-_(none — edit freely)_
+- `end_state` accepts `merge-after-yes` (default) · `staging-promotion` ·
+  `feature-branch-only` · `open-pr` (Phase 27). It drives cleanup timing: when
+  the agent lands on the terminal `branch_flow` branch, `lanes land`/`complete-phase`
+  auto-clean the worktree + branch + state; for the human/forge-merge modes,
+  cleanup defers to `momentum lanes reconcile` (verify-before-clean). This repo
+  uses `merge-after-yes`.
