@@ -6,6 +6,7 @@
  *   - tests/claude-code-regression.test.js
  *   - tests/adapter-codex-fingerprint.test.js
  *   - tests/adapter-antigravity-fingerprint.test.js
+ *   - tests/adapter-opencode-fingerprint.test.js   (TD-009)
  *
  * This is the "capture helper" those tests reference for INTENTIONAL
  * re-snapshots. It installs each adapter into a throwaway `fixture-project`
@@ -35,6 +36,7 @@ const ADAPTERS = [
   { agent: 'claude-code', fixture: 'v0.18.0-claude-code-fingerprint.json' },
   { agent: 'codex', fixture: 'v0.20.4-codex-fingerprint.json' },
   { agent: 'antigravity', fixture: 'v0.20.4-antigravity-fingerprint.json' },
+  { agent: 'opencode', fixture: 'v0.28.0-opencode-fingerprint.json' }, // TD-009
 ];
 
 function fingerprintInstall(targetDir) {

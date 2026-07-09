@@ -777,9 +777,18 @@ function detectMemberAgent(repoPath) {
     const m = JSON.parse(
       fs.readFileSync(path.join(repoPath, '.momentum', 'installed.json'), 'utf8'),
     );
-    if (m && m.agent) return m.agent;
+    // ADR-0007: the lock is `{ agents: { <id>: … } }`; the pre-0007 lock was
+    // `{ agent }`. Read the map first (else every AGENTS.md agent — opencode,
+    // Antigravity, Codex — falls through to the `AGENTS.md ⇒ codex` heuristic
+    // below and is misidentified). ADR-0011.
+    if (m && m.agents && typeof m.agents === 'object') {
+      const ids = Object.keys(m.agents);
+      if (ids.length) return ids.includes('claude-code') ? 'claude-code' : ids.sort()[0];
+    }
+    if (m && m.agent) return m.agent; // legacy single-agent lock
   } catch (_e) { /* fall through to heuristic */ }
   if (fs.existsSync(path.join(repoPath, '.codex'))) return 'codex';
+  if (fs.existsSync(path.join(repoPath, '.opencode'))) return 'opencode';
   if (fs.existsSync(path.join(repoPath, '.claude'))) return 'claude-code';
   if (
     fs.existsSync(path.join(repoPath, '.agents', 'hooks.json')) ||
@@ -1297,6 +1306,7 @@ module.exports = {
   ensurePointerInjected,
   stripPointer,
   findPrimaryInstructionFile,
+  detectMemberAgent,
   sanitizeId,
   POINTER_BEGIN,
   POINTER_END,

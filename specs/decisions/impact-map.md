@@ -105,7 +105,18 @@ entry carries matching `Topics:`.
 | tier-2 | core/specs-templates/specs/architecture/ecosystem.md | What's NOT in Tier 1 |
 | tier-2 | specs/planning/roadmap.md | Timeline |
 | instructions | specs/decisions/0004-single-source-instruction-generation.md | Decision |
+| instructions | specs/decisions/0011-instruction-variation-model.md | Decision |
 | instructions | specs/status.md | Summary |
+| instructions | core/instructions/README.md | The three tiers |
+| variation-manifest | specs/decisions/0011-instruction-variation-model.md | Decision |
+| variation-manifest | core/instructions/README.md | manifest.json schema |
+| variation-manifest | scripts/generate-instructions.js |  |
+| neutral-spine | specs/decisions/0011-instruction-variation-model.md | Decision |
+| neutral-spine | core/instructions/rules-body.md |  |
+| neutral-spine | tests/instruction-generation.test.js |  |
+| agent-neutral | specs/decisions/0011-instruction-variation-model.md | Decision |
+| surface-delta | adapters/codex/instructions/surfaces.md |  |
+| ecosystem-detection | bin/ecosystem.js |  |
 | opencode-adapter | core/adapter-capabilities.md | Matrix |
 | opencode-adapter | core/adapter-parity-matrix.md | (all) |
 | opencode-adapter | specs/planning/roadmap.md | Timeline |

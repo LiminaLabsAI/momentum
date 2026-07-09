@@ -719,7 +719,46 @@ function resolveAdapterSource(srcRoot, adapterDir, fileSpec) {
   return path.join(base, ...fileSpec.source);
 }
 
-function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstruction) {
+/**
+ * ADR-0011 — the raw primary-instruction template content for `agent`.
+ * A claude-md agent (and a lone installed agents-md agent) gets the static
+ * committed template. When MORE THAN ONE agents-md agent is installed, AGENTS.md
+ * is COMPOSED — the neutral spine once + one integration section per installed
+ * AGENTS.md agent — so switching or running several agents never drops an
+ * integration (fixes the same-path collision). Project name is not yet rendered.
+ */
+function resolvePrimaryInstructionContent(srcRoot, targetDir, agent, srcPath) {
+  const readStatic = () => fs.readFileSync(srcPath, 'utf8');
+  let compose;
+  try {
+    compose = require('../core/lib/instruction-compose');
+  } catch (_e) {
+    return readStatic();
+  }
+  let manifest;
+  try {
+    manifest = compose.readManifest(srcRoot, agent);
+  } catch (_e) {
+    return readStatic(); // unknown / manifest-less agent → static template
+  }
+  if (manifest.surface !== 'agents-md') return readStatic(); // claude-md → static
+
+  // The set of installed AGENTS.md agents ∪ the one being (re)installed.
+  const valid = new Set(compose.discoverAgents(srcRoot));
+  const ids = new Set(valid.has(agent) ? [agent] : []);
+  const state = loadInstalledState(targetDir);
+  for (const id of Object.keys(state.agents || {})) {
+    if (!valid.has(id)) continue;
+    try {
+      if (compose.readManifest(srcRoot, id).surface === 'agents-md') ids.add(id);
+    } catch (_e) { /* skip an agent we can't read */ }
+  }
+  const sorted = [...ids].sort();
+  if (sorted.length <= 1) return readStatic(); // N=1 → static committed template
+  return compose.composeInstruction(srcRoot, sorted); // N>1 → composed
+}
+
+function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstruction, agent) {
   if (!primaryInstruction) return null;
   const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
@@ -733,7 +772,7 @@ function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
       return 'added';
     }
     const rendered = renderProjectName(
-      fs.readFileSync(srcPath, 'utf8'),
+      resolvePrimaryInstructionContent(srcRoot, targetDir, agent, srcPath),
       getProjectName(targetDir)
     );
     fs.mkdirSync(path.dirname(destPath), { recursive: true });
@@ -745,7 +784,7 @@ function installPrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   return 'skipped';
 }
 
-function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstruction) {
+function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstruction, agent) {
   if (!primaryInstruction) return null;
   const srcPath = resolveAdapterSource(srcRoot, adapterDir, primaryInstruction);
   const destPath = path.join(targetDir, ...primaryInstruction.destination);
@@ -753,12 +792,15 @@ function upgradePrimaryInstruction(srcRoot, targetDir, adapterDir, primaryInstru
   const projectName = getProjectName(targetDir);
   recordManaged(destPath); // managed (marker-owned)
 
+  // ADR-0011: compose AGENTS.md across all installed AGENTS.md agents.
+  const rawContent = resolvePrimaryInstructionContent(srcRoot, targetDir, agent, srcPath);
+
   console.log(`→ Upgrading ${label}...`);
   if (primaryInstruction.markerAware) {
-    return upgradeMarkedFile(srcPath, destPath, label, targetDir, projectName);
+    return upgradeMarkedFile(srcPath, destPath, label, targetDir, projectName, rawContent);
   }
 
-  const srcContent = renderProjectName(fs.readFileSync(srcPath, 'utf8'), projectName);
+  const srcContent = renderProjectName(rawContent, projectName);
   const relDest = path.relative(targetDir, destPath);
   if (!fileExists(destPath)) {
     if (_dryRun) {
@@ -895,11 +937,14 @@ function partitionByMarker(content) {
  *
  * Returns one of: 'added', 'updated', 'unchanged', 'migrated'.
  */
-function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
+function upgradeMarkedFile(srcPath, destPath, label, root, projectName, srcContentRaw) {
   const rel = path.relative(root || process.cwd(), destPath);
   recordManaged(destPath); // managed (marker-owned) in all branches
   const render = (content) =>
     projectName ? renderProjectName(content, projectName) : content;
+  // ADR-0011: callers may pass composed content (multi-agent AGENTS.md); else
+  // read the static committed template.
+  const rawSrc = srcContentRaw != null ? srcContentRaw : fs.readFileSync(srcPath, 'utf8');
 
   if (!fileExists(destPath)) {
     if (_dryRun) {
@@ -907,12 +952,12 @@ function upgradeMarkedFile(srcPath, destPath, label, root, projectName) {
       return 'added';
     }
     fs.mkdirSync(path.dirname(destPath), { recursive: true });
-    fs.writeFileSync(destPath, render(fs.readFileSync(srcPath, 'utf8')));
+    fs.writeFileSync(destPath, render(rawSrc));
     console.log(`  + added:    ${rel}`);
     return 'added';
   }
 
-  const srcContent = render(fs.readFileSync(srcPath, 'utf8'));
+  const srcContent = render(rawSrc);
   const destContent = fs.readFileSync(destPath, 'utf8');
   const destParts = partitionByMarker(destContent);
 
@@ -1215,7 +1260,7 @@ function init(targetDir, agent, opts = {}) {
   console.log('→ Inferring project config...');
   installConfig(target, { dryRun: _dryRun });
 
-  installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
+  installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction, agent);
 
   // Adapter overlay — per-agent commands/agent-rules/scripts (additive)
   applyOverlay(adapterDir, target, dests, { backup: true, root: target });
@@ -1381,7 +1426,8 @@ function upgrade(targetDir, agent, opts = {}) {
     src,
     target,
     adapterDir,
-    adapter.primaryInstruction
+    adapter.primaryInstruction,
+    agent
   );
 
   if (hadPointerBlock && !_dryRun) {

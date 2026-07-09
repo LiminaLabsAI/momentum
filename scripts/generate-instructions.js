@@ -1,109 +1,37 @@
 #!/usr/bin/env node
 'use strict';
 
-// Phase 23 / ADR-0004 — single-source instruction generation.
+// Phase 23 / ADR-0004 → Phase 29 / ADR-0011 — single-source instruction generation.
 //
-// Assembles each adapter's primary instruction template from the canonical
-// fragments so the full detailed rules (Red Flags, anti-rationalization
-// counters, Rule 13) ship identically to every agent surface:
+// Thin CLI wrapper around the shipped core/lib/instruction-compose.js (which
+// bin/momentum.js also uses at install time for multi-agent AGENTS.md). This
+// script writes the committed per-agent templates and provides a --check drift
+// guard for the suite.
 //
-//   header (adapter) → navigation (core) → surfaces (adapter, optional)
-//     → rules body (core, vars rendered) → Project Extensions tail
-//
-// Sources:
+// Sources (auto-discovered — add an adapter dir, no edit here):
 //   core/instructions/navigation.md
-//   core/instructions/rules-body.md          ({{TASK_TOOL}} / {{TASK_TOOL_NAME}})
-//   adapters/<agent>/instructions/header.md
-//   adapters/<agent>/instructions/surfaces.md (optional)
-//   adapters/<agent>/instructions/vars.json
+//   core/instructions/rules-body.md                (agent-neutral; no task-tool token)
+//   adapters/<agent>/instructions/manifest.json     (id, displayName, surface, taskTool, …)
+//   adapters/<agent>/instructions/surfaces.md        (optional integration delta)
 //
 // Targets (committed — regenerate, never hand-edit):
-//   core/specs-templates/CLAUDE.md            (claude-code)
-//   adapters/codex/instructions/AGENTS.md
-//   adapters/antigravity/instructions/AGENTS.md
+//   core/specs-templates/CLAUDE.md                  (surface: claude-md)
+//   adapters/<agent>/instructions/AGENTS.md          (surface: agents-md)
 //
 // Usage:  node scripts/generate-instructions.js [--check]
-//   --check: exit 1 if any committed target differs from the generated
-//            content (the drift guard the suite runs); writes nothing.
+//   --check: exit 1 if any committed target differs from generated content.
 
 const fs = require('fs');
 const path = require('path');
 
+const compose = require('../core/lib/instruction-compose');
+
 const ROOT = path.join(__dirname, '..');
+const { MARKER_COMMENT } = compose;
 
-const TARGETS = [
-  { agent: 'claude-code', target: ['core', 'specs-templates', 'CLAUDE.md'] },
-  { agent: 'codex', target: ['adapters', 'codex', 'instructions', 'AGENTS.md'] },
-  { agent: 'antigravity', target: ['adapters', 'antigravity', 'instructions', 'AGENTS.md'] },
-  { agent: 'opencode', target: ['adapters', 'opencode', 'instructions', 'AGENTS.md'] },
-];
-
-const MARKER_COMMENT = [
-  '<!-- momentum-managed (generated) — regenerate with `npm run generate-instructions`',
-  '     in the momentum repo; sources: core/instructions/ + adapters/<agent>/instructions/.',
-  "     Everything above '## Project Extensions' may be replaced by `momentum upgrade`. -->",
-].join('\n');
-
-// Phase 28 (ADR-0010): the instruction file is a projection of specs/. Its
-// `## Project Extensions` section is a managed POINTER to specs/project-rules.md
-// (the single shared home for project-specific prose) — NOT an authoring surface.
-// Kept byte-identical to core/lib/project-rules.js renderPointerBlock().
-const EXTENSIONS_TAIL = [
-  '---',
-  '',
-  '## Project Extensions',
-  '',
-  '<!-- momentum:project-rules-pointer -->',
-  '> **Project-specific rules live in `specs/project-rules.md`** — read it now.',
-  '> Session-start self-audits, project constraints, and any project-specific',
-  '> guidance are there, shared identically by every agent (ADR-0010). This',
-  '> section is a momentum-managed pointer; edit `specs/project-rules.md`, not',
-  '> this file.',
-].join('\n');
-
-function readFragment(rel) {
-  return fs.readFileSync(path.join(ROOT, ...rel), 'utf8');
-}
-
-function renderBody(body, vars) {
-  let out = body;
-  for (const [key, value] of Object.entries(vars)) {
-    out = out.split(`{{${key}}}`).join(value);
-  }
-  const leftover = out.match(/\{\{[A-Z_]+\}\}/);
-  if (leftover) {
-    throw new Error(`unrendered placeholder ${leftover[0]} — add it to vars.json`);
-  }
-  return out;
-}
-
-/** Generate one adapter's instruction content (pure; no I/O beyond reads). */
-function generateFor(agent) {
-  const instrDir = ['adapters', agent, 'instructions'];
-  const header = readFragment([...instrDir, 'header.md']);
-  const vars = JSON.parse(readFragment([...instrDir, 'vars.json']));
-  const navigation = readFragment(['core', 'instructions', 'navigation.md']);
-  const body = renderBody(readFragment(['core', 'instructions', 'rules-body.md']), vars);
-
-  const surfacesPath = path.join(ROOT, ...instrDir, 'surfaces.md');
-  const surfaces = fs.existsSync(surfacesPath) ? fs.readFileSync(surfacesPath, 'utf8') : null;
-
-  const parts = [MARKER_COMMENT, header, navigation];
-  if (surfaces) parts.push(surfaces);
-  parts.push(body, EXTENSIONS_TAIL);
-
-  return parts.map((p) => p.replace(/\s+$/, '')).join('\n\n') + '\n';
-}
-
-/** Generate all targets. Returns [{agent, targetRel, content}]. */
-function generateAll() {
-  return TARGETS.map(({ agent, target }) => ({
-    agent,
-    targetRel: target.join('/'),
-    targetPath: path.join(ROOT, ...target),
-    content: generateFor(agent),
-  }));
-}
+const generateAll = () => compose.generateAll(ROOT);
+const generateFor = (id) => compose.generateFor(ROOT, id);
+const discoverAgents = () => compose.discoverAgents(ROOT);
 
 function main() {
   const check = process.argv.includes('--check');
@@ -125,7 +53,7 @@ function main() {
   if (drift) process.exit(1);
 }
 
-module.exports = { generateAll, generateFor, TARGETS, MARKER_COMMENT };
+module.exports = { generateAll, generateFor, discoverAgents, MARKER_COMMENT };
 
 if (require.main === module) {
   main();
