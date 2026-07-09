@@ -73,3 +73,11 @@ Affects-specs: core/preferences.js, core/preferences-templates.js, core/lib/okf-
 Detail: G0 landed `core/preferences.js` (read/write/infer/derive/cache + founded predicate), `core/preferences-templates.js` (markdown renderer), ADR-0009 (trust layer invariant, mechanisms = preferences), the `Preferences` OKF type, and the renumber sweep (Intelligence → 27, Platform → 28; Phase 25 roadmap drift repaired to Complete v0.32.0). The static `core/specs-templates/specs/preferences.md` was deliberately deferred to G2 so init's copyDir does not drift the 4 adapter fingerprints mid-phase (re-baseline is G2.13). Fail-closed: readPreferences → null when the file is absent (recipes keep npm/GitHub behavior); missing/unknown values → default + stderr warning. 26 library tests; full suite 845 → 871 green.
 
 ---
+
+### [FEATURE] 2026-07-09 — G1: init/upgrade write inferred preferences + hook reads cache
+Topics: preferences, init, upgrade, git-hooks, protected-branches, cache
+Affects-phases: phase-26-project-preferences
+Affects-specs: bin/momentum.js, core/git-hooks/contract.js, core/git-hooks/run-check.js
+Detail: G1 wired `installPreferences()` into init (always infers + writes when the file is absent; re-init leaves authored files alone) and upgrade (founded-only migration; existing files get their derived cache refreshed + drift reported on the inferable fields, never clobbered). The pre-push hook resolves `protected_branches` from `.momentum/preferences-cache.json` via a new pure `protectedBranchesFromCache()` helper in contract.js, falling back to `['main','master','staging']` when the cache is absent/unparseable — enforcement stays real with zero configuration. The cache is gitignored by the existing `.momentum/*` rule (G1.6 no-op). Self-repo `.githooks/contract.js` + `run-check.js` mirrors synced. 20 integration tests (init/upgrade/hook). The 4 adapter fingerprint tests are intentionally red until G2.13 re-baselines (init now writes `specs/preferences.md`).
+
+---

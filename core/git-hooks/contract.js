@@ -28,7 +28,13 @@ const CONTRACT = {
 
   // Direct pushes to these branches are blocked unless the sentinel exists.
   // 'master' included for downstream repos that haven't renamed to 'main'.
+  // Default fallback when no preferences cache is present (ADR-0009).
   protectedBranches: ['main', 'master', 'staging'],
+
+  // Phase 26 — derived preferences cache read by the pre-push hook to resolve
+  // the protected-branch list for THIS project (ADR-0009). Gitignored state,
+  // not content. Absent/unparseable → fall back to `protectedBranches` above.
+  preferencesCache: '.momentum/preferences-cache.json',
 
   // Canonical Verification-Evidence heading in retrospective.md (Rule 12).
   // The same heading gates ad-hoc records (specs/adhoc/<id>/record.md).
@@ -129,6 +135,21 @@ function branchIsProtected(branch, list) {
 }
 
 /**
+ * Phase 26 (ADR-0009) — resolve the protected-branch list from a parsed
+ * preferences cache object. Returns the cache's `protected_branches` when it
+ * is a non-empty array, else null (caller falls back to the hardcoded
+ * CONTRACT.protectedBranches). Pure — no fs.
+ * @param {object|null} cache
+ * @returns {string[]|null}
+ */
+function protectedBranchesFromCache(cache) {
+  if (cache && Array.isArray(cache.protected_branches) && cache.protected_branches.length) {
+    return cache.protected_branches.map((b) => String(b)).filter(Boolean);
+  }
+  return null;
+}
+
+/**
  * True when `content` (a retrospective.md or ad-hoc record) has a non-empty
  * `## Verification Evidence` section — i.e. ≥1 non-blank, non-heading line
  * before the next heading.
@@ -171,6 +192,7 @@ module.exports = {
   tagFromRef,
   isReleaseTag,
   branchIsProtected,
+  protectedBranchesFromCache,
   retroHasEvidence,
   parsePrePushLine,
 };

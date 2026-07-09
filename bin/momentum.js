@@ -451,6 +451,61 @@ function migrateFoundationDocs(srcRoot, target) {
   return result;
 }
 
+/**
+ * Phase 26 — Project Preferences (ADR-0009).
+ *
+ * init: after the specs skeleton, infer + write `specs/preferences.md` and the
+ * derived `.momentum/preferences-cache.json` (only when the file is absent —
+ * re-init leaves an authored file alone).
+ *
+ * upgrade: write inferred preferences for FOUNDED projects only (charter +
+ * roadmap exist — ADR-0008); unfounded projects author them at /start-project.
+ * When the file exists, refresh the derived cache from the content source of
+ * truth and report any drift on the machine-inferable fields (never clobber
+ * user edits).
+ *
+ * specs/ is user content — the preferences file is NOT recorded in the managed
+ * manifest (orphan cleanup must never touch it). The cache is gitignored by the
+ * existing `.momentum/*` rule.
+ */
+function installPreferences(target, { dryRun, upgradeMode } = {}) {
+  const prefsLib = require('../core/preferences');
+  const specsDir = path.join(target, 'specs');
+  if (!fileExists(specsDir)) return; // no specs skeleton → nothing to do
+  const prefsPath = path.join(specsDir, 'preferences.md');
+  const exists = fileExists(prefsPath);
+
+  if (!exists) {
+    // upgrade only writes preferences for founded projects (migration).
+    if (upgradeMode && !prefsLib.isFounded(target)) return;
+    const prefs = prefsLib.inferPreferences(target);
+    if (dryRun) {
+      console.log(`  ✋ would add:     specs/preferences.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
+      return;
+    }
+    prefsLib.writePreferences(specsDir, prefs, { inferred: true });
+    prefsLib.writePreferencesCache(target, prefs);
+    console.log(`  + added:    specs/preferences.md (inferred: language=${prefs.language}, forge=${prefs.git_forge})`);
+    return;
+  }
+
+  // File exists: refresh the derived cache from the content source of truth.
+  const stored = prefsLib.readPreferences(specsDir);
+  if (!stored) return; // unparseable — leave it (user content)
+  if (!dryRun) prefsLib.writePreferencesCache(target, stored);
+
+  // Drift detection (upgrade only, founded only): report changed inferable
+  // fields. Never clobber user edits — the user re-infers by deleting the file
+  // or editing by hand.
+  if (upgradeMode && prefsLib.isFounded(target)) {
+    const inferred = prefsLib.inferPreferences(target);
+    const drifted = prefsLib.INFERABLE_KEYS.filter((k) => inferred[k] !== stored[k]);
+    if (drifted.length) {
+      console.log(`  ⚠️  specs/preferences.md drifted from manifests on: ${drifted.join(', ')} (edit by hand or delete the file + re-run 'momentum upgrade')`);
+    }
+  }
+}
+
 function removeOrphans(targetDir, prevManifest, currentSet, opts = {}) {
   if (!prevManifest || !Array.isArray(prevManifest.managedFiles)) return [];
   const currentRel = new Set(
@@ -1042,6 +1097,10 @@ function init(targetDir, agent, opts = {}) {
     record: false, // specs are install-once / user-owned — never orphan them
   });
 
+  // Phase 26 — infer + write specs/preferences.md + the derived hook cache.
+  console.log('→ Inferring project preferences...');
+  installPreferences(target, { dryRun: _dryRun });
+
   installPrimaryInstruction(src, target, adapterDir, adapter.primaryInstruction);
 
   // Adapter overlay — per-agent commands/agent-rules/scripts (additive)
@@ -1242,6 +1301,12 @@ function upgrade(targetDir, agent, opts = {}) {
   if (!foundationResult.removed.length && !foundationResult.wouldRemove.length) {
     console.log('  = no untouched placeholders (foundation docs are authored or absent)');
   }
+
+  // Phase 26 — project preferences (ADR-0009). Founded projects get an
+  // inferred specs/preferences.md on first upgrade; existing files get their
+  // derived cache refreshed + drift reported (never clobbered).
+  console.log('→ Inferring project preferences...');
+  installPreferences(target, { dryRun: _dryRun, upgradeMode: true });
 
   // Orphan cleanup — only remove files this agent's prior version installed
   // that this version no longer ships. Other agents' files are untouched.

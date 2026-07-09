@@ -46,6 +46,25 @@ function commitMsg(msgFile) {
 }
 
 // ── pre-push ──────────────────────────────────────────────────────────────────
+
+/**
+ * Phase 26 (ADR-0009) — resolve this project's protected-branch list from the
+ * derived preferences cache (.momentum/preferences-cache.json). Falls back to
+ * the hardcoded CONTRACT.protectedBranches when the cache is absent or
+ * unparseable, so enforcement stays real with zero configuration.
+ */
+function resolveProtectedBranches(root) {
+  const cachePath = path.join(root, C.CONTRACT.preferencesCache);
+  try {
+    const cache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+    const list = C.protectedBranchesFromCache(cache);
+    if (list) return list;
+  } catch {
+    /* absent / unparseable — fall back */
+  }
+  return C.CONTRACT.protectedBranches;
+}
+
 function findLatestRetro(root) {
   const specsDir = path.join(root, 'specs');
   if (!fs.existsSync(specsDir)) return null;
@@ -91,6 +110,7 @@ function prePush() {
   }
   const root = repoRoot();
   const lines = input.split('\n').map((l) => l.trim()).filter(Boolean);
+  const protectedList = resolveProtectedBranches(root);
 
   for (const line of lines) {
     const parsed = C.parsePrePushLine(line);
@@ -99,7 +119,7 @@ function prePush() {
 
     // (1) Block direct push to a protected branch without the approval sentinel.
     const branch = C.branchFromRef(parsed.remoteRef);
-    if (C.branchIsProtected(branch)) {
+    if (C.branchIsProtected(branch, protectedList)) {
       const sentinel = path.join(root, C.CONTRACT.mergeApprovedSentinel);
       if (fs.existsSync(sentinel)) {
         try {

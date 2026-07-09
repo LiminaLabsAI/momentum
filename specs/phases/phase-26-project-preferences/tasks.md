@@ -16,16 +16,16 @@ type: Tasks
 - [x] G0.9 Commit G0
 
 ## Group 1 — init + upgrade + hook cache
-- [ ] G1.1 `momentum init` writes inferred `specs/preferences.md` after skeleton
-- [ ] G1.2 `momentum upgrade` writes inferred prefs for founded projects only
-- [ ] G1.3 `momentum upgrade` re-infers on manifest drift (reports changed fields)
-- [ ] G1.4 `momentum init`/`upgrade` writes `.momentum/preferences-cache.json`
-- [ ] G1.5 `pre-push` hook reads cache for protected_branches (falls back to defaults)
-- [ ] G1.6 `.gitignore` refresh includes `preferences-cache.json`
-- [ ] G1.7 Tests: `tests/preferences-init.test.js`
-- [ ] G1.8 Tests: `tests/preferences-upgrade.test.js`
-- [ ] G1.9 Tests: `tests/git-hooks-preferences.test.js`
-- [ ] G1.10 Commit G1
+- [x] G1.1 `momentum init` writes inferred `specs/preferences.md` after skeleton
+- [x] G1.2 `momentum upgrade` writes inferred prefs for founded projects only
+- [x] G1.3 `momentum upgrade` re-infers on manifest drift (reports changed fields)
+- [x] G1.4 `momentum init`/`upgrade` writes `.momentum/preferences-cache.json`
+- [x] G1.5 `pre-push` hook reads cache for protected_branches (falls back to defaults)
+- [x] G1.6 `.gitignore` refresh includes `preferences-cache.json` (no-op: `.momentum/*` already covers it)
+- [x] G1.7 Tests: `tests/preferences-init.test.js`
+- [x] G1.8 Tests: `tests/preferences-upgrade.test.js`
+- [x] G1.9 Tests: `tests/git-hooks-preferences.test.js`
+- [x] G1.10 Commit G1
 
 ## Group 2 — recipe templates + BUG-024 fix
 - [ ] G2.1 BUG-024: drop `gh release create` from `/start-phase` hard-stop
