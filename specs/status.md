@@ -98,7 +98,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 30e — Ecosystem Team Mode | `phase-30e-ecosystem-team-mode` | In Progress | Setup done; G0 (ADR-0015 + contracts) next. Closes ENH-065. Target v0.39.0 |
+| 30e — Ecosystem Team Mode | `phase-30e-ecosystem-team-mode` | In Progress (paused, resume fresh) | **G0 ✅** (ADR-0015 + contracts, suite 1008/1008). **NEXT: G1 (remote-URL members) ∥ G2 (ecosystem-state→fragments) → G3 (RISKY swarm leases-as-source-of-truth — show diff before applying) → G4 (docs/reader/demo/fingerprints) → G5 (e2e + release v0.39.0).** Closes ENH-065. Target v0.39.0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
