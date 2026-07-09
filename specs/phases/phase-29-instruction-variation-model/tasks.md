@@ -5,9 +5,9 @@ type: Tasks
 # Phase 29 — Tasks
 
 ## Group 0 — Model + ADR
-- [ ] 0.1 ADR-0011 written (three-tier model, neutral-spine invariant, composition, ADR-0004 reconciliation)
-- [ ] 0.2 `manifest.json` schema defined + documented in `core/instructions/README.md`
-- [ ] 0.3 Group 0 history entries logged; impact-map updated
+- [x] 0.1 ADR-0011 written (three-tier model, neutral-spine invariant, composition, ADR-0004 reconciliation)
+- [x] 0.2 `manifest.json` schema defined + documented in `core/instructions/README.md`
+- [x] 0.3 Group 0 history entries logged; impact-map updated
 
 ## Group 1 — Generator restructure
 - [ ] 1.1 `manifest.json` added to all 4 adapters; `header.md`/`vars.json` retired

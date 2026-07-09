@@ -4,6 +4,20 @@ type: History
 
 # Phase 29 — History
 
+### [DECISION] 2026-07-10 — ADR-0011 authored + accepted (Group 0)
+Topics: instructions, variation-manifest, neutral-spine, agent-neutral
+Affects-phases: phase-29-instruction-variation-model
+Affects-specs: specs/decisions/0011-instruction-variation-model.md, core/instructions/README.md
+Detail: ADR-0011 (extends ADR-0004; relates ADR-0007, ADR-0010) records the
+three-tier projection model, the byte-identical neutral-spine invariant, the
+per-agent manifest.json schema, adapter auto-discovery (OCP), and AGENTS.md
+multi-agent composition (static N=1 template preserved for fingerprints).
+Schema documented in core/instructions/README.md; decisions index + impact-map
+updated. No code/generated files touched this group — spine unchanged; suite
+stays 963.
+
+---
+
 ### [DECISION] 2026-07-10 — Phase 29 scoped: instruction variation model
 Topics: instructions, adapters, agent-neutral, projection, SOLID
 Affects-phases: phase-29-instruction-variation-model

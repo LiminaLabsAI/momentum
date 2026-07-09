@@ -11,4 +11,5 @@
 * [ADR-0008: Foundation Docs Are Authored, Not Scaffolded](/decisions/0008-foundation-docs-authored-not-scaffolded.md)
 * [ADR-0009: The Trust Layer Is Invariant-By-Default, Mechanisms Are Preferences](/decisions/0009-trust-layer-invariant-mechanisms-preferences.md)
 * [ADR-0010: The Agent Instruction File Is a Projection of `specs/`, Never Authored](/decisions/0010-instruction-file-is-a-projection.md)
+* [ADR-0011: The Instruction File Is a Projection of (Principal Constants × Per-Agent Variation Manifest)](/decisions/0011-instruction-variation-model.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.
