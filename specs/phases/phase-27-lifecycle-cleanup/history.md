@@ -90,6 +90,14 @@ Detail: Operator raised a PR-review release flow (agent pushes + opens PR, human
 
 ---
 
+### [FEATURE] 2026-07-09 — G4: upgrade/transform hygiene — `._*` leak fixed at source + `doctor --clean`
+Topics: upgrade-hygiene, appledouble, skills-transform, doctor
+Affects-phases: phase-27-lifecycle-cleanup
+Affects-specs: adapters/codex/adapter.js, adapters/opencode/adapter.js, bin/antigravity.js, bin/state-commands.js
+Detail: Root cause of the `._<name>/SKILL.md` junk found: the codex (adapter.js:170) and opencode (adapter.js:176) skills generators filtered on `!file.endsWith('.md')` — but `._complete-phase.md` ENDS with `.md`, so AppleDouble sidecars minted junk skill dirs. Fixed with a `startsWith('._') || '.DS_Store'` skip FIRST in both, plus the antigravity plugin-pack copyDirRecursive. `momentum doctor` gains `--clean [--execute]`: sweeps stray AppleDouble + momentum-scoped `.bak` litter + orphan `.claude/worktrees/*` dirs + `git worktree prune` (dry-run default; plain `doctor` shows a one-line advisory count). `.bak` files are intentional upgrade safety-backups, so they are kept until the user sweeps. +3 tests; 947 → 950; no fingerprint drift (source-only).
+
+---
+
 ### [FEATURE] 2026-07-09 — G3: reconcile + human handshake + open-pr end_state + full-cleanup close
 Topics: reconcile, handshake, open-pr, lanes-close, ENH-063, session-audit
 Affects-phases: phase-27-lifecycle-cleanup

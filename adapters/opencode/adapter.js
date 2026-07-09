@@ -173,6 +173,8 @@ function ensureCommandFrontmatter(targetDir) {
   }
   let count = 0;
   for (const file of fs.readdirSync(commandsDir)) {
+    // Skip AppleDouble sidecars first — `._x.md` ends with `.md` (Phase 27 G4).
+    if (file.startsWith('._') || file === '.DS_Store') continue;
     if (!file.endsWith('.md')) continue;
     const filePath = path.join(commandsDir, file);
     const body = fs.readFileSync(filePath, 'utf8');

@@ -35,11 +35,11 @@ type: Tasks
 - [x] G3.7 Verify: `npm test` green — **947/947 (+4)**; 4 fingerprints re-baselined (start-phase + complete-phase drift)
 
 ## Group 4 — Upgrade / transform hygiene
-- [ ] G4.1 Skills transform filters `._*`/`.DS_Store` inputs (no `._<name>/SKILL.md` junk)
-- [ ] G4.2 Upgrade `.bak` artifacts cleaned/confined; `.gitignore` rule as needed
-- [ ] G4.3 `momentum doctor` sweep — stray `._*`/`.bak` + orphan-worktree prune (dry-run default, approval-gated)
-- [ ] G4.4 Tests: upgrade leaves zero `._*`/`.bak`; doctor removes seeded cruft; transform ignores `._*`
-- [ ] G4.5 Verify: `npm test` green
+- [x] G4.1 Skills transform filters `._*`/`.DS_Store` (codex:170 + opencode:176 accepted `._x.md`; + antigravity copyDirRecursive) — root cause of the `._<name>/SKILL.md` junk
+- [x] G4.2 `.bak` are intentional upgrade safety-backups (kept by design); `doctor --clean` is the confined sweep that removes the litter when the user is satisfied
+- [x] G4.3 `momentum doctor --clean [--execute]` sweep — stray `._*`/`.bak` + orphan `.claude/worktrees/*` + `git worktree prune`; dry-run default; advisory line in plain `doctor`
+- [x] G4.4 Tests: `upgrade-hygiene.test.js` — transform skips `._*.md`; fresh install carries no AppleDouble; doctor sweep finds+removes seeded cruft
+- [x] G4.5 Verify: `npm test` green — **950/950 (+3)**; no fingerprint drift (source-only changes)
 
 ## Group 5 — Verification & release (dogfood)
 - [ ] G5.1 Per-`end_state` e2e cleanup matrix (auto + reconcile paths)

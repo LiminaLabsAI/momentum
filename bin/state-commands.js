@@ -129,8 +129,103 @@ function cmdLeave(args) {
   console.log(`✓ Left "${reg.ecosystemName}". Now standalone.`);
 }
 
+// ── Phase 27 G4 — stray-artifact sweep (`momentum doctor --clean`) ──────────
+
+const BAK_ROOTS = ['.claude', '.agents', '.opencode', '.codex', '.githooks', 'scripts'];
+
+/** Bounded walk collecting AppleDouble sidecars anywhere (always junk). */
+function walkAppleDouble(dir, acc, depth) {
+  if (depth > 8) return;
+  let entries;
+  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+  for (const e of entries) {
+    if (e.name === '.git' || e.name === 'node_modules') continue;
+    const abs = path.join(dir, e.name);
+    if (e.name.startsWith('._') || e.name === '.DS_Store') { acc.appleDouble.push(abs); continue; }
+    if (e.isDirectory()) walkAppleDouble(abs, acc, depth + 1);
+  }
+}
+
+/** `.bak` files under a momentum-managed root only (never user backups). */
+function collectBaks(dir, acc, depth) {
+  if (depth > 8) return;
+  let entries;
+  try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+  for (const e of entries) {
+    const abs = path.join(dir, e.name);
+    if (e.isDirectory()) collectBaks(abs, acc, depth + 1);
+    else if (e.name.endsWith('.bak')) acc.baks.push(abs);
+  }
+}
+
+/** Find stray artifacts: AppleDouble, momentum `.bak` litter, orphan worktrees. */
+function findStrayArtifacts(root) {
+  const { spawnSync } = require('child_process');
+  const acc = { appleDouble: [], baks: [], prunableWorktrees: [], orphanWorktreeDirs: [] };
+  walkAppleDouble(root, acc, 0);
+  for (const sub of BAK_ROOTS) collectBaks(path.join(root, sub), acc, 0);
+  for (const f of ['CLAUDE.md.bak', 'AGENTS.md.bak']) {
+    const p = path.join(root, f);
+    if (fs.existsSync(p)) acc.baks.push(p);
+  }
+  // registered worktrees whose directory is gone → prunable
+  const registered = new Set();
+  const wl = spawnSync('git', ['worktree', 'list', '--porcelain'], { cwd: root, encoding: 'utf8' });
+  if (wl.status === 0) {
+    for (const line of wl.stdout.split('\n')) {
+      if (line.startsWith('worktree ')) {
+        const p = line.slice('worktree '.length);
+        registered.add(realpathOf(p));
+        if (p !== root && !fs.existsSync(p)) acc.prunableWorktrees.push(p);
+      }
+    }
+  }
+  // .claude/worktrees/* leftover dirs not registered as git worktrees
+  const cw = path.join(root, '.claude', 'worktrees');
+  try {
+    for (const name of fs.readdirSync(cw)) {
+      const abs = path.join(cw, name);
+      if (fs.statSync(abs).isDirectory() && !registered.has(realpathOf(abs))) acc.orphanWorktreeDirs.push(abs);
+    }
+  } catch { /* no .claude/worktrees */ }
+  return acc;
+}
+
+function sweepStrayArtifacts(root, execute) {
+  const { spawnSync } = require('child_process');
+  const stray = findStrayArtifacts(root);
+  const total = stray.appleDouble.length + stray.baks.length
+    + stray.prunableWorktrees.length + stray.orphanWorktreeDirs.length;
+  const rel = (p) => path.relative(root, p) || p;
+
+  console.log(execute ? 'Cleaning stray artifacts:' : 'Stray artifacts (dry-run — pass --execute to remove):');
+  if (total === 0) { console.log('  ✓ none — tree is clean'); return 0; }
+
+  for (const p of stray.appleDouble) {
+    if (execute) { try { fs.rmSync(p, { recursive: true, force: true }); } catch { /* ignore */ } }
+    console.log(`  ${execute ? '✓ removed' : '·'} AppleDouble: ${rel(p)}`);
+  }
+  for (const p of stray.baks) {
+    if (execute) { try { fs.rmSync(p, { force: true }); } catch { /* ignore */ } }
+    console.log(`  ${execute ? '✓ removed' : '·'} .bak: ${rel(p)}`);
+  }
+  for (const p of stray.orphanWorktreeDirs) {
+    if (execute) { try { fs.rmSync(p, { recursive: true, force: true }); } catch { /* ignore */ } }
+    console.log(`  ${execute ? '✓ removed' : '·'} orphan worktree dir: ${rel(p)}`);
+  }
+  if (stray.prunableWorktrees.length) {
+    if (execute) spawnSync('git', ['worktree', 'prune'], { cwd: root });
+    for (const p of stray.prunableWorktrees) console.log(`  ${execute ? '✓ pruned' : '·'} stale worktree ref: ${rel(p)}`);
+  }
+  console.log(execute ? `✓ cleaned ${total} stray artifact(s)` : `${total} stray artifact(s) — rerun with --execute to remove`);
+  return 0;
+}
+
 function cmdDoctor(args) {
-  void args;
+  // Phase 27 G4 — `momentum doctor --clean [--execute]` sweeps stray artifacts.
+  if (args && args.includes('--clean')) {
+    return sweepStrayArtifacts(realpathOf(process.cwd()), args.includes('--execute'));
+  }
   const cwd = realpathOf(process.cwd());
   lib._clearRootCache();
   const state = stateLib.detectState(cwd);
@@ -176,6 +271,17 @@ function cmdDoctor(args) {
     }
   } catch (_err) { /* advisory is best-effort — never block doctor */ }
 
+  // Phase 27 G4 — stray-artifact advisory (best-effort, non-blocking).
+  try {
+    const stray = findStrayArtifacts(cwd);
+    const n = stray.appleDouble.length + stray.baks.length
+      + stray.prunableWorktrees.length + stray.orphanWorktreeDirs.length;
+    if (n > 0) {
+      console.log(`Advisory: ${n} stray artifact(s) (AppleDouble / .bak / orphan worktrees) — run \`momentum doctor --clean\` to review, \`--clean --execute\` to remove.`);
+      console.log('');
+    }
+  } catch { /* best-effort */ }
+
   const transitions = stateLib.availableTransitions(state, reg || {});
   if (transitions.length === 0) {
     console.log('No suggested next steps for this state.');
@@ -215,4 +321,6 @@ module.exports = {
   cmdLeave,
   cmdDoctor,
   formatStateLabel,
+  findStrayArtifacts,
+  sweepStrayArtifacts,
 };

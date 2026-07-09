@@ -1620,6 +1620,7 @@ Ecosystem use — entry/exit commands (run from any repo):
                                       existing ecosystem
   momentum leave                      Detach THIS repo from its ecosystem
   momentum doctor                     Diagnose state + list available transitions
+  momentum doctor --clean [--execute] Sweep stray artifacts (AppleDouble/.bak/orphan worktrees)
   momentum antigravity plugin-pack    Pack momentum skills as a native Antigravity plugin ([--global])
 
 Ecosystem use — operator toolkit (advanced):
