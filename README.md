@@ -227,6 +227,25 @@ One repo, several features in flight, each in its own agent session — momentum
 
 [Read the parallel workstreams guide →](https://trymomentum.github.io/parallel-work/)
 
+## Team mode — N humans, N clones, N repos
+
+Lanes coordinate N sessions on one disk. **Team mode** extends the same story to
+**N humans on N clones sharing one git remote** — no server, no daemon, offline-first.
+It rests on two git-native primitives: **per-actor coordination fragments**
+(`.momentum/team/`, committed and conflict-free by own-prefix construction) and
+**`refs/momentum/*` compare-and-swap** for atomic allocations. `momentum claim` reserves
+a phase/version/backlog-id before you act; `momentum team` gives you a shared board,
+presence, landing turns, reviewer≠author approvals, and cross-machine leases. The
+whole plane runs at the **ecosystem** layer too: remote-URL members (teammates need no
+shared folder layout), a shared attributed active initiative, and cross-machine-safe
+swarm ownership. The layout is a published contract any dashboard can read.
+
+```bash
+bash scripts/demo-team.sh   # two clones + two repos, all local, ~10s, self-cleaning
+```
+
+[Read the team mode guide →](https://trymomentum.github.io/team/)
+
 ## The 13 autonomous rules
 
 Discipline preserved without enforcement overhead. Three of the highest-leverage:

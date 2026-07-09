@@ -33,11 +33,11 @@ status: planned
 - [x] Tests (two-clone swarm ownership; skew can't double-own); commit G3
 
 ## Group 4 — Reader + docs + demo + tidy
-- [ ] Sample third-party contract reader
-- [ ] Docs (site "Team across repos" + developer-guide + README)
-- [ ] Extend `scripts/demo-team.sh` (ecosystem + relay)
-- [ ] `.gitignore` template: `.momentum/team/*.log` ignored
-- [ ] Re-baseline 4 fingerprints (verify zero-drift first); commit G4
+- [x] Sample third-party contract reader (`scripts/read-team-board.js` + test)
+- [x] Docs (site "Team mode" page + nav + developer-guide + README) — site builds 13pp, gate green
+- [x] Extend `scripts/demo-team.sh` (ecosystem + contract reader; runs end-to-end)
+- [x] `.gitignore` template: `.momentum/team/**/*.log` ignored
+- [x] Re-baseline 4 fingerprints (drift = only .gitignore; regenerated); commit G4
 
 ## Group 5 — Verify + release
 - [ ] `tests/ecosystem-team-e2e.test.js` — two-clone multi-repo plane

@@ -57,6 +57,23 @@ G0 before consumers. Extends ADR-0012/0013/0014 (single-repo Team Mode) to the
 multi-repo layer; relates ADR-0001/0002/0003 (lanes) + the ecosystem layer.
 
 ---
+### [FEATURE] 2026-07-10 — G4 complete: contract reader + docs + demo + tidy + fingerprints
+Topics: contract-reader, docs, demo, gitignore, fingerprints, adr-0015
+Affects-phases: phase-30e-ecosystem-team-mode
+Affects-specs: scripts/read-team-board.js, site/src/content/docs/team.md, docs/developer-guide.md, README.md, core/specs-templates/.gitignore
+Detail: (1) scripts/read-team-board.js — a self-contained sample THIRD-PARTY
+reader of the published contract (committed fragments + refs/momentum/*), Node +
+git only, no momentum import; test tests/team-contract-reader.test.js. (2) Docs:
+new site page site/src/content/docs/team.md (Team mode — single-repo + across
+repos), wired into docsNav Orchestration group; developer-guide + README team
+sections; site builds 13 pages incl. /team/, content gate green. (3) Extended
+scripts/demo-team.sh with an ecosystem section (remote-URL member, shared
+attributed active-initiative across two clones, zero-conflict pull) + the reader;
+runs end-to-end. (4) .gitignore template ignores per-machine `.momentum/team/**/*.log`
+(local audit, deferred from 30d). (5) Re-baselined 4 adapter fingerprints (drift =
+only .gitignore, verified via --check before --write). Suite 1026 → 1027.
+
+---
 ### [ARCH_CHANGE] 2026-07-10 — G3 complete: swarm leases-as-source-of-truth (default-on-with-remote)
 Topics: swarm, lease-cas, ref-cas, ownership, liveness, invariance, adr-0015
 Affects-phases: phase-30e-ecosystem-team-mode

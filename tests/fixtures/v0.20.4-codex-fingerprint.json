@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-09",
-    "capturedFrom": "feat-team-integration",
+    "capturedFrom": "phase-30e-ecosystem-team-mode",
     "adapter": "codex",
-    "note": "Phase 30d G1 (ENH-064) — pre-push attributed merge-approval audit line"
+    "note": "Phase 30e G4 — .gitignore ignores per-machine .momentum/team/*.log (ADR-0015)"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -40,7 +40,7 @@
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "b50f84222823a8319eb75cbbf1f76b91fa87aa51f86dbac040774e59a6364c1f",
-    ".gitignore": "95470b5777b4dc7dbb85075b47d45fa763894c78c2f30593e7141a2d9803cda7",
+    ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
     "AGENTS.md": "7ca3824d1e25bfca000e612edc4fc70c74e0da65a2ff09ad56544c2ed364850e",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",

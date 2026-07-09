@@ -12,6 +12,9 @@
 # coordination state; the one exception to the ignored .momentum/.
 !.momentum/team/
 !.momentum/team/**
+# ...but per-machine audit LOGS under team/ stay LOCAL — they are a local trace,
+# not shared coordination state (ADR-0015, deferred from 30d).
+.momentum/team/**/*.log
 
 # Ephemeral agent worktrees (momentum does not manage these — your coding
 # agent creates them; they must never pollute tracked state)
