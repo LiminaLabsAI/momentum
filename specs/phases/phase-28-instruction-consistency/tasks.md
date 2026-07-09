@@ -5,12 +5,12 @@ type: Tasks
 # Phase 28 — Tasks
 
 ## Group 0 — Contract + migration core + BUG-027
-- [ ] G0.1 ADR-0010 — instruction file = projection of specs/; Project Extensions retired as authoring surface
-- [ ] G0.2 `specs/project-rules.md` OKF doc type registered (conformance + templates)
-- [ ] G0.3 `migrateProjectExtensions()` — parse region → drop config-covered → append prose to project-rules.md (idempotent) → replace with pointer; dry-run aware
-- [ ] G0.4 BUG-027 — trailing `|` on the sync-config row in `adapters/{opencode,codex}/instructions/{surfaces,AGENTS}.md`
-- [ ] G0.5 Tests: migration preserves/drops/points/idempotent; BUG-027 rows well-formed
-- [ ] G0.6 Verify: `npm test` green
+- [x] G0.1 ADR-0010 — instruction file = projection of specs/; Project Extensions retired as authoring surface
+- [x] G0.2 `Project Rules` OKF type registered (`core/lib/okf-types.js` — `project-rules.md`)
+- [x] G0.3 `core/lib/project-rules.js` — `migrateProjectExtensions()` (migrate-ALL-never-drop, idempotent, dry-run) + pointer/scaffold renders
+- [x] G0.4 BUG-027 — trailing `|` added to the sync-config row in all 4 `adapters/{opencode,codex}/instructions/{surfaces,AGENTS}.md`
+- [x] G0.5 Tests: `project-rules-migration.test.js` — extract/pointerize/migrate/idempotent + BUG-027 row guard
+- [x] G0.6 Verify: `npm test` green — **956/956 (+5)**; codex+opencode fingerprints re-baselined (BUG-027)
 
 ## Group 1 — upgrade syncs all installed agents (cause #1)
 - [ ] G1.1 `upgrade` (no `--agent`) iterates `installed.json.agents`, refreshes each; `--agent X` still targets one

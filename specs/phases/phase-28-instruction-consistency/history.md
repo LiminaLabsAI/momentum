@@ -50,6 +50,14 @@ Detail: Most of CLAUDE.md's release checklist (gh release create, npm publish) i
 
 ---
 
+### [FEATURE] 2026-07-09 — G0: ADR-0010 + project-rules.js migration core + BUG-027
+Topics: project-rules, migration, okf-type, BUG-027, ADR-0010
+Affects-phases: phase-28-instruction-consistency
+Affects-specs: specs/decisions/0010-instruction-file-is-a-projection.md, core/lib/project-rules.js, core/lib/okf-types.js
+Detail: ADR-0010 accepted. `Project Rules` OKF type registered (okf-types.js: `project-rules.md`). `core/lib/project-rules.js` ships `migrateProjectExtensions()` + `renderPointerBlock`/`renderProjectRules`/`extractAuthoredProse`/`pointerizeContent`. **G0 refinement (safer than the drafted contract):** migration moves ALL authored prose verbatim into project-rules.md — it does NOT auto-drop config-covered release prose. Rationale: reliably identifying "config-covered" from prose is fragile; migrate-ALL is unambiguously lossless, and the config-covered redundancy is neutralized by making `/complete-phase` config-driven (G3), leaving the migrated release checklist as harmless documentation the user can trim. BUG-027 fixed in all 4 adapter templates. 5 tests; 927→956 baseline note: suite 956/956 (was 951 at Phase-27 release; +5 G0). codex+opencode fingerprints re-baselined (BUG-027 AGENTS.md).
+
+---
+
 ### [SCOPE_CHANGE] 2026-07-09 — Fold BUG-027 + flip stale backlog statuses
 Topics: BUG-027, backlog-hygiene, scope
 Affects-phases: phase-28-instruction-consistency

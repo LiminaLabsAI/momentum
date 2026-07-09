@@ -2,7 +2,7 @@
   "meta": {
     "captured": "2026-07-09",
     "adapter": "opencode",
-    "note": "Phase 27 (v0.34.0) re-baseline — recipe changes: start-phase BUG-025 default-branch guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr + confirm→verify→clean handshake; lanes.md reconcile/cleanup docs"
+    "note": "Phase 28 G0 re-baseline — BUG-027 fix: sync-config recipe-table row now ends with a trailing pipe in codex/opencode AGENTS.md"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -44,7 +44,7 @@
     ".opencode/skills/momentum-orient/SKILL.md": "9228cab651fdcabbcda34ca553823ec15247e78992e2ff688c60a60ab8dbcea4",
     ".opencode/skills/momentum-track/SKILL.md": "a27678aced4f3297af922b187ddd60ba12700010f9ff65a4078bcf6a859e60bf",
     ".opencode/skills/momentum-validate/SKILL.md": "7264214df9395be48403df5cee05c02226890c5c277050da96e6ba5500647621",
-    "AGENTS.md": "338552c54b321004b5bbb9ec55447ffc6e18181188f85d01f65461203cfda93c",
+    "AGENTS.md": "22ab5d47b48df311a7d46e094574d43d0f1f932aaed3c5a5746a59d42f9b3808",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

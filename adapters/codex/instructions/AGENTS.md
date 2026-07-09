@@ -48,7 +48,7 @@ The shipped recipe set (one skill per recipe, all under
 | log | Append a manual narrative entry to the history of the phase bound to your branch (fallback: status.md) |
 | migrate | Onboard an existing project into momentum |
 | validate | Check spec structure health |
-| sync-config | Re-infer project shape, show config drift, apply on approval (ENH-062)
+| sync-config | Re-infer project shape, show config drift, apply on approval (ENH-062) |
 | ecosystem | Cross-repo ecosystem coordination |
 | initiative | Manage cross-repo initiatives |
 | session | Append a manual narrative entry to today's ecosystem session log |
