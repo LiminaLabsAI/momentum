@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "feat-team-integration",
     "adapter": "claude-code",
-    "note": "Phase 30d G0 (ENH-064) — momentum claim wired into brainstorm-phase/complete-phase recipes + Rule 15 fragment/CAS mechanism note"
+    "note": "Phase 30d G0 tail (ENH-064) — claim id in /hotfix + .momentum/team negation in installed .gitignore"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,7 +14,7 @@
     ".claude/commands/dispatch.md": "461e6dca4e3bbb45b35862d1434bdc8f888f5151792042c455ae659f9634d673",
     ".claude/commands/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
     ".claude/commands/handoff.md": "c4decc3095a5322402ff637e1dd3f7c29badf5eab71fdb7cf452cd24bcba3a7d",
-    ".claude/commands/hotfix.md": "2699a61bdf5b219f2297a6c1ca95d25e3d63a44e37ed77ffdab88077c4715b12",
+    ".claude/commands/hotfix.md": "9ec5b7a5b1a83cd12e47fbeba44434d60b95c5cfdd52cb44e8430d49dbee20ed",
     ".claude/commands/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
     ".claude/commands/lanes.md": "eebc4a1d97f020fd2754311aaa36db7cbb7da6ba88417b2ed6fc95f32bf09392",
     ".claude/commands/log.md": "b2728ec55d95996cb6c8bbc24411cfd0a99f618e4c0374ac054f6229feac50a6",
@@ -36,7 +36,7 @@
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
-    ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
+    ".gitignore": "95470b5777b4dc7dbb85075b47d45fa763894c78c2f30593e7141a2d9803cda7",
     "CLAUDE.md": "fabea7ed82b443af0534c710ede04fdc360be0bf129351cfbbfe7331f983b6f2",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",

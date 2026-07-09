@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "feat-team-integration",
     "adapter": "codex",
-    "note": "Phase 30d G0 (ENH-064) — momentum claim wired into brainstorm-phase/complete-phase recipes + Rule 15 fragment/CAS mechanism note"
+    "note": "Phase 30d G0 tail (ENH-064) — claim id in /hotfix + .momentum/team negation in installed .gitignore"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,7 +14,7 @@
     ".agents/skills/dispatch/SKILL.md": "392dd19d1e8b7d149e115c96bf80f42e447ea6f0f8c141954ab6f72f379c6d2a",
     ".agents/skills/ecosystem/SKILL.md": "3c534500e7280235d75cb83a32b119691d61218fbe1db910904328a4aa1bee54",
     ".agents/skills/handoff/SKILL.md": "afd25e2b57d0320c27a6cc24bcbb9cc8d68b8f9d696105af325d004c41653368",
-    ".agents/skills/hotfix/SKILL.md": "fa5820942d5c1489f46c45d47ef343d6cadfe1e110e88926aa373d51c3a2de99",
+    ".agents/skills/hotfix/SKILL.md": "7bbbecf3dfef99acc46301c20122a777df4e1a94655035b91985e273d99a0dc5",
     ".agents/skills/initiative/SKILL.md": "cff23175884d0470e39c7108608b7dddf8d13ee029ac6a3f0353d45185d8f051",
     ".agents/skills/lanes/SKILL.md": "f97382b49f6a3eb9f0d95b704d6f2e476059bf6aa336f2ede62709e088b3ea42",
     ".agents/skills/log/SKILL.md": "f0b161bb186824eaa368167f272b46dbf3d5006208fcfa770ecbb4fb5195a23e",
@@ -40,7 +40,7 @@
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
-    ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
+    ".gitignore": "95470b5777b4dc7dbb85075b47d45fa763894c78c2f30593e7141a2d9803cda7",
     "AGENTS.md": "7ca3824d1e25bfca000e612edc4fc70c74e0da65a2ff09ad56544c2ed364850e",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
