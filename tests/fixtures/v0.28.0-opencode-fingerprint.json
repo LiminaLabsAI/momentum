@@ -2,7 +2,7 @@
   "meta": {
     "captured": "2026-07-09",
     "adapter": "opencode",
-    "note": "Phase 26 G2 re-baseline — config-aware recipes + navigation row + init writes specs/config.md"
+    "note": "Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard (establish terminal branch on origin before pushing the phase branch) + start-project pointer"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -31,8 +31,8 @@
     ".opencode/commands/review.md": "ef9b326e760dcb762d54478d28994a6ae000c3e68d725dd2ff5edcf89849d8df",
     ".opencode/commands/scout.md": "6f55e31f2466c75c0dd2582047f63462e5d873bcc8e9c1c8c2cccb821ae09461",
     ".opencode/commands/session.md": "44e08f13721ac3cd2a42cf8e2e316836b9cdfe96e63ad70e3bae86f3b4b31da1",
-    ".opencode/commands/start-phase.md": "239b1bb704ec136767dc93335e9fd2f57231aef285509896a5369c78b5552ce1",
-    ".opencode/commands/start-project.md": "6ca78126723a1f27f4d91c985745e980565111c229a4b7858d2e1ab736143f94",
+    ".opencode/commands/start-phase.md": "e35806ee7e3f216f5e82985f40e9980e6d121d5d56732b8bed6c61854a8b57ab",
+    ".opencode/commands/start-project.md": "cfa9155e9ec9c5ac02a0fbf4062c8e680a76902a6219f5ea707ba3a98a2f7b2f",
     ".opencode/commands/swarm.md": "7b0474817b675e660163c4c34a6404c870c7c1f2fb2f19fc925b8996e822dae2",
     ".opencode/commands/sync-config.md": "01d2c3a27d1044180c1c1324531a3fd65b5c1fc8d326c4a59665f88f1a6f2bc9",
     ".opencode/commands/sync-docs.md": "7221595b8b57436f326f4d545eea94fee1a9f3aa1d7312c61cc2af10e2686a98",

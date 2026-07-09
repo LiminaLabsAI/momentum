@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "phase-26-project-preferences",
     "adapter": "codex",
-    "note": "Phase 26 ENH-062: sync-config recipe in instruction surfaces (surfaces.md)"
+    "note": "Phase 27 G1 re-baseline — start-phase BUG-025 default-branch guard (establish terminal branch on origin before pushing the phase branch) + start-project pointer"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -23,8 +23,8 @@
     ".agents/skills/review/SKILL.md": "392bdd47fafda7c0f3cbfcf8a65d4699274f4a58f869abf73004e22929627bf4",
     ".agents/skills/scout/SKILL.md": "6bcea40696129cfec40c90c0e244327f6e83838fb15abca750744aae8e9c4900",
     ".agents/skills/session/SKILL.md": "671e2fdd84eef9aa1097319274dbd25bb245c3e6d1a081fbb3e534aa507c5198",
-    ".agents/skills/start-phase/SKILL.md": "107e2965d19f9b188360c2711b2d6ceb1f8319f873d758b8da764b26b9c90ba6",
-    ".agents/skills/start-project/SKILL.md": "e568ab426a19d44773adbc078fcb13bd447b9d4ccd99e100dfd89752e2edc4ee",
+    ".agents/skills/start-phase/SKILL.md": "6772a6451a99b6a12b8da38c2de2cd35aa9aa0bc8148ad623e3596e0a893a8d6",
+    ".agents/skills/start-project/SKILL.md": "8ea3d6d52ca418d898de6de4ca2a8b1ad1b47390b429dea73c19c50bb99d74fb",
     ".agents/skills/swarm/SKILL.md": "c00f6b116f14c579ec9d8eff21d02a56aba452658149035032822daafa535c5f",
     ".agents/skills/sync-config/SKILL.md": "f3bd9ff1f1c67865c1d4439c20f55a3a1fee685d0ff9cbb979de79bd31dfff55",
     ".agents/skills/sync-docs/SKILL.md": "9293e5f8ba631905ca697a808872f474e8bc716c5214d96f48216c1ca72767ff",

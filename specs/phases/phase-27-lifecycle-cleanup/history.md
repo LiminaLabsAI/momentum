@@ -90,6 +90,14 @@ Detail: Operator raised a PR-review release flow (agent pushes + opens PR, human
 
 ---
 
+### [ARCH_CHANGE] 2026-07-09 — G1: default-branch protection moved to start-phase (the actual first-push site)
+Topics: default-branch, start-phase, start-project, founding, antigravity-size-limit
+Affects-phases: phase-27-lifecycle-cleanup
+Affects-specs: core/commands/start-phase.md, core/commands/start-project.md
+Detail: BUG-025's fix lives in `/start-phase`, not `/start-project` — founding COMMITS to main but pushes nothing; the first push momentum makes is the phase branch in start-phase, so that is where the terminal branch must be established on origin first (resilient unborn-remote pull; bootstrap-push main via the single-use merge-approved sentinel; optional git_forge=github `gh repo edit --default-branch` idempotent repair). start-project keeps only a one-line pointer because its Antigravity workflow render was already at the 12,000-char ceiling — any addition busts the vendor size limit (trimmed to fit). 4 adapter fingerprints re-baselined (start-phase/start-project drift only).
+
+---
+
 ### [FEATURE] 2026-07-09 — G0: shared cleanupTarget() + default-branch helpers landed
 Topics: cleanup, default-branch, lanes
 Affects-phases: phase-27-lifecycle-cleanup

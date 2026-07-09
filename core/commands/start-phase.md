@@ -87,7 +87,19 @@ After setup, **executes the plan end-to-end autonomously** — no per-group appr
 
 9. Create git branch and initial commit:
    ```bash
-   git checkout main && git pull origin main
+   git checkout main
+   # Resilient when 'main' is unborn on the remote (fresh repo — BUG-025):
+   git ls-remote --heads origin main | grep -q . && git pull origin main || true
+   # BUG-025 safety net: the terminal branch must ALREADY be the remote default
+   # before ANY phase branch is pushed (founding normally established it). If it
+   # is still not on origin, establish it FIRST so phase-N can't hijack default:
+   if git remote get-url origin >/dev/null 2>&1 && ! git ls-remote --heads origin main | grep -q .; then
+     touch .momentum/merge-approved && git push -u origin main && git remote set-head origin main 2>/dev/null || true
+   fi
+   # Optional forge repair (only when git_forge=github AND gh is on PATH;
+   # non-fatal; idempotent). Fixes a repo whose default was ALREADY hijacked.
+   # Agent-run recipe step — momentum ships no forge code, stays forge-neutral:
+   command -v gh >/dev/null 2>&1 && gh repo edit --default-branch main 2>/dev/null || true
    git checkout -b phase-N-shortname
    git add specs/
    git commit -m "docs: start Phase N - {phase name}"

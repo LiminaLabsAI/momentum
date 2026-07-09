@@ -11,12 +11,12 @@ type: Tasks
 - [x] G0.4 Verify: `npm test` green, no lane-suite regression — **935/935 (was 927; +8)**
 
 ## Group 1 — Default-branch protection (BUG-025)
-- [ ] G1.1 `/start-project` founding: push terminal branch to origin FIRST (recipe + helper call)
-- [ ] G1.2 `/start-phase`: resilient pull when `main` unborn; ensure terminal branch established before phase-branch push
-- [ ] G1.3 Optional config-gated `gh repo edit --default-branch` recipe hardening (`git_forge=github`, non-fatal)
-- [ ] G1.4 Regenerate adapter command/skill copies; re-baseline drifted fingerprints
-- [ ] G1.5 Bare-remote fixture test: `origin/HEAD` == terminal branch after founding→phase-0
-- [ ] G1.6 Verify: `npm test` green
+- [x] G1.1 `/start-project` founding: pointer to the terminal-first invariant (founding pushes nothing; size-capped file)
+- [x] G1.2 `/start-phase`: resilient pull when `main` unborn; establish terminal branch on origin before phase-branch push
+- [x] G1.3 Optional config-gated `gh repo edit --default-branch` recipe hardening (`git_forge=github`, non-fatal, idempotent)
+- [x] G1.4 Re-baselined 4 adapter fingerprints (start-phase/start-project only); Antigravity 12k-char limit respected (trimmed start-project)
+- [x] G1.5 `tests/default-branch-protection.test.js` — terminal-first keeps default; phase branch never hijacks; guard refuses main
+- [x] G1.6 Verify: `npm test` green — **937/937 (+2)**
 
 ## Group 2 — Synchronous cleanup + tracking-before-release gate (BUG-026)
 - [ ] G2.1 `lanes land --execute`: auto `cleanupTarget()` on terminal-branch merge; `--keep` opt-out
