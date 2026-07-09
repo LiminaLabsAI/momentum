@@ -3,7 +3,7 @@
     "captured": "2026-07-09",
     "capturedFrom": "feat-team-integration",
     "adapter": "antigravity",
-    "note": "Phase 30d G1 (ENH-064) — team config keys (review_min_approvals/review_self_approval/presence_*) in config.md template"
+    "note": "Phase 30d G1 (ENH-064) — pre-push attributed merge-approval audit line"
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -40,7 +40,7 @@
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
+    ".githooks/run-check.js": "b50f84222823a8319eb75cbbf1f76b91fa87aa51f86dbac040774e59a6364c1f",
     ".gitignore": "95470b5777b4dc7dbb85075b47d45fa763894c78c2f30593e7141a2d9803cda7",
     "AGENTS.md": "68b39184872ab97a18550a7b79a935856c080e46673b8b98f2ed8f7ad43a7aa4",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",

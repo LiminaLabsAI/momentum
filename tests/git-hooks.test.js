@@ -203,6 +203,22 @@ test('pre-push: single-use merge-approved sentinel authorizes one push then is c
   }
 });
 
+test('pre-push: consuming the sentinel writes an attributed merge-approval audit line (30d)', () => {
+  const { tmp, repo } = setupInstalledRepo();
+  try {
+    const sentinel = path.join(repo, '.momentum', 'merge-approved');
+    fs.mkdirSync(path.dirname(sentinel), { recursive: true });
+    fs.writeFileSync(sentinel, '');
+    const ok = runPrePush(repo, `refs/heads/feature ${NZ} refs/heads/main ${NZ}`);
+    assert.equal(ok.status, 0, `sentinel should authorize: ${ok.stderr}`);
+    const log = path.join(repo, '.momentum', 'team', 'merge-approvals.log');
+    assert.ok(fs.existsSync(log), 'merge-approvals.log must be written on consume');
+    assert.match(fs.readFileSync(log, 'utf8'), /authorized push to main/);
+  } finally {
+    rmrf(tmp);
+  }
+});
+
 test('pre-push: non-protected branch pushes freely', () => {
   const { tmp, repo } = setupInstalledRepo();
   try {
