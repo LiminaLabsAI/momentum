@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-09",
-    "capturedFrom": "phase-26-project-preferences",
-    "note": "Phase 27 (v0.34.0) re-baseline — recipe changes: start-phase BUG-025 default-branch guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr + confirm→verify→clean handshake; lanes.md reconcile/cleanup docs",
-    "adapter": "claude-code"
+    "capturedFrom": "phase-29-instruction-variation-model",
+    "adapter": "claude-code",
+    "note": "Phase 29 ADR-0011 — agent-neutral header scaffold + In-Session Task Tool note; task-tool token lifted out of the neutral spine"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -37,7 +37,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "ec1d3d84699476a599717fd560d69dd26e58260fa9ad01b3c27824f4fc4f7bac",
     ".gitignore": "3ae652bbd04cae0676251f9985aa665c9cb09dea1dc78451769cad954512ce2c",
-    "CLAUDE.md": "160677a501bf54a612b2b9adaa12c2672b36bb7dde1448e393c8c07d38fd643f",
+    "CLAUDE.md": "08065cae4738ec4d04146ef5c4cbc96bae556948bcd6b4e8141d080bdedb281e",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

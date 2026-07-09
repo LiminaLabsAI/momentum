@@ -1,8 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-09",
+    "capturedFrom": "phase-29-instruction-variation-model",
     "adapter": "opencode",
-    "note": "Phase 27 (v0.34.0) re-baseline — recipe changes: start-phase BUG-025 default-branch guard + open-pr hard-stop; start-project pointer; complete-phase default-branch-safe cleanup + tracking-before-release Gate B + open-pr + confirm→verify→clean handshake; lanes.md reconcile/cleanup docs"
+    "note": "Phase 29 ADR-0011 — agent-neutral header scaffold + In-Session Task Tool note; task-tool token lifted out of the neutral spine"
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -44,7 +45,7 @@
     ".opencode/skills/momentum-orient/SKILL.md": "9228cab651fdcabbcda34ca553823ec15247e78992e2ff688c60a60ab8dbcea4",
     ".opencode/skills/momentum-track/SKILL.md": "a27678aced4f3297af922b187ddd60ba12700010f9ff65a4078bcf6a859e60bf",
     ".opencode/skills/momentum-validate/SKILL.md": "7264214df9395be48403df5cee05c02226890c5c277050da96e6ba5500647621",
-    "AGENTS.md": "0ab6ee9559de98eaa7a3f4c301b95d4b24986f7d1c94fd8e5a698c47689e6657",
+    "AGENTS.md": "682c7bb767c4f564bca41c2a36de6185dd421296aac60f96daf13eb68c3c0d28",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

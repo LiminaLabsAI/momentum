@@ -1,0 +1,8 @@
+{
+  "id": "antigravity",
+  "displayName": "Antigravity",
+  "surface": "agents-md",
+  "taskTool": "the native **task list** artifact (task.md)",
+  "taskToolName": "The task-list artifact",
+  "hasSurfaceDelta": true
+}

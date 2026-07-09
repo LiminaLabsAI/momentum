@@ -4,6 +4,25 @@ type: History
 
 # Phase 29 — History
 
+### [ARCH_CHANGE] 2026-07-10 — Generator restructured; neutral spine + shipped compose lib (Group 1)
+Topics: generate-instructions, variation-manifest, neutral-spine, surface-delta
+Affects-phases: phase-29-instruction-variation-model
+Affects-specs: scripts/generate-instructions.js, core/lib/instruction-compose.js, core/instructions/rules-body.md
+Detail: Pure assembly moved to shipped core/lib/instruction-compose.js (so
+install-time G2 composition reuses ONE path — scripts/ is not in the npm
+`files`); scripts/generate-instructions.js is now a thin wrapper. Adapters
+auto-discovered by manifest.json presence (no TARGETS). Per-agent header.md +
+vars.json retired → one manifest.json each. `{{TASK_TOOL}}` lifted out of
+rules-body into a generator-emitted `## In-Session Task Tool` note (Tier 3), so
+the rules-body spine is now agent-neutral. Header de-branded to one scaffold
+(`> <displayName> configuration for this momentum-managed project.`) — fixes the
+claude-code "for this project" drift. All 4 templates regenerated; 4 fingerprints
+re-baselined (exactly one file drifted each — the instruction file). Suite 963/963.
+TD-009 folded in: capture-fingerprints.js now covers opencode (runCli --agent is
+byte-equivalent to the tool's spawn, so one command re-baselines all 4).
+
+---
+
 ### [DECISION] 2026-07-10 — ADR-0011 authored + accepted (Group 0)
 Topics: instructions, variation-manifest, neutral-spine, agent-neutral
 Affects-phases: phase-29-instruction-variation-model

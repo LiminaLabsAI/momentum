@@ -1,0 +1,8 @@
+{
+  "id": "opencode",
+  "displayName": "opencode",
+  "surface": "agents-md",
+  "taskTool": "the built-in **task** tool (subagent fan-out)",
+  "taskToolName": "The task tool",
+  "hasSurfaceDelta": true
+}

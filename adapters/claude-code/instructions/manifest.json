@@ -1,0 +1,8 @@
+{
+  "id": "claude-code",
+  "displayName": "Claude Code",
+  "surface": "claude-md",
+  "taskTool": "the built-in **TodoWrite** tool",
+  "taskToolName": "TodoWrite",
+  "hasSurfaceDelta": false
+}

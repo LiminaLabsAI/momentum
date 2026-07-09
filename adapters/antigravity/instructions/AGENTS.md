@@ -176,6 +176,10 @@ lives in this AGENTS.md primary-instruction text as a belt-and-braces
 fallback: if a `.momentum/inbox/handoff-NNN.md` file exists at session
 start, read it and acknowledge before continuing.
 
+## In-Session Task Tool
+
+When a rule mentions tracking in-session progress (Rule 2), Antigravity's task tool is the native **task list** artifact (task.md) — in-session only; the durable record is `specs/phases/<phase>/tasks.md`.
+
 ## Autonomous Behaviors (Always-On Rules)
 
 ### Rule 1: Always Orient First
@@ -197,7 +201,7 @@ After completing ANY meaningful work, automatically update:
 2. **`specs/status.md`** — if phase progress, blockers, or P0 items changed (touch only your own lane's row — Rule 15)
 3. **`specs/changelog/YYYY-MM.md`** — log what changed (one line per change, append-only)
 
-Use the native **task list** artifact (task.md) to track in-session task progress. Do NOT wait for the user to ask you to update tracking.
+Use your in-session task-tracking tool (named in the "In-Session Task Tool" note above) to track in-session task progress. Do NOT wait for the user to ask you to update tracking.
 
 #### Why
 Tracking debt compounds invisibly. A task list one day stale is recoverable; one week stale is fiction. Status drift is how phases silently lose direction.
@@ -215,7 +219,7 @@ Tracking debt compounds invisibly. A task list one day stale is recoverable; one
 #### Anti-Rationalization Counters
 
 - "It's faster to do the work first and track at the end" — wrong: reconstruction takes 2-3× longer than real-time logging.
-- "The task-list artifact is enough" — The task-list artifact is in-session only; `tasks.md` is the durable record.
+- "Your in-session task-tracking tool is enough" — it is in-session only; `tasks.md` is the durable record.
 - "Mid-task tracking interrupts flow" — a one-line update costs <30s; reconstructing a day later costs 30 minutes.
 
 ### Rule 3: Auto-Track Discoveries
