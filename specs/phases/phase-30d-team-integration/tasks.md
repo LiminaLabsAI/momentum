@@ -9,14 +9,14 @@ status: in-progress
 > (closes ENH-064). `[x]` done · `[/]` in-progress · `[ ]` todo. Sequential
 > G0 → G1 → G2 → G3. Lane `feat-team-integration`. Target v0.38.0.
 
-## Group 0 — Recipe claim-wiring + Rule 15 (fingerprints)
-- [ ] `momentum claim phase|id` in `/brainstorm-phase` + `/start-phase` + `/hotfix`
-- [ ] `momentum claim version` in `/complete-phase` release gate (ENH-057)
-- [ ] Reword Rule 15 → cite fragment/CAS mechanism
+## Group 0 — Recipe claim-wiring + Rule 15 (fingerprints) — mostly done (`ca78be3`)
+- [/] `momentum claim phase|id` in recipes — `/brainstorm-phase` ✅; `/start-phase` + `/hotfix` remaining
+- [x] `momentum claim version` in `/complete-phase` release gate (ENH-057)
+- [x] Reword Rule 15 → cite fragment/CAS mechanism
 - [ ] `changelog/` → fragments + compile
 - [ ] `refreshGitignore` `!.momentum/team/`
-- [ ] `generate-instructions` + re-baseline 4 fingerprints
-- [ ] Recipe/rules tests; commit G0
+- [x] `generate-instructions` + re-baseline 4 fingerprints (`scripts/rebaseline-fingerprints.js`, zero-drift verified first)
+- [x] Recipe/rules verified — suite 1002/1002
 
 ## Group 1 — lanes land review gate + pre-push (hook approval)
 - [ ] Config keys (`review_min_approvals`/`review_self_approval`/`presence_*`)
