@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: _none active_ — **Phase 30d Team Integration shipped v0.38.0**; Team-mode family 30a/b/c shipped v0.37.0
+> **Current Phase**: **Phase 30e Ecosystem (Multi-Repo) Team Mode BUILT + VERIFIED** (suite 1028/1028; lane `phase-30e-ecosystem-team-mode`) — **v0.39.0 at the release gate (operator approval)**. Phase 30d shipped v0.38.0; Team-mode family 30a/b/c shipped v0.37.0.
 > **Latest Release**: v0.38.0 — Phase 30d Team Integration (ENH-064): the v0.37.0 Team-mode primitives wired into the real workflows — `momentum claim` in `/brainstorm-phase`+`/complete-phase`+`/hotfix`; Rule 15 cites the mechanism; **reviewer≠author gate in `lanes land`** + attributed **pre-push merge-approval audit**; team config keys; auto-heartbeat presence; **opt-in swarm lease-CAS fence**. Suite 1008/1008. _(v0.37.0 Team Mode Walk+Run+Fly; v0.36.0 Phase 29 — both 2026-07-10.)_
 > **Health**: On Track
 
@@ -59,6 +59,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 30b | Team-Run (Shared Board + Landing) | Complete | v0.37.0 (2026-07-10) |
 | 30c | Team-Fly (Relay + Ecosystem) | Complete¹ | v0.37.0 (2026-07-10) |
 | 30d | Team Integration (primitives wired into workflows) | Complete² | v0.38.0 (2026-07-10) |
+| 30e | Ecosystem (Multi-Repo) Team Mode | Built + verified³ | v0.39.0 (2026-07-10) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
@@ -70,6 +71,14 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 > reviewer≠author land gate, pre-push audit, team config keys, auto-heartbeat,
 > and the opt-in swarm lease-CAS fence. The remaining multi-repo surface
 > (remote-URL members, ecosystem-state fragments) + docs are deferred to **ENH-065**.
+>
+> ³ Phase 30e (**ENH-065**, ADR-0015) closes that multi-repo surface: remote-URL
+> members, `active-initiative`/presence as shared ecosystem fragments, and swarm
+> ownership via `refs/momentum/leases/*` CAS as the **default when a remote is
+> present** (single-machine byte-unchanged, 236 swarm tests green) + sample
+> contract reader + "team across repos" docs. Suite 1028/1028 on the lane.
+> **Merge → main → staging, tag v0.39.0, GH Release, npm publish are the final
+> operator-gated step** (Rule 6 protected-branch approval).
 
 ## Ad-hoc / Patch Releases
 
@@ -98,7 +107,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none active — Phase 30d Team Integration released v0.38.0; all lanes closed)_ | | | |
+| 30e — Ecosystem Team Mode | `phase-30e-ecosystem-team-mode` | In Progress (paused, resume fresh) | **G0 ✅** (ADR-0015 + contracts, suite 1008/1008). **NEXT: G1 (remote-URL members) ∥ G2 (ecosystem-state→fragments) → G3 (RISKY swarm leases-as-source-of-truth — show diff before applying) → G4 (docs/reader/demo/fingerprints) → G5 (e2e + release v0.39.0).** Closes ENH-065. Target v0.39.0 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -159,6 +168,8 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 - `brainstorm-project` split into `brainstorm-idea` (exploration, no files) + `start-project` (scaffolding) — mirrors `brainstorm-phase` → `start-phase` pattern
 
 ## Recent Changes
+
+- **2026-07-10**: **Phase 30e — Ecosystem (Multi-Repo) Team Mode BUILT + VERIFIED; v0.39.0 at the release gate.** Extends the git-native Team-mode plane (v0.37/0.38, single-repo) up to the **ecosystem/multi-repo layer** — a distributed team coordinates across **many repos at once** (closes **ENH-065**, ADR-0015). Built in the isolated lane `phase-30e-ecosystem-team-mode`. **G0** ADR-0015 (leases-as-source-of-truth; single-machine invariance the hard gate). **G1** **remote-URL members** — `ecosystem.json` members take an optional `remote` git URL alongside `path` (validation requires ≥1; `resolveMemberLocation`); `ecosystem status` resolves remote members by URL with a best-effort reachability probe; `ecosystem add --remote`. **G2** **ecosystem-state → fragments** — `active-initiative` (was per-machine `.state/`) + session-presence become per-actor fragments in the ecosystem repo (`core/ecosystem/lib/team-state.js`), compiled to a shared, **attributed** value (two clones set it concurrently → **zero-conflict merge**); legacy `.state/` kept as a per-machine cache. **G3 (risky)** **swarm leases-as-source-of-truth** — the 30d opt-in fence becomes the **default when the ecosystem root has a remote**; the CAS key includes the **superseded lease generation** so concurrent takers resolve to one winner (no double-own) AND a crashed owner's stale ref can't wedge the next takeover (liveness); **single-machine (no remote) byte-unchanged — 236 swarm tests green** (escape hatch `MOMENTUM_SWARM_LEASE_CAS=0`). **G4** sample third-party **contract reader** (`scripts/read-team-board.js`, Node+git only), new site **"Team mode"** page + developer-guide + README, extended `scripts/demo-team.sh` (ecosystem + reader; runs end-to-end), `.gitignore` ignores `.momentum/team/**/*.log`, 4 fingerprints re-baselined (drift = only `.gitignore`). **G5** two-clone multi-repo e2e (`tests/ecosystem-team-e2e.test.js`) + retrospective. **Verification: suite 1028/1028** (+20 net-new; 236 swarm green). **Release (merge → main → staging, tag v0.39.0, GH Release, npm) at the operator gate** (Rule 6).
 
 - **2026-07-10**: **Phase 30d — Team Integration RELEASED as v0.38.0** (isolated lane `feat-team-integration`, opened with `momentum lanes open` — the discipline held). Wires the shipped v0.37.0 Team-mode primitives into momentum's **real workflows** (closes ENH-064): **G0** — `momentum claim` in `/brainstorm-phase` (phase-number reservation), `/complete-phase` (version reservation, ENH-057), `/hotfix` (backlog-ID reservation); Rule 15 cites the fragment/CAS mechanism; downstream `.gitignore` commits `.momentum/team/`; all 4 adapter fingerprints re-baselined via a new **`scripts/rebaseline-fingerprints.js`** (proven zero-drift before use). **G1** — **reviewer≠author gate in `lanes land`** (`review_min_approvals ≥ 1`, config-gated, OFF by default = solo-safe); attributed **pre-push merge-approval audit** (operator-approved hook change, additive/best-effort); 4 team config keys registered. **G2** — auto-heartbeat presence (any `momentum team` command, no daemon); **opt-in cross-machine swarm lease-CAS fence** (`MOMENTUM_SWARM_LEASE_CAS=1`, additive/fail-open — closes the clock-skew double-own hazard; **231 swarm tests stay green**). **Verification: suite 1008/1008** (+6 net-new tests, zero regressions on swarm/hooks/lanes with the new paths off by default). **Deferred → ENH-065:** remote-URL members, ecosystem-state fragments, sample contract reader, docs (multi-repo surface, not rushed at session tail). Merged → main → staging; tag v0.38.0; GH Release; npm 0.38.0.
 

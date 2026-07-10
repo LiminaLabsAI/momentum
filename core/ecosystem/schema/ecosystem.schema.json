@@ -30,7 +30,12 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "path", "role"],
+        "required": ["id", "role"],
+        "anyOf": [
+          {"required": ["path"]},
+          {"required": ["remote"]}
+        ],
+        "description": "A member needs at least one of `path` (co-located on disk) or `remote` (a git URL). Both may be present: `path` is the local checkout, `remote` lets teammates on other machines resolve the same member (ADR-0015).",
         "properties": {
           "id": {
             "type": "string",
@@ -42,7 +47,12 @@
           "path": {
             "type": "string",
             "minLength": 1,
-            "description": "Filesystem path to the member repo, relative to the ecosystem root."
+            "description": "Filesystem path to the member repo, relative to the ecosystem root. Optional when `remote` is set (a teammate may not have this member checked out locally)."
+          },
+          "remote": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Git URL of the member repo (ADR-0015). Lets a distributed team share one ecosystem without identical folder layouts; `momentum ecosystem status` resolves the member by URL when no local `path` exists."
           },
           "role": {
             "type": "string",

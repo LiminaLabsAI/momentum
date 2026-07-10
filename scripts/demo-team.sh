@@ -12,6 +12,7 @@
 set -u
 
 MOM="node $(cd "$(dirname "$0")/.." && pwd)/bin/momentum.js"
+READER="$(cd "$(dirname "$0")/.." && pwd)/scripts/read-team-board.js"
 TMP="$(mktemp -d 2>/dev/null || mktemp -d -t momdemo)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -79,5 +80,35 @@ run "cd '$A' && $MOM team lease release deploy:prod"
 say "8. PUBLISHED CONTRACT (Fly) — third parties can read team state"
 run "cd '$A' && $MOM team contract"
 
-printf '\n\033[1;32m✓ Team Mode demo complete — the whole plane worked across two clones.\033[0m\n'
-printf '\033[2m  (all local: one bare remote + two clones; no server, no daemon)\033[0m\n\n'
+# ── TEAM ACROSS REPOS (Ecosystem — Phase 30e) ──────────────────────────────
+say "9. TEAM ACROSS REPOS (Ecosystem, 30e) — shared state across MANY repos"
+git init --bare -q "$TMP/eco.git"
+for dev in alice bob; do
+  git clone -q "$TMP/eco.git" "$TMP/eco-$dev"
+  git -C "$TMP/eco-$dev" config user.email "$dev@team.dev"
+  git -C "$TMP/eco-$dev" config user.name  "$dev"
+done
+EA="$TMP/eco-alice"; EB="$TMP/eco-bob"
+cat > "$EA/ecosystem.json" <<'JSON'
+{ "name": "demo-eco", "version": 1, "members": [
+  { "id": "svc", "remote": "https://example.com/svc.git", "role": "platform" }
+] }
+JSON
+mkdir -p "$EA/initiatives"; printf '.state/\n' > "$EA/.gitignore"
+git -C "$EA" add -A && git -C "$EA" commit -qm 'seed ecosystem' >/dev/null
+git -C "$EA" branch -M main && git -C "$EA" push -qu origin main
+git -C "$EB" pull -q origin main
+note "a REMOTE-URL member — teammates need no shared folder layout (30e):"
+run "cd '$EA' && $MOM ecosystem status --no-git"
+note "alice sets the active initiative — it becomes shared, attributed state:"
+run "cd '$EA' && $MOM ecosystem initiative create memory-overhaul --why 'wire memory end-to-end' --repos svc --owner alice"
+run "cd '$EA' && git add -A && git commit -qm 'alice: active initiative' >/dev/null && git push -q origin main && echo pushed"
+note "bob pulls — sees the SAME active initiative, attributed to alice, ZERO conflict:"
+run "cd '$EB' && git pull --no-rebase --no-edit -q origin main && $MOM ecosystem status --no-git"
+
+say "10. SAMPLE CONTRACT READER (30e) — a THIRD PARTY reads the board, no momentum"
+note "scripts/read-team-board.js depends only on Node + git — copy it into your own tools:"
+run "node '$READER' '$A'"
+
+printf '\n\033[1;32m✓ Team Mode demo complete — the whole plane worked across two clones AND across repos.\033[0m\n'
+printf '\033[2m  (all local: bare remotes + clones; no server, no daemon; optional relay for real-time)\033[0m\n\n'

@@ -71,6 +71,39 @@ give it frontmatter — `momentum okf check` is the conformance gate and
 `core/lib/frontmatter.js`: string scalars and string lists only — don't emit
 nested YAML into spec frontmatter.
 
+## Team mode — across machines and repos (v0.37.0+, ADR-0012/0013/0014/0015)
+
+momentum coordinates **N humans on N clones sharing one git remote** — no server,
+no daemon, offline-first. Two git-native primitives, both zero-dependency:
+
+- **Per-actor fragments** (`core/team/lib/fragments.js`) — append-only files under
+  `.momentum/team/<view>/<actor>-<seq>-<kind>.json`, **committed**. Each actor writes
+  only its own `<actor>-` prefix → conflict-free by construction. `compile.js` folds
+  them into rendered views. The `.gitignore` template negates `.momentum/team/` (it is
+  the one committed exception under the otherwise-ignored `.momentum/`), but ignores
+  `*.log` under it (per-machine audit).
+- **Ref compare-and-swap** (`core/team/lib/refcas.js`) — `refs/momentum/*`; first push
+  wins, others are non-ff-rejected. Backs `claim.js` (allocations), `queue.js` (landing
+  turns), and `lease.js` (cross-machine leases).
+
+The **ecosystem layer** (30e, ADR-0015) applies the same keystone one level up, via
+the ecosystem repo's own git: **remote-URL members** (`ecosystem.json` members take an
+optional `remote` git URL alongside `path` — see `core/ecosystem/lib/index.js`
+`resolveMemberLocation`), **shared active-initiative + presence** as ecosystem
+fragments (`core/ecosystem/lib/team-state.js`), and **swarm ownership via
+`refs/momentum/leases/*` CAS** as the default when the ecosystem root has a remote
+(`core/swarm/lib/manifest.js` `leaseFence` — the key includes the superseded lease
+generation for single-winner + liveness; single-machine with no remote is
+byte-unchanged, gated by the swarm test suite).
+
+The fragment layout + ref namespace are a **published contract** (`core/team/contract`,
+version-pinned by a test). `scripts/read-team-board.js` is a sample third-party reader
+(Node + git only — no momentum import). See it all run end-to-end:
+
+```bash
+bash scripts/demo-team.sh   # two clones + two repos, all local, self-cleaning
+```
+
 ## Testing
 
 ```bash

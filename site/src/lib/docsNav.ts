@@ -33,6 +33,7 @@ export const docsNav: NavGroup[] = [
 		items: [
 			{ slug: 'ecosystem', label: 'Ecosystem' },
 			{ slug: 'orchestration', label: 'Cross-project actions' },
+			{ slug: 'team', label: 'Team mode' },
 			{ slug: 'swarm', label: 'Swarm' },
 		],
 	},
