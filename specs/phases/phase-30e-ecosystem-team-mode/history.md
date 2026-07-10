@@ -57,6 +57,21 @@ G0 before consumers. Extends ADR-0012/0013/0014 (single-repo Team Mode) to the
 multi-repo layer; relates ADR-0001/0002/0003 (lanes) + the ecosystem layer.
 
 ---
+### [NOTE] 2026-07-10 — G5 complete: verified + tracking-before-tag; release at the operator gate
+Topics: verification, release, gate-b, adr-0015
+Affects-phases: phase-30e-ecosystem-team-mode
+Affects-specs: specs/status.md, specs/planning/roadmap.md, specs/backlog/backlog.md, package.json
+Detail: Two-clone multi-repo e2e (tests/ecosystem-team-e2e.test.js) covers
+D1+D2+D3 in one scenario. Full suite 1028/1028 (+20 net-new from the 1008 G0
+baseline); swarm invariance gate 236/236 (single-machine byte-unchanged).
+Retrospective `## Verification Evidence` added to overview.md. Gate B honored —
+all tracking committed BEFORE any tag: status.md (30e built+verified, footnote ³,
+Recent Changes), roadmap (30e Complete v0.39.0), backlog (ENH-065 → resolved),
+changelog, tasks; version bumped 0.38.0 → 0.39.0. The release itself (merge → main
+→ staging, tag v0.39.0, GH Release, npm publish) is the final operator-gated step
+per Rule 6 (protected-branch approval) — not executed autonomously.
+
+---
 ### [FEATURE] 2026-07-10 — G4 complete: contract reader + docs + demo + tidy + fingerprints
 Topics: contract-reader, docs, demo, gitignore, fingerprints, adr-0015
 Affects-phases: phase-30e-ecosystem-team-mode

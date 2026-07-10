@@ -40,7 +40,7 @@ status: planned
 - [x] Re-baseline 4 fingerprints (drift = only .gitignore; regenerated); commit G4
 
 ## Group 5 — Verify + release
-- [ ] `tests/ecosystem-team-e2e.test.js` — two-clone multi-repo plane
-- [ ] Full suite + 231 swarm green; retrospective `## Verification Evidence`
-- [ ] Tracking BEFORE tag (Gate B): tasks/roadmap/status; ENH-065 → resolved
-- [ ] Release v0.39.0; verify surfaces; close lane; only main + staging remain
+- [x] `tests/ecosystem-team-e2e.test.js` — two-clone multi-repo plane
+- [x] Full suite (1028/1028) + swarm green (236); retrospective `## Verification Evidence` in overview.md
+- [x] Tracking BEFORE tag (Gate B): tasks/roadmap/status/backlog/changelog; ENH-065 → resolved; version bump 0.39.0
+- [ ] Release v0.39.0 (merge → main → staging, tag, GH release, npm); verify surfaces; close lane — **AT THE OPERATOR GATE (Rule 6)**

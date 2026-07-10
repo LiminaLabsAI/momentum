@@ -80,3 +80,24 @@ Default verification (`specs/config.md`): `test_command = npm test`.
 4. The coordination contract is consumable by a sample third-party reader.
 5. Full suite green; released **v0.39.0** with complete tracking (tasks/roadmap/
    status) BEFORE the tag, and clean branches (only `main` + `staging`).
+
+## Verification Evidence
+
+> Captured 2026-07-10 on lane `phase-30e-ecosystem-team-mode`. `test_command = npm test`.
+
+**Suite: 1028/1028 pass** (0 fail), up from the 1008 G0 baseline (+20 net-new).
+**Swarm invariance gate: 236/236 pass** (the 231/233 baseline + 3 new two-clone
+cases) — single-machine (no-remote) swarm behavior byte-unchanged with the
+default-on CAS path present.
+
+| Deliverable | Evidence |
+|---|---|
+| D1 — Remote-URL members | `tests/ecosystem-remote-members.test.js` (schema path\|remote; `resolveMemberLocation`; `ecosystem status` resolves a remote member by URL, reachable via a local bare, relative paths intact; `add --remote`). |
+| D2 — Ecosystem-state → fragments | `tests/ecosystem-team-state.test.js` — two clones set `active-initiative` concurrently → **zero-conflict merge** (own-prefix files); compiled value is global last-writer-wins, attributed; legacy `.state/` fallback + CLI attribution. |
+| D3 — Swarm leases-as-source-of-truth | `tests/swarm-lease-cas-ecosystem.test.js` — two clones, **default-on** (no env var): ref-CAS arbitrates ownership, skew can't double-own; fresh-generation liveness; single-machine (no remote) uses the wall-clock path. `tests/swarm-lease-cas.test.js` updated to the generation-keyed fence. |
+| D4 — Contract reader + docs + demo | `tests/team-contract-reader.test.js` (`scripts/read-team-board.js`, Node+git only); site builds 13 pages incl. `/team/`, content gate green; `scripts/demo-team.sh` runs the whole plane across two clones AND two repos end-to-end. |
+| D5 — `.gitignore` tidy + fingerprints | Template ignores `.momentum/team/**/*.log`; 4 adapter fingerprints re-baselined (drift = only `.gitignore`, verified via `--check` before `--write`); `tests/*-fingerprint.test.js` + `tests/claude-code-regression.test.js` green. |
+| Whole-plane e2e | `tests/ecosystem-team-e2e.test.js` — one two-clone scenario covering D1+D2+D3 together. |
+
+Acceptance criteria 1–4 met by the above; criterion 5 (release v0.39.0 with
+tracking-before-tag and clean branches) is the G5 release step below.
