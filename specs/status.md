@@ -107,7 +107,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 31a — Ecosystem Lifecycle Spine | `phase-31a-ecosystem-lifecycle-spine` | In Progress | **Started 2026-07-26.** Execution G0 → (G1 ∥ G2) → G3 → G4 → G5. **NEXT: G0 (ADR-0016 + config surface + initiative frontmatter + BUG-028 matcher fix + the installed-matcher regression test).** Closes BUG-028 + ENH-066; TD-011 structurally. Target v0.40.0 |
+| 31a — Ecosystem Lifecycle Spine | `phase-31a-ecosystem-lifecycle-spine` | **Built + verified — at the release gate** | **G0 ✅ G1 ✅ G2 ✅ G3 ✅ G4 ✅ G5 ✅.** Suite **1084/1084** (baseline 1028, +56); swarm 236/236; OKF 311/311; no-ecosystem byte-unchanged. Closes **BUG-028, ENH-066, TD-011**. Live self-repo dogfood: 4 real commits captured into the real `cerebrio-ecosystem` log. **Awaiting operator approval to merge → staging → main + tag v0.40.0.** |
 
 > The Phase 30e row was cleared here on 2026-07-26 — 30e released as v0.39.0
 > (tag + GH Release + npm all verified) and its lane is closed, so it is no
