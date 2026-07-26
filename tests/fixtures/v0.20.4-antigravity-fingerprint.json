@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "antigravity",
-    "note": "Phase 31a G3 / ADR-0016: /complete-initiative recipe added; auto-projected to all 4 adapters."
+    "note": "Phase 31a G4 / ADR-0016: /initiative recipe documents the start+complete lifecycle and the ADR initiative-stamp convention; run-check.js records a 'tag' event on release-tag push (git has no post-tag hook, and a tag means nothing until pushed) to fill Deploy chronology."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -23,7 +23,7 @@
     ".agents/workflows/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
     ".agents/workflows/handoff.md": "6493635ed74539ec8ed221225643db3f29c5af1ff5214525a5a86a794daf03b2",
     ".agents/workflows/hotfix.md": "9ec5b7a5b1a83cd12e47fbeba44434d60b95c5cfdd52cb44e8430d49dbee20ed",
-    ".agents/workflows/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
+    ".agents/workflows/initiative.md": "dbbba6243ffbcc1d6cefccfee60c78a662c043cf7d22b70df17edd3019bceb2f",
     ".agents/workflows/lanes.md": "eebc4a1d97f020fd2754311aaa36db7cbb7da6ba88417b2ed6fc95f32bf09392",
     ".agents/workflows/log.md": "b2728ec55d95996cb6c8bbc24411cfd0a99f618e4c0374ac054f6229feac50a6",
     ".agents/workflows/migrate.md": "467e8ac615a47c09d9e0994d1a879676428bfdeff79b15e73076ebfcfe6e74b8",
@@ -45,7 +45,7 @@
     ".githooks/post-commit": "850085952c9d8fe4dc550065590f55ba5231f3edc7efaa529d1947473c69beea",
     ".githooks/post-merge": "095bbbe9712592d03b1ecd3a8ae598da4dc82ef55946c592065eb2a8a3002f00",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "40246f40abb78c20ddc71c4e74582cfc6855ff8b23b519f094b54ffd9e67ee53",
+    ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
     ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
     "AGENTS.md": "68b39184872ab97a18550a7b79a935856c080e46673b8b98f2ed8f7ad43a7aa4",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",

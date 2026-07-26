@@ -68,14 +68,16 @@ status: in-progress
 - [x] **Fixed a real defect found here**: `process.exit(exitCode)` in bin/momentum.js zeroed any `process.exitCode` set by a non-throwing command — the gate printed REFUSED and exited 0. Now `exitCode || process.exitCode || 0`
 - [x] Verify `npm test` green — **1080/1080** (+52 from 1028); commit G3
 
-## Group 4 — Record writers + adapter parity *(needs G1 + G3)*
-- [ ] Deploy chronology writer consuming `tag` events
-- [ ] Linked-decisions writer (member ADR carrying `initiative:` stamp)
-- [ ] Project 3 new commands to all 4 adapters via ADR-0011 projection
-- [ ] Install into ecosystem root surface via `ensureRootCommandSurface()`
-- [ ] Re-baseline 4 fingerprints via `scripts/rebaseline-fingerprints.js` (zero-drift proven first)
-- [ ] `momentum okf check` bundle conformant
-- [ ] Verify `npm test` green; commit G4
+## Group 4 — Record writers + adapter parity *(needs G1 + G3)* ✅
+- [x] **Deploy chronology writer** — `tag`/`merge` events for contributing members; a `tag` event is now recorded by `pre-push` on a release-tag push (git has no post-tag hook, and a tag means nothing until pushed, so the push IS the release moment)
+- [x] **Linked-decisions writer** — scans each contributing member's `specs/decisions/` for the opt-in `initiative: <slug>` frontmatter stamp; ignores unstamped and other-initiative ADRs (asserted); empty state explains HOW to populate rather than sitting blank
+- [x] **TD-011 fully closed** — all three dead template sections now have writers
+- [x] 2 new recipes projected to all 4 adapters by the ADR-0011 generator (no wiring needed)
+- [x] Added both to `ROOT_SURFACE_COMMANDS` (`ensureRootCommandSurface`) — the coordination root is where they're run; advertising them without shipping them would reproduce the ENH-049 failure mode
+- [x] `/initiative` recipe documents the full lifecycle + the ADR stamp convention
+- [x] 4 fingerprints re-baselined (drift inspected via `--check` each time)
+- [x] `momentum okf check` — **311 files conformant**; fixed a pre-existing Phase-29 violation (`evidence/self-repo-dogfood.md` missing frontmatter, landed in `9bfd5fd`, untouched by this branch)
+- [x] Verify `npm test` green — **1083/1083** (+55 from 1028); commit G4
 
 ## Group 5 — Verification & release prep *(last)*
 - [ ] Two-clone multi-repo e2e: brainstorm → start → worktree commits → complete

@@ -174,6 +174,18 @@ function prePush() {
           );
         }
       }
+
+      // Record the release as an ecosystem `tag` event (Phase 31a, ADR-0016).
+      // git has no post-tag hook, and a tag created locally means nothing until
+      // it is PUSHED — so the push is the real release moment and the right
+      // place to capture it. This is what fills an initiative's Deploy
+      // chronology, which shipped empty in the template since Phase 9 (TD-011).
+      // Advisory: wrapped so a capture failure can never block a release push.
+      try {
+        require('./eco-event.js').record({
+          kind: 'tag', summary: `release ${tag}`, context: tag,
+        });
+      } catch (_e) { /* advisory only */ }
     }
   }
   process.exit(0);

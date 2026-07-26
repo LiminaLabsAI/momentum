@@ -347,3 +347,35 @@ BUG-028, and the hook-side writer's parity fence). A test asserts complete.js
 requires land.js rather than reimplementing.
 
 ---
+### [FEATURE] 2026-07-27 — G4 complete: TD-011 closed, all three sections have writers
+Topics: g4, td-011, chronology, linked-decisions, tag-events, adapter-parity
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: bin/ecosystem.js, core/git-hooks/run-check.js, core/commands/initiative.md
+Detail: The three initiative template sections that shipped in Phase 9 with zero
+writing code all have writers now. `Per-repo contributions` (G2, from
+`initiative start`), `Deploy chronology` and `Linked decisions` (here, from
+`initiative complete`). Chronology consumes `tag`/`merge` events for the
+initiative's own members; the missing `tag` producer was added to `pre-push` —
+git has no post-tag hook, and a locally-created tag means nothing until it is
+PUSHED, so the push is the real release moment and the right capture point
+(advisory-wrapped so it can never block a release). Linked decisions uses an
+opt-in frontmatter stamp (`initiative: <slug>`) written in the member repo by
+whoever authors the ADR — momentum never reaches across the ownership boundary
+to add it. Both empty states explain how to populate themselves rather than
+sitting blank, which is how they stayed dead for four phases. Suite 1080 → 1083.
+
+---
+
+### [DISCOVERY] 2026-07-27 — pre-existing OKF violation in Phase 29 evidence
+Topics: okf, conformance, housekeeping, phase-29
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: specs/phases/phase-29-instruction-variation-model/evidence/self-repo-dogfood.md
+Detail: `momentum okf check` reported one violation — Phase 29's
+`evidence/self-repo-dogfood.md` was committed without YAML frontmatter in
+`9bfd5fd` (v0.36.0) and has been non-conformant since. Untouched by this branch;
+confirmed via `git log` and a diff against `main` before attributing it. Fixed
+inline (`type: Evidence`, matching every other evidence file) because G4's task
+list requires a conformant bundle and the phase it belongs to is long released.
+Bundle now 311/311 conformant.
+
+---

@@ -267,3 +267,73 @@ test('the ecosystem gate grades evidence with the SAME parser as `lanes land`', 
     'complete.js must reuse land.js rather than reimplementing evidence grading');
   assert.equal(typeof complete.evaluate, 'function');
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// G4 — record writers (TD-011: three template sections that had no writer)
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('linked-decisions writer picks up stamped member ADRs and ignores others', () => {
+  const { tmp, root } = setup({ config: { integration_verify_command: 'exit 0' } });
+  try {
+    giveBackendEvidence(tmp);
+    giveFrontendEvidence(tmp);
+
+    const decisions = path.join(tmp, 'backend', 'specs', 'decisions');
+    fs.mkdirSync(decisions, { recursive: true });
+    // Stamped — must be linked.
+    write(path.join(decisions, '0007-object-storage.md'),
+      '---\ntype: ADR\ninitiative: attachments\n---\n\n# ADR-0007: Object storage\n');
+    // Unstamped — must NOT be linked.
+    write(path.join(decisions, '0008-unrelated.md'),
+      '---\ntype: ADR\n---\n\n# ADR-0008: Something else\n');
+    // Stamped for a DIFFERENT initiative — must NOT be linked.
+    write(path.join(decisions, '0009-other-initiative.md'),
+      '---\ntype: ADR\ninitiative: telemetry\n---\n\n# ADR-0009: Telemetry\n');
+
+    assert.equal(complete(root).status, 0);
+
+    const body = initLib.loadInitiative(root, 'attachments').content;
+    assert.match(body, /ADR-0007: Object storage/);
+    assert.doesNotMatch(body, /ADR-0008/);
+    assert.doesNotMatch(body, /ADR-0009/);
+    assert.match(body, /momentum:decisions/);
+  } finally { rmrf(tmp); }
+});
+
+test('linked-decisions section explains the stamp when nothing is linked', () => {
+  const { tmp, root } = setup({ config: { integration_verify_command: 'exit 0' } });
+  try {
+    giveBackendEvidence(tmp);
+    giveFrontendEvidence(tmp);
+    assert.equal(complete(root).status, 0);
+
+    const body = initLib.loadInitiative(root, 'attachments').content;
+    // An empty section must say HOW to populate it, not just sit blank —
+    // blank is how it stayed dead in the template for four phases (TD-011).
+    assert.match(body, /add that stamp to a decision/);
+  } finally { rmrf(tmp); }
+});
+
+test('chronology renders recorded tag/merge events for contributing members', () => {
+  const { tmp, root } = setup({ config: { integration_verify_command: 'exit 0' } });
+  try {
+    giveBackendEvidence(tmp);
+    giveFrontendEvidence(tmp);
+
+    const fragments = require('../core/team/lib/fragments');
+    const events = require('../core/ecosystem/lib/events');
+    fragments.writeFragment(root, events.EVENTS_VIEW, 'ada', 'tag',
+      { member: 'backend', summary: 'release v2.1.0', context: 'v2.1.0' },
+      { ts: '2026-07-27T14:30:00.000Z', seq: 1 });
+    // An event for a member NOT in this initiative must be excluded.
+    fragments.writeFragment(root, events.EVENTS_VIEW, 'ada', 'tag',
+      { member: 'stranger', summary: 'release v9', context: 'v9' },
+      { ts: '2026-07-27T15:00:00.000Z', seq: 2 });
+
+    assert.equal(complete(root).status, 0);
+
+    const body = initLib.loadInitiative(root, 'attachments').content;
+    assert.match(body, /2026-07-27 14:30Z.*backend.*v2\.1\.0.*release v2\.1\.0/);
+    assert.doesNotMatch(body, /stranger/);
+  } finally { rmrf(tmp); }
+});

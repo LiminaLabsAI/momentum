@@ -1,3 +1,7 @@
+---
+type: Evidence
+---
+
 # Phase 29 — Self-repo dogfood evidence (2026-07-10)
 
 `momentum upgrade .` on the momentum self-repo (installed: claude-code + opencode).

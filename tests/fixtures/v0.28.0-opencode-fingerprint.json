@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "opencode",
-    "note": "Phase 31a G3 / ADR-0016: /complete-initiative recipe added; auto-projected to all 4 adapters."
+    "note": "Phase 31a G4 / ADR-0016: /initiative recipe documents the start+complete lifecycle and the ADR initiative-stamp convention; run-check.js records a 'tag' event on release-tag push (git has no post-tag hook, and a tag means nothing until pushed) to fill Deploy chronology."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -13,7 +13,7 @@
     ".githooks/post-commit": "850085952c9d8fe4dc550065590f55ba5231f3edc7efaa529d1947473c69beea",
     ".githooks/post-merge": "095bbbe9712592d03b1ecd3a8ae598da4dc82ef55946c592065eb2a8a3002f00",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "40246f40abb78c20ddc71c4e74582cfc6855ff8b23b519f094b54ffd9e67ee53",
+    ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
     ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
     ".opencode/agents/momentum-reviewer-architecture.md": "3331c4f1fe6c8ba389f4d49771fee4720ad83223d4683712bb1cbf341c5ec053",
     ".opencode/agents/momentum-reviewer-qa.md": "7b074044de574e27dbfad3e64b3555dc72f81b270ae40da3a2fae5e04d70d15e",
@@ -29,7 +29,7 @@
     ".opencode/commands/ecosystem.md": "a6b27f06cc72c590e07705d8ca50f0469efd2cb194ddaa9f9b92ef122e126a14",
     ".opencode/commands/handoff.md": "b7661a41ac3dc5560456b2259b9358b3b53a18950c0c5943b5cd21de6fe8f744",
     ".opencode/commands/hotfix.md": "703ce112d903654ebf8b089f6346763fb339394aa4e43d87d0e566c85f3d175a",
-    ".opencode/commands/initiative.md": "350b83f3e8c53d535a6fca50eefaf676e86188f2144b0c19fa4f2de6d586b5b6",
+    ".opencode/commands/initiative.md": "dc6254b8b368b53632f419f0b0690826383e8c728ac8715f7557a1cd61beb533",
     ".opencode/commands/lanes.md": "bb6b0f0d2f59a9944a8b85d7b550dca3729a62aee61ee0927eb09a483a65503d",
     ".opencode/commands/log.md": "94877de62241a6db0c9b15270f25188731a82a99300a9a3ee42a0a0bf6692bb7",
     ".opencode/commands/migrate.md": "44ddd6fbb9ffe9f4f05f95e4ca45c29448ce0183a1217c207b68d6009955eb2e",
