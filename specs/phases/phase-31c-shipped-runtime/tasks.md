@@ -21,15 +21,20 @@ status: in-progress
 - [x] Updated a pre-existing test that had **codified the bug as intended behaviour** (its comment explained that findRoot deliberately did not sibling-scan)
 - [x] Verify `npm test` green — **1149/1149** (+9 from 1140); commit G0
 
-## Group 1 — Vendored runtime *(needs G0)*
-- [ ] Closure declared as a **manifest**, derived from the hook entry points' require graph
-- [ ] **Test recomputes the closure** and fails when the manifest is stale (adding a dep must be deliberate)
-- [ ] `init` + `upgrade` install to `<target>/.momentum/runtime/`, preserving `core/`-relative subpaths
-- [ ] **Byte-identity test** — all 9 vendored files equal their core originals
-- [ ] `.gitignore` negation so `.momentum/runtime/` commits (following `!.momentum/team/`)
-- [ ] **Depth-1 assertion** across all 4 adapters — what licenses R2's literal `../.momentum/runtime/…`
-- [ ] Fresh `init` produces a populated runtime; asserted
-- [ ] Verify `npm test` green; commit G1
+## Group 1 — Vendored runtime *(needs G0)* ✅
+- [x] `core/runtime/closure.js` — closure **computed** from the entry points' real require graph, not hand-listed
+- [x] Test asserts the closure is **transitively complete** — add a require to any runtime module and it fails until declared
+- [x] Test asserts the closure has **no external dependencies** (vendoring only works because momentum is zero-dependency)
+- [x] `init` + `upgrade` install to `<target>/.momentum/runtime/`, preserving `core/`-relative subpaths
+- [x] **Byte-identity test** — every vendored file equals its core original (AC-3); `upgrade` restores it after corruption
+- [x] `.gitignore` negation in the template + this repo, following `!.momentum/team/`
+- [x] **Depth-1 assertion across all 4 adapters** — what licenses R2's literal `../.momentum/runtime/…`, incl. asserting the path resolves from both `scripts/` and `.githooks/`
+- [x] Vendored modules **load in place** — proves the tree shape survived the copy
+- [x] Git-trackability asserted via `git add --dry-run` (**not** `check-ignore -v`, which reports matched negations and exits 0 — a misleading instrument here)
+- [x] **Measured closure is 12 files / 96 kB, not the 9 / 65 kB estimated at brainstorm** — corrected in ADR-0018 + overview rather than contorting code to fit the guess
+- [x] `scripts/orient.js` install kept **transitional** — G1 is deliberately additive; its consumers are rewired in G2/G3, then it goes
+- [x] 4 fingerprints re-baselined (drift = `.gitignore` only)
+- [x] Verify `npm test` green — **1158/1158** (+18 from 1140); commit G1
 
 ## Group 2 — Rewire the JS helpers *(∥ G3)*
 - [ ] `eco-event.js` requires `fragments` + `identity` + `events` from the runtime; inlined logic deleted

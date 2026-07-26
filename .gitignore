@@ -26,6 +26,11 @@ node_modules/
 # to the ignored .momentum/. They carry cross-machine coordination state.
 !.momentum/team/
 !.momentum/team/**
+
+# Shipped runtime (Phase 31c, ADR-0018 R4) — committed so a fresh clone has
+# working hooks before any upgrade run.
+!.momentum/runtime/
+!.momentum/runtime/**
 # ...but per-machine audit LOGS under team/ stay LOCAL (ADR-0015, Phase 30e G4).
 .momentum/team/**/*.log
 .githooks/*.bak

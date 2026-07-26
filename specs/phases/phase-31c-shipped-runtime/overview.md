@@ -40,11 +40,11 @@ heavy. Measured, that is false:
 
 | | |
 |---|---|
-| Require closure to let hooks use core directly | **9 files, 65 kB** |
+| Require closure to let hooks use core directly | **12 files, 96 kB** |
 | Hand-maintained duplicates today | 3 files, 27 kB |
 | Package unpacked size | 1.4 MB |
 
-65 kB is **4.6%** of what already ships, and every file in the closure is
+96 kB is **6.8%** of what already ships, and every file in the closure is
 already free of external dependencies, so it copies verbatim. The duplication
 was never justified by cost — only by nobody having priced the alternative.
 
@@ -81,7 +81,7 @@ So this phase is not tech-debt cleanup. It repairs a shipped feature.
 
 | # | Decision | Rationale |
 |---|---|---|
-| R1 | **Vendor the 9-file closure verbatim**; hooks require the real core modules | 65 kB against a 1.4 MB package. A byte-identity test makes drift *impossible* rather than merely visible — which is the difference between this and the parity-fence approach that failed three times. |
+| R1 | **Vendor the closure verbatim**; hooks require the real core modules | 96 kB against a 1.4 MB package. A byte-identity test makes drift *impossible* rather than merely visible — which is the difference between this and the parity-fence approach that failed three times. |
 | R2 | Runtime lives at **`.momentum/runtime/`**, required as the literal **`../.momentum/runtime/…`** | `scripts/` and `.githooks/` both sit exactly one level below repo root, so the *same relative path* resolves from either. No resolver, no candidate list, no bootstrap — `cross-repo.js`'s 5-entry lookup is exactly the kind of thing that cannot recur. Guarded by a test asserting every adapter installs hooks at depth 1. |
 | R3 | **One `findRoot`**: up-walk → sibling scan → registration fallback | Three algorithms exist and the exported one is wrong. Unifying fixes BUG-030 as a *consequence* rather than as a separate patch, which is the honest sequencing — the bug and the debt have one cause. |
 | R4 | The runtime is **committed**, not gitignored | `.githooks/` is already committed, and a fresh clone must work before anyone runs `upgrade`. Gitignoring would make hooks silently no-op on clone — precisely the failure mode this arc keeps producing. |
@@ -98,7 +98,7 @@ So this phase is not tech-debt cleanup. It repairs a shipped feature.
 (up-walk → sibling scan → registration fallback); migrate all seven call sites;
 file BUG-030.
 
-**G1 — Vendored runtime.** `init`/`upgrade` install the 9-file closure to
+**G1 — Vendored runtime.** `init`/`upgrade` install the closure to
 `.momentum/runtime/`; byte-identity test; `.gitignore` negation so it commits;
 depth-1 assertion across adapters.
 

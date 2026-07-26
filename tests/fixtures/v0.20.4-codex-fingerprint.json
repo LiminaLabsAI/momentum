@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-26",
-    "capturedFrom": "fix/BUG-029-orient-lane-parsing",
+    "capturedFrom": "phase-31c-shipped-runtime",
     "adapter": "codex",
-    "note": "BUG-029: orient.js lane-registry parsing fixed (id strings + per-lane manifests; in-flight only; worktree anchor). scripts/orient.js is the only changed file."
+    "note": "Phase 31c G1 / ADR-0018 R4: .gitignore negates .momentum/runtime/ so the shipped runtime commits (a fresh clone must have working hooks before any upgrade)."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -46,7 +46,7 @@
     ".githooks/post-merge": "d140ca9d27ce9f743533ee56cf7676563c64bf2c21d5989363e52ba46b93808f",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
-    ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
+    ".gitignore": "0f45d028f2909d76989fd32c732cbfabe614cdb8e7951ad02e6794a22a287bf6",
     "AGENTS.md": "7ca3824d1e25bfca000e612edc4fc70c74e0da65a2ff09ad56544c2ed364850e",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",

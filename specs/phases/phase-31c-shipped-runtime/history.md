@@ -196,3 +196,52 @@ cleverer grep that silently swallowed the false positive and would have swallowe
 a real eighth implementation too.
 
 ---
+### [FEATURE] 2026-07-27 — G1 complete: the shipped runtime
+Topics: g1, runtime, closure, byte-identity, adr-0018
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: core/runtime/closure.js, bin/momentum.js, core/specs-templates/.gitignore
+Detail: `init` and `upgrade` now install the core closure verbatim to
+`<target>/.momentum/runtime/`, committed (R4) so a fresh clone has working hooks
+before anyone runs `upgrade`. The closure is COMPUTED from the entry points'
+require graph rather than hand-listed, and three tests hold it honest: it is
+transitively complete (adding a require anywhere fails the build until declared),
+it contains no external dependencies (vendoring only works because momentum is
+zero-dependency), and every installed file is byte-identical to its core original
+— restored by `upgrade` after deliberate corruption. That byte-identity assertion
+is the mechanism replacing parity fences: there is no second implementation that
+could diverge, only a copy that must match. G1 is deliberately ADDITIVE — the old
+`scripts/orient.js` copy stays until G2/G3 rewire its consumers. Suite 1149 → 1158.
+
+---
+
+### [DISCOVERY] 2026-07-27 — the closure is 12 files / 96 kB, not 9 / 65 kB
+Topics: closure, measurement, honesty, adr-0018
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: specs/decisions/0018-shipped-runtime.md, specs/phases/phase-31c-shipped-runtime/overview.md
+Detail: The brainstorm priced the closure at 9 files / 65 kB by hand-walking the
+requires of four modules. Computed properly it is 12 files / 96 kB: `findRoot`'s
+registration fallback pulls in `ecosystem/lib/state.js`, which pulls in
+`pointer.js`. Both are genuine runtime dependencies of the resolver, so the extra
+weight is real rather than an artefact. Corrected the numbers in ADR-0018 and the
+phase overview rather than trimming the entry points to make the earlier estimate
+look right — the whole reason this phase exists is that an unexamined estimate
+(the original "shipping core would be too heavy") went unchallenged for three
+phases. 96 kB is 6.8% of the 1.4 MB package; the decision is unchanged.
+
+---
+
+### [NOTE] 2026-07-27 — `git check-ignore -v` is the wrong instrument for this
+Topics: g1, gitignore, testing, tooling
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: tests/shipped-runtime.test.js
+Detail: While verifying that `.momentum/runtime/` actually commits,
+`git check-ignore -v <path>` printed a matching rule and exited 0 — which reads
+as "ignored". It was reporting the matched NEGATION (`!.momentum/runtime/**`).
+With `-v`, git prints whichever pattern matched, negations included, so exit 0
+means "a pattern matched", not "the file is excluded". `git add --dry-run` is the
+instrument that answers the actual question. Recorded because this is the same
+class of error as the bugs this phase is fixing — trusting a signal that looks
+authoritative without checking what it actually measures — and it would have
+produced a test that passed while asserting the opposite of the truth.
+
+---

@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-26",
-    "capturedFrom": "fix/BUG-029-orient-lane-parsing",
+    "capturedFrom": "phase-31c-shipped-runtime",
     "adapter": "opencode",
-    "note": "BUG-029: orient.js lane-registry parsing fixed (id strings + per-lane manifests; in-flight only; worktree anchor). scripts/orient.js is the only changed file."
+    "note": "Phase 31c G1 / ADR-0018 R4: .gitignore negates .momentum/runtime/ so the shipped runtime commits (a fresh clone must have working hooks before any upgrade)."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -15,7 +15,7 @@
     ".githooks/post-merge": "d140ca9d27ce9f743533ee56cf7676563c64bf2c21d5989363e52ba46b93808f",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
-    ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
+    ".gitignore": "0f45d028f2909d76989fd32c732cbfabe614cdb8e7951ad02e6794a22a287bf6",
     ".opencode/agents/momentum-reviewer-architecture.md": "3331c4f1fe6c8ba389f4d49771fee4720ad83223d4683712bb1cbf341c5ec053",
     ".opencode/agents/momentum-reviewer-qa.md": "7b074044de574e27dbfad3e64b3555dc72f81b270ae40da3a2fae5e04d70d15e",
     ".opencode/agents/momentum-reviewer-security.md": "48f4eb012373c3c77bf4dc4e37128fef59bc482b13cc9d8822863bdf96ecb90a",

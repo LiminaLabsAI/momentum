@@ -38,11 +38,11 @@ That constraint is real. The conclusion drawn from it was not checked:
 
 | | |
 |---|---|
-| Require closure for hooks to use core directly | **9 files, 65 kB** |
+| Require closure for hooks to use core directly | **12 files, 96 kB** |
 | Hand-maintained duplicates today | 3 files, 27 kB |
 | Package unpacked size | 1.4 MB |
 
-65 kB is **4.6%** of what momentum already ships, and every file in the closure
+96 kB is **6.8%** of what momentum already ships, and every file in the closure
 is already free of external dependencies (momentum is a zero-dependency
 package), so each copies verbatim. The duplication was never justified by cost —
 only by nobody having priced the alternative. TD-012 filed it as a pattern to
@@ -83,7 +83,8 @@ landingCheck (explicit) = applicable: true      ← what every 31b test did
 
 ### R1 — Vendor the closure verbatim; hooks require real core modules
 
-`init` and `upgrade` copy the 9-file closure into the target repo. The three
+`init` and `upgrade` copy the closure into the target repo — 12 files, computed
+from the entry points' real require graph rather than hand-listed. The three
 hand-written helpers stop re-implementing core and require it instead.
 
 A test asserts every vendored file is **byte-identical** to its core original.
@@ -124,7 +125,7 @@ separately would mean shipping a workaround we then rewrite.
 
 ### R4 — The runtime is committed, not gitignored
 
-Vendoring 65 kB into a user repo means upgrade diffs. Gitignoring it and
+Vendoring 96 kB into a user repo means upgrade diffs. Gitignoring it and
 regenerating on `upgrade` avoids that, at the price of a worse failure: a fresh
 clone would have hooks that silently no-op until someone happened to run
 `upgrade`.
@@ -181,7 +182,7 @@ fail-open (`lanes land` skips the check rather than blocking a landing wrongly).
 
 **Negative / accepted**
 
-- **65 kB vendored** into every installed project, visible in upgrade diffs (R4).
+- **96 kB vendored** into every installed project, visible in upgrade diffs (R4).
 - **The depth-1 constraint** on adapter install layouts (R2), asserted rather
   than enforced by design.
 - **A node spawn** in the shell discovery path where bash previously sufficed —
