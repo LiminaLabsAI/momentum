@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-07-09",
-    "capturedFrom": "phase-30e-ecosystem-team-mode",
+    "captured": "2026-07-26",
+    "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "codex",
-    "note": "Phase 30e G4 — .gitignore ignores per-machine .momentum/team/*.log (ADR-0015)"
+    "note": "Phase 31a G1 / ADR-0016: git-native ecosystem event capture. Adds .githooks/post-commit + post-merge + eco-event.js and extends run-check.js dispatch. Identical 4-file drift across all 4 adapters (hooks are adapter-independent, which is the point of moving enforcement to the git axis)."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -38,8 +38,11 @@
     ".codex/hooks.json": "e374fbbee01ce2989c19057e2b40c272457deacdcde802d055aa188b130e1474",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
+    ".githooks/eco-event.js": "67f40e72256fa5f0c6adc573dba7e900562bd3f6c09313c4b95d38deb2be061a",
+    ".githooks/post-commit": "850085952c9d8fe4dc550065590f55ba5231f3edc7efaa529d1947473c69beea",
+    ".githooks/post-merge": "095bbbe9712592d03b1ecd3a8ae598da4dc82ef55946c592065eb2a8a3002f00",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "b50f84222823a8319eb75cbbf1f76b91fa87aa51f86dbac040774e59a6364c1f",
+    ".githooks/run-check.js": "40246f40abb78c20ddc71c4e74582cfc6855ff8b23b519f094b54ffd9e67ee53",
     ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
     "AGENTS.md": "7ca3824d1e25bfca000e612edc4fc70c74e0da65a2ff09ad56544c2ed364850e",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",

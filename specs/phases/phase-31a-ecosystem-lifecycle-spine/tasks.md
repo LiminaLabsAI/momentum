@@ -21,16 +21,21 @@ status: in-progress
 - [x] File backlog: BUG-028, ENH-066 (lifecycle), ENH-067 (fleet orient), ENH-068 (dep-ordered landing), TD-011 (records without writers) — filed 2026-07-26 at brainstorm (Rule 3)
 - [x] Verify `npm test` green — **1046/1046** (+18 net-new from 1028); commit G0
 
-## Group 1 — Git-native event write path *(∥ G2)*
-- [ ] `post-commit` hook → attributed event fragment (`core/team/lib/fragments`)
-- [ ] `post-merge` hook (captures forge-side merges on next local integration)
-- [ ] Member resolution via `git rev-parse --git-common-dir` (replaces `$PWD` matching)
-- [ ] `sessions/` compiled from fragments; legacy append path preserved
-- [ ] Event kinds `commit` / `merge` / `tag`; attribution via `core/identity`
-- [ ] Hook budget <50ms, fail-open, never blocks a commit
-- [ ] Test: commit from a **lane worktree outside `members[].path`** lands in the log (AC-1)
-- [ ] Test: no-ecosystem is a silent no-op
-- [ ] Verify `npm test` green; commit G1
+## Group 1 — Git-native event write path *(∥ G2)* ✅
+- [x] `post-commit` hook → attributed event fragment (`core/team/lib/fragments`)
+- [x] `post-merge` hook (captures forge-side merges on next local integration)
+- [x] Member resolution via `git rev-parse --git-common-dir` (replaces `$PWD` matching)
+- [x] `sessions/` compiled from fragments (`momentum ecosystem sessions [--date] [--write]`); legacy `session-append.sh` untouched
+- [x] Event kinds `commit` / `merge` / `tag`; attribution via `core/identity`
+- [x] Hook budget — **measured ~35ms marginal** (85ms vs 50ms bypassed baseline; 629ms cold first run); fail-open on every path, never blocks a commit
+- [x] Test: commit from a **lane worktree outside `members[].path`** lands in the log (**AC-1**)
+- [x] Test: no-ecosystem / non-repo / unregistered-repo are silent no-ops
+- [x] **E2E through the real git hook** — `momentum init` wires it, a plain `git commit` records, nothing invoked by hand (the test shape whose absence let BUG-028 ship)
+- [x] Test: `MOMENTUM_SKIP_HOOKS=1` suppresses capture, like every other momentum hook
+- [x] **Parity fence** — hook-side writer vs `core/team/lib/fragments` (byte-identical), `core/identity` slug, and `core/ecosystem/lib/events` member resolution
+- [x] Caught pre-ship: `eco-event.js` failed `installHookFiles`' momentum-ownership check → would have installed once and never upgraded (BUG-011 class); ownership marker added + guarded by test
+- [x] Self-repo `.githooks/` mirrored (dual-maintenance parity I2); 4 fingerprints re-baselined after `--check` showed exactly the intended 4-file drift
+- [x] Verify `npm test` green — **1058/1058** (+30 from 1028); commit G1
 
 ## Group 2 — Lifecycle head: brainstorm + start *(∥ G1)*
 - [ ] `/brainstorm-initiative` — mirror of `/brainstorm-phase` incl. the gate contract

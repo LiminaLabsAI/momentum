@@ -64,10 +64,12 @@ function runEcosystem(args) {
       return cmdUpgrade(rest);
     case 'initiative':
       return cmdInitiative(rest);
+    case 'sessions':
+      return cmdSessions(rest);
     default:
       throw new Error(
         `unknown ecosystem subcommand "${sub}". ` +
-        `Try: init | add | remove | status | upgrade | initiative`,
+        `Try: init | add | remove | status | upgrade | initiative | sessions`,
       );
   }
 }
@@ -83,6 +85,7 @@ Usage:
   momentum ecosystem status [--no-git] [--ecosystem <path>]
   momentum ecosystem upgrade [--dry-run] [--force|--autostash] [--agent <name>] [--ecosystem <path>]
   momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
+  momentum ecosystem sessions [--date YYYY-MM-DD] [--write] [--ecosystem <path>]
 
 Location:
   add / remove / status / initiative auto-locate the ecosystem root by
@@ -1029,6 +1032,55 @@ function printSweepSummary(results, dryRun) {
 // until Phase 15. Wires the existing core/ecosystem/lib/initiative.js
 // (nextInitiativeId / writeInitiative / setActive) to a CLI subcommand.
 // Non-interactive (flag-driven) so it works from any agent context.
+
+// ─────────────────────────────────────────────────────────────────────────────
+// sessions — compile the git-native event stream into a day's activity log
+// (Phase 31a G1, ADR-0016)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// The fragments under `.momentum/team/eco-events/` are the source of truth;
+// `sessions/<date>.md` is a compiled VIEW of them. That inversion is what makes
+// the log conflict-free: N clones append disjoint own-prefix fragments and
+// anyone can recompile, where the pre-31a design appended to one shared file
+// and needed a lock to survive two concurrent commits (BUG-004).
+//
+// Deliberately NOT run from the post-commit hook: rewriting a tracked file on
+// every commit would reintroduce exactly the merge conflicts fragments exist to
+// avoid. Compile on read.
+function cmdSessions(args) {
+  const opts = parseFlags(args, {
+    date: 'string',
+    write: 'boolean',
+    ecosystem: 'string',
+  });
+  const root = resolveEcosystemRoot(opts.ecosystem, 'sessions');
+  const events = require('../core/ecosystem/lib/events');
+
+  const date = typeof opts.date === 'string' && opts.date
+    ? opts.date
+    : new Date().toISOString().slice(0, 10);
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error(`sessions: --date must be YYYY-MM-DD (got "${date}")`);
+  }
+
+  if (opts.write) {
+    const file = events.writeSessionLog(root, date);
+    console.log(`✓ wrote ${path.relative(process.cwd(), file) || file}`);
+    return;
+  }
+
+  const body = events.compileSessionLog(root, date);
+  process.stdout.write(body);
+
+  const total = events.listEvents(root).length;
+  if (total === 0) {
+    console.log('');
+    console.log('(no events recorded yet — momentum captures commits via the');
+    console.log(' post-commit git hook in each member repo. Run `momentum upgrade`');
+    console.log(' in a member if it was installed before v0.40.0.)');
+  }
+}
 
 function cmdInitiative(args) {
   if (args.length === 0) {

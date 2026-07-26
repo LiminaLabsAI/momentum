@@ -184,3 +184,63 @@ re-baselined; `--check` first proved the drift was exactly `.claude/settings.jso
 with zero drift on the other three adapters.
 
 ---
+### [FEATURE] 2026-07-27 — G1 complete: git-native event write path
+Topics: g1, write-path, git-hooks, post-commit, worktrees, fragments, adr-0016
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/git-hooks/eco-event.js, core/ecosystem/lib/events.js, bin/ecosystem.js
+Detail: The ecosystem write path moves off the agent tool-hook axis onto git.
+New `post-commit` / `post-merge` hooks (wrappers → `run-check.js` dispatch →
+`core/git-hooks/eco-event.js`) record attributed events as per-actor fragments
+in the ecosystem repo; `core/ecosystem/lib/events.js` compiles them into
+`sessions/<date>.md`, exposed as `momentum ecosystem sessions [--date] [--write]`.
+Three failure modes of the old path are closed at once: it now fires regardless
+of which agent (or human, or script) made the commit; `git rev-parse
+--git-common-dir` resolves lane worktrees to their true member where `$PWD`
+matching silently dropped them (AC-1); and the line format stays byte-compatible
+with what `session-append.sh` always wrote, so readers and docs are unaffected —
+the change is the WRITE path, not the format. Compile-on-read is deliberate: the
+hook does NOT rewrite `sessions/` per commit, since rewriting a tracked file on
+every commit would reintroduce the merge conflicts fragments exist to avoid
+(BUG-004's lock becomes unnecessary rather than reimplemented). Measured cost
+~35ms marginal per commit (85ms vs 50ms bypassed), fail-open on every path.
+Suite 1046 → 1058.
+
+---
+
+### [DISCOVERY] 2026-07-27 — eco-event.js would have been frozen forever by upgrade
+Topics: bug-011, installer, hook-ownership, near-miss
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/git-hooks/eco-event.js, tests/eco-event-write-path.test.js
+Detail: `installHookFiles()` in bin/momentum.js decides whether an existing
+`.githooks/` file is momentum-owned — and therefore upgradeable — by matching
+/momentum[^\n]*hook/i against its CONTENT. Anything failing that check is
+classified foreign and left untouched permanently. The new `eco-event.js` header
+happened not to put "momentum" and "hook" on one line, so it would have
+installed exactly once and then never received another update: a silently
+frozen file, invisible until someone wondered why a fixed bug persisted
+downstream. Caught by checking all seven hook files against the predicate before
+committing rather than after. Ownership marker added with a comment explaining
+why the phrasing is load-bearing, plus a test asserting every shipped hook file
+satisfies it. Same family as BUG-011 (upgrade silently skipping hook installs).
+
+---
+
+### [ARCH_CHANGE] 2026-07-27 — hook-side writer is a fenced duplicate, by necessity
+Topics: duplication, parity-test, githooks, packaging, adr-0016
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/git-hooks/eco-event.js, tests/eco-event-write-path.test.js
+Detail: The git hook cannot reuse `core/team/lib/fragments` — an installed
+project receives NO copy of momentum's `core/` (a fresh install ships exactly
+four files into `.githooks/`), and downstream repos do not depend on momentum as
+a package. Verified against the fingerprint fixture rather than assumed. So
+`core/git-hooks/eco-event.js` reimplements the needed slice (repo-root
+resolution, ecosystem discovery, member match, actor slug, fragment write) with
+node builtins only, following the precedent `contract.js` already set. Since two
+silently-drifting implementations is the exact bug class this phase closes, the
+duplication is fenced by a parity test asserting the hook-side writer produces
+byte-identical fragment files to `core/team/lib/fragments.writeFragment`, the
+same actor slugs as `core/identity`, and the same member resolution as
+`core/ecosystem/lib/events`. Precedent exists in-repo: `session-append.sh` and
+`state.js` already carry parallel walk implementations.
+
+---
