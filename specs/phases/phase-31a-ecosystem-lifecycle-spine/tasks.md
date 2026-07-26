@@ -53,15 +53,20 @@ status: in-progress
 - [x] Routing prose updated in the member pointer + both ecosystem instruction templates — labelled **convention, not enforcement** (D8)
 - [x] Verify `npm test` green — **1069/1069** (+41 from 1028); commit G2
 
-## Group 3 — Lifecycle tail: completion gate *(needs G2)*
-- [ ] `/complete-initiative <slug>` — mirror of `/complete-phase`
-- [ ] Cross-repo Rule 12 evidence gate, reusing the `lanes land` evidence reader
-- [ ] `integration_verify_command` run when declared; **explicit "not declared" output** when absent
-- [ ] On pass: populate `Close`, finalize chronology, `status: closed` + `closed:`, clear active
-- [ ] Failure output names the member and the reason
-- [ ] Test: **refusal path** when a member lacks fresh evidence (AC-3)
-- [ ] Test: declared-but-failing integration verify blocks
-- [ ] Verify `npm test` green; commit G3
+## Group 3 — Lifecycle tail: completion gate *(needs G2)* ✅
+- [x] `/complete-initiative <slug>` recipe — mirror of `/complete-phase`
+- [x] `momentum ecosystem initiative complete <slug> [--dry-run] [--skip-verify]`
+- [x] Cross-repo Rule 12 evidence gate **reusing `land.js`'s `evidenceSection`** (exported for this) — two graders that drift would let work pass one gate and fail the other
+- [x] `integration_verify_command` run when declared; **explicit "NOT DECLARED" gap notice** when absent (never a silent pass, D6)
+- [x] `--skip-verify` does NOT buy a pass on a declared check
+- [x] On pass: populate `Close` + `Deploy chronology` from recorded git events, `status: closed` + `closed:`, clear the active fragment
+- [x] Failure output names the member and the reason
+- [x] Test: **refusal path** when a member lacks evidence (**AC-3**)
+- [x] Test: declared-but-failing integration verify blocks, and its output is shown
+- [x] Test: empty `## Verification Evidence` section refuses; no-contributions refuses; re-close refuses
+- [x] Test: a member with **no local checkout blocks** rather than silently passing
+- [x] **Fixed a real defect found here**: `process.exit(exitCode)` in bin/momentum.js zeroed any `process.exitCode` set by a non-throwing command — the gate printed REFUSED and exited 0. Now `exitCode || process.exitCode || 0`
+- [x] Verify `npm test` green — **1080/1080** (+52 from 1028); commit G3
 
 ## Group 4 — Record writers + adapter parity *(needs G1 + G3)*
 - [ ] Deploy chronology writer consuming `tag` events

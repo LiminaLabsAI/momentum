@@ -296,3 +296,54 @@ item is effectively already satisfied for recipes, leaving only the static
 recipe-set tables in each adapter's surfaces.md to update by hand.
 
 ---
+### [FEATURE] 2026-07-27 — G3 complete: the cross-repo completion gate
+Topics: g3, complete-initiative, rule-12, evidence, integration-verify, adr-0016
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/ecosystem/lib/complete.js, core/commands/complete-initiative.md, bin/ecosystem.js
+Detail: `momentum ecosystem initiative complete` is the first cross-repo Rule 12
+gate momentum has ever had. It refuses to close until every declared
+contribution carries real evidence — graded by `land.js`'s `evidenceSection`,
+exported for this purpose so the ecosystem gate and `lanes land` cannot drift
+into disagreeing about what counts. On pass it populates `Close` and
+`Deploy chronology` from the G1 event stream, sets `status: closed`, and clears
+the active fragment. Two deliberate hard edges: a member with no local checkout
+BLOCKS rather than being skipped (an initiative that cannot be verified here is
+not verified), and `--skip-verify` on a declared check still refuses to close.
+An undeclared `integration_verify_command` prints an explicit gap notice rather
+than passing quietly — momentum is forge-neutral and cannot invent the check, but
+it can refuse to pretend one ran. Suite 1069 → 1080.
+
+---
+
+### [DISCOVERY] 2026-07-27 — a refusing gate was exiting 0
+Topics: exit-codes, cli, gate, bug, bin-momentum
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: bin/momentum.js
+Detail: `cmdInitiativeComplete` sets `process.exitCode = 1` and returns rather
+than throwing (a refusal is not an error — the command worked, the answer was
+no). But `bin/momentum.js` ended with a bare `process.exit(exitCode)`, where
+`exitCode` is a local that only becomes 1 inside a catch. So the gate printed a
+full REFUSED report and the shell saw success. Any script, CI step, or agent
+gating on the exit status would have sailed straight through a failing gate —
+the failure mode is worse than no gate, because the output looks authoritative.
+Caught by checking `$?` rather than reading the output. Fixed at the source
+(`exitCode || process.exitCode || 0`) so it holds for every command, not just
+this one. Pre-existing scope: no shipped command relied on `process.exitCode`
+before now, so nothing else was silently broken.
+
+---
+
+### [ARCH_CHANGE] 2026-07-27 — evidence grading is shared, not reimplemented
+Topics: evidence, land, rule-12, drift, single-source
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/lanes/lib/land.js, core/ecosystem/lib/complete.js
+Detail: `core/lanes/lib/land.js` exported only `{cmdLand, gateCheck}`;
+`gateCheck` is lane-shaped (wants a lane object with branch/grade/planNode) so
+it cannot be called cross-repo. Rather than writing a second evidence parser at
+the ecosystem tier, `evidenceSection` is now exported and reused directly. The
+alternative — a near-identical regex in complete.js — is precisely the
+two-implementations-that-drift pattern this phase exists to close (BUG-007,
+BUG-028, and the hook-side writer's parity fence). A test asserts complete.js
+requires land.js rather than reimplementing.
+
+---

@@ -85,6 +85,8 @@ Usage:
   momentum ecosystem status [--no-git] [--ecosystem <path>]
   momentum ecosystem upgrade [--dry-run] [--force|--autostash] [--agent <name>] [--ecosystem <path>]
   momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
+  momentum ecosystem initiative start <slug> [--contribute <member>:<kind>:<ref>]... [--edge <from>:<to>:<kind>]...
+  momentum ecosystem initiative complete <slug> [--dry-run] [--ecosystem <path>]
   momentum ecosystem sessions [--date YYYY-MM-DD] [--write] [--ecosystem <path>]
 
 Location:
@@ -1096,10 +1098,12 @@ function cmdInitiative(args) {
       return cmdInitiativeCreate(rest);
     case 'start':
       return cmdInitiativeStart(rest);
+    case 'complete':
+      return cmdInitiativeComplete(rest);
     default:
       throw new Error(
         `initiative: unknown subsubcommand "${sub}". ` +
-        `Try: create | start. ` +
+        `Try: create | start | complete. ` +
         `\`list\` / \`status\` / \`close\` stay as slash-only for now.`,
       );
   }
@@ -1301,6 +1305,206 @@ function cmdInitiativeStart(args) {
     console.log('No contributions declared yet. Add them with:');
     console.log(`  momentum ecosystem initiative start ${slug} --contribute <member>:phase:<ref>`);
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// initiative complete — the cross-repo Rule 12 gate (Phase 31a G3, ADR-0016)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Refuses to close until every declared contribution carries real evidence AND
+// the declared integration verification passes. "Each repo is green" and "the
+// system works" are different claims; before 31a nothing checked the second,
+// which is how two production defects reached users across the reviewed
+// sessions while every individual repo's suite was passing.
+function cmdInitiativeComplete(args) {
+  const slug = args.find((a) => !a.startsWith('--'));
+  const opts = parseFlags(args, {
+    ecosystem: 'string',
+    'skip-verify': 'boolean',
+    'dry-run': 'boolean',
+  });
+
+  if (!slug) {
+    throw new Error(
+      'initiative complete: missing <slug>. '
+      + 'Usage: momentum ecosystem initiative complete <slug> [--dry-run]',
+    );
+  }
+
+  const root = resolveEcosystemRoot(opts.ecosystem, 'initiative complete');
+  const initLib = require('../core/ecosystem/lib/initiative');
+  const completeLib = require('../core/ecosystem/lib/complete');
+
+  const loaded = initLib.loadInitiative(root, slug);
+  if (!loaded) {
+    throw new Error(`initiative complete: no initiative "${slug}" in ${path.join(root, 'initiatives')}`);
+  }
+  if (loaded.frontmatter.status === 'closed') {
+    throw new Error(`initiative complete: "${slug}" is already closed (${loaded.frontmatter.closed}).`);
+  }
+
+  const result = completeLib.evaluate(root, slug, { skip: opts['skip-verify'] });
+
+  console.log(`Initiative ${slug} — completion gate`);
+  console.log('');
+  console.log('Per-member evidence (Rule 12):');
+  for (const c of result.contributions) {
+    console.log(`  ${c.ok ? '✓' : '✗'} ${c.member}  ${c.kind}:${c.ref}`);
+    console.log(`      ${c.detail}`);
+  }
+  if (result.contributions.length === 0) console.log('  (none declared)');
+
+  console.log('');
+  const v = result.verify;
+  if (v.deferred) {
+    console.log('Integration verification: not run — per-member evidence is incomplete.');
+  } else if (!v.declared) {
+    // ADR-0016 D6 — an undeclared verification is a STATED GAP, never a pass.
+    console.log('Integration verification: ⚠ NOT DECLARED.');
+    console.log('  momentum is forge-neutral and ships no CI, so it cannot invent this check.');
+    console.log('  Nothing has verified that these members work TOGETHER — only that each');
+    console.log('  is individually green. Declare one in ecosystem.json to close the gap:');
+    console.log('    { "config": { "integration_verify_command": "<command>" } }');
+  } else if (v.skipped) {
+    console.log(`Integration verification: ✗ SKIPPED via --skip-verify (${v.command}).`);
+    console.log('  Refusing to close on a deliberately skipped gate.');
+  } else {
+    console.log(`Integration verification: ${v.ok ? '✓' : '✗'} ${v.command}`);
+    if (!v.ok && v.output) {
+      console.log('  ── output ──');
+      for (const line of v.output.split('\n').slice(-20)) console.log(`  ${line}`);
+    }
+  }
+
+  if (!result.ok) {
+    console.log('');
+    console.log(`REFUSED — ${slug} cannot close yet:`);
+    for (const b of result.blockers) {
+      console.log(`  • ${b.member}${b.ref !== '—' ? ` (${b.kind}:${b.ref})` : ''}: ${b.detail}`);
+    }
+    if (v.declared && !v.ok && !v.deferred) {
+      console.log(`  • integration verify failed: ${v.command}`);
+    }
+    process.exitCode = 1;
+    return;
+  }
+
+  if (opts['dry-run']) {
+    console.log('');
+    console.log(`✓ ${slug} would close cleanly (--dry-run; nothing written).`);
+    return;
+  }
+
+  // ── close ────────────────────────────────────────────────────────────────
+  const today = new Date().toISOString().slice(0, 10);
+  const chronology = collectChronology(root, slug, result);
+  let body = renderChronologySection(loaded.content, chronology);
+  body = renderCloseSection(body, result, v, today);
+
+  initLib.writeInitiative(loaded.filePath, {
+    ...loaded.frontmatter,
+    status: 'closed',
+    closed: today,
+  }, body);
+
+  try {
+    const teamState = require('../core/ecosystem/lib/team-state');
+    teamState.setActiveInitiative(root, resolveActorId(root), '');
+  } catch (_e) {
+    try { initLib.clearActive(root); } catch (_e2) { /* best-effort */ }
+  }
+
+  console.log('');
+  console.log(`✓ Closed initiative ${slug} (${today}). Active initiative cleared.`);
+}
+
+/**
+ * Deploy chronology rows from the git-native event stream (G1) — the `tag` and
+ * `merge` events recorded for this initiative's members.
+ *
+ * TD-011: this section has shipped in the template since Phase 9 with nothing
+ * writing it, which is why one reviewed session's chronology sat empty through
+ * an entire production deployment.
+ */
+function collectChronology(root, slug, result) {
+  let events = [];
+  try {
+    events = require('../core/ecosystem/lib/events').listEvents(root);
+  } catch (_e) {
+    return [];
+  }
+  const members = new Set(result.contributions.map((c) => c.member));
+  return events
+    .filter((e) => (e.kind === 'tag' || e.kind === 'merge') && e.payload && members.has(e.payload.member))
+    .map((e) => ({
+      ts: e.ts,
+      member: e.payload.member,
+      context: e.payload.context || '',
+      summary: e.payload.summary || '',
+    }));
+}
+
+function renderChronologySection(content, rows) {
+  const heading = '## Deploy chronology';
+  const start = content.indexOf(heading);
+  if (start === -1) return content;
+
+  const lines = rows.length
+    ? rows.map((r) => {
+      const when = `${r.ts.slice(0, 10)} ${r.ts.slice(11, 16)}Z`;
+      return `- \`${when}\` — **${r.member}** ${r.context} — ${r.summary}`;
+    })
+    : ['_(no tag or merge events recorded for these members — momentum captures'
+      + ' them via the post-commit/post-merge git hooks; a forge-side merge is'
+      + ' only seen on the next local integration)_'];
+
+  const generated = [
+    '',
+    '<!-- momentum:chronology — generated by `initiative complete`; edits here are overwritten -->',
+    ...lines,
+    '',
+  ].join('\n');
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
+}
+
+function renderCloseSection(content, result, verify, today) {
+  const heading = '## Close';
+  const start = content.indexOf(heading);
+  if (start === -1) return content;
+
+  const evidence = result.contributions.map(
+    (c) => `- **${c.member}** (${c.kind}:\`${c.ref}\`) — ${c.detail}`,
+  );
+
+  const verifyLine = !verify.declared
+    ? '**Integration verification: NOT DECLARED** — no ecosystem-level check ran. '
+      + 'Each member was individually verified; nothing verified them together.'
+    : `**Integration verification: passed** — \`${verify.command}\``;
+
+  const generated = [
+    '',
+    '<!-- momentum:close — generated by `initiative complete`; edits here are overwritten -->',
+    `Closed ${today} by the completion gate (ADR-0016).`,
+    '',
+    '### Evidence at close',
+    '',
+    ...evidence,
+    '',
+    verifyLine,
+    '',
+    '> What shipped / what was deferred / what was learned — write these below.',
+    '> The gate records that evidence EXISTED; only a human can say what it meant.',
+    '',
+  ].join('\n');
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
 }
 
 /**

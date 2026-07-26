@@ -2233,7 +2233,12 @@ async function main() {
     }
   } catch { /* ignore update check errors */ }
 
-  process.exit(exitCode);
+  // Honor `process.exitCode` set by a command that FAILED WITHOUT THROWING —
+  // e.g. a gate that refuses (`initiative complete`) rather than erroring.
+  // A bare `process.exit(exitCode)` zeroes those: the refusal prints, the shell
+  // sees success, and any script or CI step gating on it sails through. A gate
+  // that reports failure while exiting 0 is not a gate.
+  process.exit(exitCode || process.exitCode || 0);
 }
 
 module.exports = {

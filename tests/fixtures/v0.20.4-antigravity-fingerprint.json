@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "antigravity",
-    "note": "Phase 31a G2 / ADR-0016: /brainstorm-initiative recipe added; auto-projected to all 4 adapters by the ADR-0011 generator (one file each, correct per-adapter destination)."
+    "note": "Phase 31a G3 / ADR-0016: /complete-initiative recipe added; auto-projected to all 4 adapters."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -16,6 +16,7 @@
     ".agents/workflows/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
     ".agents/workflows/brainstorm-initiative.md": "2e2de3a58668c58ef20d8066835e4ed364741b435c77655bbcf13a37d966fdf1",
     ".agents/workflows/brainstorm-phase.md": "1f3fb30d1b71d8d7e15e81dff0726f650d599770eabd3336f9ddba436731faca",
+    ".agents/workflows/complete-initiative.md": "a7839c11bb9aa80e9863a22ba787039ca6cc8bf78d45a22e7c1482d96a205b47",
     ".agents/workflows/complete-phase.md": "df9484cd6b6601cbd88917dc8bf12599ca62be61736a04ed944376f4224c05c2",
     ".agents/workflows/continue.md": "e1ee768a3ff36d6a4c00e2d5226e9cdb8fff8746db4f2bc90e8a5dafe100c08c",
     ".agents/workflows/dispatch.md": "9ebf4ebb8ff7848c0b5d8316e29bdd6b55a29c1971e67797b3785d888489782b",
