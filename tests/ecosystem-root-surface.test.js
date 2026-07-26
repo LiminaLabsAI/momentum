@@ -4,10 +4,14 @@
 //
 // The ecosystem CLAUDE.md/AGENTS.md advertise slash-command primitives;
 // `ecosystem init` must ship the curated fileset that makes them resolve
-// (8 coordination commands + 2 session scripts + Claude Code SessionStart
+// (10 coordination commands + 2 session scripts + Claude Code SessionStart
 // hook wiring), and `ecosystem upgrade` must retrofit/refresh it. Project/
 // phase commands never ship and their presence is warned about (BUG-016
 // anti-pattern), never deleted.
+//
+// Phase 31a (ADR-0016) added the initiative lifecycle pair. The coordination
+// root is exactly where they are run, so shipping instructions that advertise
+// them WITHOUT the recipes would reproduce the ENH-049 failure mode itself.
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -19,6 +23,8 @@ const { mktmp, rmrf, runCli } = require('./_helpers');
 const SURFACE_COMMANDS = [
   'scout.md', 'dispatch.md', 'handoff.md', 'continue.md', 'swarm.md',
   'ecosystem.md', 'initiative.md', 'session.md',
+  // Initiative lifecycle (Phase 31a, ADR-0016).
+  'brainstorm-initiative.md', 'complete-initiative.md',
 ];
 
 function makeEco(extraArgs = []) {
@@ -103,7 +109,9 @@ test('ecosystem upgrade — retrofits a pre-ENH-049 root, then is idempotent', (
 
     const again = runCli(['ecosystem', 'upgrade'], { cwd: root });
     assert.equal(again.status, 0, again.stderr);
-    assert.match(again.stdout, /= \.claude\/commands \[claude-code\]: 11 file\(s\) up to date/);
+    // 8 original coordination commands + brainstorm-initiative +
+    // complete-initiative + the tracked settings entry (Phase 31a).
+    assert.match(again.stdout, /= \.claude\/commands \[claude-code\]: 13 file\(s\) up to date/);
   } finally {
     rmrf(tmp);
   }

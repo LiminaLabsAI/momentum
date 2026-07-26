@@ -350,4 +350,9 @@ function cmdLand(cwd, argv) {
   return 0;
 }
 
-module.exports = { cmdLand, gateCheck };
+// `evidenceSection` is exported so the ecosystem-tier completion gate
+// (core/ecosystem/lib/complete.js, ADR-0016) grades evidence with the EXACT
+// same parser rather than reimplementing it. Two graders that drift would let
+// work pass one gate and fail the other — the bug class Phase 31a exists to
+// close.
+module.exports = { cmdLand, gateCheck, evidenceSection };

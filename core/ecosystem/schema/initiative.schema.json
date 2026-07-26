@@ -50,6 +50,14 @@
       "type": "array",
       "items": {"type": "string"},
       "description": "Optional free-form tags for filtering."
+    },
+    "contributions": {
+      "type": "array",
+      "description": "Per-member work records this initiative fans out to (ADR-0016). Each entry is a flat `member:kind:ref` triple — e.g. `backend:phase:phase-12-attachments`. Written by `momentum ecosystem initiative start`; read by `initiative complete` to locate what must carry Rule 12 evidence before the initiative may close. Optional and additive — initiatives created before Phase 31a validate unchanged.\n\nDeliberately NOT an array of objects: `core/ecosystem/lib/initiative.js` ships a strict, dependency-free frontmatter serializer that flattens arrays via `String(v)`, so nested objects cannot round-trip. Growing a YAML implementation to store three fields would be the wrong trade.\n\nDeliberately carries NO status or evidence field: those are resolved LIVE from each member's own record at completion time. A status the agent wrote into the initiative is exactly the self-reported completion Rule 12 exists to reject.",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*:(phase|adhoc):[A-Za-z0-9._-]+$"
+      }
     }
   },
   "allOf": [

@@ -48,9 +48,15 @@ test('fresh insert writes v=2 BEGIN sentinel and action-bearing content', () => 
     // Action-bearing content: routing rule + primitives + status hint.
     assert.match(after, /Member of `my-eco` ecosystem/);
     assert.match(after, /Cross-repo work\?/);
-    assert.match(after, /Write an initiative/);
+    // Phase 31a (ADR-0016): the routing target is the initiative LIFECYCLE
+    // entry point, not a bare file-creation command — cross-repo work now
+    // begins with a brainstorm, mirroring Rule 1's unfounded-project route.
+    assert.match(after, /\/brainstorm-initiative/);
     assert.match(after, /never plan cross-repo features in this repo/);
-    assert.match(after, /\/initiative create/);
+    assert.match(after, /initiative start/);
+    // D8: the pointer must say plainly that this routing is convention, since
+    // nothing detects cross-repo scope until Phase 31b (the BUG-009 lesson).
+    assert.match(after, /routing is convention/);
     assert.match(after, /\/scout/);
     assert.match(after, /\/dispatch/);
     assert.match(after, /\/handoff/);

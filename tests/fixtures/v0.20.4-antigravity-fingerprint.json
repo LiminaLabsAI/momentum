@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-07-09",
-    "capturedFrom": "phase-30e-ecosystem-team-mode",
+    "captured": "2026-07-26",
+    "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "antigravity",
-    "note": "Phase 30e G4 — .gitignore ignores per-machine .momentum/team/*.log (ADR-0015)"
+    "note": "Phase 31a G4 / ADR-0016: /initiative recipe documents the start+complete lifecycle and the ADR initiative-stamp convention; run-check.js records a 'tag' event on release-tag push (git has no post-tag hook, and a tag means nothing until pushed) to fill Deploy chronology."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,14 +14,16 @@
     ".agents/skills/momentum-reviewer-security/SKILL.md": "0a6aecfb260ae7174a20d9afc4137c0d2f541052c59d6011680c2688bf347e54",
     ".agents/skills/swarm-supervisor/SKILL.md": "5cbd3f3267944b9e29a0255459850388d080865c681363ccbb936d2080b18493",
     ".agents/workflows/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
+    ".agents/workflows/brainstorm-initiative.md": "2e2de3a58668c58ef20d8066835e4ed364741b435c77655bbcf13a37d966fdf1",
     ".agents/workflows/brainstorm-phase.md": "1f3fb30d1b71d8d7e15e81dff0726f650d599770eabd3336f9ddba436731faca",
+    ".agents/workflows/complete-initiative.md": "a7839c11bb9aa80e9863a22ba787039ca6cc8bf78d45a22e7c1482d96a205b47",
     ".agents/workflows/complete-phase.md": "df9484cd6b6601cbd88917dc8bf12599ca62be61736a04ed944376f4224c05c2",
     ".agents/workflows/continue.md": "e1ee768a3ff36d6a4c00e2d5226e9cdb8fff8746db4f2bc90e8a5dafe100c08c",
     ".agents/workflows/dispatch.md": "9ebf4ebb8ff7848c0b5d8316e29bdd6b55a29c1971e67797b3785d888489782b",
     ".agents/workflows/ecosystem.md": "4ac41640bdec2be5b91850f85611b7c6286f963786c775ff4de18ef3661edcd8",
     ".agents/workflows/handoff.md": "6493635ed74539ec8ed221225643db3f29c5af1ff5214525a5a86a794daf03b2",
     ".agents/workflows/hotfix.md": "9ec5b7a5b1a83cd12e47fbeba44434d60b95c5cfdd52cb44e8430d49dbee20ed",
-    ".agents/workflows/initiative.md": "1a778bfd0fa3f18f7cd5adcdbc2cc3b08fe165fc48c8277ec24550564458e04f",
+    ".agents/workflows/initiative.md": "dbbba6243ffbcc1d6cefccfee60c78a662c043cf7d22b70df17edd3019bceb2f",
     ".agents/workflows/lanes.md": "eebc4a1d97f020fd2754311aaa36db7cbb7da6ba88417b2ed6fc95f32bf09392",
     ".agents/workflows/log.md": "b2728ec55d95996cb6c8bbc24411cfd0a99f618e4c0374ac054f6229feac50a6",
     ".agents/workflows/migrate.md": "467e8ac615a47c09d9e0994d1a879676428bfdeff79b15e73076ebfcfe6e74b8",
@@ -39,8 +41,11 @@
     ".agents/workflows/validate.md": "904c55ecc63aade8177c754eeba552a3dc5e35ee1e5d95e29f3bb9902cb5a637",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
+    ".githooks/eco-event.js": "67f40e72256fa5f0c6adc573dba7e900562bd3f6c09313c4b95d38deb2be061a",
+    ".githooks/post-commit": "850085952c9d8fe4dc550065590f55ba5231f3edc7efaa529d1947473c69beea",
+    ".githooks/post-merge": "095bbbe9712592d03b1ecd3a8ae598da4dc82ef55946c592065eb2a8a3002f00",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "b50f84222823a8319eb75cbbf1f76b91fa87aa51f86dbac040774e59a6364c1f",
+    ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
     ".gitignore": "3913389f4d74738e04e803b5d262591d2be94ab9e18b8e36f4f24949a8036b9f",
     "AGENTS.md": "68b39184872ab97a18550a7b79a935856c080e46673b8b98f2ed8f7ad43a7aa4",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",

@@ -113,6 +113,16 @@ function formatScalar(v) {
 
 const VALID_STATUSES = ['in-progress', 'closed', 'abandoned'];
 
+// Per-member contribution records (ADR-0016). `kind` mirrors momentum's work
+// types (Rule 14): a member contributes either a full phase or an ad-hoc record.
+// Stored as flat `member:kind:ref` strings so they round-trip through the
+// strict, dependency-free frontmatter serializer above (which flattens arrays
+// via String(v) and therefore cannot carry nested objects).
+const VALID_CONTRIBUTION_KINDS = ['phase', 'adhoc'];
+const CONTRIBUTION_RE = new RegExp(
+  `^[a-z][a-z0-9-]*:(?:${VALID_CONTRIBUTION_KINDS.join('|')}):[A-Za-z0-9._-]+$`,
+);
+
 /**
  * Validates an initiative frontmatter object against the schema.
  * Returns { ok: true } or { ok: false, errors: [{ path, message }] }.
@@ -148,7 +158,51 @@ function validateFrontmatter(fm) {
   if (!Array.isArray(fm.repos) || fm.repos.length === 0 || !fm.repos.every((s) => typeof s === 'string')) {
     errors.push({ path: '$.repos', message: 'required non-empty array of strings' });
   }
+  // contributions — optional and additive (ADR-0016). Initiatives written
+  // before Phase 31a have none and must keep validating unchanged.
+  if (fm.contributions !== undefined) {
+    if (!Array.isArray(fm.contributions)) {
+      errors.push({ path: '$.contributions', message: 'must be an array if present' });
+    } else {
+      fm.contributions.forEach((c, i) => {
+        if (typeof c !== 'string' || !CONTRIBUTION_RE.test(c)) {
+          errors.push({
+            path: `$.contributions[${i}]`,
+            message: 'must be "member:kind:ref" with kind one of: '
+              + `${VALID_CONTRIBUTION_KINDS.join(', ')}`,
+          });
+        }
+      });
+    }
+  }
   return errors.length === 0 ? { ok: true } : { ok: false, errors };
+}
+
+/**
+ * Parse a `member:kind:ref` contribution triple into its parts.
+ * Returns null when the string is malformed.
+ *
+ * Note there is deliberately no `status` or `evidence` here: a contribution's
+ * completion state is resolved LIVE from the member's own record at completion
+ * time (Rule 12). A status the agent previously wrote into the initiative is
+ * self-reported completion, which is exactly what Rule 12 exists to reject.
+ */
+function parseContribution(entry) {
+  if (typeof entry !== 'string' || !CONTRIBUTION_RE.test(entry)) return null;
+  const [member, kind, ref] = entry.split(':');
+  return { member, kind, ref };
+}
+
+/**
+ * Build a `member:kind:ref` triple. Throws on invalid input rather than
+ * emitting a malformed entry that would fail validation later.
+ */
+function formatContribution({ member, kind, ref }) {
+  const entry = `${member}:${kind}:${ref}`;
+  if (!CONTRIBUTION_RE.test(entry)) {
+    throw new TypeError(`formatContribution: invalid contribution ${JSON.stringify(entry)}`);
+  }
+  return entry;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -247,6 +301,9 @@ module.exports = {
   parseFrontmatter,
   serializeFrontmatter,
   validateFrontmatter,
+  VALID_CONTRIBUTION_KINDS,
+  parseContribution,
+  formatContribution,
   nextInitiativeId,
   initiativeFilename,
   initiativePath,

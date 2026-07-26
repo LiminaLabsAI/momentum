@@ -174,6 +174,18 @@ function prePush() {
           );
         }
       }
+
+      // Record the release as an ecosystem `tag` event (Phase 31a, ADR-0016).
+      // git has no post-tag hook, and a tag created locally means nothing until
+      // it is PUSHED — so the push is the real release moment and the right
+      // place to capture it. This is what fills an initiative's Deploy
+      // chronology, which shipped empty in the template since Phase 9 (TD-011).
+      // Advisory: wrapped so a capture failure can never block a release push.
+      try {
+        require('./eco-event.js').record({
+          kind: 'tag', summary: `release ${tag}`, context: tag,
+        });
+      } catch (_e) { /* advisory only */ }
     }
   }
   process.exit(0);
@@ -185,6 +197,17 @@ if (cmd === 'commit-msg') {
   commitMsg(rest[0]);
 } else if (cmd === 'pre-push') {
   prePush();
+} else if (cmd === 'post-commit' || cmd === 'post-merge') {
+  // Ecosystem event capture (Phase 31a, ADR-0016). Advisory and fail-open:
+  // these hooks run AFTER the git operation succeeded, so nothing here may
+  // surface an error or a non-zero exit — a failed log append must never make
+  // a successful commit look broken.
+  try {
+    const eco = require('./eco-event.js');
+    if (cmd === 'post-commit') eco.postCommit();
+    else eco.postMerge();
+  } catch (_e) { /* advisory only */ }
+  process.exit(0);
 } else {
   process.stderr.write(`momentum run-check: unknown command '${cmd}'\n`);
   process.exit(0); // unknown → don't block

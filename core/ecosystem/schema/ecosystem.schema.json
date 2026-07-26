@@ -87,7 +87,24 @@
             "enum": ["api-contract", "library", "deploy", "build-time", "other"],
             "description": "Nature of the dependency."
           },
-          "note": {"type": "string", "description": "Optional human-readable note."}
+          "note": {"type": "string", "description": "Optional human-readable note."},
+          "initiative": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "description": "Slug of the initiative that registered this edge (ADR-0016). Present when `momentum ecosystem initiative start` discovered the dependency, absent when a human declared it by hand."
+          }
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Ecosystem-level configuration (ADR-0016). The coordination root deliberately has no `specs/`, so `specs/config.md` is unavailable here — ecosystem-tier mechanisms live in this object. Per ADR-0009 the trust layer stays invariant; only mechanisms are configurable.",
+      "properties": {
+        "integration_verify_command": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Shell command that verifies the members work together, run by `momentum ecosystem initiative complete` before an initiative may close. momentum is forge-neutral and ships no CI, so this is declared by the project, never owned by momentum. When absent, the completion gate reports the gap explicitly rather than passing silently."
         }
       }
     }

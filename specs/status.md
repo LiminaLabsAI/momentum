@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: _none active_ — **Phase 30e Ecosystem (Multi-Repo) Team Mode shipped v0.39.0**; Phase 30d shipped v0.38.0; Team-mode family 30a/b/c shipped v0.37.0.
+> **Current Phase**: **Phase 31a — Ecosystem Lifecycle Spine** (branch `phase-31a-ecosystem-lifecycle-spine`, target v0.40.0). _Prior: Phase 30e shipped v0.39.0; 30d v0.38.0; Team-mode family 30a/b/c v0.37.0._
 > **Latest Release**: v0.39.0 — Phase 30e Ecosystem (Multi-Repo) Team Mode (ENH-065, ADR-0015): extends the git-native Team-mode plane to whole ecosystems — **remote-URL members**; `active-initiative`/presence as shared, attributed **ecosystem fragments** (zero-conflict merge); **swarm ownership via `refs/momentum/leases/*` CAS as the default when a remote is present** (generation-keyed for single-winner + liveness; single-machine byte-unchanged, 236 swarm tests green); sample third-party contract reader + "team across repos" docs. Suite 1028/1028. Merged → main → staging; tag v0.39.0; GH Release **Latest**; **npm `@limina-labs/momentum` = 0.39.0** — all four surfaces verified. _(v0.38.0 Phase 30d; v0.37.0 Team Mode Walk+Run+Fly; v0.36.0 Phase 29.)_
 > **Health**: On Track
 
@@ -107,7 +107,12 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 30e — Ecosystem Team Mode | `phase-30e-ecosystem-team-mode` | In Progress (paused, resume fresh) | **G0 ✅** (ADR-0015 + contracts, suite 1008/1008). **NEXT: G1 (remote-URL members) ∥ G2 (ecosystem-state→fragments) → G3 (RISKY swarm leases-as-source-of-truth — show diff before applying) → G4 (docs/reader/demo/fingerprints) → G5 (e2e + release v0.39.0).** Closes ENH-065. Target v0.39.0 |
+| 31a — Ecosystem Lifecycle Spine | `phase-31a-ecosystem-lifecycle-spine` | **Built + verified — at the release gate** | **G0 ✅ G1 ✅ G2 ✅ G3 ✅ G4 ✅ G5 ✅.** Suite **1084/1084** (baseline 1028, +56); swarm 236/236; OKF 311/311; no-ecosystem byte-unchanged. Closes **BUG-028, ENH-066, TD-011**. Live self-repo dogfood: 4 real commits captured into the real `cerebrio-ecosystem` log. **Awaiting operator approval to merge → staging → main + tag v0.40.0.** |
+
+> The Phase 30e row was cleared here on 2026-07-26 — 30e released as v0.39.0
+> (tag + GH Release + npm all verified) and its lane is closed, so it is no
+> longer an active lane. Commit `348eb5e` reconciled the rest of `status.md`
+> but missed this row.
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -117,9 +122,9 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 31 | Intelligence | Not Started (target v0.38.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing |
-| 32 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028) |
-| ENH-064 | Team-mode integration follow-ups | Not Started | Rule 15 reword + recipe `claim`-wiring + legacy-writer identity; `lanes land`/`pre-push` review-gate + team-wide freshness; `backlog.md`→fragments; ecosystem team mode (remote-URL members, ecosystem-state fragments, swarm-manifest lease-CAS wiring); adapter fingerprint re-baselines. Additive to the shipped v0.37.0 core. |
+| 31b | Ecosystem Enforcement | Not Started (target v0.41.0) | Second half of the 31a/31b arc: mid-session cross-repo **detection + routing** (makes 31a's convention mechanical — D8); **fleet orient** (`ecosystem status` + session start carrying each member's phase, P0/P1, lanes — ENH-067); **dependency-ordered cross-repo landing gate** (Rule 6 Landing Order one tier up — ENH-068); cross-repo doc-sync **delivery** via handoff (ownership-preserving); ecosystem-tier Rule rewrite. |
+| 32 | Intelligence | Not Started (target v0.42.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing. _(Renumbered from 31 on 2026-07-26 — D9, displaced by the 31a/31b ecosystem arc.)_ |
+| 33 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028). _(Renumbered from 32 on 2026-07-26 — D9.)_ |
 
 ## Unscheduled Future Work
 

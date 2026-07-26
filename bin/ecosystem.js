@@ -64,10 +64,12 @@ function runEcosystem(args) {
       return cmdUpgrade(rest);
     case 'initiative':
       return cmdInitiative(rest);
+    case 'sessions':
+      return cmdSessions(rest);
     default:
       throw new Error(
         `unknown ecosystem subcommand "${sub}". ` +
-        `Try: init | add | remove | status | upgrade | initiative`,
+        `Try: init | add | remove | status | upgrade | initiative | sessions`,
       );
   }
 }
@@ -83,6 +85,9 @@ Usage:
   momentum ecosystem status [--no-git] [--ecosystem <path>]
   momentum ecosystem upgrade [--dry-run] [--force|--autostash] [--agent <name>] [--ecosystem <path>]
   momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
+  momentum ecosystem initiative start <slug> [--contribute <member>:<kind>:<ref>]... [--edge <from>:<to>:<kind>]...
+  momentum ecosystem initiative complete <slug> [--dry-run] [--ecosystem <path>]
+  momentum ecosystem sessions [--date YYYY-MM-DD] [--write] [--ecosystem <path>]
 
 Location:
   add / remove / status / initiative auto-locate the ecosystem root by
@@ -422,6 +427,11 @@ const ROOT_SURFACE_COMMANDS = [
   'scout.md', 'dispatch.md', 'handoff.md', 'continue.md', 'swarm.md',
   // agent-neutral recipes (core/commands/)
   'ecosystem.md', 'initiative.md', 'session.md',
+  // initiative lifecycle (Phase 31a, ADR-0016) — the coordination root is
+  // exactly where these are run, so they must resolve there. Shipping the
+  // instructions that advertise them without the recipes themselves is the
+  // ENH-049 failure mode.
+  'brainstorm-initiative.md', 'complete-initiative.md',
 ];
 
 const ROOT_SURFACE_SCRIPTS = [
@@ -1030,6 +1040,55 @@ function printSweepSummary(results, dryRun) {
 // (nextInitiativeId / writeInitiative / setActive) to a CLI subcommand.
 // Non-interactive (flag-driven) so it works from any agent context.
 
+// ─────────────────────────────────────────────────────────────────────────────
+// sessions — compile the git-native event stream into a day's activity log
+// (Phase 31a G1, ADR-0016)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// The fragments under `.momentum/team/eco-events/` are the source of truth;
+// `sessions/<date>.md` is a compiled VIEW of them. That inversion is what makes
+// the log conflict-free: N clones append disjoint own-prefix fragments and
+// anyone can recompile, where the pre-31a design appended to one shared file
+// and needed a lock to survive two concurrent commits (BUG-004).
+//
+// Deliberately NOT run from the post-commit hook: rewriting a tracked file on
+// every commit would reintroduce exactly the merge conflicts fragments exist to
+// avoid. Compile on read.
+function cmdSessions(args) {
+  const opts = parseFlags(args, {
+    date: 'string',
+    write: 'boolean',
+    ecosystem: 'string',
+  });
+  const root = resolveEcosystemRoot(opts.ecosystem, 'sessions');
+  const events = require('../core/ecosystem/lib/events');
+
+  const date = typeof opts.date === 'string' && opts.date
+    ? opts.date
+    : new Date().toISOString().slice(0, 10);
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error(`sessions: --date must be YYYY-MM-DD (got "${date}")`);
+  }
+
+  if (opts.write) {
+    const file = events.writeSessionLog(root, date);
+    console.log(`✓ wrote ${path.relative(process.cwd(), file) || file}`);
+    return;
+  }
+
+  const body = events.compileSessionLog(root, date);
+  process.stdout.write(body);
+
+  const total = events.listEvents(root).length;
+  if (total === 0) {
+    console.log('');
+    console.log('(no events recorded yet — momentum captures commits via the');
+    console.log(' post-commit git hook in each member repo. Run `momentum upgrade`');
+    console.log(' in a member if it was installed before v0.40.0.)');
+  }
+}
+
 function cmdInitiative(args) {
   if (args.length === 0) {
     throw new Error(
@@ -1042,13 +1101,522 @@ function cmdInitiative(args) {
   switch (sub) {
     case 'create':
       return cmdInitiativeCreate(rest);
+    case 'start':
+      return cmdInitiativeStart(rest);
+    case 'complete':
+      return cmdInitiativeComplete(rest);
     default:
       throw new Error(
         `initiative: unknown subsubcommand "${sub}". ` +
-        `Only \`create\` is currently wired as a CLI; ` +
+        `Try: create | start | complete. ` +
         `\`list\` / \`status\` / \`close\` stay as slash-only for now.`,
       );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// initiative start — declare per-member contributions + dependency edges
+// (Phase 31a G2, ADR-0016)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// This is the missing middle of the spine. Before 31a you could `create` an
+// initiative, and a full `/swarm` was wired end-to-end, but nothing connected
+// the two and nothing wrote results back.
+//
+// WHAT IT DELIBERATELY DOES NOT DO: reach into member repos and scaffold phase
+// directories there. Each member owns its own `specs/` — its own `/start-phase`
+// (or `/hotfix`) is the ritual that scaffolds a record, and that ritual is
+// exactly the "same structure one tier up" this lifecycle is built around. So
+// `start` DECLARES the contributions and routes the operator to each member's
+// own lifecycle, rather than writing another repo's specs from the outside.
+// Reaching across the ownership boundary would contradict the same rule
+// `/sync-docs` already enforces.
+function cmdInitiativeStart(args) {
+  const slug = args.find((a) => !a.startsWith('--'));
+  const opts = parseFlags(args, {
+    contribute: 'list',
+    edge: 'list',
+    ecosystem: 'string',
+  });
+
+  if (!slug) {
+    throw new Error(
+      'initiative start: missing <slug>. Usage: momentum ecosystem initiative '
+      + 'start <slug> [--contribute <member>:<kind>:<ref>]... [--edge <from>:<to>:<kind>]...',
+    );
+  }
+
+  const root = resolveEcosystemRoot(opts.ecosystem, 'initiative start');
+  const initLib = require('../core/ecosystem/lib/initiative');
+  const manifest = lib.loadManifest(root);
+  const memberIds = new Set((manifest.members || []).map((m) => m.id));
+
+  const loaded = initLib.loadInitiative(root, slug);
+  if (!loaded) {
+    throw new Error(
+      `initiative start: no initiative "${slug}" in ${path.join(root, 'initiatives')}. `
+      + 'Create it first: momentum ecosystem initiative create <slug>',
+    );
+  }
+  const fm = loaded.frontmatter;
+  if (fm.status === 'closed' || fm.status === 'abandoned') {
+    throw new Error(
+      `initiative start: "${slug}" is ${fm.status} — reopen it deliberately rather `
+      + 'than restarting a finished initiative.',
+    );
+  }
+
+  // ── contributions ────────────────────────────────────────────────────────
+  const existing = Array.isArray(fm.contributions) ? fm.contributions.slice() : [];
+  const byMember = new Map();
+  for (const e of existing) {
+    const p = initLib.parseContribution(e);
+    if (p) byMember.set(p.member, p);
+  }
+
+  const added = [];
+  for (const raw of (opts.contribute || [])) {
+    const parsed = initLib.parseContribution(raw);
+    if (!parsed) {
+      throw new Error(
+        `initiative start: malformed --contribute "${raw}". `
+        + `Expected <member>:<kind>:<ref> with kind one of: `
+        + `${initLib.VALID_CONTRIBUTION_KINDS.join(', ')}`,
+      );
+    }
+    if (!memberIds.has(parsed.member)) {
+      throw new Error(
+        `initiative start: unknown member "${parsed.member}". `
+        + `Known: ${[...memberIds].join(', ')}`,
+      );
+    }
+    if (!fm.repos.includes(parsed.member)) {
+      throw new Error(
+        `initiative start: member "${parsed.member}" is not in this initiative's `
+        + `repos [${fm.repos.join(', ')}]. Add it to the initiative first.`,
+      );
+    }
+    const prior = byMember.get(parsed.member);
+    if (prior && prior.ref !== parsed.ref) {
+      // Refuse-not-overwrite — the same principle `initiative create` already
+      // applies. Silently repointing a member's contribution would orphan the
+      // evidence trail the completion gate depends on.
+      throw new Error(
+        `initiative start: "${parsed.member}" already contributes `
+        + `${prior.kind}:${prior.ref}. Refusing to silently repoint it to `
+        + `${parsed.kind}:${parsed.ref}.`,
+      );
+    }
+    if (!prior) added.push(parsed);
+    byMember.set(parsed.member, parsed);
+  }
+
+  // ── dependency edges — the first code that has ever written one ──────────
+  const validKinds = ['api-contract', 'library', 'deploy', 'build-time', 'other'];
+  manifest.dependencies = Array.isArray(manifest.dependencies) ? manifest.dependencies : [];
+  const addedEdges = [];
+  for (const raw of (opts.edge || [])) {
+    const parts = String(raw).split(':');
+    if (parts.length !== 3) {
+      throw new Error(
+        `initiative start: malformed --edge "${raw}". Expected <from>:<to>:<kind>.`,
+      );
+    }
+    const [from, to, kind] = parts;
+    for (const id of [from, to]) {
+      if (!memberIds.has(id)) {
+        throw new Error(
+          `initiative start: edge references unknown member "${id}". `
+          + `Known: ${[...memberIds].join(', ')}`,
+        );
+      }
+    }
+    if (!validKinds.includes(kind)) {
+      throw new Error(
+        `initiative start: edge kind "${kind}" invalid. One of: ${validKinds.join(', ')}`,
+      );
+    }
+    if (from === to) {
+      throw new Error(`initiative start: edge "${raw}" is self-referential.`);
+    }
+    const dup = manifest.dependencies.find(
+      (d) => d.from === from && d.to === to && d.kind === kind,
+    );
+    if (dup) continue; // idempotent
+    const edge = { from, to, kind, initiative: slug };
+    manifest.dependencies.push(edge);
+    addedEdges.push(edge);
+  }
+
+  // ── persist ──────────────────────────────────────────────────────────────
+  const contributions = [...byMember.values()]
+    .map((c) => initLib.formatContribution(c))
+    .sort();
+
+  const nextFm = { ...fm };
+  if (contributions.length) nextFm.contributions = contributions;
+
+  const body = renderContributionsSection(loaded.content, [...byMember.values()]);
+  initLib.writeInitiative(loaded.filePath, nextFm, body);
+
+  if (addedEdges.length) {
+    const check = lib.validateManifest(manifest);
+    if (!check.ok) {
+      throw new Error(
+        'initiative start: refusing to write an invalid ecosystem.json — '
+        + check.errors.map((e) => `${e.path}: ${e.message}`).join('; '),
+      );
+    }
+    fs.writeFileSync(
+      path.join(root, 'ecosystem.json'),
+      JSON.stringify(manifest, null, 2) + '\n',
+    );
+  }
+
+  // Active initiative via the 30e attributed fragment (shared across clones).
+  try {
+    const teamState = require('../core/ecosystem/lib/team-state');
+    teamState.setActiveInitiative(root, resolveActorId(root), slug);
+  } catch (_e) {
+    try { initLib.setActive(root, slug); } catch (_e2) { /* best-effort */ }
+  }
+
+  // ── report + route ───────────────────────────────────────────────────────
+  console.log(`Started initiative ${slug}.`);
+  if (added.length) {
+    console.log('');
+    console.log('Contributions added:');
+    for (const c of added) console.log(`  ${c.member}  ${c.kind}  ${c.ref}`);
+  }
+  if (addedEdges.length) {
+    console.log('');
+    console.log('Dependency edges registered:');
+    for (const e of addedEdges) console.log(`  ${e.from} → ${e.to}  (${e.kind})`);
+  }
+
+  const pending = [...byMember.values()];
+  if (pending.length) {
+    console.log('');
+    console.log('Next — run each member\'s OWN lifecycle (momentum never writes');
+    console.log('another repo\'s specs/ from the outside):');
+    for (const c of pending) {
+      const m = (manifest.members || []).find((x) => x.id === c.member);
+      const where = m && m.path ? m.path : `<${c.member}>`;
+      const ritual = c.kind === 'phase' ? '/start-phase' : '/hotfix';
+      console.log(`  cd ${where} && ${ritual}   → ${c.ref}`);
+    }
+  } else {
+    console.log('');
+    console.log('No contributions declared yet. Add them with:');
+    console.log(`  momentum ecosystem initiative start ${slug} --contribute <member>:phase:<ref>`);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// initiative complete — the cross-repo Rule 12 gate (Phase 31a G3, ADR-0016)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Refuses to close until every declared contribution carries real evidence AND
+// the declared integration verification passes. "Each repo is green" and "the
+// system works" are different claims; before 31a nothing checked the second,
+// which is how two production defects reached users across the reviewed
+// sessions while every individual repo's suite was passing.
+function cmdInitiativeComplete(args) {
+  const slug = args.find((a) => !a.startsWith('--'));
+  const opts = parseFlags(args, {
+    ecosystem: 'string',
+    'skip-verify': 'boolean',
+    'dry-run': 'boolean',
+  });
+
+  if (!slug) {
+    throw new Error(
+      'initiative complete: missing <slug>. '
+      + 'Usage: momentum ecosystem initiative complete <slug> [--dry-run]',
+    );
+  }
+
+  const root = resolveEcosystemRoot(opts.ecosystem, 'initiative complete');
+  const initLib = require('../core/ecosystem/lib/initiative');
+  const completeLib = require('../core/ecosystem/lib/complete');
+
+  const loaded = initLib.loadInitiative(root, slug);
+  if (!loaded) {
+    throw new Error(`initiative complete: no initiative "${slug}" in ${path.join(root, 'initiatives')}`);
+  }
+  if (loaded.frontmatter.status === 'closed') {
+    throw new Error(`initiative complete: "${slug}" is already closed (${loaded.frontmatter.closed}).`);
+  }
+
+  const result = completeLib.evaluate(root, slug, { skip: opts['skip-verify'] });
+
+  console.log(`Initiative ${slug} — completion gate`);
+  console.log('');
+  console.log('Per-member evidence (Rule 12):');
+  for (const c of result.contributions) {
+    console.log(`  ${c.ok ? '✓' : '✗'} ${c.member}  ${c.kind}:${c.ref}`);
+    console.log(`      ${c.detail}`);
+  }
+  if (result.contributions.length === 0) console.log('  (none declared)');
+
+  console.log('');
+  const v = result.verify;
+  if (v.deferred) {
+    console.log('Integration verification: not run — per-member evidence is incomplete.');
+  } else if (!v.declared) {
+    // ADR-0016 D6 — an undeclared verification is a STATED GAP, never a pass.
+    console.log('Integration verification: ⚠ NOT DECLARED.');
+    console.log('  momentum is forge-neutral and ships no CI, so it cannot invent this check.');
+    console.log('  Nothing has verified that these members work TOGETHER — only that each');
+    console.log('  is individually green. Declare one in ecosystem.json to close the gap:');
+    console.log('    { "config": { "integration_verify_command": "<command>" } }');
+  } else if (v.skipped) {
+    console.log(`Integration verification: ✗ SKIPPED via --skip-verify (${v.command}).`);
+    console.log('  Refusing to close on a deliberately skipped gate.');
+  } else {
+    console.log(`Integration verification: ${v.ok ? '✓' : '✗'} ${v.command}`);
+    if (!v.ok && v.output) {
+      console.log('  ── output ──');
+      for (const line of v.output.split('\n').slice(-20)) console.log(`  ${line}`);
+    }
+  }
+
+  if (!result.ok) {
+    console.log('');
+    console.log(`REFUSED — ${slug} cannot close yet:`);
+    for (const b of result.blockers) {
+      console.log(`  • ${b.member}${b.ref !== '—' ? ` (${b.kind}:${b.ref})` : ''}: ${b.detail}`);
+    }
+    if (v.declared && !v.ok && !v.deferred) {
+      console.log(`  • integration verify failed: ${v.command}`);
+    }
+    process.exitCode = 1;
+    return;
+  }
+
+  if (opts['dry-run']) {
+    console.log('');
+    console.log(`✓ ${slug} would close cleanly (--dry-run; nothing written).`);
+    return;
+  }
+
+  // ── close ────────────────────────────────────────────────────────────────
+  const today = new Date().toISOString().slice(0, 10);
+  const chronology = collectChronology(root, slug, result);
+  let body = renderLinkedDecisionsSection(
+    loaded.content, collectLinkedDecisions(root, slug, result),
+  );
+  body = renderChronologySection(body, chronology);
+  body = renderCloseSection(body, result, v, today);
+
+  initLib.writeInitiative(loaded.filePath, {
+    ...loaded.frontmatter,
+    status: 'closed',
+    closed: today,
+  }, body);
+
+  try {
+    const teamState = require('../core/ecosystem/lib/team-state');
+    teamState.setActiveInitiative(root, resolveActorId(root), '');
+  } catch (_e) {
+    try { initLib.clearActive(root); } catch (_e2) { /* best-effort */ }
+  }
+
+  console.log('');
+  console.log(`✓ Closed initiative ${slug} (${today}). Active initiative cleared.`);
+}
+
+/**
+ * Deploy chronology rows from the git-native event stream (G1) — the `tag` and
+ * `merge` events recorded for this initiative's members.
+ *
+ * TD-011: this section has shipped in the template since Phase 9 with nothing
+ * writing it, which is why one reviewed session's chronology sat empty through
+ * an entire production deployment.
+ */
+function collectChronology(root, slug, result) {
+  let events = [];
+  try {
+    events = require('../core/ecosystem/lib/events').listEvents(root);
+  } catch (_e) {
+    return [];
+  }
+  const members = new Set(result.contributions.map((c) => c.member));
+  return events
+    .filter((e) => (e.kind === 'tag' || e.kind === 'merge') && e.payload && members.has(e.payload.member))
+    .map((e) => ({
+      ts: e.ts,
+      member: e.payload.member,
+      context: e.payload.context || '',
+      summary: e.payload.summary || '',
+    }));
+}
+
+/**
+ * Find member ADRs that declare they belong to this initiative.
+ *
+ * The stamp convention: an ADR in a contributing member adds `initiative: <slug>`
+ * to its frontmatter. That one line is what lets a cross-repo decision be found
+ * from the ecosystem side without momentum having to guess from prose — and
+ * without reaching into the member repo to write anything, which would cross the
+ * ownership boundary `/sync-docs` enforces.
+ *
+ * TD-011: `## Linked decisions` is the third template section that shipped with
+ * no writer since Phase 9.
+ */
+function collectLinkedDecisions(root, slug, result) {
+  const found = [];
+  const manifest = result.manifest;
+  const stamp = new RegExp(`^initiative:\\s*["']?${slug}["']?\\s*$`, 'm');
+
+  for (const c of result.contributions) {
+    const m = (manifest.members || []).find((x) => x.id === c.member);
+    if (!m) continue;
+    const loc = lib.resolveMemberLocation(root, m);
+    if (!loc.hasLocal) continue;
+
+    const dir = path.join(loc.localPath, 'specs', 'decisions');
+    let entries = [];
+    try { entries = fs.readdirSync(dir); } catch (_e) { continue; }
+
+    for (const name of entries.sort()) {
+      if (!name.endsWith('.md')) continue;
+      let body = '';
+      try { body = fs.readFileSync(path.join(dir, name), 'utf8'); } catch (_e) { continue; }
+      if (!stamp.test(body)) continue;
+      const title = (body.match(/^#\s+(.+)$/m) || [])[1] || name.replace(/\.md$/, '');
+      found.push({ member: c.member, file: `specs/decisions/${name}`, title: title.trim() });
+    }
+  }
+  return found;
+}
+
+function renderLinkedDecisionsSection(content, decisions) {
+  const heading = '## Linked decisions';
+  const start = content.indexOf(heading);
+  if (start === -1) return content;
+
+  const lines = decisions.length
+    ? decisions.map((d) => `- **${d.member}** — [\`${d.file}\`] ${d.title}`)
+    : ['_(no member ADR carries `initiative: <slug>` in its frontmatter — add that'
+      + ' stamp to a decision to link it here)_'];
+
+  const generated = [
+    '',
+    '<!-- momentum:decisions — generated by `initiative complete`; edits here are overwritten -->',
+    ...lines,
+    '',
+  ].join('\n');
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
+}
+
+function renderChronologySection(content, rows) {
+  const heading = '## Deploy chronology';
+  const start = content.indexOf(heading);
+  if (start === -1) return content;
+
+  const lines = rows.length
+    ? rows.map((r) => {
+      const when = `${r.ts.slice(0, 10)} ${r.ts.slice(11, 16)}Z`;
+      return `- \`${when}\` — **${r.member}** ${r.context} — ${r.summary}`;
+    })
+    : ['_(no tag or merge events recorded for these members — momentum captures'
+      + ' them via the post-commit/post-merge git hooks; a forge-side merge is'
+      + ' only seen on the next local integration)_'];
+
+  const generated = [
+    '',
+    '<!-- momentum:chronology — generated by `initiative complete`; edits here are overwritten -->',
+    ...lines,
+    '',
+  ].join('\n');
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
+}
+
+function renderCloseSection(content, result, verify, today) {
+  const heading = '## Close';
+  const start = content.indexOf(heading);
+  if (start === -1) return content;
+
+  const evidence = result.contributions.map(
+    (c) => `- **${c.member}** (${c.kind}:\`${c.ref}\`) — ${c.detail}`,
+  );
+
+  const verifyLine = !verify.declared
+    ? '**Integration verification: NOT DECLARED** — no ecosystem-level check ran. '
+      + 'Each member was individually verified; nothing verified them together.'
+    : `**Integration verification: passed** — \`${verify.command}\``;
+
+  const generated = [
+    '',
+    '<!-- momentum:close — generated by `initiative complete`; edits here are overwritten -->',
+    `Closed ${today} by the completion gate (ADR-0016).`,
+    '',
+    '### Evidence at close',
+    '',
+    ...evidence,
+    '',
+    verifyLine,
+    '',
+    '> What shipped / what was deferred / what was learned — write these below.',
+    '> The gate records that evidence EXISTED; only a human can say what it meant.',
+    '',
+  ].join('\n');
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
+}
+
+/**
+ * Replace the `## Per-repo contributions` section body with a generated table.
+ *
+ * TD-011: this section has shipped in the template since Phase 9 with NOTHING
+ * writing it. Everything below the heading up to the next `## ` is regenerated;
+ * every other section is left byte-untouched, honoring `initiative.md`'s
+ * principle that body sections are free-form human writing.
+ */
+function renderContributionsSection(content, contributions) {
+  const rows = contributions.length
+    ? contributions
+      .slice()
+      .sort((a, b) => (a.member < b.member ? -1 : a.member > b.member ? 1 : 0))
+      .map((c) => `| ${c.member} | ${c.kind} | \`${c.ref}\` |`)
+      .join('\n')
+    : '_(none declared yet)_';
+
+  const table = contributions.length
+    ? ['| Member | Kind | Record |', '|--------|------|--------|', rows].join('\n')
+    : rows;
+
+  const generated = [
+    '',
+    '<!-- momentum:contributions — generated by `initiative start`; edits here are overwritten -->',
+    table,
+    '',
+    "Completion status is NOT cached here — `initiative complete` resolves it live",
+    'from each member\'s own record (Rule 12: a status written by the agent is',
+    'self-reported completion).',
+    '',
+  ].join('\n');
+
+  const heading = '## Per-repo contributions';
+  const start = content.indexOf(heading);
+  if (start === -1) return content; // section absent — never fabricate structure
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
 }
 
 function cmdInitiativeCreate(args) {
@@ -1308,6 +1876,13 @@ function parseFlags(args, spec) {
     } else if (spec[key] === 'string') {
       out[key] = args[i + 1];
       i++;
+    } else if (spec[key] === 'list') {
+      // Repeatable flag — `--edge a:b:c --edge d:e:f` accumulates.
+      // Additive: no existing caller declares 'list', so behaviour is unchanged.
+      if (args[i + 1] !== undefined) {
+        (out[key] = out[key] || []).push(args[i + 1]);
+        i++;
+      }
     }
   }
   return out;
