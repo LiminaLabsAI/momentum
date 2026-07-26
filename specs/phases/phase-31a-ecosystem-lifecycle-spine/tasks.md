@@ -1,0 +1,73 @@
+---
+type: Tasks
+status: planned
+---
+
+# Phase 31a — Ecosystem Lifecycle Spine — Tasks
+
+> Mirrors `plan.md`. `[x]` done · `[/]` in-progress · `[ ]` todo. Verify before
+> claiming done (Rule 12). Execution: G0 → (G1 ∥ G2) → G3 → G4 → G5.
+> Closes BUG-028 + ENH-066/067/068. Target v0.40.0.
+> Lane `phase-31a-ecosystem-lifecycle-spine`.
+
+## Group 0 — Contracts, BUG-028, backlog intake *(blocks)*
+- [ ] Author **ADR-0016** — Ecosystem Lifecycle Spine (D1–D8)
+- [ ] Ecosystem config surface + `integration_verify_command` registered
+- [ ] Initiative frontmatter extension (member contributions + evidence refs), back-compatible
+- [ ] **BUG-028** — `adapters/claude-code/settings.json` PostToolUse `Edit|Write` → `Edit|Write|Bash`
+- [ ] Regression test: installed-matcher vs. tool names the hook script branches on — **all four adapters** (closes the BUG-007 class)
+- [ ] Demonstrate the new test **fails pre-fix**, passes post-fix
+- [x] File backlog: BUG-028, ENH-066 (lifecycle), ENH-067 (fleet orient), ENH-068 (dep-ordered landing), TD-011 (records without writers) — filed 2026-07-26 at brainstorm (Rule 3)
+- [ ] Verify `npm test` green; commit G0
+
+## Group 1 — Git-native event write path *(∥ G2)*
+- [ ] `post-commit` hook → attributed event fragment (`core/team/lib/fragments`)
+- [ ] `post-merge` hook (captures forge-side merges on next local integration)
+- [ ] Member resolution via `git rev-parse --git-common-dir` (replaces `$PWD` matching)
+- [ ] `sessions/` compiled from fragments; legacy append path preserved
+- [ ] Event kinds `commit` / `merge` / `tag`; attribution via `core/identity`
+- [ ] Hook budget <50ms, fail-open, never blocks a commit
+- [ ] Test: commit from a **lane worktree outside `members[].path`** lands in the log (AC-1)
+- [ ] Test: no-ecosystem is a silent no-op
+- [ ] Verify `npm test` green; commit G1
+
+## Group 2 — Lifecycle head: brainstorm + start *(∥ G1)*
+- [ ] `/brainstorm-initiative` — mirror of `/brainstorm-phase` incl. the gate contract
+- [ ] Gate: `.momentum/brainstorm-active` at ecosystem root; zero disk writes pre-approval
+- [ ] Elicit: objective, members, edges, non-goals, completion acceptance criteria
+- [ ] `initiative start <slug>` — fan-out creating/linking per-member phase or ad-hoc records
+- [ ] Stamp each member record with `initiative: <slug>`
+- [ ] Write `Per-repo contributions` from the fan-out result
+- [ ] **Register dependency edges in `ecosystem.json`** (first writer ever)
+- [ ] Set active via the 30e attributed fragment
+- [ ] Refuse-not-overwrite on re-run
+- [ ] Routing prose added to rules — labelled **agent-convention**, not enforced (D8)
+- [ ] Verify `npm test` green; commit G2
+
+## Group 3 — Lifecycle tail: completion gate *(needs G2)*
+- [ ] `/complete-initiative <slug>` — mirror of `/complete-phase`
+- [ ] Cross-repo Rule 12 evidence gate, reusing the `lanes land` evidence reader
+- [ ] `integration_verify_command` run when declared; **explicit "not declared" output** when absent
+- [ ] On pass: populate `Close`, finalize chronology, `status: closed` + `closed:`, clear active
+- [ ] Failure output names the member and the reason
+- [ ] Test: **refusal path** when a member lacks fresh evidence (AC-3)
+- [ ] Test: declared-but-failing integration verify blocks
+- [ ] Verify `npm test` green; commit G3
+
+## Group 4 — Record writers + adapter parity *(needs G1 + G3)*
+- [ ] Deploy chronology writer consuming `tag` events
+- [ ] Linked-decisions writer (member ADR carrying `initiative:` stamp)
+- [ ] Project 3 new commands to all 4 adapters via ADR-0011 projection
+- [ ] Install into ecosystem root surface via `ensureRootCommandSurface()`
+- [ ] Re-baseline 4 fingerprints via `scripts/rebaseline-fingerprints.js` (zero-drift proven first)
+- [ ] `momentum okf check` bundle conformant
+- [ ] Verify `npm test` green; commit G4
+
+## Group 5 — Verification & release prep *(last)*
+- [ ] Two-clone multi-repo e2e: brainstorm → start → worktree commits → complete
+- [ ] Assert every acceptance criterion incl. zero-conflict concurrent merge
+- [ ] Full suite 1028 + net-new green; **236 swarm tests green**
+- [ ] No-ecosystem / single-machine byte-unchanged
+- [ ] Self-repo dogfood against a real cross-repo change (not synthetic — Phase 20 lesson)
+- [ ] Capture evidence under `evidence/`
+- [ ] `/sync-docs` → retrospective → `/complete-phase` at the operator gate
