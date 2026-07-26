@@ -1,6 +1,6 @@
 ---
 type: Plan
-status: planned
+status: in-progress
 tags: [ecosystem, initiative, lifecycle, git-native, write-path]
 ---
 

@@ -1,6 +1,6 @@
 ---
 type: Tasks
-status: planned
+status: in-progress
 ---
 
 # Phase 31a — Ecosystem Lifecycle Spine — Tasks

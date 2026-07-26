@@ -40,7 +40,13 @@ type: Guide
 | 26 | Project Preferences | Complete (v0.33.0) | [phase-26-project-preferences/](phase-26-project-preferences/) |
 | 27 | Lifecycle Cleanup & Default-Branch Hardening | Complete (v0.34.0) | [phase-27-lifecycle-cleanup/](phase-27-lifecycle-cleanup/) |
 | 28 | Instruction Consistency | Complete (v0.35.0) | [phase-28-instruction-consistency/](phase-28-instruction-consistency/) |
-| 29 | Instruction Variation Model (Agent-Neutral Projection) | In Progress | [phase-29-instruction-variation-model/](phase-29-instruction-variation-model/) |
+| 29 | Instruction Variation Model (Agent-Neutral Projection) | Complete (v0.36.0) | [phase-29-instruction-variation-model/](phase-29-instruction-variation-model/) |
+| 30a | Team-Walk (Multiplayer-Correct Coordination) | Complete (v0.37.0) | [phase-30a-team-walk/](phase-30a-team-walk/) |
+| 30b | Team-Run (Shared Board + Landing) | Complete (v0.37.0) | [phase-30b-team-run/](phase-30b-team-run/) |
+| 30c | Team-Fly (Relay + Ecosystem) | Complete (v0.37.0) | [phase-30c-team-fly/](phase-30c-team-fly/) |
+| 30d | Team Integration (primitives wired into workflows) | Complete (v0.38.0) | [phase-30d-team-integration/](phase-30d-team-integration/) |
+| 30e | Ecosystem (Multi-Repo) Team Mode | Complete (v0.39.0) | [phase-30e-ecosystem-team-mode/](phase-30e-ecosystem-team-mode/) |
+| 31a | Ecosystem Lifecycle Spine | In Progress | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
 
 ## Phase Structure
 

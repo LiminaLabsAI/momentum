@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: planned
+status: in-progress
 tags: [ecosystem, multi-repo, initiative, lifecycle, git-native, enforcement, write-path]
 ---
 
