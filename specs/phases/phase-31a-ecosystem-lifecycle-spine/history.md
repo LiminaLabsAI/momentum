@@ -121,3 +121,66 @@ overstatement, and this phase will not repeat it. Renumber: Intelligence → 32,
 Platform → 33.
 
 ---
+### [DECISION] 2026-07-27 — G0 complete: ADR-0016 authored + contracts landed
+Topics: adr-0016, g0, contracts, ecosystem-config, initiative-contributions
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: specs/decisions/0016-ecosystem-lifecycle-spine.md, core/ecosystem/schema/ecosystem.schema.json, core/ecosystem/schema/initiative.schema.json
+Detail: Group 0 done. ADR-0016 records D1–D8: enforcement axis moves to
+git-native/event-sourced; cross-repo entry routes to a brainstorm rather than
+blocking (mirroring Rule 1's unfounded-project route, ADR-0008); the initiative
+lifecycle is a structural mirror of the phase lifecycle; no new unit of
+cross-repo work; integration verification is config-declared not owned; and 31a's
+routing is labelled agent-convention, not enforcement (the BUG-009 lesson).
+Two additive schema surfaces landed: `ecosystem.json.config` carrying
+`integration_verify_command` (the coordination root has no `specs/`, so
+`specs/config.md` is unavailable to it) with `readEcosystemConfig()` returning
+null when undeclared; and initiative frontmatter `contributions[]`. Dependency
+edges gained an optional `initiative` field recording which initiative
+registered them. Both surfaces are strictly additive — pre-31a manifests and
+initiatives validate unchanged, asserted explicitly. Suite 1028 → 1046.
+
+---
+
+### [ARCH_CHANGE] 2026-07-27 — contributions are flat triples, and carry no status
+Topics: initiative-contributions, frontmatter, serializer, rule-12, adr-0016
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/ecosystem/schema/initiative.schema.json, core/ecosystem/lib/initiative.js
+Detail: `contributions[]` was first designed as an array of objects
+({member, kind, ref, status, evidence}). Inspecting the serializer before
+building on it found this cannot work: `serializeFrontmatter` flattens arrays
+via `formatScalar` → `String(v)`, so nested objects round-trip as
+"[object Object]". Supporting them would mean growing a YAML implementation
+inside a parser whose own header calls for staying "strict and dependency-free"
+— the wrong trade for three fields. Reworked to flat `member:kind:ref` strings,
+which round-trip through the existing serializer unchanged (asserted by test).
+The second change is the more important one: `status` and `evidence` were
+DROPPED from the record entirely. A completion status the agent previously wrote
+into the initiative is self-reported completion, which is exactly what Rule 12
+exists to reject — so `initiative complete` (G3) must resolve both LIVE from
+each member's own record instead of trusting a cached field. The data model got
+smaller and more correct at the same time.
+
+---
+
+### [DISCOVERY] 2026-07-27 — BUG-028 fixed; the test that closes its class
+Topics: bug-028, bug-007, hooks, matcher, dead-code, test-design
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: adapters/claude-code/settings.json, tests/hook-matcher-reachability.test.js
+Detail: Matcher fixed (`Edit|Write` → `Edit|Write|Bash`), in the shipped adapter
+and in this repo's own installed `.claude/settings.json` (self-dogfood — momentum
+is a `cerebrio-ecosystem` member and was subject to its own bug). The durable
+half is `tests/hook-matcher-reachability.test.js`, which closes the CLASS rather
+than the instance: it reads the INSTALLED adapter config and asserts that for
+every explicit `$TOOL_NAME = "X"` guard in a hook script, X — when in that
+adapter's tool vocabulary — is deliverable by that adapter's matcher. This is the
+shape both BUG-007 and BUG-028 took, and both shipped green precisely because the
+existing tests invoke the hook SCRIPT directly with a synthesized payload,
+bypassing the matcher that was broken. Verified per Rule 12 by reverting the fix:
+2 tests fail with the exact diagnostic, then pass once restored. Deliberately
+scoped to equality guards — brainstorm-gate.sh's `case` arm lists every adapter's
+tool names in one union that is intentionally broader than any single matcher, so
+asserting on it would produce false positives. claude-code fingerprint
+re-baselined; `--check` first proved the drift was exactly `.claude/settings.json`
+with zero drift on the other three adapters.
+
+---

@@ -1,9 +1,9 @@
 {
   "meta": {
-    "captured": "2026-07-09",
-    "capturedFrom": "phase-30e-ecosystem-team-mode",
+    "captured": "2026-07-26",
+    "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "claude-code",
-    "note": "Phase 30e G4 — .gitignore ignores per-machine .momentum/team/*.log (ADR-0015)"
+    "note": "Phase 31a G0 / BUG-028: claude-code PostToolUse matcher Edit|Write -> Edit|Write|Bash so check-history-reminder.sh's Bash branch (the ecosystem session-log append) is reachable. Only .claude/settings.json changed; codex/antigravity/opencode zero drift."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -31,7 +31,7 @@
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
     ".claude/commands/validate.md": "904c55ecc63aade8177c754eeba552a3dc5e35ee1e5d95e29f3bb9902cb5a637",
-    ".claude/settings.json": "8e547e082fb1c4a3ad4038af974be8471e841823755b3138ceb946177ef3864d",
+    ".claude/settings.json": "eb881c1600da20c6c90e3145e186ba8131e7e88b9b52c813f44175ef4de0fa81",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",

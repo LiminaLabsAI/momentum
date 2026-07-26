@@ -10,15 +10,16 @@ status: in-progress
 > Closes BUG-028 + ENH-066/067/068. Target v0.40.0.
 > Lane `phase-31a-ecosystem-lifecycle-spine`.
 
-## Group 0 — Contracts, BUG-028, backlog intake *(blocks)*
-- [ ] Author **ADR-0016** — Ecosystem Lifecycle Spine (D1–D8)
-- [ ] Ecosystem config surface + `integration_verify_command` registered
-- [ ] Initiative frontmatter extension (member contributions + evidence refs), back-compatible
-- [ ] **BUG-028** — `adapters/claude-code/settings.json` PostToolUse `Edit|Write` → `Edit|Write|Bash`
-- [ ] Regression test: installed-matcher vs. tool names the hook script branches on — **all four adapters** (closes the BUG-007 class)
-- [ ] Demonstrate the new test **fails pre-fix**, passes post-fix
+## Group 0 — Contracts, BUG-028, backlog intake *(blocks)* ✅
+- [x] Author **ADR-0016** — Ecosystem Lifecycle Spine (D1–D8)
+- [x] Ecosystem config surface + `integration_verify_command` registered — `ecosystem.json` `config{}` (the root has no `specs/`, so `specs/config.md` is unavailable); `readEcosystemConfig()` returns `null` when undeclared, never a fabricated default
+- [x] Initiative frontmatter extension — `contributions[]`, back-compatible
+- [x] **BUG-028** — `adapters/claude-code/settings.json` PostToolUse `Edit|Write` → `Edit|Write|Bash`; self-repo `.claude/settings.json` dogfooded too
+- [x] Regression test `tests/hook-matcher-reachability.test.js` — reads the INSTALLED config, asserts every `$TOOL_NAME = "X"` guard is deliverable by that adapter's matcher (claude-code + codex), plus an opencode plugin-dispatch assertion
+- [x] Demonstrate the new test **fails pre-fix** (2 failures, exact diagnostic), passes post-fix — evidence captured
+- [x] Re-baseline claude-code fingerprint — `--check` first proved drift = exactly `.claude/settings.json`, other 3 adapters zero drift
 - [x] File backlog: BUG-028, ENH-066 (lifecycle), ENH-067 (fleet orient), ENH-068 (dep-ordered landing), TD-011 (records without writers) — filed 2026-07-26 at brainstorm (Rule 3)
-- [ ] Verify `npm test` green; commit G0
+- [x] Verify `npm test` green — **1046/1046** (+18 net-new from 1028); commit G0
 
 ## Group 1 — Git-native event write path *(∥ G2)*
 - [ ] `post-commit` hook → attributed event fragment (`core/team/lib/fragments`)

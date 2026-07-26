@@ -256,11 +256,59 @@ function validateManifest(obj) {
         if (!validKinds.includes(d.kind)) {
           errors.push({ path: `${base}.kind`, message: `must be one of: ${validKinds.join(', ')}` });
         }
+        // `initiative` records which initiative discovered this edge (ADR-0016).
+        // Optional — a hand-declared edge has none.
+        if (d.initiative !== undefined
+          && (typeof d.initiative !== 'string' || !slug.test(d.initiative))) {
+          errors.push({ path: `${base}.initiative`, message: 'must be a slug when present' });
+        }
       });
     }
   }
 
+  // config — optional, ecosystem-level mechanisms (ADR-0016).
+  // The coordination root has no `specs/`, so `specs/config.md` is unavailable
+  // here; ecosystem-tier settings live in this object instead.
+  if (obj.config !== undefined) {
+    if (obj.config === null || typeof obj.config !== 'object' || Array.isArray(obj.config)) {
+      errors.push({ path: '$.config', message: 'must be an object if present' });
+    } else {
+      const known = ['integration_verify_command'];
+      for (const key of Object.keys(obj.config)) {
+        if (!known.includes(key)) {
+          errors.push({ path: `$.config.${key}`, message: `unknown key (known: ${known.join(', ')})` });
+        }
+      }
+      if (obj.config.integration_verify_command !== undefined
+        && (typeof obj.config.integration_verify_command !== 'string'
+          || obj.config.integration_verify_command.length === 0)) {
+        errors.push({
+          path: '$.config.integration_verify_command',
+          message: 'must be a non-empty string when present',
+        });
+      }
+    }
+  }
+
   return errors.length === 0 ? { ok: true } : { ok: false, errors };
+}
+
+/**
+ * Read the ecosystem-level config object (ADR-0016), with every known key
+ * resolved. Returns an object with `integration_verify_command: string|null`.
+ *
+ * Deliberately mirrors `core/config.js`'s posture: absent config is a valid
+ * state that callers must handle explicitly, never a silent default that
+ * fabricates a verification the project never declared.
+ */
+function readEcosystemConfig(manifest) {
+  const cfg = (manifest && typeof manifest.config === 'object' && !Array.isArray(manifest.config))
+    ? manifest.config
+    : {};
+  const cmd = cfg.integration_verify_command;
+  return {
+    integration_verify_command: (typeof cmd === 'string' && cmd.length > 0) ? cmd : null,
+  };
 }
 
 function isArrayOfStrings(v) {
@@ -286,5 +334,6 @@ module.exports = {
   findMember,
   resolveMemberLocation,
   validateManifest,
+  readEcosystemConfig,
   _clearRootCache,
 };
