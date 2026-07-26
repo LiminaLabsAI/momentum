@@ -1,6 +1,6 @@
 ---
 type: Plan
-status: planned
+status: in-progress
 tags: [runtime, packaging, discovery, hooks, bug-030]
 ---
 

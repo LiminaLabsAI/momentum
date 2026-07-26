@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: planned
+status: in-progress
 tags: [runtime, packaging, discovery, hooks, tech-debt, bug-030, td-012, td-013]
 ---
 
