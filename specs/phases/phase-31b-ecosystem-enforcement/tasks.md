@@ -39,18 +39,20 @@ status: in-progress
 - [x] 4 fingerprints re-baselined (`--check` first: identical 2-file drift)
 - [x] Verify `npm test` green — **1108/1108** (+24 from 1084); commit G1
 
-## Group 3 — Dependency-ordered landing gate (ENH-068) *(∥ G1)*
-- [ ] `lanes land` resolves the active initiative + this member's upstream edges
-- [ ] Upstream = every edge where `from == this member`; those `to` members land first
-- [ ] Require a recorded `land` event per upstream since the initiative started
-- [ ] **Refuse with the blocker named** — member, its contribution, and the edge kind (AC-5)
-- [ ] Integration verify required before the **LAST** member lands (AC-6)
-- [ ] Record a `land` event on successful `--execute`
-- [ ] `--force-order` override — lands, records the event flagged `forced`, warns loudly
-- [ ] `landing_order: warn|off` relaxes the gate for untrustworthy edge graphs
-- [ ] **Solo-safe** — no ecosystem / no initiative / no edges → behaviour identical to today (asserted, not assumed)
-- [ ] Test: out-of-order land refused; in-order sequence passes; last-member verify blocks; `--force-order` marks the event; solo repo unaffected
-- [ ] Verify `npm test` green; commit G3
+## Group 3 — Dependency-ordered landing gate (ENH-068) *(∥ G1)* ✅
+- [x] `core/ecosystem/lib/landing.js` — `landingCheck` / `checkLines` / `recordLand`
+- [x] Upstream = every edge where `from == this member`; those `to` members land first (E4)
+- [x] Require a recorded `land` event per upstream **for this initiative** since it started (E5)
+- [x] **Refuses naming member, contribution, and edge kind** (AC-5) — "not landable" alone leaves the operator to go find out why
+- [x] An edge to a member with **no contribution** does not block — a standing dependency this initiative isn't changing has nothing to land
+- [x] A land event for a **different initiative** does not unblock
+- [x] Integration verify required when this is the **LAST** contribution (AC-6); undeclared → explicit gap warning
+- [x] `land` event recorded on successful `--execute`, carrying `initiative` and `forced`
+- [x] `--force-order` — lands, records the event **flagged forced** (visible in the stream, the `MOMENTUM_SKIP_HOOKS` posture rather than `--no-verify`)
+- [x] `landing_order: warn` reports without blocking; `off` disables entirely
+- [x] **SOLO SAFETY asserted** — no ecosystem, non-member, member-without-initiative, and closed-initiative all return `applicable: false` with zero output
+- [x] The `lanes land` call site is wrapped so an absent/unreadable ecosystem layer can never break single-repo landing
+- [x] Verify `npm test` green — **1121/1121** (+37 from 1084); commit G3
 
 ## Group 2 — Detection + routing nudge *(needs G1)*
 - [ ] `post-commit` prints a routing banner for a commit in an uncovered second member

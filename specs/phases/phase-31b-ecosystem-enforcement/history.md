@@ -185,3 +185,54 @@ Worth noting the sequence — this defect was invisible in the synthetic fixture
 and obvious within one second of real data.
 
 ---
+### [FEATURE] 2026-07-27 — G3 complete: dependency-ordered landing (ENH-068)
+Topics: g3, enh-068, landing-order, lanes, adr-0017
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/landing.js, core/lanes/lib/land.js
+Detail: Rule 6's Landing Order now extends across members. `lanes land` resolves
+the in-progress initiative declaring this member's contribution, treats every
+`ecosystem.json` edge with `from == this member` as upstream, and refuses until
+each upstream has recorded a `land` event for THIS initiative. The refusal names
+the member, its contribution, and the edge kind — "not landable" alone would
+leave the operator to go find out why, which is how the ordering was tracked in
+prose in the first place. When the land would complete the initiative's final
+contribution, the declared integration verify must pass first: the same check
+`initiative complete` runs, brought forward to the moment it can still PREVENT
+the bad cross-repo state rather than merely decline to record it (the alembic
+multiple-heads shape). Suite 1108 → 1121.
+
+---
+
+### [DECISION] 2026-07-27 — two scoping rules that keep the gate from crying wolf
+Topics: landing-order, false-positives, edges, design
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/landing.js
+Detail: Implementing the gate surfaced two ways a naive version would block
+legitimate work, and both are now explicit. (1) An edge to a member with NO
+contribution in this initiative does not block. `ecosystem.json` edges describe
+standing architectural dependencies; only a member actually changing something
+for this initiative has anything to land. Without this, every registered edge
+would become a permanent blocker the moment any initiative opened. (2) A `land`
+event only counts for the initiative it names. Landing backend for unrelated work
+says nothing about whether backend's contribution to THIS initiative is in.
+Both are asserted. The general principle: a gate that fires on work it should not
+is worse than no gate, because operators learn to reach for `--force-order` by
+reflex — which is precisely the failure mode `--no-verify` demonstrates.
+
+---
+
+### [NOTE] 2026-07-27 — solo safety is asserted, not assumed
+Topics: invariance, solo, lanes, regression-risk
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: tests/ecosystem-landing-order.test.js
+Detail: `lanes land` is used overwhelmingly by single-repo projects, so the
+ecosystem gate had to be provably inert for them. Four separate states now assert
+`applicable: false` with zero output — no ecosystem at all, a repo that is not a
+registered member, a member with no in-progress initiative declaring a
+contribution, and an initiative that has closed. The call site in land.js is
+additionally wrapped in a try/catch so an absent or unreadable ecosystem layer
+degrades to solo behavior rather than breaking a merge. Recorded because "it
+only affects ecosystems" is the kind of claim that is easy to assert and easy to
+get wrong.
+
+---

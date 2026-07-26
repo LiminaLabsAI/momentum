@@ -164,6 +164,12 @@ function recordEvent(opts) {
       summary: String(opts.summary || '').split('\n')[0].slice(0, 500),
       context: opts.context ? String(opts.context).slice(0, 200) : '',
     };
+    // `land` events carry which initiative they belong to and whether the
+    // landing order was overridden (Phase 31b, ADR-0017 E5). Recorded on the
+    // event rather than inferred later, so a forced land stays visible in the
+    // stream instead of vanishing the way a `--no-verify` bypass would.
+    if (opts.initiative) payload.initiative = String(opts.initiative).slice(0, 64);
+    if (opts.forced) payload.forced = true;
 
     const frag = fragments.writeFragment(
       ecosystemRoot, EVENTS_VIEW, actor, kind, payload,
