@@ -379,3 +379,24 @@ list requires a conformant bundle and the phase it belongs to is long released.
 Bundle now 311/311 conformant.
 
 ---
+### [NOTE] 2026-07-27 — G5 complete: verified, dogfooded live, at the release gate
+Topics: g5, verification, e2e, dogfood, invariance
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: specs/phases/phase-31a-ecosystem-lifecycle-spine/evidence/verification.md
+Detail: Suite 1084/1084 (baseline 1028, +56). Swarm invariance 236/236.
+No-ecosystem solo repo byte-unchanged — four commits, no directories created, no
+stray output. OKF 311/311. The two-clone e2e asserts all six acceptance criteria
+in one scenario: create → start → a commit made from a LANE WORKTREE → the gate
+REFUSING → evidence → close, then concurrent activity on a second clone merging
+with zero git conflict. BUG-028's regression test was run against the unfixed
+code to prove it catches the defect rather than merely passing beside it. Hook
+cost measured (~35ms marginal) rather than estimated. The live dogfood is the
+non-synthetic one the Phase 20 lesson demands: four real commits of this phase
+were captured into the real cerebrio-ecosystem session log with SHAs
+cross-checked against git log — the exact evidence the five reviewed sessions
+could not produce, where `sessions/` held only `.gitkeep` after a full day of
+work. Explicitly NOT dogfooded, and recorded as such: a full initiative
+lifecycle across two real cerebrio members, which would require writing phase
+records into sibling repos carrying in-flight work.
+
+---

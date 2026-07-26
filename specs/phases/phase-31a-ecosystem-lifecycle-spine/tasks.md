@@ -79,11 +79,16 @@ status: in-progress
 - [x] `momentum okf check` — **311 files conformant**; fixed a pre-existing Phase-29 violation (`evidence/self-repo-dogfood.md` missing frontmatter, landed in `9bfd5fd`, untouched by this branch)
 - [x] Verify `npm test` green — **1083/1083** (+55 from 1028); commit G4
 
-## Group 5 — Verification & release prep *(last)*
-- [ ] Two-clone multi-repo e2e: brainstorm → start → worktree commits → complete
-- [ ] Assert every acceptance criterion incl. zero-conflict concurrent merge
-- [ ] Full suite 1028 + net-new green; **236 swarm tests green**
-- [ ] No-ecosystem / single-machine byte-unchanged
-- [ ] Self-repo dogfood against a real cross-repo change (not synthetic — Phase 20 lesson)
-- [ ] Capture evidence under `evidence/`
-- [ ] `/sync-docs` → retrospective → `/complete-phase` at the operator gate
+## Group 5 — Verification & release prep *(last)* ✅
+- [x] Two-clone multi-repo e2e (`tests/ecosystem-lifecycle-e2e.test.js`): create → start → **worktree** commit → REFUSE → evidence → close, on one bare remote, no network
+- [x] Asserts **all six acceptance criteria** incl. zero-conflict concurrent merge across two clones
+- [x] Full suite **1084/1084** (baseline 1028 on main, +56 net-new)
+- [x] **236 swarm tests green** (30e invariance gate)
+- [x] No-ecosystem solo repo byte-unchanged — 4 commits, no dirs created, no stray output
+- [x] `momentum okf check` — 311 files conformant
+- [x] BUG-028 regression test proven against the UNFIXED code (2 failures → 4/4 green)
+- [x] Hook cost measured (~35ms marginal), not estimated
+- [x] **Live self-repo dogfood** — 4 real commits of this phase captured into the real `cerebrio-ecosystem` log, SHAs cross-checked against `git log` (Phase 20 lesson: not synthetic)
+- [x] Evidence captured → `evidence/verification.md`
+- [x] Retrospective written (incl. what was NOT dogfooded)
+- [ ] `/sync-docs` → `/complete-phase` at the operator gate
