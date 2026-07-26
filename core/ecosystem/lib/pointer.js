@@ -89,7 +89,7 @@ function renderPointerBody(ecosystemName, relFromMember) {
     `> runs its OWN \`/start-phase\` or \`/hotfix\`.`,
     `>`,
     `> Lifecycle: \`/brainstorm-initiative\` → \`initiative start\` → member phases → \`initiative complete\``,
-    `> _(routing is convention — nothing detects cross-repo scope for you yet)_`,
+    `> _Enforcement: the nudge is best-effort · the landing gate refuses · the write path is unconditional_`,
     `>`,
     `> Orchestration primitives (run from this repo or the ecosystem root):`,
     `> - \`/scout <repo>\` — read another member's state`,

@@ -70,16 +70,17 @@ status: in-progress
 - [x] 4 fingerprints re-baselined (`--check` first: exactly the intended 6-file surface)
 - [x] Verify `npm test` green — **1131/1131** (+47 from 1084); commit G2
 
-## Group 4 — Doc-sync delivery, Rule rewrite, parity *(needs G2 + G3)*
-- [ ] `/sync-docs` cross-repo entries → structured handoff in the target member's `.momentum/inbox/`
-- [ ] Ownership rule **unchanged** — still never edits a `../` path
-- [ ] Receiving session surfaces it at SessionStart via `/continue`
-- [ ] Ecosystem-tier Rule rewrite: nudge = **best-effort**, landing gate = **enforced**, write path = **unconditional**
-- [ ] Remove 31a's now-wrong "convention, not enforcement" phrasing — without replacing it with a blanket "enforced" claim
-- [ ] **Test asserting the rules text carries the distinction** (BUG-009 lesson, mechanized)
-- [ ] 4-adapter projection + fingerprint re-baselines (`--check` first, every time)
-- [ ] `momentum okf check` conformant
-- [ ] Verify `npm test` green; commit G4
+## Group 4 — Doc-sync delivery, Rule rewrite, parity *(needs G2 + G3)* ✅
+- [x] `/sync-docs` cross-repo entries → structured handoff in the target member's `.momentum/inbox/` via the existing `orchestration.handoff` writer
+- [x] **Ownership rule unchanged** — still never edits a `../` path; "Delivery is not ownership" stated explicitly
+- [x] Receiving session surfaces it at SessionStart via `/continue`
+- [x] Removed "they're informational only" — a chat message dies with the session, which was the entire failure
+- [x] **E7 Rule rewrite**: a 3-row table stating each layer's real strength — write path **unconditional**, landing gate **enforced**, nudge **best-effort** (with *why* each is what it is)
+- [x] Removed 31a's now-wrong "convention, not enforcement" phrasing from the templates and the member pointer — **without** replacing it with a blanket "enforced" claim
+- [x] **Tests assert the distinction survives editing** (templates + pointer + sync-docs), mechanizing the BUG-009 lesson in both directions
+- [x] Filed **TD-012** — three shipped self-contained duplicates is now a pattern; settle the packaging story before a fourth
+- [x] 4 fingerprints re-baselined; `momentum okf check` **318 files conformant**
+- [x] Verify `npm test` green — **1134/1134** (+50 from 1084); commit G4
 
 ## Group 5 — Verification & release prep *(last)*
 - [ ] Two-clone e2e: uncovered edit → nudge w/ P0 detail → commit banner → initiative opened → out-of-order land refused → in-order land → last-member verify → sync handoff delivered

@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31b-ecosystem-enforcement",
     "adapter": "opencode",
-    "note": "Phase 31b G2 / ADR-0017 E1: cross-repo detection + routing nudge. Adds .githooks/cross-repo.js + scripts/cross-repo-gate.sh, a PreToolUse registration per adapter, and the post-commit routing banner (post-commit/post-merge no longer swallow stderr, since the banner is written there)."
+    "note": "Phase 31b G4 / ADR-0017 E6: sync-docs delivers cross-repo entries as handoffs into the target member's inbox instead of only mentioning them in chat. Ownership rule unchanged."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -42,7 +42,7 @@
     ".opencode/commands/start-project.md": "c9e3ff232ffdd0672d91f2e76c1c6b1372eb8afe58cef201b22eed998a8d4082",
     ".opencode/commands/swarm.md": "7b0474817b675e660163c4c34a6404c870c7c1f2fb2f19fc925b8996e822dae2",
     ".opencode/commands/sync-config.md": "01d2c3a27d1044180c1c1324531a3fd65b5c1fc8d326c4a59665f88f1a6f2bc9",
-    ".opencode/commands/sync-docs.md": "7221595b8b57436f326f4d545eea94fee1a9f3aa1d7312c61cc2af10e2686a98",
+    ".opencode/commands/sync-docs.md": "f68182e669811a546ba0fbdfc4dce04f697ab6e64a669101fabcf1b6d1856f2c",
     ".opencode/commands/systematic-debug.md": "684ac08f19c8adfa6a3dc3d3650bc409d896b4c8caac1c2306dbce3b14fe7e5d",
     ".opencode/commands/track.md": "013a0889e0da54caca51f03e937f6a787d98a6f13feebdac9cc2376991ddfd76",
     ".opencode/commands/validate.md": "776b902a2764bdc2a7a2a762cd303bf670bdfbaba591db3d407bad2cf104a559",

@@ -291,3 +291,38 @@ TD-012: define a shipped-runtime story (a single versioned `momentum-runtime`
 directory installed into targets) instead of growing per-feature duplicates.
 
 ---
+### [FEATURE] 2026-07-27 — G4 complete: doc-sync delivery + the honesty correction
+Topics: g4, e6, e7, sync-docs, handoff, rules, bug-009
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/commands/sync-docs.md, core/ecosystem/lib/pointer.js, core/ecosystem/templates/
+Detail: Two changes, both about making an existing rule actually land. (E6)
+`/sync-docs` now DELIVERS its cross-repo entries as structured handoffs into the
+target member's inbox rather than mentioning them in chat. The ownership rule is
+untouched and still absolute — it never edits a `../` path — but "flag it to the
+user" was a message that died with the session, which is exactly why one reviewed
+session's glossary propagation never happened DESPITE the rule working as
+designed. Delivery is not ownership: the receiving repo's own agent decides what
+to change. (E7) The rules text now states each layer's real strength in a
+three-row table — write path unconditional, landing gate enforced, nudge
+best-effort — with the reason for each. 31a's "convention, not enforcement"
+wording is removed, deliberately NOT replaced by a blanket "enforced" claim, and
+three tests now assert the distinction survives future editing. Suite 1131 → 1134.
+
+---
+
+### [DECISION] 2026-07-27 — understating is as corrosive as overstating
+Topics: e7, honesty, rules, bug-009, testing
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: tests/cross-repo-nudge.test.js, tests/pointer-block-content.test.js
+Detail: BUG-009 was filed because Rule 6 claimed "(Automatic)" over prose no
+mechanism backed. 31a over-corrected into the opposite error, labelling routing
+"convention, not enforcement" — correct at the time, wrong the moment detection
+shipped. The lesson recorded here is that BOTH directions cost the same thing:
+an agent that finds the rules text wrong once discounts all of it, and it cannot
+tell whether the error was optimistic or pessimistic. So the fix is not "be
+conservative", it is "be specific" — name the strength of each layer separately
+and say why. And because prose drifts, three tests now assert the distinction is
+present rather than trusting a future editor to preserve it. That is the part
+that makes this different from the last two attempts.
+
+---

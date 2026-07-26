@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31b-ecosystem-enforcement",
     "adapter": "codex",
-    "note": "Phase 31b G2 / ADR-0017 E1: cross-repo detection + routing nudge. Adds .githooks/cross-repo.js + scripts/cross-repo-gate.sh, a PreToolUse registration per adapter, and the post-commit routing banner (post-commit/post-merge no longer swallow stderr, since the banner is written there)."
+    "note": "Phase 31b G4 / ADR-0017 E6: sync-docs delivers cross-repo entries as handoffs into the target member's inbox instead of only mentioning them in chat. Ownership rule unchanged."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -29,7 +29,7 @@
     ".agents/skills/start-project/SKILL.md": "59fac29efa26ab442e9d9f0ad01436279150d1506419863f455cbe527e718a39",
     ".agents/skills/swarm/SKILL.md": "c00f6b116f14c579ec9d8eff21d02a56aba452658149035032822daafa535c5f",
     ".agents/skills/sync-config/SKILL.md": "f3bd9ff1f1c67865c1d4439c20f55a3a1fee685d0ff9cbb979de79bd31dfff55",
-    ".agents/skills/sync-docs/SKILL.md": "9293e5f8ba631905ca697a808872f474e8bc716c5214d96f48216c1ca72767ff",
+    ".agents/skills/sync-docs/SKILL.md": "229b072f394b1e40e630887d615837bf9f78ab54689056d517ed2c81de980a01",
     ".agents/skills/systematic-debug/SKILL.md": "cc8af476d545cca33a4d960c0fa64dc1d46f3cfe0223925d80f2c0078dd71954",
     ".agents/skills/track/SKILL.md": "03f668829b6ade703c8df9015365e16c9e5831d05d1b4dae29b5b8f5a049a252",
     ".agents/skills/validate/SKILL.md": "8a87d2031cef8efc173256f0d3bc284c8a2dacf06a2be63dace1f903b6c66d7b",

@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31b-ecosystem-enforcement",
     "adapter": "antigravity",
-    "note": "Phase 31b G2 / ADR-0017 E1: cross-repo detection + routing nudge. Adds .githooks/cross-repo.js + scripts/cross-repo-gate.sh, a PreToolUse registration per adapter, and the post-commit routing banner (post-commit/post-merge no longer swallow stderr, since the banner is written there)."
+    "note": "Phase 31b G4 / ADR-0017 E6: sync-docs delivers cross-repo entries as handoffs into the target member's inbox instead of only mentioning them in chat. Ownership rule unchanged."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -35,7 +35,7 @@
     ".agents/workflows/start-project.md": "0d2e140f2817f335a4a0e3584aabf46f460ebf8f344d123463441ba291794a7d",
     ".agents/workflows/swarm.md": "8cb40729932ff77b6f537e11349dad4d4706b951d58881c4d57d72ec3b264fe6",
     ".agents/workflows/sync-config.md": "41c320731ae77538a87a7347769d4051aedeb502e7625f7f28190dfeba51c0fa",
-    ".agents/workflows/sync-docs.md": "e414044bc370cc06f73d673f608d70dc04e955d2e5cfaac59ae1969152372d5b",
+    ".agents/workflows/sync-docs.md": "a77f981e5b8c7db9a82d4497fc264777f633c4006973355ffc164f2e2dc8b38d",
     ".agents/workflows/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".agents/workflows/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
     ".agents/workflows/validate.md": "904c55ecc63aade8177c754eeba552a3dc5e35ee1e5d95e29f3bb9902cb5a637",

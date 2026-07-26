@@ -288,3 +288,52 @@ test('the gate script never exits 2 — it is advice, not a block', () => {
     'ADR-0017 E1 puts the teeth on the git axis; blocking here would fake enforcement');
   assert.match(src, /exit 0/);
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// G4 — the rules must state enforcement strength precisely (ADR-0017 E7)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// BUG-009 was filed because Rule 6's header said "(Automatic)" over prose no
+// mechanism backed, and that overstatement shipped verbatim to every downstream
+// install. 31a then deliberately understated ("convention, not enforcement").
+// Both directions teach agents to distrust the text, so the distinction is now
+// asserted rather than trusted to survive editing.
+
+test('E7: instruction text distinguishes best-effort nudge from enforced gate', () => {
+  for (const name of ['ecosystem-claude.md', 'ecosystem-agents.md']) {
+    const body = fs.readFileSync(
+      path.join(REPO_ROOT, 'core', 'ecosystem', 'templates', name), 'utf8');
+
+    assert.match(body, /best-effort/i, `${name}: the nudge must be labelled best-effort`);
+    assert.match(body, /unconditional/i, `${name}: the write path must be labelled unconditional`);
+    assert.match(body, /enforced/i, `${name}: the landing gate must be labelled enforced`);
+
+    // The 31a wording is now wrong in the other direction — detection exists.
+    assert.doesNotMatch(body, /this routing is agent convention/i,
+      `${name}: 31a's "convention, not enforcement" phrasing must not survive 31b`);
+  }
+});
+
+test('E7: the member pointer states enforcement strength, not a blanket claim', () => {
+  const pointer = require('../core/ecosystem/lib/pointer');
+  const body = pointer.renderPointerBody('my-eco', '../eco');
+
+  assert.match(body, /best-effort/i);
+  assert.match(body, /refuses/i);
+  assert.doesNotMatch(body, /routing is convention/i,
+    'the pointer must not keep claiming nothing detects cross-repo scope');
+});
+
+test('E6: sync-docs delivers cross-repo entries instead of only mentioning them', () => {
+  const body = fs.readFileSync(
+    path.join(REPO_ROOT, 'core', 'commands', 'sync-docs.md'), 'utf8');
+
+  // The ownership rule is unchanged and must stay absolute.
+  assert.match(body, /NEVER edit a file in another repo|NEVER update files in another repo/);
+  // …but the delivery mechanism is now the inbox, not a chat message.
+  assert.match(body, /orchestration\.handoff\.handoff/);
+  assert.match(body, /inbox/);
+  assert.match(body, /Delivery is not ownership/);
+  assert.doesNotMatch(body, /they're informational only/,
+    'a chat message dies with the session — that was the whole failure');
+});
