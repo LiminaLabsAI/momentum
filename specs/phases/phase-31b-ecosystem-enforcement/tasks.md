@@ -24,17 +24,20 @@ status: in-progress
 - [x] Updated a 31a assertion that deep-equalled the whole config object — now per-key, since the surface is designed to grow
 - [x] Verify `npm test` green — **1098/1098** (+14 from 1084); commit G0
 
-## Group 1 — Fleet orient (ENH-067) *(∥ G3)*
-- [ ] `core/ecosystem/lib/orient.js` — per-member summary by file parsing only
-- [ ] Active phase from the member's `specs/status.md` Active Phase table
-- [ ] Open **P0/P1** items (id + title) from the member's `specs/backlog/backlog.md`
-- [ ] Lane state from the member's lane registry when present
-- [ ] **Degrades gracefully** — missing `specs/`, absent checkout, or unparseable file yields a partial summary, never an error
-- [ ] `momentum ecosystem status` renders it; `--brief` preserves today's output for scripts
-- [ ] SessionStart banner carries a condensed fleet line; existing <100ms budget still holds
-- [ ] Test: fixture members with a known phase + P0 + P1 + lane all surface
-- [ ] Test: corrupt/missing member specs degrade rather than throw
-- [ ] Verify `npm test` green; commit G1
+## Group 1 — Fleet orient (ENH-067) *(∥ G3)* ✅
+- [x] `core/ecosystem/lib/orient.js` — per-member summary by file parsing only
+- [x] Active phase from the member's `specs/status.md` Active Phase table (handles "(none active)", separators, headers)
+- [x] Open **P0/P1** items from the member's backlog — resolved and P2/P3 excluded; **P0 sorted first**
+- [x] Lane state from the member's lane registry when present
+- [x] **Degrades, never throws** — missing checkout, no `specs/`, corrupt tables all yield partial summaries (asserted)
+- [x] `momentum ecosystem status` renders it; **`--brief` preserves pre-31b output** for scripts
+- [x] SessionStart banner carries a `▸ Fleet:` line; best-effort and silent on any failure
+- [x] **Made `orient.js` dependency-free and shipped it into `scripts/`** — an installed project has no `core/`, the same packaging constraint that forced `eco-event.js` to stand alone in 31a. Guarded by a test asserting it requires only `fs`/`path`
+- [x] `momentum init`/`upgrade` install it; asserted by test
+- [x] **Live dogfood found a usability defect**: real backlog titles run to full paragraphs, making the fleet view unreadable — added `condense()` (strips detail links / code fences / bold, cuts at a natural break, hard-caps at 72)
+- [x] Verified live against the real 8-member `cerebrio-ecosystem`
+- [x] 4 fingerprints re-baselined (`--check` first: identical 2-file drift)
+- [x] Verify `npm test` green — **1108/1108** (+24 from 1084); commit G1
 
 ## Group 3 — Dependency-ordered landing gate (ENH-068) *(∥ G1)*
 - [ ] `lanes land` resolves the active initiative + this member's upstream edges

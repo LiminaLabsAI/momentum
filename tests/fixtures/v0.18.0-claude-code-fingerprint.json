@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-26",
-    "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
+    "capturedFrom": "phase-31b-ecosystem-enforcement",
     "adapter": "claude-code",
-    "note": "Phase 31a G4 / ADR-0016: /initiative recipe documents the start+complete lifecycle and the ADR initiative-stamp convention; run-check.js records a 'tag' event on release-tag push (git has no post-tag hook, and a tag means nothing until pushed) to fill Deploy chronology."
+    "note": "Phase 31b G1 / ENH-067: fleet orient. sessionstart-handoff.sh gains a Fleet banner line; scripts/orient.js ships alongside it (an installed project has no core/, same constraint as eco-event.js in 31a). Identical 2-file drift across all 4 adapters."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -46,8 +46,9 @@
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
+    "scripts/orient.js": "122a1ca65d64cf68974fa216dd7de61e1b790f7bd4617f68725263bfa8b0c745",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
-    "scripts/sessionstart-handoff.sh": "a7a863dec8d94a2d295794665990909b84f5763332ca72c68ee8d9ca8f9a65a6",
+    "scripts/sessionstart-handoff.sh": "6dd40e4449db9e8266bab06222b22651724dead4ce829b860dabc42f01732c4b",
     "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",
     "specs/adhoc/README.md": "d96209eb2fa482722a62b96c37d7db8b34d0932c213d9ae53c208a92b40d8460",
     "specs/adhoc/_TEMPLATE.md": "3444f1054de72aedc2d181fbaaa16c089be3bb18207d8ef788c42e294e0ef9b1",

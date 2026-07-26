@@ -135,3 +135,53 @@ from edges momentum registered itself, so defaulting it off would silently
 disable a gate nobody opted out of. Suite 1084 → 1098.
 
 ---
+### [FEATURE] 2026-07-27 — G1 complete: fleet orient (ENH-067)
+Topics: g1, enh-067, orient, session-start, packaging
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/orient.js, bin/ecosystem.js, core/scripts/sessionstart-handoff.sh
+Detail: `momentum ecosystem status` and the SessionStart banner now carry each
+member's active phase, open P0/P1 items, and lanes — read by parsing the
+member's own tracking files, never by importing member-specific code or running
+git. `--brief` preserves the pre-31b output for scripts. The design constraint
+that mattered most was degradation: a fleet view that dies on one bad member is
+useless exactly when it matters, so a missing checkout, an unmanaged member, and
+a corrupt table all yield partial summaries rather than an error (asserted).
+`memberBrief()` is the shape G2's nudge will use — it is what turns "this is
+cross-repo work" into "frontend has BUG-001 open on the cost formatter you are
+about to touch" (AC-4). Suite 1098 → 1108.
+
+---
+
+### [DISCOVERY] 2026-07-27 — orient.js had to become dependency-free to ship
+Topics: packaging, install, core-not-shipped, orient
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/orient.js, bin/momentum.js
+Detail: The SessionStart banner needed orient, and the banner script runs inside
+a MEMBER repo — which receives no copy of momentum's `core/`. The first draft
+required `./index` for `resolveMemberLocation`, which works in this repo and
+would have silently failed in every install: the fleet line would simply never
+appear downstream, with no error to explain why. Caught by asking where the
+script actually runs rather than where it lives. Fixed by inlining the minimal
+member-path resolution (the `hasLocal`/`localPath` semantics only), making
+orient.js node-builtins-only, and shipping it into `scripts/` beside
+`session-append.sh` via both `init` and `upgrade`. A test asserts the require
+list is exactly `fs`/`path` so the dependency cannot creep back. Same class as
+31a's eco-event.js constraint, which is why it was recognized quickly.
+
+---
+
+### [DISCOVERY] 2026-07-27 — real backlog titles are paragraphs, not one-liners
+Topics: usability, dogfood, orient, condense
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/orient.js
+Detail: Running the new fleet view against the real 8-member cerebrio-ecosystem
+immediately showed the design was wrong in practice: several member P1 titles are
+full paragraphs carrying embedded spec catalogues, component lists, and markdown
+detail links. The output was unreadable — the precise opposite of orienting, and
+it would have been worse inside a nudge. Added `condense()`: strips detail links,
+inline code fences and bold markers, cuts at the first natural break, hard-caps
+at 72 chars. The member's own backlog remains where you read the whole thing.
+Worth noting the sequence — this defect was invisible in the synthetic fixtures
+and obvious within one second of real data.
+
+---
