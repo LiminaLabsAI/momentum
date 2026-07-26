@@ -46,8 +46,16 @@ const teamState = require('./team-state');
 /** Fragment view holding ecosystem activity events. */
 const EVENTS_VIEW = 'eco-events';
 
-/** Event kinds the git hooks emit. */
-const EVENT_KINDS = ['commit', 'merge', 'tag'];
+/**
+ * Event kinds recorded on the stream.
+ *
+ * `land` (Phase 31b, ADR-0017 E5) is written by `momentum lanes land --execute`
+ * on success. It exists because "has member X landed its contribution?" must be
+ * answerable from a RECORD rather than inferred from branch or merge state —
+ * the asking machine may not have member X checked out at all, the same reason
+ * the 31a completion gate blocks on absent members rather than skipping them.
+ */
+const EVENT_KINDS = ['commit', 'merge', 'tag', 'land'];
 
 function git(dir, ...args) {
   try {

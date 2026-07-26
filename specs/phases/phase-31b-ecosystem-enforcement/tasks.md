@@ -10,15 +10,19 @@ status: in-progress
 > Closes ENH-067 + ENH-068. Target v0.41.0.
 > Lane `phase-31b-ecosystem-enforcement`.
 
-## Group 0 — Contracts *(blocks)*
-- [ ] Author **ADR-0017** — Layered Ecosystem Enforcement (E1–E7)
-- [ ] `core/ecosystem/lib/detect.js` — `touchedMembers` / `coverage` / `uncovered`
-- [ ] Coverage counts only **in-progress** initiatives (a closed one covers nothing)
-- [ ] Pure over the fragment stream + `initiatives/` — **no git calls** (must be cheap enough for PreToolUse)
-- [ ] `land` event kind added to `EVENT_KINDS`
-- [ ] Config keys: `detect_window_hours` (default 24), `landing_order` (`enforce`|`warn`|`off`, default `enforce`)
-- [ ] Tests: covered / uncovered / single-member / closed-initiative-does-not-cover
-- [ ] Verify `npm test` green; commit G0
+## Group 0 — Contracts *(blocks)* ✅
+- [x] Author **ADR-0017** — Layered Ecosystem Enforcement (E1–E7)
+- [x] `core/ecosystem/lib/detect.js` — `touchedMembers` / `coverage` / `openInitiatives` / `detect`
+- [x] Coverage counts only **in-progress** initiatives (asserted: a closed one covers nothing)
+- [x] **Partial coverage does not count** — the unplanned member is precisely the point; it's named in `uncovered[]`
+- [x] `contributions[]` count toward coverage, not just `repos[]`
+- [x] `opts.extra` folds in a member with no event yet — the PreToolUse case, since the nudge must fire *before* the commit
+- [x] Pure over the fragment stream + `initiatives/` — **no git calls**, asserted by a source guard
+- [x] `land` event kind added to `EVENT_KINDS`
+- [x] Config keys: `detect_window_hours` (null when undeclared), `landing_order` (`enforce`|`warn`|`off`, **defaults to enforce** — a gate momentum derives itself must not silently default off)
+- [x] Tests: covered / uncovered / single-member / closed-initiative / partial / per-actor / window / absent-ecosystem
+- [x] Updated a 31a assertion that deep-equalled the whole config object — now per-key, since the surface is designed to grow
+- [x] Verify `npm test` green — **1098/1098** (+14 from 1084); commit G0
 
 ## Group 1 — Fleet orient (ENH-067) *(∥ G3)*
 - [ ] `core/ecosystem/lib/orient.js` — per-member summary by file parsing only

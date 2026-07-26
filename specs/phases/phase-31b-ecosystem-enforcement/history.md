@@ -111,3 +111,27 @@ could have been an operator question; neither had a live alternative worth the
 round-trip.
 
 ---
+### [DECISION] 2026-07-27 — G0 complete: ADR-0017 + the coverage query
+Topics: adr-0017, g0, detect, contracts, land-event, config
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: specs/decisions/0017-layered-ecosystem-enforcement.md, core/ecosystem/lib/detect.js
+Detail: Group 0 done. ADR-0017 records E1–E7 — most importantly WHY enforcement
+is split across two axes rather than consolidated: detection must fire before
+the mistake and a git hook fires after the commit, so the nudge takes the agent
+axis (best-effort, nothing depends on it) while the teeth stay on the git axis
+(unbypassable). `core/ecosystem/lib/detect.js` answers the coverage question as
+a QUERY over 31a's event stream — no new tracker, and no git calls at all, which
+is the property that licenses running it from a PreToolUse hook on every edit
+(guarded by a source assertion, not just intent). Three semantics worth pinning:
+a CLOSED initiative covers nothing (coverage is live-state, not history); PARTIAL
+coverage does not count, and the uncovered member is named because that member is
+exactly the part nobody planned; and `opts.extra` lets the caller fold in a
+member with no event yet, which is the whole PreToolUse case. `land` added to
+EVENT_KINDS. Config: `detect_window_hours` returns null when undeclared (so
+callers can tell declared-24 from defaulted-24, mirroring
+integration_verify_command), while `landing_order` DEFAULTS to `enforce` — unlike
+a verification command momentum cannot invent, the landing order is derivable
+from edges momentum registered itself, so defaulting it off would silently
+disable a gate nobody opted out of. Suite 1084 → 1098.
+
+---

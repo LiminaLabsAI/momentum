@@ -77,15 +77,14 @@ test('readEcosystemConfig: absent config yields null, never a fabricated default
   // A fabricated default would make `initiative complete` claim it ran a
   // verification the project never declared — the exact silent-pass failure
   // ADR-0016 §5 forbids.
-  assert.deepEqual(
-    lib.readEcosystemConfig(baseManifest()),
-    { integration_verify_command: null },
-  );
-  assert.deepEqual(
-    lib.readEcosystemConfig(baseManifest({ config: {} })),
-    { integration_verify_command: null },
-  );
-  assert.deepEqual(lib.readEcosystemConfig(undefined), { integration_verify_command: null });
+  //
+  // Asserted per-key rather than by deepEqual on the whole object: the config
+  // surface is designed to grow (Phase 31b added detect_window_hours and
+  // landing_order), and a shape assertion would fail on every addition while
+  // saying nothing about the property that matters.
+  for (const m of [baseManifest(), baseManifest({ config: {} }), undefined]) {
+    assert.equal(lib.readEcosystemConfig(m).integration_verify_command, null);
+  }
 });
 
 test('readEcosystemConfig: declared command is returned verbatim', () => {
