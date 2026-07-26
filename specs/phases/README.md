@@ -47,7 +47,7 @@ type: Guide
 | 30d | Team Integration (primitives wired into workflows) | Complete (v0.38.0) | [phase-30d-team-integration/](phase-30d-team-integration/) |
 | 30e | Ecosystem (Multi-Repo) Team Mode | Complete (v0.39.0) | [phase-30e-ecosystem-team-mode/](phase-30e-ecosystem-team-mode/) |
 | 31a | Ecosystem Lifecycle Spine | Complete (v0.40.0) | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
-| 31b | Ecosystem Enforcement | In Progress | [phase-31b-ecosystem-enforcement/](phase-31b-ecosystem-enforcement/) |
+| 31b | Ecosystem Enforcement | Complete (v0.41.0) | [phase-31b-ecosystem-enforcement/](phase-31b-ecosystem-enforcement/) |
 
 ## Phase Structure
 

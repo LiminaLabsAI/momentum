@@ -5,9 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: **Phase 31b — Ecosystem Enforcement** (branch `phase-31b-ecosystem-enforcement`, target v0.41.0). _Prior: Phase 31a shipped v0.40.0; 30e v0.39.0._
-> **Latest Release**: v0.40.0 — Phase 31a Ecosystem Lifecycle Spine (BUG-028, ENH-066, TD-011; ADR-0016): cross-repo work gets the lifecycle structure that makes single-repo momentum self-enforcing — enforcement moved onto the **git axis** (`post-commit`/`post-merge` → attributed fragments; `--git-common-dir` so **lane worktrees** are finally visible to momentum's own audit trail), `/brainstorm-initiative` + `initiative start` (**first code to ever register a dependency edge**), and `/complete-initiative` — the **first cross-repo Rule 12 gate**. **BUG-028** fixed: the ecosystem session log was dead code on the default adapter, and its class is now closed by a test that reads the installed matcher. **TD-011** closed — all three initiative template sections have writers. Suite 1084/1084; swarm 236/236; OKF 311/311. Merged → staging → main; tag `v0.40.0`. _(v0.39.0 Phase 30e; v0.38.0 Phase 30d; v0.37.0 Team Mode.)_
-
+> **Current Phase**: _none active_ — **Phase 31b Ecosystem Enforcement shipped v0.41.0**, completing the 31a/31b ecosystem arc. Next: **Phase 32 Intelligence** or **33 Platform** (both Not Started).
+> **Latest Release**: v0.41.0 — Phase 31b Ecosystem Enforcement (ENH-067, ENH-068; ADR-0017): closes the gap 31a shipped deliberately (ADR-0016 D8 — nothing detected cross-repo drift). **Layered enforcement** — the routing nudge fires BEFORE the edit on the agent axis, the commit banner fires **unconditionally** on the git axis, and the **landing gate refuses**; the rules text now states each layer's real strength with tests asserting it. **Fleet orient** carries each member's phase + open P0/P1 + lanes, so the nudge reads *"frontend: P1 BUG-001 — Cost formatter…"* rather than "this is cross-repo work". **Dependency-ordered landing** refuses while an upstream member hasn't landed, and the final contribution requires the declared integration verify. Cross-repo doc sync is **delivered** to the target's inbox. Suite 1135/1135; swarm 236/236; OKF 318/318; solo byte-unchanged. Merged → staging → main; tag `v0.41.0`. _(v0.40.0 Phase 31a; v0.39.0 Phase 30e.)_
 > **Health**: On Track
 
 ## Summary
@@ -62,6 +61,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 30d | Team Integration (primitives wired into workflows) | Complete² | v0.38.0 (2026-07-10) |
 | 30e | Ecosystem (Multi-Repo) Team Mode | Complete | v0.39.0 (2026-07-10) |
 | 31a | Ecosystem Lifecycle Spine | Complete | v0.40.0 (2026-07-27) |
+| 31b | Ecosystem Enforcement | Complete | v0.41.0 (2026-07-27) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
@@ -109,7 +109,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 31b — Ecosystem Enforcement | `phase-31b-ecosystem-enforcement` | **Built + verified — at the release gate** | **G0 ✅ G1 ✅ G3 ✅ G2 ✅ G4 ✅ G5 ✅.** Suite **1135/1135** (baseline 1084, +51); swarm 236/236; OKF 318/318; solo byte-unchanged. Closes **ENH-067, ENH-068**; closes the ADR-0016 D8 gap. Filed TD-012, TD-013. **Awaiting operator approval to merge → staging → main + tag v0.41.0.** |
+| _(none active)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
