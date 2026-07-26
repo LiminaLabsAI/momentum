@@ -1226,6 +1226,16 @@ function init(targetDir, agent, opts = {}) {
     if (!_dryRun) fs.chmodSync(sessionDest, 0o755);
   }
 
+  // Phase 31b — fleet-orient helper, read by sessionstart-handoff.sh for its
+  // Fleet banner line. Shipped here for the same reason session-append.sh is:
+  // an installed project receives no copy of momentum's core/, so the script
+  // must travel with the hooks that use it. Dependency-free by construction.
+  const orientSrc = path.join(src, 'core', 'ecosystem', 'lib', 'orient.js');
+  if (fs.existsSync(orientSrc)) {
+    const orientDest = path.join(target, ...dests.scripts, 'orient.js');
+    copyFile(orientSrc, orientDest);
+  }
+
   // .githooks/ — git-lifecycle enforcement hooks (Phase 19)
   console.log('→ Installing git-lifecycle hooks...');
   installGitHooks(src, target);
@@ -1356,6 +1366,11 @@ function upgrade(targetDir, agent, opts = {}) {
   if (fs.existsSync(sessionUpgradeSrc)) {
     const sessionUpgradeDest = path.join(target, ...dests.scripts, 'session-append.sh');
     copyFile(sessionUpgradeSrc, sessionUpgradeDest);
+  }
+  // Phase 31b — fleet-orient helper (see the install path for why it ships).
+  const orientUpgradeSrc = path.join(src, 'core', 'ecosystem', 'lib', 'orient.js');
+  if (fs.existsSync(orientUpgradeSrc)) {
+    copyFile(orientUpgradeSrc, path.join(target, ...dests.scripts, 'orient.js'));
   }
   // Re-apply executable bit to all .sh scripts
   const scriptsDir = path.join(target, ...dests.scripts);

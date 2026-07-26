@@ -16,6 +16,10 @@
 [ -n "${MOMENTUM_SKIP_HOOKS:-}" ] && exit 0
 dir=$(dirname "$0")
 if command -v node >/dev/null 2>&1; then
-  node "$dir/run-check.js" post-commit 2>/dev/null || true
+  # stderr is deliberately NOT redirected: the cross-repo routing banner
+  # (Phase 31b) is written there. run-check.js wraps this branch in a
+  # try/catch, so failures stay silent without suppressing the message the
+  # hook exists to surface.
+  node "$dir/run-check.js" post-commit || true
 fi
 exit 0

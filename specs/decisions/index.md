@@ -16,4 +16,5 @@
 * [ADR-0013: Team Presence, Shared Landing & Review](/decisions/0013-team-presence-landing-review.md)
 * [ADR-0014: Optional Relay + Ecosystem Team Mode](/decisions/0014-relay-ecosystem-team-mode.md)
 * [ADR-0015: Ecosystem (Multi-Repo) Team Mode](/decisions/0015-ecosystem-team-mode.md)
+* [ADR-0016: Ecosystem Lifecycle Spine](/decisions/0016-ecosystem-lifecycle-spine.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.

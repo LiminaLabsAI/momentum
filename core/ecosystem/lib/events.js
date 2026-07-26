@@ -46,8 +46,16 @@ const teamState = require('./team-state');
 /** Fragment view holding ecosystem activity events. */
 const EVENTS_VIEW = 'eco-events';
 
-/** Event kinds the git hooks emit. */
-const EVENT_KINDS = ['commit', 'merge', 'tag'];
+/**
+ * Event kinds recorded on the stream.
+ *
+ * `land` (Phase 31b, ADR-0017 E5) is written by `momentum lanes land --execute`
+ * on success. It exists because "has member X landed its contribution?" must be
+ * answerable from a RECORD rather than inferred from branch or merge state —
+ * the asking machine may not have member X checked out at all, the same reason
+ * the 31a completion gate blocks on absent members rather than skipping them.
+ */
+const EVENT_KINDS = ['commit', 'merge', 'tag', 'land'];
 
 function git(dir, ...args) {
   try {
@@ -85,6 +93,50 @@ function resolveMemberRepoRoot(cwd) {
   }
   const top = git(dir, 'rev-parse', '--show-toplevel');
   return top ? path.resolve(top) : null;
+}
+
+/**
+ * Locate the ecosystem root from a member repo — up-walk AND sibling scan.
+ *
+ * `lib.findRoot` walks UP ONLY, but `core/ecosystem/layout.md` documents the
+ * ecosystem root as a SIBLING of its member repos, which is what `ecosystem
+ * init` + `ecosystem add ../<repo>` actually produce. Every other discovery
+ * path in momentum already scans siblings — `session-append.sh`,
+ * `sessionstart-handoff.sh`, `core/git-hooks/eco-event.js`, and
+ * `bin/ecosystem.js`'s own resolver. `findRoot` is the outlier.
+ *
+ * That inconsistency was invisible until Phase 31b called `recordEvent()` from
+ * library code (the hooks had always used their own sibling-aware resolver), at
+ * which point every such call silently returned "no ecosystem" in the standard
+ * layout. Mirrored here rather than changing `findRoot`, whose up-only
+ * semantics other callers may rely on; TD-013 tracks unifying them.
+ */
+function resolveEcosystemRootFrom(startDir) {
+  const max = (() => {
+    const raw = process.env.MOMENTUM_MAX_PARENT_WALK;
+    const n = parseInt(raw, 10);
+    return Number.isInteger(n) && n >= 0 ? n : 5;
+  })();
+
+  let current = path.resolve(startDir);
+  for (let depth = 0; depth <= max; depth++) {
+    try {
+      if (fs.statSync(path.join(current, 'ecosystem.json')).isFile()) return current;
+    } catch (_e) { /* keep walking */ }
+
+    const parent = path.dirname(current);
+    if (parent === current) return null;
+    let siblings = [];
+    try { siblings = fs.readdirSync(parent); } catch (_e) { siblings = []; }
+    for (const name of siblings) {
+      const cand = path.join(parent, name);
+      try {
+        if (fs.statSync(path.join(cand, 'ecosystem.json')).isFile()) return cand;
+      } catch (_e) { /* not it */ }
+    }
+    current = parent;
+  }
+  return null;
 }
 
 /**
@@ -144,7 +196,7 @@ function recordEvent(opts) {
     const repoRoot = resolveMemberRepoRoot(cwd);
     if (!repoRoot) return { recorded: false, reason: 'not a git repo' };
 
-    const ecosystemRoot = lib.findRoot(repoRoot);
+    const ecosystemRoot = opts.ecosystemRoot || resolveEcosystemRootFrom(repoRoot);
     if (!ecosystemRoot) return { recorded: false, reason: 'no ecosystem' };
 
     const member = resolveMemberId(ecosystemRoot, repoRoot);
@@ -156,6 +208,12 @@ function recordEvent(opts) {
       summary: String(opts.summary || '').split('\n')[0].slice(0, 500),
       context: opts.context ? String(opts.context).slice(0, 200) : '',
     };
+    // `land` events carry which initiative they belong to and whether the
+    // landing order was overridden (Phase 31b, ADR-0017 E5). Recorded on the
+    // event rather than inferred later, so a forced land stays visible in the
+    // stream instead of vanishing the way a `--no-verify` bypass would.
+    if (opts.initiative) payload.initiative = String(opts.initiative).slice(0, 64);
+    if (opts.forced) payload.forced = true;
 
     const frag = fragments.writeFragment(
       ecosystemRoot, EVENTS_VIEW, actor, kind, payload,
@@ -235,6 +293,7 @@ function writeSessionLog(ecosystemRoot, date) {
 module.exports = {
   EVENTS_VIEW,
   EVENT_KINDS,
+  resolveEcosystemRootFrom,
   resolveMemberRepoRoot,
   resolveMemberId,
   recordEvent,

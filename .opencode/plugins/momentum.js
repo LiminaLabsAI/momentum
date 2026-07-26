@@ -110,6 +110,19 @@ export const MomentumPlugin = async ({ directory, worktree }) => {
         const command = output && output.args && output.args.command
         if (typeof command === "string") remember(pendingBash, input.callID, command)
       }
+      // Cross-repo routing nudge (Phase 31b, ADR-0017). Advisory only — it
+      // never throws, so a write is never blocked by it. opencode has no
+      // matcher string, so the dispatch decision lives here in code.
+      if (target && WRITE_TOOLS.has(tool)) {
+        try {
+          const nudge = runInstalledScript(root, "cross-repo-gate.sh", {
+            tool_name: "Write",
+            tool_input: { file_path: target },
+          })
+          if (nudge) console.error(nudge)
+        } catch (_e) { /* advisory */ }
+      }
+
       if (!fs.existsSync(path.join(momentumDir, "brainstorm-active"))) return
       if (!target) return // fail-open when no path is extractable
       if (isUnderSpecs(root, target)) {

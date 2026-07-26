@@ -36,11 +36,15 @@ The initiative is the *only* place cross-repo scope, deploy chronology, and
 links to per-repo decisions live. Per-repo implementation stays in each
 member's `specs/phases/`.
 
-> **What is and is not enforced (ADR-0016 D8).** Momentum does **not** yet
-> detect that a session has touched a second member repo — that ships in Phase
-> 31b. Today this routing is agent convention. What IS mechanical: every commit
-> in a member repo is captured by a `post-commit` git hook into the ecosystem
-> event log, regardless of agent, cwd, or worktree.
+> **What is enforced, precisely (ADR-0017 E7).** Three different strengths —
+> stated separately because a rule that overstates and a rule that understates
+> both teach agents to distrust the text:
+>
+> | Layer | Strength | Why |
+> |---|---|---|
+> | **Write path** — every commit captured into the event log | **Unconditional** | a git hook: fires for any agent, any human, any script, any cwd, any worktree |
+> | **Landing gate** — `lanes land` refuses out-of-order cross-repo landings | **Enforced** | git-native; `--force-order` overrides but is recorded as forced |
+> | **Routing nudge** — "you're entering a second member with no initiative" | **Best-effort** | an agent hook: bypassed by worktrees, forge-API merges, and container-dir launches. Nothing depends on it, which is why it is allowed to be bypassable. |
 
 **Anti-pattern:** do not create planning notes, task lists, or "phase" files
 directly in this coordination root. There is no `specs/phases/`. If you find

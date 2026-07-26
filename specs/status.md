@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: _none active_ — **Phase 31a Ecosystem Lifecycle Spine shipped v0.40.0**. Next: **Phase 31b Ecosystem Enforcement** (detection/routing, fleet orient, dependency-ordered landing).
+> **Current Phase**: **Phase 31b — Ecosystem Enforcement** (branch `phase-31b-ecosystem-enforcement`, target v0.41.0). _Prior: Phase 31a shipped v0.40.0; 30e v0.39.0._
 > **Latest Release**: v0.40.0 — Phase 31a Ecosystem Lifecycle Spine (BUG-028, ENH-066, TD-011; ADR-0016): cross-repo work gets the lifecycle structure that makes single-repo momentum self-enforcing — enforcement moved onto the **git axis** (`post-commit`/`post-merge` → attributed fragments; `--git-common-dir` so **lane worktrees** are finally visible to momentum's own audit trail), `/brainstorm-initiative` + `initiative start` (**first code to ever register a dependency edge**), and `/complete-initiative` — the **first cross-repo Rule 12 gate**. **BUG-028** fixed: the ecosystem session log was dead code on the default adapter, and its class is now closed by a test that reads the installed matcher. **TD-011** closed — all three initiative template sections have writers. Suite 1084/1084; swarm 236/236; OKF 311/311. Merged → staging → main; tag `v0.40.0`. _(v0.39.0 Phase 30e; v0.38.0 Phase 30d; v0.37.0 Team Mode.)_
 
 > **Health**: On Track
@@ -109,7 +109,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| _(none active)_ | | | |
+| 31b — Ecosystem Enforcement | `phase-31b-ecosystem-enforcement` | **Built + verified — at the release gate** | **G0 ✅ G1 ✅ G3 ✅ G2 ✅ G4 ✅ G5 ✅.** Suite **1135/1135** (baseline 1084, +51); swarm 236/236; OKF 318/318; solo byte-unchanged. Closes **ENH-067, ENH-068**; closes the ADR-0016 D8 gap. Filed TD-012, TD-013. **Awaiting operator approval to merge → staging → main + tag v0.41.0.** |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -119,7 +119,6 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 31b | Ecosystem Enforcement | Not Started (target v0.41.0) | Second half of the 31a/31b arc: mid-session cross-repo **detection + routing** (makes 31a's convention mechanical — D8); **fleet orient** (`ecosystem status` + session start carrying each member's phase, P0/P1, lanes — ENH-067); **dependency-ordered cross-repo landing gate** (Rule 6 Landing Order one tier up — ENH-068); cross-repo doc-sync **delivery** via handoff (ownership-preserving); ecosystem-tier Rule rewrite. |
 | 32 | Intelligence | Not Started (target v0.42.0+) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing. _(Renumbered from 31 on 2026-07-26 — D9, displaced by the 31a/31b ecosystem arc.)_ |
 | 33 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028). _(Renumbered from 32 on 2026-07-26 — D9.)_ |
 

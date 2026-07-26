@@ -82,7 +82,7 @@ Usage:
   momentum ecosystem init [name]
   momentum ecosystem add <repo-path> [--role <role>] [--id <id>] [--ecosystem <path>]
   momentum ecosystem remove <member-id> [--ecosystem <path>]
-  momentum ecosystem status [--no-git] [--ecosystem <path>]
+  momentum ecosystem status [--no-git] [--brief] [--ecosystem <path>]
   momentum ecosystem upgrade [--dry-run] [--force|--autostash] [--agent <name>] [--ecosystem <path>]
   momentum ecosystem initiative create <slug> [--why "<text>"] [--repos r1,r2] [--owner <name>] [--ecosystem <path>]
   momentum ecosystem initiative start <slug> [--contribute <member>:<kind>:<ref>]... [--edge <from>:<to>:<kind>]...
@@ -778,10 +778,20 @@ function cmdRemove(args) {
 function cmdStatus(args) {
   const opts = parseFlags(args, {
     'no-git': 'boolean',
+    brief: 'boolean',
     ecosystem: 'string',
   });
   const root = resolveEcosystemRoot(opts.ecosystem, 'status');
   const manifest = lib.loadManifest(root);
+
+  // Fleet orient (Phase 31b, ENH-067). `--brief` preserves the pre-31b output
+  // for scripts that parse this. Read once up front so the per-member loop can
+  // render each summary inline.
+  const orientLib = require('../core/ecosystem/lib/orient');
+  const orient = opts.brief ? null : (() => {
+    try { return new Map(orientLib.orientFleet(root, manifest).map((s) => [s.id, s])); }
+    catch (_e) { return null; }   // orient is additive — never fail status on it
+  })();
 
   // Auto-heartbeat (ADR-0015 G2): mark this actor present when the ecosystem is
   // team-active (a .momentum/team/ dir exists). Best-effort, gated so solo
@@ -817,6 +827,28 @@ function cmdStatus(args) {
     } else {
       // path was declared but the checkout is absent on this machine.
       console.log(`  ${m.id}  [${m.role}]  ${loc.path || '(no path)'}  (MISSING)`);
+    }
+
+    // Fleet orient (ENH-067) — each member's own tracking state, so a session
+    // reaching into a sibling sees its phase and open P0/P1 BEFORE editing it.
+    const s = orient && orient.get(m.id);
+    if (s && s.reachable && s.managed) {
+      for (const p of s.phases) {
+        console.log(`    phase: ${p.phase} — ${p.status} (${p.branch})`);
+      }
+      for (const b of s.blockers.slice(0, 5)) {
+        console.log(`    ${b.priority}: ${b.id} — ${b.title}`);
+      }
+      const extra = s.blockers.length - 5;
+      if (extra > 0) console.log(`    …+${extra} more open P0/P1`);
+      if (s.lanes.length) {
+        console.log(`    lanes: ${s.lanes.map((l) => `${l.id} (${l.status})`).join(', ')}`);
+      }
+      if (!s.phases.length && !s.blockers.length && !s.lanes.length) {
+        console.log('    (no active phase, no open P0/P1, no lanes)');
+      }
+    } else if (s && s.reachable && s.managed === false) {
+      console.log('    (not momentum-managed — no specs/)');
     }
   }
 
