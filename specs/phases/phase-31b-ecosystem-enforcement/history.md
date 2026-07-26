@@ -326,3 +326,58 @@ present rather than trusting a future editor to preserve it. That is the part
 that makes this different from the last two attempts.
 
 ---
+### [DISCOVERY] 2026-07-27 — a latent 31a defect: ecosystem-root discovery walks up but not sideways
+Topics: discovery, find-root, events, td-013, silent-failure
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/events.js, specs/backlog/backlog.md
+Detail: `core/ecosystem/lib/index.js` `findRoot()` walks UP ONLY, but
+`core/ecosystem/layout.md` documents the ecosystem root as a SIBLING of its
+members — the layout `ecosystem init` + `ecosystem add ../<repo>` actually
+produce. Five discovery implementations exist across momentum and the other four
+all scan siblings; `findRoot` is the outlier. It stayed hidden through all of
+31a because the git hooks carry their own sibling-aware resolver, so nothing
+exercised `findRoot` from a member repo until G3's `recordLand()` called
+`recordEvent()` from library code — whereupon it silently returned "no ecosystem"
+and the `land` event never recorded. Failure mode: silence. Worked around by
+adding `resolveEcosystemRootFrom()` to events.js (mirroring the documented
+algorithm) rather than changing `findRoot`, whose up-only semantics other callers
+may depend on. Filed TD-013.
+
+---
+
+### [NOTE] 2026-07-27 — G5 complete: verified, dogfooded, at the release gate
+Topics: g5, verification, e2e, dogfood, invariance
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: specs/phases/phase-31b-ecosystem-enforcement/evidence/verification.md
+Detail: Suite 1135/1135 (baseline 1084, +51). Swarm 236/236. OKF 318/318. Solo
+repo byte-unchanged — four commits, no directories created, no banner, no extra
+output. One e2e asserts all eight acceptance criteria by replaying the reviewed
+session's narrative: an agent drifts from backend into frontend where BUG-001 is
+already open against the very formatter it is about to rewrite. Cost measured
+rather than estimated. The live dogfood against the real 8-member
+cerebrio-ecosystem is a TRUE NEGATIVE and is reported as such: this session is
+genuinely single-repo, so every enforcement layer correctly stays silent while
+orient still reports real fleet state — a gate that fired here would be the
+defect. Also observed and deliberately not fixed: 30 stale open lanes across 5
+members (BUG-026 class), visible only because the new fleet view exists.
+
+---
+
+### [DECISION] 2026-07-27 — the phase lesson: silence cannot be verified by inspection
+Topics: testing, silent-failure, lesson, methodology
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: none
+Detail: Four defects in this phase shared one failure mode — two `2>/dev/null`
+redirects that suppressed the exact messages the hooks exist to print, a realpath
+asymmetry that made the nudge never fire for a new file in a new directory, and
+an ecosystem-root resolver that walked up but not sideways. Each produced a
+feature that looked implemented, read correctly, and emitted nothing. None would
+have been caught by inspection; all four were caught by running the thing and
+looking at the output. This is the same lesson 31a learned from BUG-028 (a
+matcher that could never deliver the tool its script branched on), which suggests
+it is structural to this subsystem rather than incidental: hooks are advisory and
+fail-open by design, so their bugs do not announce themselves. Recorded as a
+standing rule for the ecosystem tier — for any advisory/fail-open path, the
+acceptance test must assert the OUTPUT, not the code path.
+
+---

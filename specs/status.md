@@ -109,7 +109,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 31b — Ecosystem Enforcement | `phase-31b-ecosystem-enforcement` | In Progress | **Started 2026-07-27.** Execution G0 → (G1 ∥ G3) → G2 → G4 → G5. **NEXT: G0 (ADR-0017 + `detect.js` coverage query + `land` event kind + config keys).** Closes ENH-067 + ENH-068; closes the D8 gap 31a shipped deliberately. Target v0.41.0 |
+| 31b — Ecosystem Enforcement | `phase-31b-ecosystem-enforcement` | **Built + verified — at the release gate** | **G0 ✅ G1 ✅ G3 ✅ G2 ✅ G4 ✅ G5 ✅.** Suite **1135/1135** (baseline 1084, +51); swarm 236/236; OKF 318/318; solo byte-unchanged. Closes **ENH-067, ENH-068**; closes the ADR-0016 D8 gap. Filed TD-012, TD-013. **Awaiting operator approval to merge → staging → main + tag v0.41.0.** |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

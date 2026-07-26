@@ -96,6 +96,50 @@ function resolveMemberRepoRoot(cwd) {
 }
 
 /**
+ * Locate the ecosystem root from a member repo — up-walk AND sibling scan.
+ *
+ * `lib.findRoot` walks UP ONLY, but `core/ecosystem/layout.md` documents the
+ * ecosystem root as a SIBLING of its member repos, which is what `ecosystem
+ * init` + `ecosystem add ../<repo>` actually produce. Every other discovery
+ * path in momentum already scans siblings — `session-append.sh`,
+ * `sessionstart-handoff.sh`, `core/git-hooks/eco-event.js`, and
+ * `bin/ecosystem.js`'s own resolver. `findRoot` is the outlier.
+ *
+ * That inconsistency was invisible until Phase 31b called `recordEvent()` from
+ * library code (the hooks had always used their own sibling-aware resolver), at
+ * which point every such call silently returned "no ecosystem" in the standard
+ * layout. Mirrored here rather than changing `findRoot`, whose up-only
+ * semantics other callers may rely on; TD-013 tracks unifying them.
+ */
+function resolveEcosystemRootFrom(startDir) {
+  const max = (() => {
+    const raw = process.env.MOMENTUM_MAX_PARENT_WALK;
+    const n = parseInt(raw, 10);
+    return Number.isInteger(n) && n >= 0 ? n : 5;
+  })();
+
+  let current = path.resolve(startDir);
+  for (let depth = 0; depth <= max; depth++) {
+    try {
+      if (fs.statSync(path.join(current, 'ecosystem.json')).isFile()) return current;
+    } catch (_e) { /* keep walking */ }
+
+    const parent = path.dirname(current);
+    if (parent === current) return null;
+    let siblings = [];
+    try { siblings = fs.readdirSync(parent); } catch (_e) { siblings = []; }
+    for (const name of siblings) {
+      const cand = path.join(parent, name);
+      try {
+        if (fs.statSync(path.join(cand, 'ecosystem.json')).isFile()) return cand;
+      } catch (_e) { /* not it */ }
+    }
+    current = parent;
+  }
+  return null;
+}
+
+/**
  * Match a member repo root against the ecosystem manifest.
  * Returns the member id, or null when this repo is not a registered member.
  */
@@ -152,7 +196,7 @@ function recordEvent(opts) {
     const repoRoot = resolveMemberRepoRoot(cwd);
     if (!repoRoot) return { recorded: false, reason: 'not a git repo' };
 
-    const ecosystemRoot = lib.findRoot(repoRoot);
+    const ecosystemRoot = opts.ecosystemRoot || resolveEcosystemRootFrom(repoRoot);
     if (!ecosystemRoot) return { recorded: false, reason: 'no ecosystem' };
 
     const member = resolveMemberId(ecosystemRoot, repoRoot);
@@ -249,6 +293,7 @@ function writeSessionLog(ecosystemRoot, date) {
 module.exports = {
   EVENTS_VIEW,
   EVENT_KINDS,
+  resolveEcosystemRootFrom,
   resolveMemberRepoRoot,
   resolveMemberId,
   recordEvent,

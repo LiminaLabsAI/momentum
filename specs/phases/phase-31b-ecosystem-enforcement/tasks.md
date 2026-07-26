@@ -82,11 +82,15 @@ status: in-progress
 - [x] 4 fingerprints re-baselined; `momentum okf check` **318 files conformant**
 - [x] Verify `npm test` green — **1134/1134** (+50 from 1084); commit G4
 
-## Group 5 — Verification & release prep *(last)*
-- [ ] Two-clone e2e: uncovered edit → nudge w/ P0 detail → commit banner → initiative opened → out-of-order land refused → in-order land → last-member verify → sync handoff delivered
-- [ ] Assert every acceptance criterion
-- [ ] Full suite green; **236 swarm tests green**
-- [ ] No-ecosystem / solo repo byte-unchanged (incl. no PreToolUse slowdown)
-- [ ] Self-repo dogfood against real activity (not synthetic — Phase 20 lesson)
-- [ ] Capture evidence under `evidence/`
-- [ ] `/sync-docs` → retrospective → `/complete-phase` at the operator gate
+## Group 5 — Verification & release prep *(last)* ✅
+- [x] Two-clone/two-member e2e replaying the reviewed-session narrative: drift → nudge w/ BUG-001 detail → commit banner → initiative opened → nudge goes quiet → out-of-order land REFUSED → in-order land → last-member verify → sync handoff delivered
+- [x] **All eight acceptance criteria asserted**
+- [x] Full suite **1135/1135** (baseline 1084, +51); **236 swarm green**
+- [x] Solo repo byte-unchanged — 4 commits, no dirs, no banner, no extra output; nudge silent at ~53ms
+- [x] `momentum okf check` — 318 files conformant
+- [x] Cost **measured** (~53ms solo / ~35ms in-ecosystem), fires once per session per member
+- [x] **Live self-repo dogfood** against the real 8-member `cerebrio-ecosystem` — a clean **true negative**: every layer correctly silent for genuinely single-repo work while orient reports real fleet state
+- [x] Filed **TD-012** (shipped-runtime duplication) and **TD-013** (five root resolvers, two algorithms)
+- [x] Observed and reported, not fixed: 30 stale open lanes across 5 members (BUG-026 class) — surfaced only because the new fleet view made it visible
+- [x] Evidence captured → `evidence/verification.md`; retrospective written
+- [ ] `/sync-docs` → `/complete-phase` at the operator gate
