@@ -54,19 +54,21 @@ status: in-progress
 - [x] The `lanes land` call site is wrapped so an absent/unreadable ecosystem layer can never break single-repo landing
 - [x] Verify `npm test` green — **1121/1121** (+37 from 1084); commit G3
 
-## Group 2 — Detection + routing nudge *(needs G1)*
-- [ ] `post-commit` prints a routing banner for a commit in an uncovered second member
-- [ ] Banner is **agent-independent** — fires for humans, scripts, any tool (AC-2)
-- [ ] `core/scripts/cross-repo-gate.sh` — PreToolUse nudge before the write
-- [ ] Fast exit when not in an ecosystem / not inside a member (the common case must be nearly free)
-- [ ] **Exit 0, never 2** — advice, not a block (teeth live in G3)
-- [ ] Fires **once per session per member-pair**, never per edit (nudge fatigue is how a gate becomes noise)
-- [ ] **Nudge carries the target member's open P0/P1 items** (AC-4 — the BUG-001 miss)
-- [ ] Projected to all 4 adapters with correct per-adapter matchers
-- [ ] **Matcher-reachability asserted for the new hook** — this is exactly the BUG-007/BUG-028 shape
-- [ ] Measure hook cost (31a measured rather than estimated; do the same)
-- [ ] Test: fires on second member, not first; carries P0/P1; silent when covered; at most once per pair; silent outside an ecosystem
-- [ ] Verify `npm test` green; commit G2
+## Group 2 — Detection + routing nudge *(needs G1)* ✅
+- [x] `post-commit` prints a routing banner for a commit in an uncovered second member
+- [x] Banner is **agent-independent** — verified by a plain `git commit` with no agent (AC-2)
+- [x] `core/scripts/cross-repo-gate.sh` — PreToolUse nudge before the write
+- [x] Fast exit when not in an ecosystem / not inside a member
+- [x] **Exit 0, never 2** — advice, not a block (asserted by a source guard)
+- [x] Fires **once per session per member** — keyed by adapter `session_id`, time-throttled (30 min) when none is supplied
+- [x] **Nudge carries the target member's open P0/P1** (AC-4) — verified naming BUG-001 and its title
+- [x] Degrades to a detail-free message when orient is unavailable — detail is a bonus, never a precondition
+- [x] Registered on all 4 adapters (claude-code, codex, antigravity shim, opencode plugin dispatch); asserted
+- [x] `cross-repo.js` **parity-fenced against `detect.js`** across every coverage case
+- [x] Cost measured: ~35–50ms per call (node startup dominates)
+- [x] **Three bugs caught by running it rather than reasoning about it**: `2>/dev/null` on the gate swallowed the nudge (stderr is where it writes); the same suppression in `post-commit`/`post-merge` hid the banner; and realpath asymmetry meant the nudge silently never fired for a new file in a new directory
+- [x] 4 fingerprints re-baselined (`--check` first: exactly the intended 6-file surface)
+- [x] Verify `npm test` green — **1131/1131** (+47 from 1084); commit G2
 
 ## Group 4 — Doc-sync delivery, Rule rewrite, parity *(needs G2 + G3)*
 - [ ] `/sync-docs` cross-repo entries → structured handoff in the target member's `.momentum/inbox/`

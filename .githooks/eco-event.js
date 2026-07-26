@@ -215,13 +215,37 @@ function record(opts) {
   }
 }
 
-/** post-commit: record the commit that just landed. */
+/**
+ * Cross-repo routing banner (Phase 31b G2, ADR-0017 E1 — git-native half).
+ *
+ * Printed to stderr after the event is recorded. This is the AGENT-INDEPENDENT
+ * layer: it fires for a human, a script, another tool, or an agent whose
+ * PreToolUse nudge was bypassed. It never blocks — post-commit runs after the
+ * commit either way.
+ *
+ * Best-effort: any failure is silent. A missing helper must not make a
+ * successful commit look broken.
+ */
+function routingBanner(ecosystemRoot, actorId, focusMember) {
+  try {
+    const crossRepo = require('./cross-repo.js');
+    const result = crossRepo.detect(ecosystemRoot, { actor: actorId });
+    if (!result.shouldRoute) return;
+    for (const line of crossRepo.routingMessage(ecosystemRoot, result, focusMember)) {
+      process.stderr.write(`${line}\n`);
+    }
+  } catch (_e) { /* advisory only */ }
+}
+
+/** post-commit: record the commit that just landed, then route if uncovered. */
 function postCommit(cwd) {
   const dir = cwd || process.cwd();
   const sha = git(dir, 'rev-parse', '--short', 'HEAD');
   const subject = git(dir, 'log', '-1', '--pretty=%s');
   if (!sha || !subject) return { recorded: false, reason: 'no HEAD' };
-  return record({ cwd: dir, kind: 'commit', summary: subject, context: sha });
+  const res = record({ cwd: dir, kind: 'commit', summary: subject, context: sha });
+  if (res.recorded) routingBanner(res.ecosystemRoot, res.actor, res.member);
+  return res;
 }
 
 /**

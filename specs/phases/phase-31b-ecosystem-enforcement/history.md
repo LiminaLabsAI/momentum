@@ -236,3 +236,58 @@ only affects ecosystems" is the kind of claim that is easy to assert and easy to
 get wrong.
 
 ---
+### [FEATURE] 2026-07-27 — G2 complete: cross-repo detection + routing nudge
+Topics: g2, detection, nudge, adr-0017, e1, ac-4
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/ecosystem/lib/cross-repo.js, core/scripts/cross-repo-gate.sh, core/git-hooks/eco-event.js
+Detail: Both halves of E1 are live. The git-native banner fires from post-commit
+whenever a commit lands in an uncovered second member — verified with a plain
+`git commit` and no agent at all, which is the point: it covers humans, scripts,
+and any agent whose nudge was bypassed. The PreToolUse nudge fires BEFORE the
+write, always exits 0, and fires once per session per member (keyed by the
+adapter's session_id, time-throttled when none is supplied). Its value is AC-4:
+it names the target member's open P0/P1, so the message reads "frontend: P1
+BUG-001 — Cost formatter shows 'Not specified' for sub-cent values" rather than
+"this is cross-repo work". That is precisely the information the reviewed session
+lacked while rewriting that exact formatter. Registered across all four adapters;
+`cross-repo.js` is parity-fenced against `detect.js`. Suite 1121 → 1131.
+
+---
+
+### [DISCOVERY] 2026-07-27 — three silent-failure bugs, all found by running it
+Topics: stderr, realpath, hooks, testing, silent-failure
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/scripts/cross-repo-gate.sh, core/git-hooks/post-commit, core/git-hooks/post-merge
+Detail: Every one of these produced a working-looking feature that emitted
+nothing, and none would have been caught by reasoning about the code.
+(1) `cross-repo-gate.sh` redirected node's stderr to /dev/null to keep failures
+quiet — but the nudge itself is written to stderr, so the redirect suppressed
+exactly the message the hook exists to print. (2) The same `2>/dev/null` in the
+`post-commit`/`post-merge` wrappers hid the banner; both now rely on
+run-check.js's try/catch for silence instead. (3) Member matching realpath'd the
+member directory but not the target, and since a PRE-write hook by definition
+runs before the file exists — often before its directory exists — macOS resolved
+one side to /private/var and the other to /var, so they never matched and the
+nudge silently never fired for a new file in a new directory. Fixed with a
+`realish()` helper that realpaths the nearest existing ancestor and re-appends
+the rest. The pattern worth carrying forward: a feature whose failure mode is
+SILENCE cannot be verified by inspection — it has to be run.
+
+---
+
+### [ARCH_CHANGE] 2026-07-27 — the shipped-runtime duplication is now a pattern, not an incident
+Topics: packaging, duplication, shipped-runtime, td-012
+Affects-phases: phase-31b-ecosystem-enforcement
+Affects-specs: core/git-hooks/eco-event.js, core/ecosystem/lib/orient.js, core/ecosystem/lib/cross-repo.js
+Detail: Three files now exist as deliberate self-contained duplicates because an
+installed project receives no copy of momentum's `core/`: `eco-event.js` (31a),
+`orient.js` (31b G1), and `cross-repo.js` (31b G2). Each is node-builtins-only,
+each ships beside the hook that needs it, and each is fenced by a parity test
+against the core implementation it mirrors. That discipline is holding — the
+parity tests are cheap and have caught nothing yet precisely because they exist —
+but three instances is a pattern rather than an incident, and the next one should
+not be written before the packaging question is answered properly. Filed as
+TD-012: define a shipped-runtime story (a single versioned `momentum-runtime`
+directory installed into targets) instead of growing per-feature duplicates.
+
+---
