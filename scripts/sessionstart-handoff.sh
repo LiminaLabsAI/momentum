@@ -107,6 +107,38 @@ PY
         printf '▸ Active initiative: %s\n' "$active" >&2
       fi
     fi
+
+    # Fleet line (Phase 31b, ENH-067) — one line naming how many members carry
+    # open P0/P1, active phases, and lanes. Rule 1 orients you in THIS repo;
+    # this is the fleet equivalent, and it is why a session no longer has to
+    # discover a sibling's open bug by tripping over it.
+    #
+    # Best-effort and silent on any failure: no node, no momentum checkout, a
+    # corrupt manifest — all skip. The banner has a <100ms budget, so this is
+    # one short-lived node process doing file reads only (core/ecosystem/lib/
+    # orient.js makes no git calls by construction).
+    if command -v node >/dev/null 2>&1; then
+      # orient.js is installed next to this script (bin/momentum.js ships it),
+      # with the in-repo source path as a fallback for momentum's own checkout.
+      _sdir=$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")
+      for _cand in \
+        "$_sdir/orient.js" \
+        "$_sdir/../core/ecosystem/lib/orient.js"; do
+        if [ -f "$_cand" ]; then
+          fleet=$(MOMENTUM_ECO_ROOT="$ECO_ROOT" MOMENTUM_ORIENT="$_cand" node -e '
+            try {
+              const o = require(process.env.MOMENTUM_ORIENT);
+              const line = o.fleetLine(o.orientFleet(process.env.MOMENTUM_ECO_ROOT));
+              if (line) process.stdout.write(line);
+            } catch (_e) { /* silent */ }
+          ' 2>/dev/null || true)
+          break
+        fi
+      done
+      if [ -n "${fleet:-}" ]; then
+        printf '▸ Fleet: %s\n' "$fleet" >&2
+      fi
+    fi
   fi
 fi
 

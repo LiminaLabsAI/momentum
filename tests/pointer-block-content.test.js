@@ -54,9 +54,15 @@ test('fresh insert writes v=2 BEGIN sentinel and action-bearing content', () => 
     assert.match(after, /\/brainstorm-initiative/);
     assert.match(after, /never plan cross-repo features in this repo/);
     assert.match(after, /initiative start/);
-    // D8: the pointer must say plainly that this routing is convention, since
-    // nothing detects cross-repo scope until Phase 31b (the BUG-009 lesson).
-    assert.match(after, /routing is convention/);
+    // Phase 31b (ADR-0017 E7): detection now EXISTS, so 31a's
+    // "routing is convention" wording would be wrong in the other direction.
+    // The pointer must state enforcement strength precisely instead — a rule
+    // that understates teaches agents to distrust the text just as a rule that
+    // overstates does (BUG-009 in reverse).
+    assert.match(after, /best-effort/i, 'the nudge must be labelled best-effort');
+    assert.match(after, /refuses/i, 'the landing gate must be labelled as refusing');
+    assert.doesNotMatch(after, /routing is convention/,
+      "31a's understatement must not survive the phase that added detection");
     assert.match(after, /\/scout/);
     assert.match(after, /\/dispatch/);
     assert.match(after, /\/handoff/);

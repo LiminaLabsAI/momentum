@@ -273,7 +273,7 @@ function validateManifest(obj) {
     if (obj.config === null || typeof obj.config !== 'object' || Array.isArray(obj.config)) {
       errors.push({ path: '$.config', message: 'must be an object if present' });
     } else {
-      const known = ['integration_verify_command'];
+      const known = ['integration_verify_command', 'detect_window_hours', 'landing_order'];
       for (const key of Object.keys(obj.config)) {
         if (!known.includes(key)) {
           errors.push({ path: `$.config.${key}`, message: `unknown key (known: ${known.join(', ')})` });
@@ -286,6 +286,25 @@ function validateManifest(obj) {
           path: '$.config.integration_verify_command',
           message: 'must be a non-empty string when present',
         });
+      }
+      // Phase 31b (ADR-0017): detection window + landing-order strictness.
+      if (obj.config.detect_window_hours !== undefined) {
+        const n = obj.config.detect_window_hours;
+        if (typeof n !== 'number' || !Number.isFinite(n) || n <= 0) {
+          errors.push({
+            path: '$.config.detect_window_hours',
+            message: 'must be a positive number when present',
+          });
+        }
+      }
+      if (obj.config.landing_order !== undefined) {
+        const modes = ['enforce', 'warn', 'off'];
+        if (!modes.includes(obj.config.landing_order)) {
+          errors.push({
+            path: '$.config.landing_order',
+            message: `must be one of: ${modes.join(', ')}`,
+          });
+        }
       }
     }
   }
@@ -306,8 +325,23 @@ function readEcosystemConfig(manifest) {
     ? manifest.config
     : {};
   const cmd = cfg.integration_verify_command;
+  const win = typeof cfg.detect_window_hours === 'number' && cfg.detect_window_hours > 0
+    ? cfg.detect_window_hours
+    : null;
+  const order = ['enforce', 'warn', 'off'].includes(cfg.landing_order)
+    ? cfg.landing_order
+    : 'enforce';
   return {
     integration_verify_command: (typeof cmd === 'string' && cmd.length > 0) ? cmd : null,
+    // null (not a number) when undeclared, so callers can distinguish
+    // "declared as 24" from "defaulted to 24" — the same reason
+    // integration_verify_command returns null rather than a fabricated command.
+    detect_window_hours: win,
+    // `enforce` is the DEFAULT rather than a null: unlike a verification command
+    // momentum cannot invent, the landing order is fully derivable from edges
+    // momentum registered itself. Defaulting to off would silently disable a
+    // gate the project never opted out of.
+    landing_order: order,
   };
 }
 

@@ -65,7 +65,7 @@ function parseFlags(argv) {
   const positional = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--execute' || a === '--force' || a === '--json' || a === '--mark-landed' || a === '--keep') flags[a.slice(2)] = true;
+    if (a === '--execute' || a === '--force' || a === '--json' || a === '--mark-landed' || a === '--keep' || a === '--force-order') flags[a.slice(2)] = true;
     else if (a.startsWith('--')) flags[a.slice(2)] = argv[++i];
     else positional.push(a);
   }
@@ -164,7 +164,7 @@ function cmdLand(cwd, argv) {
   const { flags, positional } = parseFlags(argv);
   const id = positional[0];
   if (!id) {
-    console.error('✗ usage: momentum lanes land <lane-id> [--into <ref>] [--execute] [--force] [--mark-landed]');
+    console.error('✗ usage: momentum lanes land <lane-id> [--into <ref>] [--execute] [--force] [--force-order] [--mark-landed]');
     return 1;
   }
   const anchor = state.resolveAnchor(cwd);
@@ -276,6 +276,60 @@ function cmdLand(cwd, argv) {
     }
   }
 
+  // 4c. Cross-repo landing order (Phase 31b, ADR-0017 — closes ENH-068).
+  // Rule 6's Landing Order, one tier up: when this repo is an ecosystem member
+  // contributing to an in-progress initiative, upstream members must land
+  // first, and the LAST contribution additionally needs the declared
+  // integration verify. Returns `applicable: false` for all ordinary
+  // single-repo work, so solo behavior is untouched.
+  let ecoLanding = { applicable: false };
+  try {
+    ecoLanding = require('../../ecosystem/lib/landing').landingCheck(repoRoot);
+  } catch (_e) { /* ecosystem layer absent or unreadable — stay solo */ }
+
+  if (ecoLanding.applicable) {
+    const landingLib = require('../../ecosystem/lib/landing');
+    for (const line of landingLib.checkLines(ecoLanding)) checks.push(line);
+
+    if (!ecoLanding.ok && ecoLanding.mode === 'enforce') {
+      if (flags['force-order']) {
+        checks.push(
+          `⚠ ecosystem: landing order OVERRIDDEN via --force-order — `
+          + `the land event will be recorded as forced, and stays visible in the `
+          + `event stream (${ecoLanding.blockers.map((b) => b.member).join(', ')} had not landed)`,
+        );
+      } else {
+        ok = false;
+      }
+    } else if (!ecoLanding.ok && ecoLanding.mode === 'warn') {
+      checks.push('⚠ ecosystem: landing order not satisfied (landing_order: warn — not blocking)');
+    }
+
+    // The final contribution carries the integration verify. This is the same
+    // check `initiative complete` runs, brought forward to the moment it can
+    // still PREVENT the bad cross-repo state rather than merely decline to
+    // record it (the alembic multiple-heads shape).
+    if (ecoLanding.ok && ecoLanding.isLast) {
+      const completeLib = require('../../ecosystem/lib/complete');
+      const verify = completeLib.runIntegrationVerify(ecoLanding.ecosystemRoot, ecoLanding.manifest);
+      if (!verify.declared) {
+        checks.push(
+          '⚠ ecosystem: this is the LAST contribution and no '
+          + 'integration_verify_command is declared — nothing has verified these '
+          + 'members work together (declare one in ecosystem.json)',
+        );
+      } else if (verify.ok) {
+        checks.push(`✓ ecosystem: integration verify passed (${verify.command})`);
+      } else {
+        checks.push(`✗ ecosystem: integration verify FAILED (${verify.command})`);
+        if (verify.output) {
+          for (const line of verify.output.split('\n').slice(-10)) checks.push(`    ${line}`);
+        }
+        if (ecoLanding.mode === 'enforce' && !flags['force-order']) ok = false;
+      }
+    }
+  }
+
   // 5. overlap advisory
   for (const w of state.overlapWarnings(anchor, id, lane.touches)) {
     checks.push(`⚠ touch overlap with '${w.laneId}': ${w.mine} ↔ ${w.theirs} (advisory)`);
@@ -322,6 +376,25 @@ function cmdLand(cwd, argv) {
   }
 
   console.log(`✓ lane '${id}' landed on '${into}' (${landed.landedAt})`);
+
+  // Record the cross-repo `land` event (Phase 31b, ADR-0017 E5) so downstream
+  // members can see this contribution landed WITHOUT inspecting a repo they may
+  // not have checked out. A forced land is flagged, keeping the override
+  // visible in the event stream rather than silent.
+  if (ecoLanding.applicable && !ecoLanding.skipped) {
+    try {
+      require('../../ecosystem/lib/landing').recordLand(repoRoot, ecoLanding.initiative, {
+        summary: `landed lane '${id}' on ${into}`,
+        context: id,
+        forced: !!flags['force-order'],
+      });
+      console.log(
+        `ℹ ecosystem: recorded land event for initiative '${ecoLanding.initiative}'`
+        + (flags['force-order'] ? ' (FORCED — order override is on the record)' : ''),
+      );
+    } catch (_e) { /* advisory — never fail a completed merge on bookkeeping */ }
+  }
+
   if (others.length) {
     console.log(`ℹ advisory rebase signal sent to ${others.length} open lane(s): ${others.map((l) => l.id).join(', ')}`);
   }

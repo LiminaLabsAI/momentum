@@ -35,5 +35,19 @@
         "timeout": 15
       }
     ]
+  },
+  "momentum-cross-repo-gate": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|.*write.*|.*edit.*|.*replace.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ../scripts/cross-repo-gate.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
   }
 }
