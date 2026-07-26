@@ -1,6 +1,6 @@
 ---
 type: Phase
-status: planned
+status: in-progress
 tags: [ecosystem, multi-repo, enforcement, detection, orient, landing-order, initiative]
 ---
 

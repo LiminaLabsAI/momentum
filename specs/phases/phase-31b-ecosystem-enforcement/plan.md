@@ -1,6 +1,6 @@
 ---
 type: Plan
-status: planned
+status: in-progress
 tags: [ecosystem, enforcement, detection, orient, landing-order]
 ---
 
@@ -216,6 +216,19 @@ reachable through every adapter's registered matcher.**
 
 **Verification:** `npm test` green; evidence under
 `specs/phases/phase-31b-ecosystem-enforcement/evidence/`.
+
+---
+
+## Reference Specs
+
+- `specs/architecture/ecosystem.md` — the ecosystem architecture doc. Read as a
+  stable reference during implementation (Rule 10); any gap found is logged as
+  `[ARCH_CHANGE]` in `history.md` and reconciled at `/sync-docs`, never edited
+  mid-phase.
+- `specs/decisions/0016-ecosystem-lifecycle-spine.md` — ADR-0016. This phase
+  closes the gap its D8 declared and corrects that wording (E7).
+- `specs/decisions/0009-*` — the trust-layer/mechanism separation the new config
+  keys follow.
 
 ---
 
