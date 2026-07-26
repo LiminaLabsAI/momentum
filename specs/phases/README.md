@@ -46,7 +46,7 @@ type: Guide
 | 30c | Team-Fly (Relay + Ecosystem) | Complete (v0.37.0) | [phase-30c-team-fly/](phase-30c-team-fly/) |
 | 30d | Team Integration (primitives wired into workflows) | Complete (v0.38.0) | [phase-30d-team-integration/](phase-30d-team-integration/) |
 | 30e | Ecosystem (Multi-Repo) Team Mode | Complete (v0.39.0) | [phase-30e-ecosystem-team-mode/](phase-30e-ecosystem-team-mode/) |
-| 31a | Ecosystem Lifecycle Spine | In Progress | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
+| 31a | Ecosystem Lifecycle Spine | Complete (v0.40.0) | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
 
 ## Phase Structure
 

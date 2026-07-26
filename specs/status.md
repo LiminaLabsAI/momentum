@@ -5,8 +5,9 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: **Phase 31a — Ecosystem Lifecycle Spine** (branch `phase-31a-ecosystem-lifecycle-spine`, target v0.40.0). _Prior: Phase 30e shipped v0.39.0; 30d v0.38.0; Team-mode family 30a/b/c v0.37.0._
-> **Latest Release**: v0.39.0 — Phase 30e Ecosystem (Multi-Repo) Team Mode (ENH-065, ADR-0015): extends the git-native Team-mode plane to whole ecosystems — **remote-URL members**; `active-initiative`/presence as shared, attributed **ecosystem fragments** (zero-conflict merge); **swarm ownership via `refs/momentum/leases/*` CAS as the default when a remote is present** (generation-keyed for single-winner + liveness; single-machine byte-unchanged, 236 swarm tests green); sample third-party contract reader + "team across repos" docs. Suite 1028/1028. Merged → main → staging; tag v0.39.0; GH Release **Latest**; **npm `@limina-labs/momentum` = 0.39.0** — all four surfaces verified. _(v0.38.0 Phase 30d; v0.37.0 Team Mode Walk+Run+Fly; v0.36.0 Phase 29.)_
+> **Current Phase**: _none active_ — **Phase 31a Ecosystem Lifecycle Spine shipped v0.40.0**. Next: **Phase 31b Ecosystem Enforcement** (detection/routing, fleet orient, dependency-ordered landing).
+> **Latest Release**: v0.40.0 — Phase 31a Ecosystem Lifecycle Spine (BUG-028, ENH-066, TD-011; ADR-0016): cross-repo work gets the lifecycle structure that makes single-repo momentum self-enforcing — enforcement moved onto the **git axis** (`post-commit`/`post-merge` → attributed fragments; `--git-common-dir` so **lane worktrees** are finally visible to momentum's own audit trail), `/brainstorm-initiative` + `initiative start` (**first code to ever register a dependency edge**), and `/complete-initiative` — the **first cross-repo Rule 12 gate**. **BUG-028** fixed: the ecosystem session log was dead code on the default adapter, and its class is now closed by a test that reads the installed matcher. **TD-011** closed — all three initiative template sections have writers. Suite 1084/1084; swarm 236/236; OKF 311/311. Merged → staging → main; tag `v0.40.0`. _(v0.39.0 Phase 30e; v0.38.0 Phase 30d; v0.37.0 Team Mode.)_
+
 > **Health**: On Track
 
 ## Summary
@@ -60,6 +61,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 30c | Team-Fly (Relay + Ecosystem) | Complete¹ | v0.37.0 (2026-07-10) |
 | 30d | Team Integration (primitives wired into workflows) | Complete² | v0.38.0 (2026-07-10) |
 | 30e | Ecosystem (Multi-Repo) Team Mode | Complete | v0.39.0 (2026-07-10) |
+| 31a | Ecosystem Lifecycle Spine | Complete | v0.40.0 (2026-07-27) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
@@ -107,12 +109,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 31a — Ecosystem Lifecycle Spine | `phase-31a-ecosystem-lifecycle-spine` | **Built + verified — at the release gate** | **G0 ✅ G1 ✅ G2 ✅ G3 ✅ G4 ✅ G5 ✅.** Suite **1084/1084** (baseline 1028, +56); swarm 236/236; OKF 311/311; no-ecosystem byte-unchanged. Closes **BUG-028, ENH-066, TD-011**. Live self-repo dogfood: 4 real commits captured into the real `cerebrio-ecosystem` log. **Awaiting operator approval to merge → staging → main + tag v0.40.0.** |
-
-> The Phase 30e row was cleared here on 2026-07-26 — 30e released as v0.39.0
-> (tag + GH Release + npm all verified) and its lane is closed, so it is no
-> longer an active lane. Commit `348eb5e` reconciled the rest of `status.md`
-> but missed this row.
+| _(none active)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
