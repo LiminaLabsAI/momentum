@@ -116,23 +116,83 @@ function openBlockers(backlogBody) {
   return out;
 }
 
-/** Open lanes from a member's lane registry, when one exists. */
+/**
+ * Statuses that mean a lane is still in flight. `landed` and `closed` lanes are
+ * spent — surfacing them is how BUG-029 reported 30 "open" lanes on a repo whose
+ * true state was 29 closed + 1 landed.
+ */
+const IN_FLIGHT = new Set(['open', 'done']);
+
+/**
+ * Resolve `<git-common-dir>/momentum/lanes` without running git.
+ *
+ * `.git` is a directory in a normal checkout, but a FILE in a linked worktree
+ * (`gitdir: /abs/path/.git/worktrees/<name>`), whose sibling `commondir` points
+ * back at the shared dir. Lane state lives under the COMMON dir, so a worktree
+ * that did not follow the pointer would see no lanes at all — and Rule 15 lane
+ * work happens in worktrees, which is exactly where this has to be right.
+ */
+function laneAnchor(repoDir) {
+  const dotGit = path.join(repoDir, '.git');
+  let stat;
+  try { stat = fs.statSync(dotGit); } catch (_e) { return null; }
+
+  if (stat.isDirectory()) return path.join(dotGit, 'momentum', 'lanes');
+
+  const pointer = readIf(dotGit);
+  if (!pointer) return null;
+  const m = pointer.match(/^gitdir:\s*(.+)$/m);
+  if (!m) return null;
+  const gitdir = path.resolve(repoDir, m[1].trim());
+  const commondir = readIf(path.join(gitdir, 'commondir'));
+  const common = commondir
+    ? path.resolve(gitdir, commondir.trim())
+    : gitdir;
+  return path.join(common, 'momentum', 'lanes');
+}
+
+/**
+ * In-flight lanes for a member.
+ *
+ * The registry stores an array of lane **id strings**; per-lane detail lives in
+ * `<anchor>/<id>/manifest.json`. Reading the ids as objects was BUG-029 —
+ * every entry became `{status: undefined}`, and `undefined !== 'closed'` let the
+ * whole history through.
+ */
 function openLanes(repoDir) {
-  const candidates = [
-    path.join(repoDir, '.git', 'momentum', 'lanes', 'registry.json'),
-    path.join(repoDir, '.momentum', 'lanes', 'registry.json'),
-  ];
-  for (const file of candidates) {
-    const body = readIf(file);
+  const anchors = [laneAnchor(repoDir), path.join(repoDir, '.momentum', 'lanes')]
+    .filter(Boolean);
+
+  for (const anchor of anchors) {
+    const body = readIf(path.join(anchor, 'registry.json'));
     if (!body) continue;
+
+    let ids;
     try {
       const reg = JSON.parse(body);
-      return (reg.lanes || [])
-        .filter((l) => l && l.status !== 'closed' && l.status !== 'landed')
-        .map((l) => ({ id: l.id, branch: l.branch, status: l.status }));
+      ids = Array.isArray(reg.lanes) ? reg.lanes : [];
     } catch (_e) {
       return [];
     }
+
+    const out = [];
+    for (const entry of ids) {
+      // Tolerate both shapes: the id-string form momentum writes today, and an
+      // inlined object, so a future registry format change degrades instead of
+      // silently reporting garbage again.
+      const id = typeof entry === 'string' ? entry : (entry && entry.id);
+      if (!id) continue;
+
+      let lane = (entry && typeof entry === 'object') ? entry : null;
+      if (!lane || !lane.status) {
+        const mf = readIf(path.join(anchor, id, 'manifest.json'));
+        if (!mf) continue;
+        try { lane = JSON.parse(mf); } catch (_e) { continue; }
+      }
+      if (!IN_FLIGHT.has(lane.status)) continue;
+      out.push({ id, branch: lane.branch || null, status: lane.status });
+    }
+    return out;
   }
   return [];
 }
@@ -228,6 +288,8 @@ function memberBrief(summary) {
 
 module.exports = {
   MAX_ITEMS,
+  IN_FLIGHT,
+  laneAnchor,
   MAX_TITLE,
   condense,
   activePhases,
