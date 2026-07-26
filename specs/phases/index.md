@@ -34,6 +34,7 @@
 * [phase-30c-team-fly](/phases/phase-30c-team-fly/overview.md) - planned
 * [phase-30d-team-integration](/phases/phase-30d-team-integration/overview.md) - in-progress
 * [phase-30e-ecosystem-team-mode](/phases/phase-30e-ecosystem-team-mode/overview.md) - in-progress
+* [phase-31a-ecosystem-lifecycle-spine](/phases/phase-31a-ecosystem-lifecycle-spine/overview.md) - in-progress
 * [phase-4-enhanced-commands](/phases/phase-4-enhanced-commands/overview.md) - complete
 * [phase-5-rules-and-upgrade](/phases/phase-5-rules-and-upgrade/overview.md) - complete
 * [phase-6-overlay-and-verify](/phases/phase-6-overlay-and-verify/overview.md) - complete
