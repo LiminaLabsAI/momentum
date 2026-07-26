@@ -1094,13 +1094,255 @@ function cmdInitiative(args) {
   switch (sub) {
     case 'create':
       return cmdInitiativeCreate(rest);
+    case 'start':
+      return cmdInitiativeStart(rest);
     default:
       throw new Error(
         `initiative: unknown subsubcommand "${sub}". ` +
-        `Only \`create\` is currently wired as a CLI; ` +
+        `Try: create | start. ` +
         `\`list\` / \`status\` / \`close\` stay as slash-only for now.`,
       );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// initiative start — declare per-member contributions + dependency edges
+// (Phase 31a G2, ADR-0016)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// This is the missing middle of the spine. Before 31a you could `create` an
+// initiative, and a full `/swarm` was wired end-to-end, but nothing connected
+// the two and nothing wrote results back.
+//
+// WHAT IT DELIBERATELY DOES NOT DO: reach into member repos and scaffold phase
+// directories there. Each member owns its own `specs/` — its own `/start-phase`
+// (or `/hotfix`) is the ritual that scaffolds a record, and that ritual is
+// exactly the "same structure one tier up" this lifecycle is built around. So
+// `start` DECLARES the contributions and routes the operator to each member's
+// own lifecycle, rather than writing another repo's specs from the outside.
+// Reaching across the ownership boundary would contradict the same rule
+// `/sync-docs` already enforces.
+function cmdInitiativeStart(args) {
+  const slug = args.find((a) => !a.startsWith('--'));
+  const opts = parseFlags(args, {
+    contribute: 'list',
+    edge: 'list',
+    ecosystem: 'string',
+  });
+
+  if (!slug) {
+    throw new Error(
+      'initiative start: missing <slug>. Usage: momentum ecosystem initiative '
+      + 'start <slug> [--contribute <member>:<kind>:<ref>]... [--edge <from>:<to>:<kind>]...',
+    );
+  }
+
+  const root = resolveEcosystemRoot(opts.ecosystem, 'initiative start');
+  const initLib = require('../core/ecosystem/lib/initiative');
+  const manifest = lib.loadManifest(root);
+  const memberIds = new Set((manifest.members || []).map((m) => m.id));
+
+  const loaded = initLib.loadInitiative(root, slug);
+  if (!loaded) {
+    throw new Error(
+      `initiative start: no initiative "${slug}" in ${path.join(root, 'initiatives')}. `
+      + 'Create it first: momentum ecosystem initiative create <slug>',
+    );
+  }
+  const fm = loaded.frontmatter;
+  if (fm.status === 'closed' || fm.status === 'abandoned') {
+    throw new Error(
+      `initiative start: "${slug}" is ${fm.status} — reopen it deliberately rather `
+      + 'than restarting a finished initiative.',
+    );
+  }
+
+  // ── contributions ────────────────────────────────────────────────────────
+  const existing = Array.isArray(fm.contributions) ? fm.contributions.slice() : [];
+  const byMember = new Map();
+  for (const e of existing) {
+    const p = initLib.parseContribution(e);
+    if (p) byMember.set(p.member, p);
+  }
+
+  const added = [];
+  for (const raw of (opts.contribute || [])) {
+    const parsed = initLib.parseContribution(raw);
+    if (!parsed) {
+      throw new Error(
+        `initiative start: malformed --contribute "${raw}". `
+        + `Expected <member>:<kind>:<ref> with kind one of: `
+        + `${initLib.VALID_CONTRIBUTION_KINDS.join(', ')}`,
+      );
+    }
+    if (!memberIds.has(parsed.member)) {
+      throw new Error(
+        `initiative start: unknown member "${parsed.member}". `
+        + `Known: ${[...memberIds].join(', ')}`,
+      );
+    }
+    if (!fm.repos.includes(parsed.member)) {
+      throw new Error(
+        `initiative start: member "${parsed.member}" is not in this initiative's `
+        + `repos [${fm.repos.join(', ')}]. Add it to the initiative first.`,
+      );
+    }
+    const prior = byMember.get(parsed.member);
+    if (prior && prior.ref !== parsed.ref) {
+      // Refuse-not-overwrite — the same principle `initiative create` already
+      // applies. Silently repointing a member's contribution would orphan the
+      // evidence trail the completion gate depends on.
+      throw new Error(
+        `initiative start: "${parsed.member}" already contributes `
+        + `${prior.kind}:${prior.ref}. Refusing to silently repoint it to `
+        + `${parsed.kind}:${parsed.ref}.`,
+      );
+    }
+    if (!prior) added.push(parsed);
+    byMember.set(parsed.member, parsed);
+  }
+
+  // ── dependency edges — the first code that has ever written one ──────────
+  const validKinds = ['api-contract', 'library', 'deploy', 'build-time', 'other'];
+  manifest.dependencies = Array.isArray(manifest.dependencies) ? manifest.dependencies : [];
+  const addedEdges = [];
+  for (const raw of (opts.edge || [])) {
+    const parts = String(raw).split(':');
+    if (parts.length !== 3) {
+      throw new Error(
+        `initiative start: malformed --edge "${raw}". Expected <from>:<to>:<kind>.`,
+      );
+    }
+    const [from, to, kind] = parts;
+    for (const id of [from, to]) {
+      if (!memberIds.has(id)) {
+        throw new Error(
+          `initiative start: edge references unknown member "${id}". `
+          + `Known: ${[...memberIds].join(', ')}`,
+        );
+      }
+    }
+    if (!validKinds.includes(kind)) {
+      throw new Error(
+        `initiative start: edge kind "${kind}" invalid. One of: ${validKinds.join(', ')}`,
+      );
+    }
+    if (from === to) {
+      throw new Error(`initiative start: edge "${raw}" is self-referential.`);
+    }
+    const dup = manifest.dependencies.find(
+      (d) => d.from === from && d.to === to && d.kind === kind,
+    );
+    if (dup) continue; // idempotent
+    const edge = { from, to, kind, initiative: slug };
+    manifest.dependencies.push(edge);
+    addedEdges.push(edge);
+  }
+
+  // ── persist ──────────────────────────────────────────────────────────────
+  const contributions = [...byMember.values()]
+    .map((c) => initLib.formatContribution(c))
+    .sort();
+
+  const nextFm = { ...fm };
+  if (contributions.length) nextFm.contributions = contributions;
+
+  const body = renderContributionsSection(loaded.content, [...byMember.values()]);
+  initLib.writeInitiative(loaded.filePath, nextFm, body);
+
+  if (addedEdges.length) {
+    const check = lib.validateManifest(manifest);
+    if (!check.ok) {
+      throw new Error(
+        'initiative start: refusing to write an invalid ecosystem.json — '
+        + check.errors.map((e) => `${e.path}: ${e.message}`).join('; '),
+      );
+    }
+    fs.writeFileSync(
+      path.join(root, 'ecosystem.json'),
+      JSON.stringify(manifest, null, 2) + '\n',
+    );
+  }
+
+  // Active initiative via the 30e attributed fragment (shared across clones).
+  try {
+    const teamState = require('../core/ecosystem/lib/team-state');
+    teamState.setActiveInitiative(root, resolveActorId(root), slug);
+  } catch (_e) {
+    try { initLib.setActive(root, slug); } catch (_e2) { /* best-effort */ }
+  }
+
+  // ── report + route ───────────────────────────────────────────────────────
+  console.log(`Started initiative ${slug}.`);
+  if (added.length) {
+    console.log('');
+    console.log('Contributions added:');
+    for (const c of added) console.log(`  ${c.member}  ${c.kind}  ${c.ref}`);
+  }
+  if (addedEdges.length) {
+    console.log('');
+    console.log('Dependency edges registered:');
+    for (const e of addedEdges) console.log(`  ${e.from} → ${e.to}  (${e.kind})`);
+  }
+
+  const pending = [...byMember.values()];
+  if (pending.length) {
+    console.log('');
+    console.log('Next — run each member\'s OWN lifecycle (momentum never writes');
+    console.log('another repo\'s specs/ from the outside):');
+    for (const c of pending) {
+      const m = (manifest.members || []).find((x) => x.id === c.member);
+      const where = m && m.path ? m.path : `<${c.member}>`;
+      const ritual = c.kind === 'phase' ? '/start-phase' : '/hotfix';
+      console.log(`  cd ${where} && ${ritual}   → ${c.ref}`);
+    }
+  } else {
+    console.log('');
+    console.log('No contributions declared yet. Add them with:');
+    console.log(`  momentum ecosystem initiative start ${slug} --contribute <member>:phase:<ref>`);
+  }
+}
+
+/**
+ * Replace the `## Per-repo contributions` section body with a generated table.
+ *
+ * TD-011: this section has shipped in the template since Phase 9 with NOTHING
+ * writing it. Everything below the heading up to the next `## ` is regenerated;
+ * every other section is left byte-untouched, honoring `initiative.md`'s
+ * principle that body sections are free-form human writing.
+ */
+function renderContributionsSection(content, contributions) {
+  const rows = contributions.length
+    ? contributions
+      .slice()
+      .sort((a, b) => (a.member < b.member ? -1 : a.member > b.member ? 1 : 0))
+      .map((c) => `| ${c.member} | ${c.kind} | \`${c.ref}\` |`)
+      .join('\n')
+    : '_(none declared yet)_';
+
+  const table = contributions.length
+    ? ['| Member | Kind | Record |', '|--------|------|--------|', rows].join('\n')
+    : rows;
+
+  const generated = [
+    '',
+    '<!-- momentum:contributions — generated by `initiative start`; edits here are overwritten -->',
+    table,
+    '',
+    "Completion status is NOT cached here — `initiative complete` resolves it live",
+    'from each member\'s own record (Rule 12: a status written by the agent is',
+    'self-reported completion).',
+    '',
+  ].join('\n');
+
+  const heading = '## Per-repo contributions';
+  const start = content.indexOf(heading);
+  if (start === -1) return content; // section absent — never fabricate structure
+
+  const after = start + heading.length;
+  const nextIdx = content.indexOf('\n## ', after);
+  const tail = nextIdx === -1 ? '' : content.slice(nextIdx);
+  return content.slice(0, after) + generated + tail;
 }
 
 function cmdInitiativeCreate(args) {
@@ -1360,6 +1602,13 @@ function parseFlags(args, spec) {
     } else if (spec[key] === 'string') {
       out[key] = args[i + 1];
       i++;
+    } else if (spec[key] === 'list') {
+      // Repeatable flag — `--edge a:b:c --edge d:e:f` accumulates.
+      // Additive: no existing caller declares 'list', so behaviour is unchanged.
+      if (args[i + 1] !== undefined) {
+        (out[key] = out[key] || []).push(args[i + 1]);
+        i++;
+      }
     }
   }
   return out;

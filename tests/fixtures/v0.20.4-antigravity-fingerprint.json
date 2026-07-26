@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "antigravity",
-    "note": "Phase 31a G1 / ADR-0016: git-native ecosystem event capture. Adds .githooks/post-commit + post-merge + eco-event.js and extends run-check.js dispatch. Identical 4-file drift across all 4 adapters (hooks are adapter-independent, which is the point of moving enforcement to the git axis)."
+    "note": "Phase 31a G2 / ADR-0016: /brainstorm-initiative recipe added; auto-projected to all 4 adapters by the ADR-0011 generator (one file each, correct per-adapter destination)."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,6 +14,7 @@
     ".agents/skills/momentum-reviewer-security/SKILL.md": "0a6aecfb260ae7174a20d9afc4137c0d2f541052c59d6011680c2688bf347e54",
     ".agents/skills/swarm-supervisor/SKILL.md": "5cbd3f3267944b9e29a0255459850388d080865c681363ccbb936d2080b18493",
     ".agents/workflows/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
+    ".agents/workflows/brainstorm-initiative.md": "2e2de3a58668c58ef20d8066835e4ed364741b435c77655bbcf13a37d966fdf1",
     ".agents/workflows/brainstorm-phase.md": "1f3fb30d1b71d8d7e15e81dff0726f650d599770eabd3336f9ddba436731faca",
     ".agents/workflows/complete-phase.md": "df9484cd6b6601cbd88917dc8bf12599ca62be61736a04ed944376f4224c05c2",
     ".agents/workflows/continue.md": "e1ee768a3ff36d6a4c00e2d5226e9cdb8fff8746db4f2bc90e8a5dafe100c08c",

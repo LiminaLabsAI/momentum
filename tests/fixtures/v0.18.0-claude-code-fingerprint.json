@@ -3,11 +3,12 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "claude-code",
-    "note": "Phase 31a G1 / ADR-0016: git-native ecosystem event capture. Adds .githooks/post-commit + post-merge + eco-event.js and extends run-check.js dispatch. Identical 4-file drift across all 4 adapters (hooks are adapter-independent, which is the point of moving enforcement to the git axis)."
+    "note": "Phase 31a G2 / ADR-0016: /brainstorm-initiative recipe added; auto-projected to all 4 adapters by the ADR-0011 generator (one file each, correct per-adapter destination)."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".claude/commands/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
+    ".claude/commands/brainstorm-initiative.md": "2e2de3a58668c58ef20d8066835e4ed364741b435c77655bbcf13a37d966fdf1",
     ".claude/commands/brainstorm-phase.md": "1f3fb30d1b71d8d7e15e81dff0726f650d599770eabd3336f9ddba436731faca",
     ".claude/commands/complete-phase.md": "df9484cd6b6601cbd88917dc8bf12599ca62be61736a04ed944376f4224c05c2",
     ".claude/commands/continue.md": "ca2e18b81dce9c1086b14f57fa7798137a86e6956878bee08b822920869f06c2",

@@ -17,20 +17,35 @@
 
 **There are no `specs/` here.** Per-project specs, phases, backlog, and history stay in each member repo. The ecosystem layer is strictly additive — it never writes into a member's `specs/`.
 
-## Cross-repo work? Write an initiative — NEVER plan implementation here
+## Cross-repo work? Run `/brainstorm-initiative` — NEVER plan implementation here
 
-If a feature, refactor, or coordination effort touches MORE THAN ONE member repo, the entry point is an **initiative**:
+If a feature, refactor, or coordination effort touches MORE THAN ONE member
+repo, the entry point is the **initiative lifecycle** — the ecosystem-tier
+mirror of the phase lifecycle you already know:
 
-```bash
-momentum ecosystem initiative create <slug> \
-  --why "<one-paragraph motivation>" \
-  --repos <member-id-1>,<member-id-2> \
-  --owner <you>
+```
+/brainstorm-initiative                              # objective, members, edges, criteria
+  → momentum ecosystem initiative create <slug>     # writes initiatives/NNNN-<slug>.md
+  → momentum ecosystem initiative start <slug>      # contributions + edges + active
+    → each member runs its OWN /start-phase or /hotfix
+      → momentum ecosystem initiative complete <slug>  # evidence gate, then close
 ```
 
-This writes `initiatives/NNNN-<slug>.md` and sets it as active. The initiative is the *only* place cross-repo scope, deploy chronology, and links to per-repo decisions live. Per-repo implementation phases stay in each member's `specs/phases/`.
+Same shape as `/brainstorm-phase → /start-phase → /complete-phase`, one tier up.
+The initiative is the *only* place cross-repo scope, deploy chronology, and
+links to per-repo decisions live. Per-repo implementation stays in each
+member's `specs/phases/`.
 
-**Anti-pattern:** do not create planning notes, task lists, or "phase" files directly in this coordination root. There is no `specs/phases/`. If you find yourself reaching for one, you are working in the wrong layer — switch to a member repo or create an initiative.
+> **What is and is not enforced (ADR-0016 D8).** Momentum does **not** yet
+> detect that a session has touched a second member repo — that ships in Phase
+> 31b. Today this routing is agent convention. What IS mechanical: every commit
+> in a member repo is captured by a `post-commit` git hook into the ecosystem
+> event log, regardless of agent, cwd, or worktree.
+
+**Anti-pattern:** do not create planning notes, task lists, or "phase" files
+directly in this coordination root. There is no `specs/phases/`. If you find
+yourself reaching for one, you are working in the wrong layer — switch to a
+member repo or open an initiative.
 
 ## Orchestration primitives (use these for multi-repo work)
 

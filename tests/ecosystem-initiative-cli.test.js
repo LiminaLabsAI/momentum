@@ -211,9 +211,12 @@ test('initiative subsubcommand surfaces helpful error when missing or unknown', 
     assert.notEqual(r1.status, 0);
     assert.match(r1.stderr, /missing subsubcommand/);
 
+    // Phase 31a wired `start` alongside `create` (ADR-0016); `list` / `status` /
+    // `close` remain slash-only, and the error must name what IS available.
     const r2 = runCli(['ecosystem', 'initiative', 'list'], { cwd: root });
     assert.notEqual(r2.status, 0);
-    assert.match(r2.stderr, /Only `create` is currently wired as a CLI/);
+    assert.match(r2.stderr, /Try: create \| start/);
+    assert.match(r2.stderr, /slash-only/);
   } finally {
     rmrf(tmp);
   }

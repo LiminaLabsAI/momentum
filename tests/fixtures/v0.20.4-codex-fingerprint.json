@@ -3,11 +3,12 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "codex",
-    "note": "Phase 31a G1 / ADR-0016: git-native ecosystem event capture. Adds .githooks/post-commit + post-merge + eco-event.js and extends run-check.js dispatch. Identical 4-file drift across all 4 adapters (hooks are adapter-independent, which is the point of moving enforcement to the git axis)."
+    "note": "Phase 31a G2 / ADR-0016: /brainstorm-initiative recipe added; auto-projected to all 4 adapters by the ADR-0011 generator (one file each, correct per-adapter destination)."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".agents/skills/brainstorm-idea/SKILL.md": "4003f2d585ba32d477255efbe65e9c53e0a6bbaeb70ee36ccfe0d6efbe576d63",
+    ".agents/skills/brainstorm-initiative/SKILL.md": "1250c0bb015d639ccf8796fed35bc19d00245d5646c73bd00874fab6aa10da9b",
     ".agents/skills/brainstorm-phase/SKILL.md": "f04e503b9ee5e0be17f124addeb22f7ae84954f85b50896ce4e223c8ab398dd7",
     ".agents/skills/complete-phase/SKILL.md": "1003758161b7211583f09a2de2a1ddfb30c6a5b3f2a4094e3102e620cdebf966",
     ".agents/skills/continue/SKILL.md": "ca2916ecb23efcf4b874bad4ee8793f79dfd05465d8aae70d0219dbfebc9b120",

@@ -3,7 +3,7 @@
     "captured": "2026-07-26",
     "capturedFrom": "phase-31a-ecosystem-lifecycle-spine",
     "adapter": "opencode",
-    "note": "Phase 31a G1 / ADR-0016: git-native ecosystem event capture. Adds .githooks/post-commit + post-merge + eco-event.js and extends run-check.js dispatch. Identical 4-file drift across all 4 adapters (hooks are adapter-independent, which is the point of moving enforcement to the git axis)."
+    "note": "Phase 31a G2 / ADR-0016: /brainstorm-initiative recipe added; auto-projected to all 4 adapters by the ADR-0011 generator (one file each, correct per-adapter destination)."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -20,6 +20,7 @@
     ".opencode/agents/momentum-reviewer-security.md": "48f4eb012373c3c77bf4dc4e37128fef59bc482b13cc9d8822863bdf96ecb90a",
     ".opencode/agents/swarm-supervisor.md": "a1431fbc6f81ba844d8f86fa92c2d5ba7f715de9712aa8b95f131e5f00203289",
     ".opencode/commands/brainstorm-idea.md": "3fc56d85484b16f6642845e99068323612f52b7ffc2d71b0778b0ed57c67e5bd",
+    ".opencode/commands/brainstorm-initiative.md": "8fb1c3a31ba8d67c0061941a6e7ab3158042f8b1c1e333fd04ddd7b29e1bc38c",
     ".opencode/commands/brainstorm-phase.md": "fa1b8ed1865a1527a05c806cb1f24aa84f5d106d72da3ef6d4968d3523741f9c",
     ".opencode/commands/complete-phase.md": "2a514692f6d04d4be5bdf4ba31b57bd38f30c5547e48f3d5f2dbef97b58f7a61",
     ".opencode/commands/continue.md": "1537cee5fefdfaf7a64924a39b9d5ab31edf73095a0a894794d26cd04a23f659",

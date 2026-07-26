@@ -37,18 +37,21 @@ status: in-progress
 - [x] Self-repo `.githooks/` mirrored (dual-maintenance parity I2); 4 fingerprints re-baselined after `--check` showed exactly the intended 4-file drift
 - [x] Verify `npm test` green — **1058/1058** (+30 from 1028); commit G1
 
-## Group 2 — Lifecycle head: brainstorm + start *(∥ G1)*
-- [ ] `/brainstorm-initiative` — mirror of `/brainstorm-phase` incl. the gate contract
-- [ ] Gate: `.momentum/brainstorm-active` at ecosystem root; zero disk writes pre-approval
-- [ ] Elicit: objective, members, edges, non-goals, completion acceptance criteria
-- [ ] `initiative start <slug>` — fan-out creating/linking per-member phase or ad-hoc records
-- [ ] Stamp each member record with `initiative: <slug>`
-- [ ] Write `Per-repo contributions` from the fan-out result
-- [ ] **Register dependency edges in `ecosystem.json`** (first writer ever)
-- [ ] Set active via the 30e attributed fragment
-- [ ] Refuse-not-overwrite on re-run
-- [ ] Routing prose added to rules — labelled **agent-convention**, not enforced (D8)
-- [ ] Verify `npm test` green; commit G2
+## Group 2 — Lifecycle head: brainstorm + start *(∥ G1)* ✅
+- [x] `/brainstorm-initiative` — mirror of `/brainstorm-phase` incl. the gate contract
+- [x] Gate: `.momentum/brainstorm-active` at ecosystem root; zero disk writes pre-approval
+- [x] Elicit: objective, members, edges, non-goals, completion acceptance criteria; orients across the fleet first (reads each member's status + P0/P1 backlog — the miss that let one session rewrite code already covered by BUG-001)
+- [x] `initiative start <slug>` wired as a real CLI subcommand (was `create`-only)
+- [x] `--contribute <member>:<kind>:<ref>` declares per-member work records
+- [x] Write `Per-repo contributions` table from the declaration — **closes TD-011 for that section**; other body sections proven byte-untouched by test
+- [x] **Register dependency edges in `ecosystem.json`** via `--edge <from>:<to>:<kind>` — the first code in momentum's history to write one; tagged with the initiative that discovered it
+- [x] Set active via the 30e attributed fragment (falls back to legacy `.state/`)
+- [x] Refuse-not-overwrite: silently repointing a member's contribution is rejected (it would orphan the evidence trail the completion gate depends on); idempotent re-run adds no duplicates
+- [x] Refuses closed initiatives, unknown members, non-participating members, malformed/self-referential/bad-kind edges, and an invalid resulting manifest
+- [x] **Never writes into a member repo** — asserted by test. `start` declares and routes; each member's own `/start-phase`/`/hotfix` scaffolds, honoring the same ownership boundary `/sync-docs` enforces
+- [x] `parseFlags` gained an additive `list` type for repeatable flags
+- [x] Routing prose updated in the member pointer + both ecosystem instruction templates — labelled **convention, not enforcement** (D8)
+- [x] Verify `npm test` green — **1069/1069** (+41 from 1028); commit G2
 
 ## Group 3 — Lifecycle tail: completion gate *(needs G2)*
 - [ ] `/complete-initiative <slug>` — mirror of `/complete-phase`

@@ -244,3 +244,55 @@ same actor slugs as `core/identity`, and the same member resolution as
 `state.js` already carry parallel walk implementations.
 
 ---
+### [FEATURE] 2026-07-27 — G2 complete: the lifecycle head exists
+Topics: g2, brainstorm-initiative, initiative-start, dependency-edges, td-011, adr-0016
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/commands/brainstorm-initiative.md, bin/ecosystem.js, core/ecosystem/lib/pointer.js
+Detail: Cross-repo work now has an entry point. `/brainstorm-initiative` mirrors
+`/brainstorm-phase` including its gate contract (sentinel at the ecosystem root,
+zero disk writes until explicit approval) and, unlike anything before it, orients
+across the fleet first — reading each member's status and open P0/P1 backlog,
+the exact miss that let one reviewed session rewrite a cost formatter already
+tracked by BUG-001 in that repo's own backlog. `momentum ecosystem initiative
+start` is wired as a real CLI subcommand (the surface had been `create`-only
+since Phase 9, as bin/ecosystem.js stated outright): it declares per-member
+contributions, writes the `Per-repo contributions` table, and REGISTERS
+DEPENDENCY EDGES in ecosystem.json — the first code in momentum's history to
+write one, closing the "the dep graph is now a lie" finding. Edges are tagged
+with the initiative that discovered them. Suite 1058 → 1069.
+
+---
+
+### [DECISION] 2026-07-27 — `initiative start` declares and routes; it does not scaffold across repos
+Topics: ownership, fan-out, initiative-start, sync-docs-boundary, adr-0016
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: bin/ecosystem.js, core/commands/brainstorm-initiative.md
+Detail: ADR-0016 described `initiative start` as a "fan-out that creates or links
+a phase/ad-hoc record in each participating member". Implementing it forced the
+question of whether momentum should reach into a sibling repo and scaffold
+`specs/phases/<ref>/` there. Decided NO. Each member owns its own `specs/` —
+that is the same boundary `/sync-docs` already enforces by refusing to touch
+`../` paths, and violating it here would contradict the rule one tier down.
+Equally, the operator's framing was that cross-repo work should "go through the
+lifecycle in exactly the same structure": the structure that scaffolds a phase
+record IS the member's own `/start-phase`. So `start` DECLARES the contributions,
+registers the edges, sets the initiative active, and then ROUTES — printing the
+per-member next command. A test asserts it writes nothing inside a member repo.
+The word "fan-out" in ADR-0016's Decision §3 should be read as declaration +
+routing, not cross-repo scaffolding.
+
+---
+
+### [NOTE] 2026-07-27 — the ADR-0011 projection carried the new command for free
+Topics: adapter-parity, adr-0011, projection, fingerprints
+Affects-phases: phase-31a-ecosystem-lifecycle-spine
+Affects-specs: core/commands/brainstorm-initiative.md
+Detail: Adding `core/commands/brainstorm-initiative.md` produced exactly one new
+file per adapter with the correct per-adapter destination
+(`.claude/commands/`, `.agents/skills/<name>/SKILL.md`, `.agents/workflows/`,
+`.opencode/commands/`) with no wiring — the Phase-29 generator auto-discovers.
+Worth recording because G4 budgets time for "4-adapter projection"; that line
+item is effectively already satisfied for recipes, leaving only the static
+recipe-set tables in each adapter's surfaces.md to update by hand.
+
+---
