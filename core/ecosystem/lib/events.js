@@ -96,47 +96,18 @@ function resolveMemberRepoRoot(cwd) {
 }
 
 /**
- * Locate the ecosystem root from a member repo — up-walk AND sibling scan.
+ * Locate the ecosystem root from a member repo.
  *
- * `lib.findRoot` walks UP ONLY, but `core/ecosystem/layout.md` documents the
- * ecosystem root as a SIBLING of its member repos, which is what `ecosystem
- * init` + `ecosystem add ../<repo>` actually produce. Every other discovery
- * path in momentum already scans siblings — `session-append.sh`,
- * `sessionstart-handoff.sh`, `core/git-hooks/eco-event.js`, and
- * `bin/ecosystem.js`'s own resolver. `findRoot` is the outlier.
+ * Phase 31b added a local sibling-scanning resolver here because `lib.findRoot`
+ * walked UP ONLY and therefore never found the sibling root that
+ * `core/ecosystem/layout.md` documents. Phase 31c (ADR-0018 R3) fixed
+ * `findRoot` itself, so this is now a thin alias kept for its callers and for
+ * back-compatibility with anything importing it.
  *
- * That inconsistency was invisible until Phase 31b called `recordEvent()` from
- * library code (the hooks had always used their own sibling-aware resolver), at
- * which point every such call silently returned "no ecosystem" in the standard
- * layout. Mirrored here rather than changing `findRoot`, whose up-only
- * semantics other callers may rely on; TD-013 tracks unifying them.
+ * There is exactly ONE discovery implementation. Do not add another.
  */
 function resolveEcosystemRootFrom(startDir) {
-  const max = (() => {
-    const raw = process.env.MOMENTUM_MAX_PARENT_WALK;
-    const n = parseInt(raw, 10);
-    return Number.isInteger(n) && n >= 0 ? n : 5;
-  })();
-
-  let current = path.resolve(startDir);
-  for (let depth = 0; depth <= max; depth++) {
-    try {
-      if (fs.statSync(path.join(current, 'ecosystem.json')).isFile()) return current;
-    } catch (_e) { /* keep walking */ }
-
-    const parent = path.dirname(current);
-    if (parent === current) return null;
-    let siblings = [];
-    try { siblings = fs.readdirSync(parent); } catch (_e) { siblings = []; }
-    for (const name of siblings) {
-      const cand = path.join(parent, name);
-      try {
-        if (fs.statSync(path.join(cand, 'ecosystem.json')).isFile()) return cand;
-      } catch (_e) { /* not it */ }
-    }
-    current = parent;
-  }
-  return null;
+  return lib.findRoot(startDir);
 }
 
 /**

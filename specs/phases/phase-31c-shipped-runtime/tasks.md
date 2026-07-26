@@ -10,15 +10,16 @@ status: in-progress
 > Closes TD-012 + TD-013 + BUG-030. Target v0.42.0.
 > Lane `phase-31c-shipped-runtime`.
 
-## Group 0 — Contracts, unified discovery, BUG-030 *(blocks)*
-- [ ] Author **ADR-0018** — Shipped Runtime & Unified Discovery (R1–R8)
-- [ ] **File BUG-030** with the live reproduction; state plainly that v0.41.0 shipped ENH-068 non-functional
-- [ ] One `findRoot`: up-walk → sibling scan → registration fallback, `MOMENTUM_MAX_PARENT_WALK`-bounded, memoisation kept
-- [ ] Migrate all **7** call sites; drop the CLIs' now-redundant local fallbacks
-- [ ] Retire `events.js`'s `resolveEcosystemRootFrom` in favour of the unified one
-- [ ] **Test reproducing BUG-030 against the old `findRoot`** — demonstrate failing, then passing
-- [ ] **Single-implementation assertion** — greps for retired discovery patterns; fails if any returns
-- [ ] Verify `npm test` green; commit G0
+## Group 0 — Contracts, unified discovery, BUG-030 *(blocks)* ✅
+- [x] Author **ADR-0018** — Shipped Runtime & Unified Discovery (R1–R8)
+- [x] **BUG-030 filed** with the live reproduction; states plainly that v0.41.0 shipped ENH-068 non-functional
+- [x] One `findRoot`: up-walk → **sibling scan** → registration fallback, `MOMENTUM_MAX_PARENT_WALK`-bounded, memoisation kept
+- [x] All **7** call sites migrated; both CLIs' redundant local fallbacks removed
+- [x] `events.js`'s `resolveEcosystemRootFrom` reduced to a thin delegation (asserted: no `readdirSync` left in it)
+- [x] **BUG-030 regression test drives the PRODUCTION call path** (`landingCheck(dir)`, no injected root) — demonstrated failing against the pre-31c implementation
+- [x] **Self-cleaning allowlist test** — fails if an 8th discovery implementation appears, AND fails if an allowlist entry goes stale
+- [x] Updated a pre-existing test that had **codified the bug as intended behaviour** (its comment explained that findRoot deliberately did not sibling-scan)
+- [x] Verify `npm test` green — **1149/1149** (+9 from 1140); commit G0
 
 ## Group 1 — Vendored runtime *(needs G0)*
 - [ ] Closure declared as a **manifest**, derived from the hook entry points' require graph

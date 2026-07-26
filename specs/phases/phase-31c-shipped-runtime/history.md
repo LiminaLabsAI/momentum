@@ -143,3 +143,56 @@ discovery rules has to be made in two languages — the mechanism by which the
 current seven-way split accumulated.
 
 ---
+### [DECISION] 2026-07-27 — G0 complete: ADR-0018 + one findRoot; BUG-030 fixed
+Topics: g0, adr-0018, findroot, bug-030, discovery
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: specs/decisions/0018-shipped-runtime.md, core/ecosystem/lib/index.js
+Detail: Group 0 done. ADR-0018 records R1–R8. `findRoot` is now the single
+resolver — up-walk → sibling scan → registration fallback — and all seven call
+sites use it, which fixes BUG-030 as a consequence rather than as a patch:
+`landingCheck(dir)` with no injected root now returns `applicable: true` in the
+standard sibling layout, where it previously returned false and `lanes land`
+skipped the entire cross-repo gate. `events.js`'s 31b-era local resolver is
+reduced to a delegation, and both CLIs' bolted-on `findRegistration` fallbacks
+are gone. The regression test deliberately drives the PRODUCTION call path and
+was demonstrated failing against the pre-31c implementation. Suite 1140 → 1149.
+
+---
+
+### [DISCOVERY] 2026-07-27 — a pre-existing test had codified the bug as intended behaviour
+Topics: testing, bug-030, blessed-defect, state-machine-test
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: tests/state-machine.test.js
+Detail: `tests/state-machine.test.js` → "findRoot honors MOMENTUM_MAX_PARENT_WALK
+env override" failed after the unification, on an assertion that a GENEROUS walk
+bound still would not find a sibling root. Its own comment explained why:
+"eco is a SIBLING of `tmp/a/...` — findRoot only looks at the current dir's
+ecosystem.json on each step up… not that sibling-walk is implemented in
+findRoot." So the test did not merely miss BUG-030's cause — it documented that
+cause as correct behaviour and asserted it. That is a materially worse failure
+mode than an absent test, because it actively defends the defect against anyone
+who tries to fix it. Rewritten to pin the real contract: the bound is honoured in
+BOTH directions (default bound stops short; raised bound reaches the sibling).
+Worth carrying forward as a review question — when a test asserts a NEGATIVE
+about our own behaviour, is it protecting a contract or protecting a bug?
+
+---
+
+### [ARCH_CHANGE] 2026-07-27 — the AC-2 guard uses a self-cleaning allowlist
+Topics: g0, testing, guard, allowlist, honesty
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: tests/unified-discovery.test.js
+Detail: The "exactly one discovery implementation" assertion cannot be a precise
+detector — the heuristic (a file that references the manifest AND walks siblings)
+is file-wide, and it produced a false positive on `bin/momentum.js`, whose
+sibling scan is the auto-ecosystem prompt asking "are there other momentum
+projects here?", a different question entirely. Rather than tune the regex until
+it looked clean, every exception is listed WITH ITS REASON, and the test fails
+two ways: if an unexplained file appears, and if an allowlisted entry no longer
+matches (so the list cannot rot). `core/git-hooks/eco-event.js` is on it marked
+`pending G2 rewire`, which makes the phase's own progress visible in the test —
+that entry must be gone by G2. Recorded because the tempting alternative was a
+cleverer grep that silently swallowed the false positive and would have swallowed
+a real eighth implementation too.
+
+---

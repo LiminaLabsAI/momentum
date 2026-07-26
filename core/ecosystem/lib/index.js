@@ -50,6 +50,36 @@ const rootCache = new Map();
  * Memoized: repeated calls with paths under the same root return
  * instantly. Cache key is the absolute starting path.
  */
+/** True when `dir/ecosystem.json` exists and is a file. */
+function hasManifest(dir) {
+  try {
+    return fs.statSync(path.join(dir, MANIFEST_FILENAME)).isFile();
+  } catch (_err) {
+    return false;
+  }
+}
+
+/**
+ * THE ecosystem-root resolver (ADR-0018 R3).
+ *
+ * Three strategies, in order:
+ *   1. **up-walk** — `ecosystem.json` in this dir or an ancestor
+ *   2. **sibling scan** at each level — `core/ecosystem/layout.md` documents the
+ *      ecosystem root as a SIBLING of its members, which is exactly what
+ *      `ecosystem init` + `ecosystem add ../repo` produce
+ *   3. **registration lookup** — the per-machine registry, for members whose
+ *      root is neither an ancestor nor a sibling
+ *
+ * Before Phase 31c this function did step 1 ONLY, while six other call sites
+ * each hand-rolled step 2 and the two CLIs bolted on step 3. Every ad-hoc copy
+ * encoded the documented layout; the sanctioned API contradicted it. The cost
+ * was **BUG-030**: `landing.js` had no fallback, so in the standard sibling
+ * layout `momentum lanes land` silently skipped the entire cross-repo gate and
+ * v0.41.0 shipped ENH-068 non-functional.
+ *
+ * Bounded by `MOMENTUM_MAX_PARENT_WALK` (default 5) and memoised per absolute
+ * start path.
+ */
 function findRoot(startPath) {
   if (typeof startPath !== 'string' || startPath.length === 0) {
     return null;
@@ -58,26 +88,44 @@ function findRoot(startPath) {
   if (rootCache.has(abs)) {
     return rootCache.get(abs);
   }
+
+  const remember = (val) => { rootCache.set(abs, val); return val; };
   const maxDepth = resolveMaxParentWalk();
   let current = abs;
+
   for (let i = 0; i <= maxDepth; i++) {
-    const candidate = path.join(current, MANIFEST_FILENAME);
-    let stat;
-    try {
-      stat = fs.statSync(candidate);
-    } catch (_err) {
-      stat = null;
-    }
-    if (stat && stat.isFile()) {
-      rootCache.set(abs, current);
-      return current;
-    }
+    // 1. this directory
+    if (hasManifest(current)) return remember(current);
+
     const parent = path.dirname(current);
-    if (parent === current) break; // reached filesystem root
+    if (parent === current) break; // filesystem root
+
+    // 2. siblings of this directory
+    let siblings = [];
+    try {
+      siblings = fs.readdirSync(parent, { withFileTypes: true })
+        .filter((e) => e.isDirectory())
+        .map((e) => path.join(parent, e.name));
+    } catch (_err) {
+      siblings = []; // unreadable parent — keep walking
+    }
+    for (const sib of siblings) {
+      if (sib !== current && hasManifest(sib)) return remember(sib);
+    }
+
     current = parent;
   }
-  rootCache.set(abs, null);
-  return null;
+
+  // 3. registration fallback — required lazily to avoid a module cycle
+  // (state.js reads the manifest through this module).
+  try {
+    const reg = require('./state').findRegistration(abs);
+    if (reg && reg.rootPath && hasManifest(reg.rootPath)) {
+      return remember(reg.rootPath);
+    }
+  } catch (_err) { /* registry absent or unreadable — fall through */ }
+
+  return remember(null);
 }
 
 /**
