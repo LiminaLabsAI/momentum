@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-26",
-    "capturedFrom": "phase-31b-ecosystem-enforcement",
+    "capturedFrom": "fix/BUG-029-orient-lane-parsing",
     "adapter": "antigravity",
-    "note": "Phase 31b G4 / ADR-0017 E6: sync-docs delivers cross-repo entries as handoffs into the target member's inbox instead of only mentioning them in chat. Ownership rule unchanged."
+    "note": "BUG-029: orient.js lane-registry parsing fixed (id strings + per-lane manifests; in-flight only; worktree anchor). scripts/orient.js is the only changed file."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -54,7 +54,7 @@
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/cross-repo-gate.sh": "db13168ea4659c735368d3e2f98bd6360fce338ef06d6e2eafa44ed88af41ccb",
-    "scripts/orient.js": "122a1ca65d64cf68974fa216dd7de61e1b790f7bd4617f68725263bfa8b0c745",
+    "scripts/orient.js": "3f73d0a246224572793754caa4a9352ebbbcf071c0817c5598ca802f9d95bb91",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "6dd40e4449db9e8266bab06222b22651724dead4ce829b860dabc42f01732c4b",
     "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",

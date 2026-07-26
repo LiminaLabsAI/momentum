@@ -218,3 +218,129 @@ test('orient.js is installed into a target project by `momentum init`', () => {
       'the SessionStart fleet line needs orient.js to travel with the hooks');
   } finally { rmrf(tmp); }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUG-029 — lane parsing (shipped broken in v0.41.0)
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// The registry stores lane **id strings**; per-lane detail lives in
+// `<anchor>/<id>/manifest.json`. v0.41.0 read the ids as objects, so every entry
+// became `{status: undefined}` and `undefined !== 'closed'` let the repo's whole
+// lane history through as "open" — 30 on this repo, whose true state was 29
+// closed + 1 landed.
+//
+// The parity test below is the durable fence: it pins orient's independent
+// re-read against the real `core/lanes/lib/state` API, which is the check whose
+// absence let the format mismatch ship.
+
+const laneState = require('../core/lanes/lib/state');
+
+function seedLanes(repoDir, lanes) {
+  const anchor = path.join(repoDir, '.git', 'momentum', 'lanes');
+  fs.mkdirSync(anchor, { recursive: true });
+  // The REAL shape: ids in the registry, detail in per-lane manifests.
+  write(path.join(anchor, 'registry.json'),
+    JSON.stringify({ stateVersion: 1, lanes: lanes.map((l) => l.id) }, null, 2));
+  for (const l of lanes) {
+    fs.mkdirSync(path.join(anchor, l.id), { recursive: true });
+    write(path.join(anchor, l.id, 'manifest.json'),
+      JSON.stringify({ stateVersion: 1, ...l }, null, 2));
+  }
+  return anchor;
+}
+
+test('BUG-029: only in-flight lanes are reported — landed and closed are spent', () => {
+  const tmp = mktmp();
+  try {
+    const repo = path.join(tmp, 'member');
+    fs.mkdirSync(repo, { recursive: true });
+    seedLanes(repo, [
+      { id: 'lane-open', branch: 'feat/a', status: 'open' },
+      { id: 'lane-done', branch: 'feat/b', status: 'done' },
+      { id: 'lane-landed', branch: 'feat/c', status: 'landed' },
+      { id: 'lane-closed', branch: 'feat/d', status: 'closed' },
+    ]);
+
+    const lanes = orient.openLanes(repo);
+    assert.deepEqual(lanes.map((l) => l.id).sort(), ['lane-done', 'lane-open'],
+      'landed + closed lanes must not be reported as in flight');
+    // …and the detail must be real, not undefined (the v0.41.0 symptom).
+    for (const l of lanes) {
+      assert.ok(l.status, 'status must be populated');
+      assert.ok(l.branch, 'branch must be populated');
+    }
+  } finally { rmrf(tmp); }
+});
+
+test('BUG-029: a registry of id strings is not mistaken for objects', () => {
+  const tmp = mktmp();
+  try {
+    const repo = path.join(tmp, 'member');
+    fs.mkdirSync(repo, { recursive: true });
+    // 3 spent lanes, exactly the shape that produced the false "30 open".
+    seedLanes(repo, [
+      { id: 'a', branch: 'x', status: 'closed' },
+      { id: 'b', branch: 'y', status: 'closed' },
+      { id: 'c', branch: 'z', status: 'landed' },
+    ]);
+    assert.deepEqual(orient.openLanes(repo), [],
+      'a history of spent lanes must report as zero in flight');
+  } finally { rmrf(tmp); }
+});
+
+test('BUG-029: lane state resolves through a linked worktree pointer', () => {
+  const tmp = mktmp();
+  try {
+    // Real repo with lane state…
+    const main = path.join(tmp, 'main');
+    const anchor = seedLanes(main, [{ id: 'lane-open', branch: 'feat/a', status: 'open' }]);
+
+    // …and a linked worktree whose `.git` is a FILE pointing at the common dir.
+    const wt = path.join(tmp, 'wt');
+    fs.mkdirSync(wt, { recursive: true });
+    const gitdir = path.join(main, '.git', 'worktrees', 'wt');
+    fs.mkdirSync(gitdir, { recursive: true });
+    write(path.join(gitdir, 'commondir'), '../..\n');
+    write(path.join(wt, '.git'), `gitdir: ${gitdir}\n`);
+
+    assert.equal(orient.laneAnchor(wt), anchor,
+      'a worktree must resolve to the SHARED lane anchor, not its own gitdir');
+    assert.deepEqual(orient.openLanes(wt).map((l) => l.id), ['lane-open'],
+      'Rule 15 lane work runs in worktrees — that is where this must be right');
+  } finally { rmrf(tmp); }
+});
+
+test('BUG-029 parity: orient agrees with the real lanes API on this repo', () => {
+  // The fence whose absence let the format mismatch ship. orient re-reads lane
+  // state independently (it must stay dependency-free to ship into installs —
+  // TD-012), so its answer is pinned against the authority here.
+  const repoRoot = path.resolve(__dirname, '..');
+  const anchor = laneState.resolveAnchor(repoRoot);
+  if (!anchor) return; // no lane state in this checkout — nothing to compare
+
+  const truth = laneState.listLanes(anchor)
+    .filter((l) => orient.IN_FLIGHT.has(l.status))
+    .map((l) => l.id)
+    .sort();
+
+  assert.deepEqual(orient.openLanes(repoRoot).map((l) => l.id).sort(), truth,
+    'orient must report exactly what core/lanes/lib/state considers in flight');
+});
+
+test('BUG-029: a corrupt or absent registry degrades to no lanes', () => {
+  const tmp = mktmp();
+  try {
+    const repo = path.join(tmp, 'member');
+    fs.mkdirSync(path.join(repo, '.git', 'momentum', 'lanes'), { recursive: true });
+    assert.deepEqual(orient.openLanes(repo), [], 'no registry → no lanes');
+
+    write(path.join(repo, '.git', 'momentum', 'lanes', 'registry.json'), '{ not json');
+    assert.doesNotThrow(() => orient.openLanes(repo));
+    assert.deepEqual(orient.openLanes(repo), []);
+
+    // A referenced lane whose manifest is missing is skipped, not guessed at.
+    write(path.join(repo, '.git', 'momentum', 'lanes', 'registry.json'),
+      JSON.stringify({ stateVersion: 1, lanes: ['ghost'] }));
+    assert.deepEqual(orient.openLanes(repo), []);
+  } finally { rmrf(tmp); }
+});
