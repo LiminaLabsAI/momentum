@@ -173,7 +173,12 @@ function recordEvent(opts) {
     const member = resolveMemberId(ecosystemRoot, repoRoot);
     if (!member) return { recorded: false, reason: 'not a registered member' };
 
-    const actor = identity.resolveActor(repoRoot);
+    // `opts.env` lets a caller inject the environment actor resolution reads.
+    // `identity.resolveActor` has always accepted it; recordEvent simply never
+    // passed it through, so the pre-31c hook-side mirror carried a test seam
+    // core lacked. Added here rather than working around it in the test —
+    // production always uses the ambient env, so behaviour is unchanged.
+    const actor = identity.resolveActor(repoRoot, opts.env);
     const payload = {
       member,
       summary: String(opts.summary || '').split('\n')[0].slice(0, 500),

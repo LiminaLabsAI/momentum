@@ -245,3 +245,53 @@ authoritative without checking what it actually measures — and it would have
 produced a test that passed while asserting the opposite of the truth.
 
 ---
+### [FEATURE] 2026-07-27 — G2 complete: the mirrors are deleted
+Topics: g2, adr-0018, mirrors, bug-029, r7
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: core/git-hooks/eco-event.js, core/ecosystem/lib/orient.js, core/ecosystem/lib/cross-repo.js
+Detail: All three hook-side helpers now require REAL core modules through the
+vendored runtime. `eco-event.js` 277 → 178 lines with zero sibling scans left;
+`cross-repo.js` 176 → 136 with its detect mirror gone; `orient.js` no longer
+parses the lane registry at all — BUG-029's home is deleted rather than fixed
+twice. Three parity fences went with them (R7), including one asserting
+`cross-repo.js` "stays dependency-free" — an assertion that pinned in place the
+exact constraint which CAUSED BUG-029. The G2 gate held: the only test edits were
+removing fences for deleted code and repointing one assertion at a moved
+function. No expectation about behaviour changed. Suite 1158 → 1155 (net −3 from
+the deleted fences).
+
+---
+
+### [DECISION] 2026-07-27 — the git-free lane anchor belongs in state.js, not orient
+Topics: g2, lanes, ownership, orient, git-free
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: core/lanes/lib/state.js, core/ecosystem/lib/orient.js
+Detail: Delegating orient's lane reading to `core/lanes/lib/state` initially broke,
+because `state.resolveAnchor` shells out to `git rev-parse --git-common-dir` while
+orient is contractually git-free — it runs across every member and from the
+SessionStart banner's <100ms budget. The wrong fix would have been to accept N git
+spawns per fleet view, or to keep orient's own parser. Instead the git-free
+resolver written for BUG-029 in v0.41.1 MOVED into `state.js` as
+`anchorFromRepoDir`, sitting beside the git-based resolver it parallels. Both
+callers now share one implementation and orient keeps its constraint. The plan
+anticipated this ("the worktree-anchor logic moves into state.js if it is not
+already there"), which is the value of having written it down.
+
+---
+
+### [DISCOVERY] 2026-07-27 — a third silent failure, from deleting too much
+Topics: g2, silent-failure, refactor, testing
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: core/ecosystem/lib/cross-repo.js
+Detail: Removing `cross-repo.js`'s mirror block also removed `readJson`, a small
+helper `routingMessage` still used. Because that call sits inside a `try/catch`
+whose whole purpose is "member detail is a bonus, never a requirement", the
+`ReferenceError` was swallowed and the nudge simply stopped naming the target
+member's open bugs — silently, with every other assertion still passing. Caught
+only because AC-4 asserts the specific string `BUG-001` rather than that a nudge
+appeared. That is the fourth time in this arc a fail-open path has hidden a real
+defect (the gate's stderr redirect, the post-commit redirect, the realpath
+mismatch, now this). Fail-open is right for hooks — but it means correctness has
+to be asserted POSITIVELY, on content, never on absence of error.
+
+---

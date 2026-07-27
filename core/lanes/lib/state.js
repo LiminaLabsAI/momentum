@@ -68,6 +68,47 @@ function resolveAnchor(cwd) {
   return path.join(common, LANES_SUBDIR);
 }
 
+/**
+ * Anchor dir resolved WITHOUT running git (Phase 31c G2).
+ *
+ * `resolveAnchor` shells out to `git rev-parse --git-common-dir`, which is
+ * correct but unavailable to callers contractually forbidden from spawning git —
+ * `core/ecosystem/lib/orient.js` computes a fleet view across every member and
+ * must stay cheap and git-free.
+ *
+ * `.git` is a directory in a normal checkout but a FILE in a linked worktree
+ * (`gitdir: /abs/path/.git/worktrees/<name>`), whose sibling `commondir` points
+ * back at the shared dir. Lane state lives under the COMMON dir, so a worktree
+ * that did not follow that pointer would see no lanes at all — and Rule 15 lane
+ * work happens in worktrees, which is exactly where this must be right.
+ *
+ * This logic arrived in v0.41.1 as part of the BUG-029 fix and lived in
+ * `orient.js`. It belongs here, next to the git-based resolver it parallels, so
+ * both callers share ONE implementation.
+ *
+ * `repoDir` must be a repository root (not an arbitrary subdirectory).
+ */
+function anchorFromRepoDir(repoDir) {
+  if (!repoDir) return null;
+  const dotGit = path.join(repoDir, '.git');
+  let stat;
+  try { stat = fs.statSync(dotGit); } catch (_e) { return null; }
+
+  if (stat.isDirectory()) return path.join(dotGit, LANES_SUBDIR);
+
+  let pointer;
+  try { pointer = fs.readFileSync(dotGit, 'utf8'); } catch (_e) { return null; }
+  const m = pointer.match(/^gitdir:\s*(.+)$/m);
+  if (!m) return null;
+
+  const gitdir = path.resolve(repoDir, m[1].trim());
+  let common = gitdir;
+  try {
+    common = path.resolve(gitdir, fs.readFileSync(path.join(gitdir, 'commondir'), 'utf8').trim());
+  } catch (_e) { /* no commondir — the gitdir itself is the common dir */ }
+  return path.join(common, LANES_SUBDIR);
+}
+
 // ─── ids / inference ─────────────────────────────────────────────────────
 
 function laneId(branch) {
@@ -303,6 +344,7 @@ module.exports = {
   STATUSES,
   GRADES,
   resolveAnchor,
+  anchorFromRepoDir,
   gitCommonDir,
   worktreeRoot,
   laneId,

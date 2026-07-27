@@ -124,77 +124,46 @@ function openBlockers(backlogBody) {
 const IN_FLIGHT = new Set(['open', 'done']);
 
 /**
- * Resolve `<git-common-dir>/momentum/lanes` without running git.
+ * In-flight lanes for a member — delegated to `core/lanes/lib/state`, the
+ * authority (Phase 31c G2, ADR-0018 R1).
  *
- * `.git` is a directory in a normal checkout, but a FILE in a linked worktree
- * (`gitdir: /abs/path/.git/worktrees/<name>`), whose sibling `commondir` points
- * back at the shared dir. Lane state lives under the COMMON dir, so a worktree
- * that did not follow the pointer would see no lanes at all — and Rule 15 lane
- * work happens in worktrees, which is exactly where this has to be right.
+ * This function used to re-implement lane-registry reading, because orient.js
+ * had to stay dependency-free to ship into installs. It got the format wrong:
+ * the registry holds lane ID STRINGS, not objects, so every entry became
+ * `{status: undefined}` and `undefined !== 'closed'` passed the repo's entire
+ * lane history through as open (BUG-029). The vendored runtime removes the
+ * reason for the mirror, so the mirror is gone.
+ *
+ * `state` is resolved lazily: orient.js is also loaded from `scripts/orient.js`
+ * in installs where the sibling path differs, and a missing authority must
+ * degrade to "no lanes" rather than throw — a fleet view that dies on one bad
+ * member is useless exactly when it matters.
  */
-function laneAnchor(repoDir) {
-  const dotGit = path.join(repoDir, '.git');
-  let stat;
-  try { stat = fs.statSync(dotGit); } catch (_e) { return null; }
-
-  if (stat.isDirectory()) return path.join(dotGit, 'momentum', 'lanes');
-
-  const pointer = readIf(dotGit);
-  if (!pointer) return null;
-  const m = pointer.match(/^gitdir:\s*(.+)$/m);
-  if (!m) return null;
-  const gitdir = path.resolve(repoDir, m[1].trim());
-  const commondir = readIf(path.join(gitdir, 'commondir'));
-  const common = commondir
-    ? path.resolve(gitdir, commondir.trim())
-    : gitdir;
-  return path.join(common, 'momentum', 'lanes');
+function laneState() {
+  for (const rel of ['../../lanes/lib/state', './lanes/lib/state', '../lanes/lib/state']) {
+    try {
+      // eslint-disable-next-line global-require
+      return require(path.join(__dirname, rel));
+    } catch (_e) { /* try next */ }
+  }
+  return null;
 }
 
-/**
- * In-flight lanes for a member.
- *
- * The registry stores an array of lane **id strings**; per-lane detail lives in
- * `<anchor>/<id>/manifest.json`. Reading the ids as objects was BUG-029 —
- * every entry became `{status: undefined}`, and `undefined !== 'closed'` let the
- * whole history through.
- */
 function openLanes(repoDir) {
-  const anchors = [laneAnchor(repoDir), path.join(repoDir, '.momentum', 'lanes')]
-    .filter(Boolean);
-
-  for (const anchor of anchors) {
-    const body = readIf(path.join(anchor, 'registry.json'));
-    if (!body) continue;
-
-    let ids;
-    try {
-      const reg = JSON.parse(body);
-      ids = Array.isArray(reg.lanes) ? reg.lanes : [];
-    } catch (_e) {
-      return [];
-    }
-
-    const out = [];
-    for (const entry of ids) {
-      // Tolerate both shapes: the id-string form momentum writes today, and an
-      // inlined object, so a future registry format change degrades instead of
-      // silently reporting garbage again.
-      const id = typeof entry === 'string' ? entry : (entry && entry.id);
-      if (!id) continue;
-
-      let lane = (entry && typeof entry === 'object') ? entry : null;
-      if (!lane || !lane.status) {
-        const mf = readIf(path.join(anchor, id, 'manifest.json'));
-        if (!mf) continue;
-        try { lane = JSON.parse(mf); } catch (_e) { continue; }
-      }
-      if (!IN_FLIGHT.has(lane.status)) continue;
-      out.push({ id, branch: lane.branch || null, status: lane.status });
-    }
-    return out;
+  const state = laneState();
+  if (!state) return [];
+  try {
+    // anchorFromRepoDir, NOT resolveAnchor: orient is contractually git-free
+    // (it runs across every member, and from the SessionStart banner's <100ms
+    // budget). state.js owns both resolvers so there is still one implementation.
+    const anchor = state.anchorFromRepoDir(repoDir);
+    if (!anchor) return [];
+    return state.listLanes(anchor)
+      .filter((l) => l && IN_FLIGHT.has(l.status))
+      .map((l) => ({ id: l.id, branch: l.branch || null, status: l.status }));
+  } catch (_e) {
+    return [];
   }
-  return [];
 }
 
 /**
@@ -289,7 +258,6 @@ function memberBrief(summary) {
 module.exports = {
   MAX_ITEMS,
   IN_FLIGHT,
-  laneAnchor,
   MAX_TITLE,
   condense,
   activePhases,

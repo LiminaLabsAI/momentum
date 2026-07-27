@@ -36,15 +36,19 @@ status: in-progress
 - [x] 4 fingerprints re-baselined (drift = `.gitignore` only)
 - [x] Verify `npm test` green — **1158/1158** (+18 from 1140); commit G1
 
-## Group 2 — Rewire the JS helpers *(∥ G3)*
-- [ ] `eco-event.js` requires `fragments` + `identity` + `events` from the runtime; inlined logic deleted
-- [ ] `orient.js` requires `core/lanes/lib/state`; the re-implemented registry reading (BUG-029's home) deleted
-- [ ] v0.41.1's worktree-anchor logic lives in `state.js` so both callers get it
-- [ ] `cross-repo.js` requires the real `detect.js`; the mirror deleted
-- [ ] **Delete the redundant parity fences** (cross-repo↔detect, orient↔lanes-state) — they guarded duplicates that no longer exist
-- [ ] **Gate: the existing 31a/31b tests pass UNEDITED.** Any expectation needing a change is a behaviour change → stop for a decision
-- [ ] Test asserts the three helpers contain no re-implemented core logic
-- [ ] Verify `npm test` green; commit G2
+## Group 2 — Rewire the JS helpers *(∥ G3)* ✅
+- [x] `eco-event.js` requires `events`/`identity`/`index` from the runtime; **0 sibling scans left** (277 → 178 lines)
+- [x] `orient.js` delegates lane reading to `core/lanes/lib/state`; **0 registry parsing left** (BUG-029's home is gone)
+- [x] v0.41.1's worktree-anchor logic **moved into `state.js`** as `anchorFromRepoDir` — git-free, so orient keeps its contract, and both callers share one implementation
+- [x] `cross-repo.js` delegates to the real `detect.js`; the mirror deleted (176 → 136 lines)
+- [x] **Deleted 3 obsolete fences (R7)**: fragment parity, detect parity, and the "stays dependency-free" assertion — the last of which asserted the very constraint that *caused* BUG-029
+- [x] **Gate held**: the only test edits were (a) removing fences for deleted code, (b) repointing one assertion at the function's new owner. No expectation about *behaviour* changed
+- [x] `recordEvent` gained an `opts.env` passthrough — a test seam the mirror had and core lacked; `identity.resolveActor` already accepted it. Production unchanged
+- [x] `record()` keeps a documented **shape shim** (`fragment.file` → `file`) so entry-point callers are unaffected
+- [x] Resolution made **depth-independent** (bounded upward walk) — the file runs from both `core/ecosystem/lib/` and `.githooks/`
+- [x] Allowlist **self-cleaned**: `eco-event.js` no longer matches, so its entry had to be removed or the test fails
+- [x] 4 fingerprints re-baselined (drift = exactly the 3 rewired files)
+- [x] Verify `npm test` green — **1155/1155** (net −3: fences deleted with the code they guarded); commit G2
 
 ## Group 3 — Shell delegates to node *(∥ G2)*
 - [ ] Node discovery entry point in the runtime — prints resolved root (+ member id) for a start dir

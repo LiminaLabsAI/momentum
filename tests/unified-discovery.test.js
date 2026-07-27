@@ -170,10 +170,6 @@ test('AC-2: only ONE ecosystem-root discovery implementation exists in JS', () =
     // Scans siblings for OTHER MOMENTUM PROJECTS to offer ecosystem creation.
     // Not root discovery — a false positive of the file-wide heuristic.
     [path.join('bin', 'momentum.js'), 'sibling scan is the auto-ecosystem prompt'],
-    // TODO(31c G2): carries its own sibling scan because it could not require
-    // core. Removed when it starts requiring the vendored runtime. This entry
-    // must be GONE by the end of the phase.
-    [path.join('core', 'git-hooks', 'eco-event.js'), 'pending G2 rewire'],
   ]);
 
   const offenders = [];

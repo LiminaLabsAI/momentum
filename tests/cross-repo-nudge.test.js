@@ -103,47 +103,18 @@ test('the nudge degrades to a detail-free message when orient is unavailable', (
 // Parity with detect.js (the shipped-runtime duplication fence)
 // ─────────────────────────────────────────────────────────────────────────────
 
-test('parity: cross-repo.js agrees with detect.js on every coverage case', () => {
-  const { tmp, root } = setup();
-  try {
-    const initLib = require('../core/ecosystem/lib/initiative');
-    const cases = [
-      { name: 'single member', members: ['backend'] },
-      { name: 'two members uncovered', members: ['backend', 'frontend'] },
-    ];
-    for (const c of cases) {
-      rmrf(path.join(root, '.momentum', 'team', events.EVENTS_VIEW));
-      for (const m of c.members) event(root, m);
-      const a = detect.detect(root, { now: NOW });
-      const b = crossRepo.detect(root, { now: NOW });
-      assert.equal(b.crossRepo, a.crossRepo, `${c.name}: crossRepo`);
-      assert.equal(b.shouldRoute, a.shouldRoute, `${c.name}: shouldRoute`);
-      assert.deepEqual(b.members, a.members, `${c.name}: members`);
-    }
+// REMOVED in Phase 31c G2 (ADR-0018 R7): "parity: cross-repo.js agrees with
+// detect.js on every coverage case".
+//
+// That fence guarded a hand-written MIRROR of detect.js. cross-repo.js now
+// DELEGATES to detect.js, so the two cannot disagree — there is one
+// implementation. Keeping the fence would imply a duplicate still exists.
 
-    // …and with an in-progress initiative covering both.
-    fs.mkdirSync(path.join(root, 'initiatives'), { recursive: true });
-    initLib.writeInitiative(path.join(root, 'initiatives', '0001-attachments.md'), {
-      id: 1, slug: 'attachments', status: 'in-progress', started: '2026-07-20',
-      owner: 'ada', repos: ['backend', 'frontend'],
-    }, '# x\n');
-
-    const a = detect.detect(root, { now: NOW });
-    const b = crossRepo.detect(root, { now: NOW });
-    assert.equal(b.covered, a.covered, 'covered');
-    assert.equal(b.initiative, a.initiative, 'initiative slug');
-    assert.equal(b.shouldRoute, false);
-  } finally { rmrf(tmp); }
-});
-
-test('cross-repo.js stays dependency-free so it can ship with the hooks', () => {
-  const src = fs.readFileSync(
-    path.join(REPO_ROOT, 'core', 'ecosystem', 'lib', 'cross-repo.js'), 'utf8');
-  const top = src.split('module.exports')[0];
-  const requires = [...top.matchAll(/^const .* = require\(['"]([^'"]+)['"]\)/gm)].map((m) => m[1]);
-  assert.deepEqual(requires.sort(), ['fs', 'path'],
-    'top-level requires must be node builtins — orient is resolved lazily');
-});
+// REMOVED in Phase 31c G2 (ADR-0018 R1): "cross-repo.js stays dependency-free".
+//
+// Being dependency-free was the CONSTRAINT that forced the mirror, and the
+// mirror is what produced BUG-029. cross-repo.js now requires core through the
+// vendored runtime; asserting the old constraint would re-impose the cause.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The PreToolUse gate script

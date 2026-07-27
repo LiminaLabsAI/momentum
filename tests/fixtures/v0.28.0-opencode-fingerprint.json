@@ -1,16 +1,16 @@
 {
   "meta": {
-    "captured": "2026-07-26",
+    "captured": "2026-07-27",
     "capturedFrom": "phase-31c-shipped-runtime",
     "adapter": "opencode",
-    "note": "Phase 31c G1 / ADR-0018 R4: .gitignore negates .momentum/runtime/ so the shipped runtime commits (a fresh clone must have working hooks before any upgrade)."
+    "note": "Phase 31c G2 / ADR-0018 R1: eco-event.js, cross-repo.js and orient.js now require REAL core modules through the vendored runtime instead of mirroring them. The mirrors are what produced BUG-029."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
-    ".githooks/cross-repo.js": "30fcb49ea66129fdad94fe0e6f0d5966f93e09c4db7ac5caf438d13ef4def89e",
-    ".githooks/eco-event.js": "f7f03e2bf9cb503a27481341b77cbd9ef21fef06916e6488250e946daa311e3e",
+    ".githooks/cross-repo.js": "fa9f58e5fcc6daf04d20afc723d436a02b12ce65811e0d61e3c61efe0e37903e",
+    ".githooks/eco-event.js": "addaffdb8042d24891622fe4a3768d46393572cbb8812248cc6bbf43765ddafe",
     ".githooks/post-commit": "49058da1fde0ab3c8bf12c8e4228ec896123d67b10e902a4b9a7971c1a6aa4dd",
     ".githooks/post-merge": "d140ca9d27ce9f743533ee56cf7676563c64bf2c21d5989363e52ba46b93808f",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
@@ -56,7 +56,7 @@
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/cross-repo-gate.sh": "db13168ea4659c735368d3e2f98bd6360fce338ef06d6e2eafa44ed88af41ccb",
-    "scripts/orient.js": "3f73d0a246224572793754caa4a9352ebbbcf071c0817c5598ca802f9d95bb91",
+    "scripts/orient.js": "9c684463a4f55e431e625a0ddbf66c44070f76fa431cfa53e630307f1d0f18ba",
     "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
     "scripts/sessionstart-handoff.sh": "6dd40e4449db9e8266bab06222b22651724dead4ce829b860dabc42f01732c4b",
     "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",
