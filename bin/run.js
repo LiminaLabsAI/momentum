@@ -367,4 +367,123 @@ function runRun(args) {
   }
 }
 
-module.exports = { runRun, USAGE };
+// ─────────────────────────────────────────────────────────────────────────────
+// `momentum epic` — the multi-phase tier (Phase 32b)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const epicLib = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'epic'));
+
+const EPIC_USAGE = `momentum epic — one repo's multi-phase unit (Phase 32b, Epic 0001)
+
+Usage:
+  momentum epic create <slug> [--why "<objective>"] [--owner <name>]
+                              [--phases a,b,c] [--release per-phase|per-feature]
+  momentum epic list
+  momentum epic status <slug>          Record + computed wave plan
+  momentum epic close <slug>           Mark complete
+
+An epic groups several phases in ONE repo. Cross-repo work is an initiative
+(momentum ecosystem initiative) — the tier above.
+`;
+
+function specsDir() {
+  return path.join(repoRoot(), 'specs');
+}
+
+function cmdEpicCreate(args) {
+  const slug = args[0];
+  if (!slug) { console.error('Error: momentum epic create <slug>'); return 1; }
+
+  const phasesArg = flag(args, '--phases');
+  try {
+    const r = epicLib.create({
+      specsDir: specsDir(),
+      slug,
+      objective: flag(args, '--why', ''),
+      owner: flag(args, '--owner', ''),
+      phases: phasesArg ? phasesArg.split(',').map((s) => s.trim()).filter(Boolean) : [],
+      policy: { release: flag(args, '--release', 'per-phase') },
+      nowIso: nowIso(),
+    });
+    console.log(`▸ Created epic ${r.id}-${r.slug}`);
+    console.log(`  ${path.relative(repoRoot(), r.filePath)}`);
+    console.log('');
+    console.log('  Decisions settled here are never re-asked — per-phase specs derive from them.');
+    return 0;
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    return 1;
+  }
+}
+
+function cmdEpicList() {
+  const all = epicLib.list(specsDir());
+  if (all.length === 0) { console.log('No epics.'); return 0; }
+  for (const e of all) {
+    console.log(`${e.id}  ${e.slug}  ${e.status}  (${e.phases.length} phases)`);
+  }
+  return 0;
+}
+
+function cmdEpicStatus(args) {
+  const slug = args[0];
+  if (!slug) { console.error('Error: momentum epic status <slug>'); return 1; }
+
+  const loaded = epicLib.load(specsDir(), slug);
+  if (!loaded) {
+    console.error(`Error: no epic "${slug}" (or its frontmatter is outside the OKF subset).`);
+    return 1;
+  }
+
+  const d = loaded.data;
+  console.log(`▸ Epic ${d.id} — ${d.slug}  [${d.status}]`);
+  console.log(`  Policy: release=${d.policy_release} push=${d.policy_push} tdd=${d.policy_tdd}`);
+  console.log('');
+
+  const g = epicLib.waves(specsDir(), slug);
+  if (g.complete.length) console.log(`  Complete: ${g.complete.join(', ')}`);
+  for (const w of g.waves) {
+    console.log(`  Wave ${w.index}: ${w.nodes.join(', ')}`);
+  }
+  if (g.unscaffolded.length) {
+    console.log('');
+    console.log(`  Not yet scaffolded (${g.unscaffolded.length}) — no overview.md, so no deps to order by:`);
+    for (const p of g.unscaffolded) console.log(`    - ${p}`);
+    console.log('  Their specs derive when their turn comes (D10).');
+  }
+  return 0;
+}
+
+function cmdEpicClose(args) {
+  const slug = args[0];
+  if (!slug) { console.error('Error: momentum epic close <slug>'); return 1; }
+  try {
+    epicLib.setStatus(specsDir(), slug, 'complete', nowIso());
+    console.log(`▸ Epic ${slug} marked complete.`);
+    return 0;
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    return 1;
+  }
+}
+
+function runEpic(args) {
+  switch (args[0]) {
+    case 'create': return cmdEpicCreate(args.slice(1));
+    case 'list': return cmdEpicList(args.slice(1));
+    case 'status': return cmdEpicStatus(args.slice(1));
+    case 'close': return cmdEpicClose(args.slice(1));
+    case undefined:
+    case 'help':
+    case '--help':
+    case '-h':
+      process.stdout.write(EPIC_USAGE);
+      return 0;
+    default:
+      console.error(`Unknown subcommand: ${args[0]}\n`);
+      process.stdout.write(EPIC_USAGE);
+      return 1;
+  }
+}
+
+module.exports = { runRun, runEpic, USAGE, EPIC_USAGE };

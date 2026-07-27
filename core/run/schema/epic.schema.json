@@ -34,17 +34,14 @@
       "items": { "type": "string", "minLength": 1 },
       "description": "Phase directory names in `specs/phases/`, in intended order. Execution order is NOT read from this array — it is computed from each phase's own `deps:` frontmatter through core/waves, so there is one topological sort in the codebase (ADR-0003) rather than a second one hiding here."
     },
-    "policy": {
-      "type": "object",
-      "additionalProperties": true,
-      "description": "Run policy defaults for phases in this epic — the same free/coupled/floor shape core/run/lib/config-rules.js validates. Frozen into each run's manifest at start; a policy that shifts mid-run makes the audit trail unreadable.",
-      "properties": {
-        "release": { "type": "string", "enum": ["per-phase", "per-feature", "manual"] },
-        "push": { "type": "string", "enum": ["per-group", "per-phase"] },
-        "tdd": { "type": "string", "enum": ["strict", "opt-in"] },
-        "authority": { "type": "string" }
-      }
+    "policy_release": {
+      "type": "string",
+      "enum": ["per-phase", "per-feature", "manual"],
+      "description": "Run policy defaults for phases in this epic — the same free/coupled/floor values core/run/lib/config-rules.js validates. Frozen into each run's manifest at start; a policy that shifts mid-run makes the audit trail unreadable.\n\nFLAT, not nested, and deliberately so: momentum's OKF v0.1 frontmatter subset (ADR-0005) excludes nested maps, and core/lib/frontmatter.js returns `data: null` for any file containing one. The bootstrap epic record was originally authored with a nested `policy:` block and was therefore unparseable by momentum's own reader. Widening the OKF subset is an ADR-0005 decision; flattening four keys is not, so the record was flattened."
     },
+    "policy_push": { "type": "string", "enum": ["per-group", "per-phase"] },
+    "policy_tdd": { "type": "string", "enum": ["strict", "opt-in"] },
+    "policy_authority": { "type": "string" },
     "tags": { "type": "array", "items": { "type": "string" } }
   }
 }

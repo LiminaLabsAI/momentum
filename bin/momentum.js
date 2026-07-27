@@ -1740,6 +1740,11 @@ Waves — wave plan from dependency annotations (Phase 21c, one engine every sca
   momentum waves --tasks [ref]        Task-group waves for a tasks.md
                                        (default: the phase bound to your branch)
 
+Epic — one repo's multi-phase unit (Phase 32b):
+  momentum epic create <slug>         Group several phases as one unit
+  momentum epic list | status <slug>  Record + computed wave plan
+  momentum epic close <slug>
+
 Run — autonomous execution (Phase 32a, Epic 0001):
   momentum run start <tier> <target>  tier = group | phase | epic | initiative
   momentum run status [--json]        Read-only; safe against a LIVE run
@@ -2211,6 +2216,14 @@ async function main() {
     try {
       const { runRun } = require('./run');
       exitCode = runRun(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'epic') {
+    try {
+      const { runEpic } = require('./run');
+      exitCode = runEpic(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;

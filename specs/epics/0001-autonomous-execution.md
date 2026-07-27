@@ -10,11 +10,10 @@ phases:
   - phase-32b-epic-tier
   - phase-32c-adapter-parity
   - phase-32d-cross-repo
-policy:
-  release: per-feature
-  push: per-phase
-  tdd: strict
-  authority: rule-14-triggers
+policy_release: per-feature
+policy_push: per-phase
+policy_tdd: strict
+policy_authority: rule-14-triggers
 tags: [autonomy, governor, run-manifest, decision-authority, scope-grant, epic-tier, adapter-parity]
 ---
 
