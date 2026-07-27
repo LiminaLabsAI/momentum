@@ -250,6 +250,58 @@ function waves(specsDir, slug) {
 // guard (tests/run-reachability.test.js) flagged them the moment they were.
 // "Exported for tests" is how dead code starts; 32a learned this the hard way
 // and the lesson applies to its successor.
+/**
+ * Extract the epic's decisions table as one line per decision.
+ *
+ * These are the whole point of the tier: settled once, inherited by every phase,
+ * never re-asked (D10). A derivation that omitted them would hand the next phase
+ * a spec with an empty "Inherited decisions" section — which reads as *there
+ * were none*, and invites exactly the re-litigation the epic exists to prevent.
+ *
+ * The body is free-form human writing (the schema says so), so this reads the
+ * markdown table rather than requiring structure: `| # | Decision | Rationale |`.
+ * A record with no table yields an empty list rather than an error — an epic
+ * mid-brainstorm legitimately has none yet.
+ */
+function decisions(body) {
+  if (typeof body !== 'string') return [];
+
+  // Walked line by line rather than matched with one regex. The first attempt
+  // used `\Z` as an end-of-string anchor — which JavaScript does not have; it
+  // is a literal `Z`, so the lazy body match silently stopped at the first `Z`
+  // in the table and returned 4 of 14 decisions. A parser that under-reports
+  // this table is worse than one that throws: the derived spec would simply
+  // look as though the epic had settled less than it had.
+  const lines = body.split('\n');
+  let inSection = false;
+  const rows = [];
+  for (const line of lines) {
+    if (/^##\s/.test(line)) {
+      inSection = /^##\s+Decisions?\s*$/.test(line);
+      continue;
+    }
+    if (inSection) rows.push(line);
+  }
+  if (rows.length === 0) return [];
+
+  const out = [];
+  for (const line of rows) {
+    const t = line.trim();
+    if (!t.startsWith('|') || !t.endsWith('|')) continue;
+    const cells = t.slice(1, -1).split('|').map((c) => c.trim());
+    if (cells.length < 2) continue;
+    // Skip the header row and the |---|---| separator.
+    if (/^-{2,}$/.test(cells[0].replace(/[: ]/g, '')) || /^-+$/.test(cells[1])) continue;
+    if (/^#$/.test(cells[0]) && /^decision$/i.test(cells[1])) continue;
+    if (!cells[1]) continue;
+
+    const id = cells[0] && cells[0] !== '' ? `${cells[0]} — ` : '';
+    const rationale = cells[2] ? ` _(${cells[2]})_` : '';
+    out.push(`${id}${cells[1]}${rationale}`);
+  }
+  return out;
+}
+
 module.exports = {
   validate,
   load,
@@ -257,4 +309,5 @@ module.exports = {
   create,
   setStatus,
   waves,
+  decisions,
 };

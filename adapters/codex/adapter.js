@@ -55,10 +55,12 @@ module.exports = {
     skills: true,
     browser: true,
     computerUse: true,
-    // Phase 32a: Codex's `notify` fires on `agent-turn-complete` but is
+    // Phase 32c: Codex's `notify` fires on `agent-turn-complete` and is
     // fire-and-forget — it can OBSERVE a turn ending, never block one. The
-    // governor is therefore satisfied by re-invocation, which ships in 32c.
-    governorBackend: null,
+    // governor's invariant ("the next unit starts") is therefore satisfied by
+    // RE-INVOCATION: observe the stop, relaunch `codex exec` against the run
+    // manifest. Not a degraded interceptor — this is the external-driver shape.
+    governorBackend: 'reinvoker',
   },
 
   roadmap: {

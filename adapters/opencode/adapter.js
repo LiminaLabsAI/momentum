@@ -61,11 +61,11 @@ module.exports = {
     browser: false,
     computerUse: false,
     planningMode: true, // built-in read-only Plan agent (Tab-cycle primary)
-    // Phase 32a: opencode's `session.idle` plugin event is fire-and-forget
+    // Phase 32c: opencode's `session.idle` plugin event is fire-and-forget
     // (upstream issue #16879 asks for the awaited behaviour a blocking hook
-    // would need), so it can OBSERVE a turn ending but not block one. The
-    // governor is satisfied by re-invocation, which ships in 32c.
-    governorBackend: null,
+    // would need), so it can OBSERVE a turn ending but not block one. Satisfied
+    // by RE-INVOCATION: relaunch `opencode run` against the run manifest.
+    governorBackend: 'reinvoker',
   },
 
   roadmap: {

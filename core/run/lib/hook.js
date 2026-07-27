@@ -122,4 +122,47 @@ if (require.main === module) {
   process.exit(code);
 }
 
-module.exports = { main, continuationMessage, PRE_AUTHORIZED };
+// ─────────────────────────────────────────────────────────────────────────────
+// The CONTRACT.md backend surface (Phase 32c G1)
+//
+// 32a shipped this backend as a script entry point and never exposed the named
+// surface its own CONTRACT.md requires. It worked — subprocess tests proved the
+// production path — but the contract was aspirational on the very backend that
+// authored it, and 32c's conformance suite is what surfaced that. A contract
+// only one implementation satisfies is a description, not a contract.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Interceptor is available wherever the host can block a turn ending. */
+function supports() {
+  return true; // the hook is only installed on adapters declaring `interceptor`
+}
+
+/**
+ * @param {object} decision  from `governor.decide` — this backend never re-decides
+ * @param {{repoRoot: string, dryRun?: boolean}} ctx
+ * @returns {{started: boolean, obstructed: boolean, unit: string|null}}
+ */
+function onTurnEnd(decision, ctx = {}) {
+  const root = ctx.repoRoot || process.env.MOMENTUM_RUN_ROOT || process.cwd();
+  try {
+    if (!decision || decision.action !== governor.ACTION.CONTINUE) {
+      // Never obstruct a stop the governor allowed.
+      return { started: false, obstructed: false, unit: null };
+    }
+    const unit = (decision.next && decision.next.unit) || null;
+
+    // Idempotence is the CURSOR's job, not this backend's memory: a doubled
+    // platform event must start the unit once. `advance` no-ops when the cursor
+    // is already there, which is exactly the guard.
+    manifestLib.advance(root, unit, new Date().toISOString());
+
+    if (!ctx.dryRun) manifestLib.recordTurn(root, new Date().toISOString());
+    return { started: true, obstructed: false, unit };
+  } catch (_e) {
+    // Fail open, unconditionally. A broken governor that traps a session is
+    // strictly worse than no governor at all.
+    return { started: false, obstructed: false, unit: null };
+  }
+}
+
+module.exports = { main, continuationMessage, PRE_AUTHORIZED, supports, onTurnEnd };

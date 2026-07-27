@@ -512,7 +512,7 @@ function cmdDerive(args) {
     epicSlug,
     phase,
     deps: depsArg ? depsArg.split(',').map((s) => s.trim()).filter(Boolean) : [],
-    decisions: [],
+    decisions: epicLib.decisions(loaded.body),
     amendments: amendLib.forwardAmendments(manifest),
     deferred: [],
     date: flag(args, '--date', nowIso().slice(0, 10)),
