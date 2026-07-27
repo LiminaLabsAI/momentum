@@ -44,6 +44,12 @@ During a run — how the agent records what it did:
   momentum run strike [--unit U]       Record a failure on the current unit
   momentum run clear-strikes [--unit U]
 
+Mid-run operator changes (D11):
+  momentum run amend "<change>"        --forward-only  absorbed, zero prompts
+      [--invalidates u1,u2]            names completed work -> hard stop
+  momentum run derive <phase> --epic S Derive specs from the epic. No interview.
+      [--deps a,b] [--write]
+
 Scope grant (ADR-0020) — one approval, N landings, ONE epic:
   momentum run grant --branches a,b   Mint. [--hours N] [--landings N] [--epic S]
       [--hours 8]
@@ -350,6 +356,8 @@ function cmdClearStrikes(args) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const grantLib = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'grant'));
+const amendLib = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'amend'));
+const deriveLib = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'derive'));
 
 function gitEmail(cwd) {
   const r = require('child_process').spawnSync('git', ['config', 'user.email'], { cwd, encoding: 'utf8' });
@@ -427,6 +435,87 @@ function cmdGrant(args) {
   }
 }
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Amendments (D11) — the operator pushing a change INTO a live run
+// ─────────────────────────────────────────────────────────────────────────────
+
+function cmdAmend(args) {
+  const text = args[0];
+  if (!text) {
+    console.error('Error: momentum run amend "<change>" [--forward-only | --invalidates u1,u2]');
+    console.error('  Without a signal the amendment is treated as invalidating — the safe');
+    console.error('  direction, since silence would otherwise default to the cheap branch.');
+    return 1;
+  }
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  const invArg = flag(args, '--invalidates');
+  const res = amendLib.apply(active.root, {
+    text,
+    forwardOnly: args.includes('--forward-only'),
+    invalidates: invArg ? invArg.split(',').map((s) => s.trim()).filter(Boolean) : [],
+  }, nowIso());
+
+  if (!res.ok) { console.error(`Error: ${res.message}`); return 1; }
+
+  console.log(`▸ Amendment recorded — ${res.kind}`);
+  console.log(`  ${res.message}`);
+  if (res.stopped) {
+    console.log('');
+    console.log('  Affected completed work:');
+    for (const u of res.invalidates) console.log(`    - ${u}`);
+    console.log('');
+    console.log('  Resume when you have decided what to do:  momentum run continue');
+  }
+  return res.stopped ? 0 : 0;
+}
+
+function cmdDerive(args) {
+  const phase = args[0];
+  const epicSlug = flag(args, '--epic');
+  if (!phase || !epicSlug) {
+    console.error('Error: momentum run derive <phase-dir> --epic <slug> [--deps a,b] [--write]');
+    return 1;
+  }
+
+  const loaded = epicLib.load(specsDir(), epicSlug);
+  if (!loaded) { console.error(`Error: no epic "${epicSlug}"`); return 1; }
+
+  const manifest = manifestLib.loadSafe(repoRoot());
+  const depsArg = flag(args, '--deps');
+  const out = deriveLib.derive({
+    epic: loaded.data,
+    epicSlug,
+    phase,
+    deps: depsArg ? depsArg.split(',').map((s) => s.trim()).filter(Boolean) : [],
+    decisions: [],
+    amendments: amendLib.forwardAmendments(manifest),
+    deferred: [],
+    date: flag(args, '--date', nowIso().slice(0, 10)),
+  });
+
+  if (!args.includes('--write')) {
+    process.stdout.write(out.overview);
+    console.log('\n---\n(dry run — pass --write to create the phase directory)');
+    return 0;
+  }
+
+  const dir = path.join(specsDir(), 'phases', phase);
+  if (fs.existsSync(dir)) { console.error(`Error: ${dir} already exists`); return 1; }
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'overview.md'), out.overview, 'utf8');
+  fs.writeFileSync(path.join(dir, 'plan.md'), out.plan, 'utf8');
+  fs.writeFileSync(path.join(dir, 'tasks.md'), out.tasks, 'utf8');
+  fs.writeFileSync(path.join(dir, 'history.md'),
+    `---\ntype: History\nstatus: in-progress\nepic: ${epicSlug}\n---\n\n# ${phase} — History\n`, 'utf8');
+
+  console.log(`▸ Derived ${phase} from epic ${epicSlug} — no interview.`);
+  console.log(`  ${path.relative(repoRoot(), dir)}/{overview,plan,tasks,history}.md`);
+  return 0;
+}
+
 function runRun(args) {
   const sub = args[0];
   const rest = args.slice(1);
@@ -443,6 +532,8 @@ function runRun(args) {
     case 'strike': return cmdStrike(rest);
     case 'clear-strikes': return cmdClearStrikes(rest);
     case 'grant': return cmdGrant(rest);
+    case 'amend': return cmdAmend(rest);
+    case 'derive': return cmdDerive(rest);
     case undefined:
     case 'help':
     case '--help':
