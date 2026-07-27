@@ -227,7 +227,6 @@ module.exports = {
   INBOX_DIR,
   RESOLVED_DIR,
   INDEX_FILENAME,
-  DEFAULT_FIELD_LABEL,
   inboxDir,
   resolvedDir,
   indexPath,
@@ -237,5 +236,4 @@ module.exports = {
   listPending,
   resolveItem,
   rebuildIndex,
-  parseItemHeader,
 };

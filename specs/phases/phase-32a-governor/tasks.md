@@ -74,14 +74,13 @@ epic: autonomous-execution
 - [x] Verify: `node --test tests/run-cli.test.js` → **22/22**
 - [x] Verify: `npm test` → **1272/1272** (1250 + 22 net-new)
 
-## Group 5 — Verification
-- [ ] Extend enumerative production-call-path guard over `core/run/`
-- [ ] **Prove the guard works** — orphan an export, observe red, restore
-- [ ] E2E: hands-off multi-group run
-- [ ] E2E: kill-switch halts within one turn
-- [ ] E2E: resume-after-kill, no lost work
-- [ ] E2E: runaway halts at strike limit
-- [ ] E2E: no `run.json` ⇒ v0.42.0 behaviour byte-unchanged (invariance gate)
-- [ ] **Live dogfood** — real multi-group phase run hands-off, transcript captured
-- [ ] `retrospective.md` + `## Verification Evidence` (Rule 12 Gate A)
-- [ ] Verify: full suite green, net-new tests ≥ 40
+## Group 5 — Verification ✅
+- [x] **Orphan-export guard** (`tests/run-reachability.test.js`) — every `core/run/` export must be referenced from production, not just tests. Complements the 31c R6 guard, which covers a different shape (injectable roots) and could not have caught BUG-031
+- [x] **Proved the guard red** — writes a synthetic unreachable export, asserts it is flagged, removes it, asserts green again
+- [x] **The guard found 15 orphans in this phase's own code**, including the entire manifest mutation API. Fixed by wiring 6 new CLI subcommands (`run advance|decide|park|resolve|strike|clear-strikes`) and unexporting 8 test-only helpers
+- [x] Script entry points recognised as production (`hook.js` is reached by `run-governor.sh` naming the file, not its exports)
+- [x] E2E as **real subprocesses**: hands-off continuation · kill-switch halt · resume-after-kill · runaway halts at strike limit · corrupt manifest fails open
+- [x] E2E: **INVARIANCE** — no `run.json` ⇒ no output, no files created, no `.momentum/` conjured
+- [x] Live dogfood — full during-run loop exercised end to end (transcript in `retrospective.md`)
+- [x] `retrospective.md` + `## Verification Evidence` (Rule 12 Gate A)
+- [x] Verify: full suite **1285/1285** — baseline 1161, **123 net-new** (target was ≥ 40)

@@ -111,7 +111,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 32a Governor (Epic 0001) | `epic-0001-autonomous-execution` | In Progress | G0–G5 planned; building |
+| 32a Governor (Epic 0001) | `epic-0001-autonomous-execution` | **Built + verified** (suite 1285/1285) — unlanded by design: epic policy is `release: per-feature` | G0–G5 ✅ 6/6 |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see

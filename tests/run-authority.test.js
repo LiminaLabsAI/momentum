@@ -176,7 +176,12 @@ test('config may NOT raise the file threshold — the clamp is the floor', () =>
   const six = Array.from({ length: 6 }, (_, i) => `core/lib/f${i}.js`);
   const r = classify({ paths: six }, cfg);
   assert.equal(r.authority, AUTHORITY.OPERATOR, 'the raised threshold must be ignored');
-  assert.equal(authority.resolveThresholds(cfg).productionFileCount, 5);
+  assert.equal(r.trigger, 'production-file-count');
+
+  // The clamp must hold at any scale, not just at the boundary — asserted
+  // through the public surface rather than by poking an internal helper.
+  const forty = Array.from({ length: 40 }, (_, i) => `core/lib/g${i}.js`);
+  assert.equal(classify({ paths: forty }, cfg).authority, AUTHORITY.OPERATOR);
 });
 
 test('config may reserve extra paths for the operator', () => {

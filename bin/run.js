@@ -20,6 +20,7 @@ const path = require('path');
 const MOMENTUM_ROOT = path.resolve(__dirname, '..');
 const manifestLib = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'manifest'));
 const governor = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'governor'));
+const authority = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'authority'));
 
 const USAGE = `momentum run — autonomous execution (Phase 32a, Epic 0001)
 
@@ -32,6 +33,16 @@ Usage:
   momentum run status [--json]         Read-only; safe against a live run
   momentum run continue                Clear a stop and resume from the manifest
   momentum run stop [--reason "..."]   Halt the run
+
+During a run — how the agent records what it did:
+  momentum run advance <unit>          Move the cursor to the next unit
+  momentum run decide "<summary>"      Log a decision taken under agent authority
+      [--unit U] [--why "<rationale>"]
+  momentum run park "<question>"       Park an operator decision. NON-BLOCKING:
+      --unit U [--reason R]            freezes only <unit>; everything else proceeds
+  momentum run resolve <id> "<answer>" Answer a parked question
+  momentum run strike [--unit U]       Record a failure on the current unit
+  momentum run clear-strikes [--unit U]
 
 Operator halt from any shell, no momentum command needed:
   touch .momentum/run-stop
@@ -159,13 +170,23 @@ function cmdStatus(args) {
   }
 
   console.log('');
+  const parkLimit = (m.policy && m.policy.park_threshold) || governor.DEFAULT_PARK_THRESHOLD;
   if (parked.length === 0) {
-    console.log('  Parked questions: none');
+    console.log(`  Parked questions: none  (run stops at ${parkLimit})`);
   } else {
-    console.log(`  Parked questions (${parked.length}) — these units are frozen, others proceed:`);
+    console.log(`  Parked questions (${parked.length}/${parkLimit}) — these units are frozen, others proceed:`);
     for (const p of parked) {
-      console.log(`    - ${p.id} [${p.blocked_unit}] ${p.question}   (${p.reason || 'unclassified'})`);
+      // ADR-0019 classification: why this landed with the operator at all.
+      const why = p.reason === authority.REASON.OPERATOR_AUTHORITY
+        ? 'a Rule-14 trigger fired'
+        : p.reason === authority.REASON.AMBIGUOUS
+          ? 'nothing matched — parked rather than guessed'
+          : (p.reason || 'unclassified');
+      console.log(`    - ${p.id} [${p.blocked_unit}] ${p.question}`);
+      console.log(`        ${why}`);
     }
+    console.log('');
+    console.log('  Answer one:  momentum run resolve <id> "<answer>"');
   }
 
   if (m.status === 'stopped') {
@@ -209,6 +230,115 @@ function cmdStop(args) {
   return 0;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// During a run — how the agent records what it did.
+//
+// Without these, `decisions[]` and `parked[]` would stay empty forever: the
+// manifest would have a state API with no production caller, which is BUG-031's
+// shape exactly. The orphan guard in tests/run-reachability.test.js caught this
+// omission, which is the point of having it.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function requireActiveRun() {
+  const root = repoRoot();
+  const m = manifestLib.loadSafe(root);
+  if (!m) { console.error('Error: no active run.'); return null; }
+  return { root, m };
+}
+
+function cmdAdvance(args) {
+  const unit = args[0];
+  if (!unit) { console.error('Error: momentum run advance <unit>'); return 1; }
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  manifestLib.advance(active.root, unit, nowIso());
+  console.log(`▸ Cursor → ${unit}`);
+  return 0;
+}
+
+function cmdDecide(args) {
+  const summary = args[0];
+  if (!summary) { console.error('Error: momentum run decide "<summary>" [--unit U] [--why R]'); return 1; }
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
+  manifestLib.recordDecision(active.root, {
+    unit,
+    summary,
+    rationale: flag(args, '--why', ''),
+    triggers_evaluated: [],
+  }, nowIso());
+
+  console.log(`▸ Decision logged on ${unit}: ${summary}`);
+  return 0;
+}
+
+function cmdPark(args) {
+  const question = args[0];
+  const unit = flag(args, '--unit');
+  if (!question || !unit) {
+    console.error('Error: momentum run park "<question>" --unit <unit> [--reason operator-authority|ambiguous]');
+    return 1;
+  }
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  const id = String((active.m.parked || []).length + 1).padStart(4, '0');
+  manifestLib.recordPark(active.root, {
+    id,
+    question,
+    blocked_unit: unit,
+    reason: flag(args, '--reason', 'ambiguous'),
+    context: flag(args, '--context', ''),
+  }, nowIso());
+
+  console.log(`▸ Parked ${id} on ${unit}: ${question}`);
+  console.log('  This freezes ONLY that unit — continue with everything else.');
+  return 0;
+}
+
+function cmdResolve(args) {
+  const [id, answer] = args;
+  if (!id || !answer) { console.error('Error: momentum run resolve <id> "<answer>"'); return 1; }
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  try {
+    manifestLib.resolvePark(active.root, id, answer, nowIso());
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    return 1;
+  }
+  console.log(`▸ Resolved ${id}. That unit is unfrozen.`);
+  return 0;
+}
+
+function cmdStrike(args) {
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
+  const after = manifestLib.recordStrike(active.root, unit, nowIso());
+  const count = after.strikes[unit];
+  const limit = (after.policy && after.policy.strike_limit) || governor.DEFAULT_STRIKE_LIMIT;
+
+  console.log(`▸ Strike ${count}/${limit} on ${unit}`);
+  if (count >= limit) console.log('  Limit reached — the governor will stop the run on the next turn.');
+  return 0;
+}
+
+function cmdClearStrikes(args) {
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
+  manifestLib.clearStrikes(active.root, unit);
+  console.log(`▸ Strikes cleared on ${unit}`);
+  return 0;
+}
+
 function runRun(args) {
   const sub = args[0];
   const rest = args.slice(1);
@@ -218,6 +348,12 @@ function runRun(args) {
     case 'status': return cmdStatus(rest);
     case 'continue': return cmdContinue(rest);
     case 'stop': return cmdStop(rest);
+    case 'advance': return cmdAdvance(rest);
+    case 'decide': return cmdDecide(rest);
+    case 'park': return cmdPark(rest);
+    case 'resolve': return cmdResolve(rest);
+    case 'strike': return cmdStrike(rest);
+    case 'clear-strikes': return cmdClearStrikes(rest);
     case undefined:
     case 'help':
     case '--help':

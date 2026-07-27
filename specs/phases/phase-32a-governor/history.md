@@ -235,6 +235,40 @@ Verification: 22 tests in `run-cli.test.js`; full suite **1272/1272**.
 
 ---
 
+### [DISCOVERY] 2026-07-27 — G5's orphan guard found BUG-031's shape in this phase's own code
+Topics: call-path, orphan-exports, bug-031, dogfood, guard
+Affects-phases: phase-32a-governor
+Affects-specs: tests/run-reachability.test.js, bin/run.js, core/run/lib/authority.js, core/run/lib/manifest.js
+Detail: The guard was written to ensure this phase could not repeat the defect it
+was named after. Within minutes of existing it flagged **15 orphaned exports —
+all of them mine**, including the entire run-state mutation API: `advance`,
+`recordDecision`, `recordPark`, `resolvePark`, `recordStrike`, `clearStrikes`.
+Every one built, every one unit-tested, every one reachable from nothing but
+tests. Without the guard this phase would have shipped a governor that ran
+correctly while `decisions[]` and `parked[]` stayed permanently empty — BUG-031's
+exact shape, reproduced by the same author, in the same week, in the code written
+to prevent it.
+
+That is the finding worth keeping: **being careful does not work.** Phase 31c
+already tried care and the class reproduced twice within hours. Only enumeration
+catches it — a guard that discovers the surface itself and fails on new entries
+rather than relying on anyone to remember.
+
+Fixed by wiring six CLI subcommands (`run advance|decide|park|resolve|strike|
+clear-strikes`) — which are, not coincidentally, exactly what an agent inside a
+run needs in order to record anything. The remaining eight orphans were helpers
+exported "for tests"; each was either given a real consumer (`REASON` and
+`DEFAULT_PARK_THRESHOLD` now render in `run status`) or unexported, with the
+affected assertions rewritten against the public surface. One refinement to the
+guard itself: a file that self-invokes (`require.main === module`) AND is named
+by a production script counts as a wired entry point, since `run-governor.sh`
+reaches `hook.js` by path rather than by export name.
+
+Verification: guard proven red on a synthetic orphan then green; full suite
+**1285/1285** (baseline 1161, **124 net-new**).
+
+---
+
 ### [DISCOVERY] 2026-07-27 — Hook scripts install to adapters that cannot use them
 Topics: adapters, packaging, capability-gating, governor
 Affects-phases: phase-32c-adapter-parity

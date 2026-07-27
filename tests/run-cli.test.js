@@ -191,8 +191,10 @@ test('status surfaces autonomous decisions and parked questions without stopping
     assert.match(r.stdout, /Decisions taken autonomously \(1\)/);
     assert.match(r.stdout, /chunked uploads manually/);
     assert.match(r.stdout, /library lacks streaming/);
-    assert.match(r.stdout, /Parked questions \(1\)/);
+    assert.match(r.stdout, /Parked questions \(1\/\d+\)/, 'parks render against the stop threshold');
     assert.match(r.stdout, /these units are frozen, others proceed/);
+    assert.match(r.stdout, /a Rule-14 trigger fired/, 'the ADR-0019 classification must be legible');
+    assert.match(r.stdout, /momentum run resolve <id>/, 'status must tell the operator how to answer');
 
     assert.equal(manifestLib.load(dir).status, 'running', 'status must not disturb the run');
   });
@@ -228,6 +230,106 @@ test('status --json emits the manifest for tooling', () => {
     const parsed = JSON.parse(r.stdout);
     assert.equal(parsed.tier, 'epic');
     assert.equal(parsed.schema_version, 1);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// During-run subcommands — added after the orphan guard proved the manifest's
+// mutation API had no production caller. Without these, decisions[] and
+// parked[] would stay empty forever: BUG-031's shape, in new code.
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('the agent can record a decision it took under its own authority', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p', '--unit', 'G1');
+    const r = run(dir, 'run', 'decide', 'chunked uploads manually', '--why', 'library lacks streaming');
+    assert.equal(r.status, 0, r.stderr);
+
+    const d = manifestLib.load(dir).decisions[0];
+    assert.equal(d.unit, 'G1', 'defaults to the current cursor');
+    assert.equal(d.summary, 'chunked uploads manually');
+    assert.equal(d.rationale, 'library lacks streaming');
+    assert.equal(d.authority, 'agent');
+  });
+});
+
+test('parking says out loud that it freezes only one unit', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p', '--unit', 'G1');
+    const r = run(dir, 'run', 'park', 'S3 or GCS?', '--unit', 'G2', '--reason', 'operator-authority');
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stdout, /freezes ONLY that unit/);
+
+    const p = manifestLib.load(dir).parked[0];
+    assert.equal(p.blocked_unit, 'G2');
+    assert.equal(p.resolved, false);
+    assert.equal(p.reason, 'operator-authority');
+  });
+});
+
+test('park requires a blocked unit — a park with no unit freezes nothing', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p');
+    const r = run(dir, 'run', 'park', 'a question');
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /--unit <unit>/);
+  });
+});
+
+test('resolving a park unfreezes its unit', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p');
+    run(dir, 'run', 'park', 'S3 or GCS?', '--unit', 'G2');
+    const r = run(dir, 'run', 'resolve', '0001', 'S3');
+    assert.equal(r.status, 0, r.stderr);
+
+    const p = manifestLib.load(dir).parked[0];
+    assert.equal(p.resolved, true);
+    assert.equal(p.answer, 'S3');
+  });
+});
+
+test('resolving an unknown park id fails loudly', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p');
+    const r = run(dir, 'run', 'resolve', '9999', 'x');
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /no parked item/);
+  });
+});
+
+test('strikes count toward the limit and warn at it', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p', '--unit', 'G1');
+    assert.match(run(dir, 'run', 'strike').stdout, /Strike 1\/3 on G1/);
+    run(dir, 'run', 'strike');
+    const third = run(dir, 'run', 'strike');
+    assert.match(third.stdout, /Strike 3\/3/);
+    assert.match(third.stdout, /governor will stop the run on the next turn/);
+
+    run(dir, 'run', 'clear-strikes');
+    assert.equal(manifestLib.load(dir).strikes.G1, undefined);
+  });
+});
+
+test('advance moves the cursor and is idempotent through the CLI', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p', '--unit', 'G1');
+    run(dir, 'run', 'advance', 'G2');
+    run(dir, 'run', 'advance', 'G2');
+    const m = manifestLib.load(dir);
+    assert.equal(m.cursor.unit, 'G2');
+    assert.equal(m.audit.filter((a) => a.event === 'continue').length, 1);
+  });
+});
+
+test('during-run subcommands refuse when there is no run', () => {
+  withTmp((dir) => {
+    for (const argv of [['decide', 'x'], ['park', 'q', '--unit', 'u'], ['advance', 'G1'], ['strike']]) {
+      const r = run(dir, 'run', ...argv);
+      assert.equal(r.status, 1, argv.join(' '));
+      assert.match(r.stderr, /no active run/);
+    }
   });
 });
 

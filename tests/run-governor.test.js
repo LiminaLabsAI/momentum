@@ -432,6 +432,27 @@ test('PRODUCTION PATH — a corrupt manifest fails open rather than trapping the
   });
 });
 
+test('INVARIANCE — a repo with no run is left byte-unchanged', () => {
+  // The guarantee that makes this phase safe to ship: adding a runtime must not
+  // change what any existing command or hook decides when that runtime is
+  // absent. Asserted, not assumed.
+  withTmp((dir) => {
+    fs.writeFileSync(path.join(dir, 'file.txt'), 'untouched', 'utf8');
+    const before = fs.readdirSync(dir).sort();
+
+    const r = spawnSync('bash', [path.join(REPO_ROOT, 'core', 'scripts', 'run-governor.sh')], {
+      env: Object.assign({}, process.env, { MOMENTUM_PROJECT_DIR: dir }),
+      input: '', encoding: 'utf8',
+    });
+
+    assert.equal(r.status, 0);
+    assert.equal(r.stderr, '', 'a repo with no run must see no output at all');
+    assert.deepEqual(fs.readdirSync(dir).sort(), before, 'no files may be created');
+    assert.ok(!fs.existsSync(path.join(dir, '.momentum')), '.momentum must not be conjured');
+    assert.equal(fs.readFileSync(path.join(dir, 'file.txt'), 'utf8'), 'untouched');
+  });
+});
+
 test('the hook script is one file shared by both interceptor adapters', () => {
   const src = fs.readFileSync(path.join(REPO_ROOT, 'core', 'scripts', 'run-governor.sh'), 'utf8');
   assert.match(src, /shared by Claude Code \+ Antigravity/);

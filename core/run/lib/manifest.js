@@ -275,7 +275,6 @@ function setStatus(repoRoot, status, nowIso, detail) {
 }
 
 module.exports = {
-  SCHEMA_VERSION,
   TIERS,
   STATUSES,
   momentumDir,
@@ -289,7 +288,6 @@ module.exports = {
   write,
   update,
   create,
-  newRunId,
   advance,
   recordTurn,
   recordDecision,

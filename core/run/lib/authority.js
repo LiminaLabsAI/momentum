@@ -175,11 +175,12 @@ function classify(changeSet, config) {
   };
 }
 
+// `isProductionPath` and `resolveThresholds` are deliberately NOT exported.
+// They were, briefly, "for tests" — which the orphan guard correctly flagged as
+// the first step toward dead code. Their behaviour is asserted through
+// `classify()`, which is the surface production actually uses.
 module.exports = {
   classify,
   REASON,
   AUTHORITY,
-  // exported for tests + `momentum run status` rendering
-  isProductionPath,
-  resolveThresholds,
 };
