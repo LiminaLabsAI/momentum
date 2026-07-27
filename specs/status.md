@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: **32a Governor** — first phase of **Epic 0001 Autonomous Execution** (`specs/epics/0001-autonomous-execution.md`), the project's first `Epic` record. Momentum plans at four tiers and executes at one; the epic closes that gap. 32a mechanizes the Autonomous Execution Contract (prose today, forgotten by group four); 32b adds the `epic` tier + JIT spec derivation + scope grant; 32c brings all four adapters to parity via a re-invoker backend; 32d lifts the runner cross-repo and retires swarm's dead wave runner (**BUG-031**). Intelligence → 33, Platform → 34.
-> **Latest Release**: v0.42.0 — Phase 31c Shipped Runtime (TD-012, TD-013, **BUG-030**; ADR-0018). **Repairs a headline feature that never fired outside tests**: `lanes land`'s cross-repo gate was skipped in the standard sibling layout because `findRoot` walked up only — v0.41.0 shipped ENH-068 non-functional. ONE `findRoot` (up-walk → sibling scan → registration) fixes it; discovery went **7 implementations across 3 algorithms → 1**, bash included. The duplication's premise was **measured for the first time** (96 kB of a 1.4 MB package), so the three hook-side mirrors are **deleted** rather than fenced — `eco-event.js` 277→178, `cross-repo.js` 176→136, `orient.js` with zero registry parsing. Closure vendored verbatim to `.momentum/runtime/`, **committed** so a fresh clone has working hooks; byte-identity asserted. Ships an **enumerative production-call-path guard** closing the BUG-028/029/030 class. Suite 1161/1161; swarm 236/236; OKF 326; solo byte-unchanged. _(v0.41.1 BUG-029; v0.41.0 Phase 31b; v0.40.0 Phase 31a.)_
+> **Current Phase**: _none active_ — **Epic 0001 Autonomous Execution shipped v0.43.0** (32a/32b/32c/32d). Next: **Phase 33 Intelligence** or **34 Platform** (both Not Started).
+> **Latest Release**: v0.43.0 — **Epic 0001: Autonomous Execution** (phases 32a–32d; ADR-0019, ADR-0020). Momentum planned at four tiers and executed at one, and that one was governed by prose with no enforcer. This closes the gap: the **governor** mechanizes the Autonomous Execution Contract (interceptor on Claude Code + Antigravity, **re-invoker** with an external driver loop on Codex + opencode — **all four agents autonomous**); the **epic** tier gives "one feature, several phases" a record, with specs **derived just-in-time** so the operator is never re-interviewed; the **scope grant** (ADR-0020) lets one approval fund N landings, scoped, expiring, revocable and audited. Decision authority is classified **mechanically** by reusing Rule 14's escalation triggers (ADR-0019), ambiguity parks rather than guesses, and an **amendments channel** lets the operator change their mind mid-run without stopping everything. Closes **BUG-031** (swarm's wave runner had no production caller — removed) and **BUG-032** (the cross-repo nudge said "before going further" and an agent obeyed the wording, halting ecosystem sessions). Suite **1161 → 1415**. Dogfooded: 32b/c/d were each built by the 32a runner, and 32c/32d had their specs **generated** by `momentum run derive`. _(v0.42.0 Phase 31c; v0.41.0 Phase 31b.)_
 > **Health**: On Track
 
 ## Summary
@@ -63,6 +63,10 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 31a | Ecosystem Lifecycle Spine | Complete | v0.40.0 (2026-07-27) |
 | 31b | Ecosystem Enforcement | Complete | v0.41.0 (2026-07-27) |
 | 31c | Shipped Runtime | Complete | v0.42.0 (2026-07-27) |
+| 32a | Governor (Epic 0001) | Complete | v0.43.0 (2026-07-28) |
+| 32b | Epic Tier (Epic 0001) | Complete | v0.43.0 (2026-07-28) |
+| 32c | Adapter Parity (Epic 0001) | Complete | v0.43.0 (2026-07-28) |
+| 32d | Cross-Repo (Epic 0001) | Complete | v0.43.0 (2026-07-28) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
@@ -111,10 +115,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 32a Governor (Epic 0001) | `epic-0001-autonomous-execution` | **Built + verified** — unlanded by design (`release: per-feature`) | G0–G5 ✅ 6/6 |
-| 32b Epic Tier (Epic 0001) | `epic-0001-autonomous-execution` | **Built + verified** (1383/1383) — unlanded by design (`release: per-feature`) | G0–G5 ✅ 6/6 |
-| 32c Adapter Parity (Epic 0001) | `epic-0001-autonomous-execution` | **Built + verified** (1406/1406) — all four adapters autonomous; unlanded by design | G0–G3 ✅ 4/4 |
-| 32d Cross-Repo (Epic 0001) | `epic-0001-autonomous-execution` | **Built + verified** (1415/1415) — **Epic 0001 COMPLETE**, awaiting the single landing approval | G0–G3 ✅ 4/4 |
+| _(none active)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
