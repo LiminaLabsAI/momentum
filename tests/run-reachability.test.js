@@ -31,7 +31,21 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const RUN_LIB = path.join(REPO_ROOT, 'core', 'run', 'lib');
+/**
+ * Phase 32d G0 — WIDENED beyond core/run/.
+ *
+ * 32c found this guard blind to single-line `module.exports` and therefore
+ * green over four modules for two phases. Repairing the regex was half the
+ * debt; the other half is running it over the surface it should always have
+ * covered. `core/swarm/` is where BUG-031 actually lived, and
+ * `core/ecosystem/` is the other subsystem with hook-side entry points.
+ */
+const SCANNED = [
+  path.join(REPO_ROOT, 'core', 'run', 'lib'),
+  path.join(REPO_ROOT, 'core', 'swarm'),
+  path.join(REPO_ROOT, 'core', 'ecosystem', 'lib'),
+];
+const RUN_LIB = SCANNED[0];
 
 /** Directories that count as PRODUCTION — a reference here proves reachability. */
 const PRODUCTION_DIRS = ['bin', 'core', 'adapters', 'scripts'];
@@ -144,7 +158,8 @@ function scanRunExports() {
   const orphans = [];
   const reached = [];
 
-  for (const file of listJs(RUN_LIB)) {
+  const files = SCANNED.filter((d) => fs.existsSync(d)).flatMap(listJs);
+  for (const file of files) {
     const rel = path.relative(REPO_ROOT, file);
     if (isWiredEntryPoint(file, corpus)) {
       reached.push({ name: '(entry point)', file: rel, by: 'invoked as a script' });
@@ -161,19 +176,49 @@ function scanRunExports() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-test('BUG-031 GUARD: every core/run export is reachable from production', () => {
+/**
+ * Legacy orphan budget for the subsystems widened into in 32d.
+ *
+ * `core/run/` is held at ZERO — it is this epic's code and there is no excuse.
+ * `core/swarm/` and `core/ecosystem/` carry a pre-existing tail that predates
+ * the guard, and fixing ~30 legacy exports is a different phase's work with a
+ * different blast radius.
+ *
+ * So this is a RATCHET, not an amnesty: the count may fall, never rise. Adding a
+ * new orphan to swarm or ecosystem fails here, while the existing tail is
+ * recorded honestly rather than hidden behind a narrower scan. 32d's G1 removal
+ * lowers it; nothing may raise it.
+ */
+const LEGACY_ORPHAN_BUDGET = 87; // measured 2026-07-27; may fall, never rise
+
+test('BUG-031 GUARD: core/run has ZERO orphans — this epic\'s own code', () => {
+  // The debt 32c named: the guard was blind to single-line exports and green
+  // over backend.js / lock.js / grant.js / amend.js for two phases. This is the
+  // re-run that makes 32a's and 32b's "guard clean" claims earned rather than
+  // asserted.
   const { orphans, reached } = scanRunExports();
+  assert.ok(reached.length > 0, 'a scan that finds nothing passes vacuously');
 
-  assert.ok(reached.length > 0, 'the scanner must find real exports — a scan that finds nothing passes vacuously');
-
+  const runOrphans = orphans.filter((o) => o.file.startsWith(path.join('core', 'run')));
   assert.deepEqual(
-    orphans.map((o) => `${o.file}:${o.name}`),
+    runOrphans.map((o) => `${o.file}:${o.name}`),
     [],
     'These exports have NO production caller — only tests can reach them.\n'
     + 'That is exactly how swarm\'s pollTurn stayed green for a year while\n'
     + '`--mode autopilot` never ran (BUG-031). Either wire it to a production\n'
     + 'entry point, or stop exporting it:\n  '
-    + orphans.map((o) => `${o.file}:${o.name}`).join('\n  ')
+    + runOrphans.map((o) => `${o.file}:${o.name}`).join('\n  ')
+  );
+});
+
+test('BUG-031 GUARD: the legacy tail ratchets down, never up', () => {
+  const { orphans } = scanRunExports();
+  const legacy = orphans.filter((o) => !o.file.startsWith(path.join('core', 'run')));
+  assert.ok(
+    legacy.length <= LEGACY_ORPHAN_BUDGET,
+    `legacy orphan count rose to ${legacy.length} (budget ${LEGACY_ORPHAN_BUDGET}).\n`
+    + 'The tail may shrink, never grow. New orphans:\n  '
+    + legacy.map((o) => `${o.file}:${o.name}`).join('\n  ')
   );
 });
 
@@ -202,8 +247,10 @@ test('BUG-031 GUARD: the guard actually detects an orphan', () => {
     fs.unlinkSync(tmpFile);
   }
 
-  // ...and goes green again once the orphan is gone.
-  assert.deepEqual(scanRunExports().orphans, []);
+  // ...and core/run goes clean again once the orphan is gone.
+  const after = scanRunExports().orphans
+    .filter((o) => o.file.startsWith(path.join('core', 'run')));
+  assert.deepEqual(after, []);
 });
 
 test('BUG-031 GUARD: the shell entry point counts as production', () => {
