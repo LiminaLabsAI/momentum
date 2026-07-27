@@ -153,8 +153,54 @@
     },
     "grant": {
       "type": "object",
-      "additionalProperties": true,
-      "description": "Scoped authorization replacing the single-use merge-approved sentinel for multi-landing runs. Reserved in 32a; defined by ADR-0020 and written in 32b. Shape deliberately open here so 32a does not pre-commit a one-way door it is not yet ready to decide."
+      "additionalProperties": false,
+      "required": ["grant_id", "epic", "branches", "expires", "landings_remaining"],
+      "description": "Scoped authorization covering N landings for ONE epic (ADR-0020). Offered ALONGSIDE the single-use merge-approved sentinel, never replacing it — a repo that never mints one behaves byte-identically to v0.42.0. Bounded on three axes because the honest cost of a grant is that one approval now covers code the operator has not read: scope (a branch allowlist it cannot exceed), time (a hard, non-sliding expiry), and count (a landing budget). Every consumption is audited before the push proceeds.",
+      "properties": {
+        "grant_id": { "type": "string", "pattern": "^grant_[a-z0-9]{4,16}$" },
+        "epic": {
+          "type": "string",
+          "description": "The epic slug this grant is bound to. A run for any other epic is refused with `epic-mismatch`."
+        },
+        "branches": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "The ONLY branches this grant may land. A push to anything else falls through to the sentinel path as though no grant existed — the grant cannot authorize work outside the plan's own branches."
+        },
+        "expires": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Absolute, never sliding. An authorization that outlives the operator's attention is the hazard most likely to bite: a run that goes wrong at hour three would otherwise still hold hour zero's yes."
+        },
+        "landings_remaining": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Decremented per consumption. Defaults to the epic's phase count, so a grant cannot fund landings the plan never described. Zero is `exhausted`, not unlimited."
+        },
+        "revoked": {
+          "type": "boolean",
+          "default": false,
+          "description": "Revocation takes effect on the next verification — there is no cached decision."
+        },
+        "minted_by": { "type": "string" },
+        "minted_at": { "type": "string", "format": "date-time" },
+        "consumptions": {
+          "type": "array",
+          "description": "Attributed record of every landing this grant funded. This is the compensating control for the operator no longer being present at each protected write, so it is written BEFORE the push proceeds, not after.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ts", "branch"],
+            "properties": {
+              "ts": { "type": "string", "format": "date-time" },
+              "branch": { "type": "string" },
+              "actor": { "type": "string" },
+              "remaining": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
     },
     "created": { "type": "string", "format": "date-time" },
     "audit": {

@@ -82,14 +82,20 @@ test('run schema policy encodes the floor rules as type constraints, not prose',
   assert.deepEqual(policy.properties.tdd.enum, ['strict', 'opt-in']);
 });
 
-test('run schema reserves 32b surfaces without pre-committing their shape', () => {
+test('run schema reserved the 32b surfaces, and 32b closed them', () => {
   const schema = JSON.parse(fs.readFileSync(SCHEMA_PATH, 'utf8'));
 
-  // `grant` is ADR-0020's one-way door on the trust layer. 32a reserves the
-  // field so resume formats do not break, but leaves the shape open so 32b can
-  // decide it against real machinery.
-  assert.equal(schema.properties.grant.additionalProperties, true,
-    'grant shape belongs to ADR-0020 (32b), not to 32a');
+  // 32a reserved `grant` with an OPEN shape so resume formats would not break
+  // while deliberately not pre-committing ADR-0020's one-way door. 32b decided
+  // it and closed the shape. This assertion tracks that handoff rather than
+  // freezing 32a's placeholder — the reservation was the point, not the
+  // openness.
+  assert.equal(schema.properties.grant.additionalProperties, false,
+    'ADR-0020 (32b) has now fixed the grant shape');
+  for (const bound of ['branches', 'expires', 'landings_remaining']) {
+    assert.ok(schema.properties.grant.required.includes(bound),
+      `the grant must stay bounded on ${bound}`);
+  }
   assert.ok(schema.properties.amendments, 'amendments channel reserved for 32b (D11)');
 });
 

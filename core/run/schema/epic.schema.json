@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/epic-v1.json",
+  "title": "Momentum Epic Record",
+  "description": "The frontmatter contract for specs/epics/<NNNN>-<slug>.md — one repo's multi-phase unit, the rung between `phase` and the ecosystem-tier `initiative`. In-repo deliberately: a solo repo must be able to group two phases without first having an ecosystem root, so the lighter unit never depends on the heavier one. Body sections (objective, decisions table, completion criteria) are free-form human writing that the agent reads but does not reformat — the same boundary initiatives already draw.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["type", "id", "slug", "status", "phases"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "Epic",
+      "description": "OKF type discriminator (ADR-0005)."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}$",
+      "description": "Zero-padded, monotonic within the repo. Mirrors the initiative numbering one tier down so the two read the same way."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "in-progress", "complete", "abandoned"]
+    },
+    "owner": { "type": "string" },
+    "started": { "type": "string" },
+    "closed": { "type": "string" },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Phase directory names in `specs/phases/`, in intended order. Execution order is NOT read from this array — it is computed from each phase's own `deps:` frontmatter through core/waves, so there is one topological sort in the codebase (ADR-0003) rather than a second one hiding here."
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Run policy defaults for phases in this epic — the same free/coupled/floor shape core/run/lib/config-rules.js validates. Frozen into each run's manifest at start; a policy that shifts mid-run makes the audit trail unreadable.",
+      "properties": {
+        "release": { "type": "string", "enum": ["per-phase", "per-feature", "manual"] },
+        "push": { "type": "string", "enum": ["per-group", "per-phase"] },
+        "tdd": { "type": "string", "enum": ["strict", "opt-in"] },
+        "authority": { "type": "string" }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string" } }
+  }
+}
