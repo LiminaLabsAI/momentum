@@ -44,6 +44,12 @@ During a run — how the agent records what it did:
   momentum run strike [--unit U]       Record a failure on the current unit
   momentum run clear-strikes [--unit U]
 
+Scope grant (ADR-0020) — one approval, N landings, ONE epic:
+  momentum run grant --branches a,b   Mint. [--hours N] [--landings N] [--epic S]
+      [--hours 8]
+  momentum run grant status           Show scope, expiry, budget, consumptions
+  momentum run grant revoke           Effective on the next verification
+
 Operator halt from any shell, no momentum command needed:
   touch .momentum/run-stop
 `;
@@ -339,6 +345,88 @@ function cmdClearStrikes(args) {
   return 0;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Scope grant (ADR-0020) — one approval, N landings, for ONE epic
+// ─────────────────────────────────────────────────────────────────────────────
+
+const grantLib = require(path.join(MOMENTUM_ROOT, 'core', 'run', 'lib', 'grant'));
+
+function gitEmail(cwd) {
+  const r = require('child_process').spawnSync('git', ['config', 'user.email'], { cwd, encoding: 'utf8' });
+  return (r.stdout || '').trim() || 'unknown';
+}
+
+function cmdGrant(args) {
+  const active = requireActiveRun();
+  if (!active) return 1;
+
+  const sub = args[0];
+  if (sub === 'revoke') {
+    const r = grantLib.revoke(active.root, nowIso());
+    if (!r.ok) { console.error(`Error: ${grantLib.explain(r.reason)}`); return 1; }
+    console.log('▸ Grant revoked. It is refused on the next verification — there is no cached decision.');
+    return 0;
+  }
+
+  if (sub === 'status' || sub === undefined) {
+    const g = grantLib.load(active.root);
+    if (!g) { console.log('No scope grant on this run.'); return 0; }
+    console.log(`▸ Grant ${g.grant_id}${g.revoked ? '  [REVOKED]' : ''}`);
+    console.log(`  Epic:      ${g.epic}`);
+    console.log(`  Branches:  ${g.branches.join(', ')}`);
+    console.log(`  Expires:   ${g.expires}`);
+    console.log(`  Landings:  ${g.landings_remaining} remaining`);
+    if (g.consumptions.length) {
+      console.log('');
+      console.log(`  Consumed (${g.consumptions.length}):`);
+      for (const c of g.consumptions) console.log(`    - ${c.ts}  ${c.branch}  ${c.actor}`);
+    }
+    return 0;
+  }
+
+  // mint (default verb)
+  const branchesArg = flag(args, '--branches');
+  if (!branchesArg) {
+    console.error('Error: momentum run grant --branches a,b [--hours N] [--landings N]');
+    console.error('  A grant is a credential. It is scoped to one epic, expires, and is revocable.');
+    return 1;
+  }
+
+  const hours = parseInt(flag(args, '--hours', '8'), 10);
+  const epicSlug = flag(args, '--epic', active.m.tier === 'epic' ? active.m.target : null);
+  if (!epicSlug) {
+    console.error('Error: --epic required (this run is not epic-tier).');
+    return 1;
+  }
+
+  const phaseCount = (epicLib.load(specsDir(), epicSlug) || { data: {} }).data.phases;
+  const landings = parseInt(
+    flag(args, '--landings', String((phaseCount && phaseCount.length) || 1)), 10);
+
+  try {
+    const g = grantLib.mint({
+      repoRoot: active.root,
+      epic: epicSlug,
+      branches: branchesArg.split(',').map((s) => s.trim()).filter(Boolean),
+      expiresIso: new Date(Date.now() + hours * 3600 * 1000).toISOString(),
+      landings,
+      actor: gitEmail(active.root),
+      nowIso: nowIso(),
+    });
+    console.log(`▸ Grant ${g.grant_id} minted for epic "${g.epic}"`);
+    console.log(`  Branches:  ${g.branches.join(', ')}  (nothing else)`);
+    console.log(`  Expires:   ${g.expires}`);
+    console.log(`  Landings:  ${g.landings_remaining}`);
+    console.log('');
+    console.log('  This covers code you have not read yet. Revoke any time:');
+    console.log('    momentum run grant revoke');
+    return 0;
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    return 1;
+  }
+}
+
 function runRun(args) {
   const sub = args[0];
   const rest = args.slice(1);
@@ -354,6 +442,7 @@ function runRun(args) {
     case 'resolve': return cmdResolve(rest);
     case 'strike': return cmdStrike(rest);
     case 'clear-strikes': return cmdClearStrikes(rest);
+    case 'grant': return cmdGrant(rest);
     case undefined:
     case 'help':
     case '--help':

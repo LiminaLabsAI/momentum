@@ -3,7 +3,7 @@
     "captured": "2026-07-27",
     "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "antigravity",
-    "note": "Phase 32a G4 — swarm wave-runner deprecation notice (BUG-031) added to all four swarm recipes; the inbox + wave-ordering are explicitly retained."
+    "note": "Phase 32b G2 — pre-push accepts a valid in-scope scope grant alongside the single-use sentinel (ADR-0020); fail-closed on every error path."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -46,7 +46,7 @@
     ".githooks/post-commit": "49058da1fde0ab3c8bf12c8e4228ec896123d67b10e902a4b9a7971c1a6aa4dd",
     ".githooks/post-merge": "d140ca9d27ce9f743533ee56cf7676563c64bf2c21d5989363e52ba46b93808f",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
+    ".githooks/run-check.js": "457de52fe005e29bdc4ab083e201dd6432496aafb3aa79435272cc338c525114",
     ".gitignore": "0f45d028f2909d76989fd32c732cbfabe614cdb8e7951ad02e6794a22a287bf6",
     "AGENTS.md": "68b39184872ab97a18550a7b79a935856c080e46673b8b98f2ed8f7ad43a7aa4",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
