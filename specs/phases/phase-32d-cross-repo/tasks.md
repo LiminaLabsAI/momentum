@@ -32,6 +32,9 @@ epic: autonomous-execution
 - [x] **Recovered an overwritten test file** — see history. Suite reconciles at 1407 + 8 = **1415**
 - [x] Verify: `node --test tests/cross-repo-nudge.test.js` → **19/19**; `npm test` → **1415/1415**
 
-## Group 3 — Close the epic
-- [ ] Retrospective + `## Verification Evidence`
-- [ ] Epic 0001 retrospective + `momentum epic close`
+## Group 3 — Close the epic ✅
+- [x] Full suite **1415/1415**; swarm **236/236**; guard **5/5**; conformance **23/23**; epic e2e **8/8**; nudge **19/19**
+- [x] `retrospective.md` + `## Verification Evidence` (Rule 12 Gate A)
+- [x] **Epic 0001 retrospective** — `specs/epics/0001-autonomous-execution-retrospective.md`
+- [x] Epic marked complete
+- [ ] **Landing — awaiting operator approval** (Rule 6; `release: per-feature` means all four phases land together)

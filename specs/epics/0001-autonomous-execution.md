@@ -2,19 +2,16 @@
 type: Epic
 id: "0001"
 slug: autonomous-execution
-status: planned
+status: complete
 owner: avinash-singh-io
-started: 2026-07-27
-phases:
-  - phase-32a-governor
-  - phase-32b-epic-tier
-  - phase-32c-adapter-parity
-  - phase-32d-cross-repo
+started: "2026-07-27"
+phases: [phase-32a-governor, phase-32b-epic-tier, phase-32c-adapter-parity, phase-32d-cross-repo]
 policy_release: per-feature
 policy_push: per-phase
 policy_tdd: strict
 policy_authority: rule-14-triggers
 tags: [autonomy, governor, run-manifest, decision-authority, scope-grant, epic-tier, adapter-parity]
+closed: "2026-07-27T19:57:12.057Z"
 ---
 
 # Epic 0001 — Autonomous Execution
