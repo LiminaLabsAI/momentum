@@ -361,3 +361,19 @@ is precision rather than convenience. The test that tells the difference is
 whether the excluded thing could ever be the bug you are hunting.
 
 ---
+### [NOTE] 2026-07-27 — G5 complete: verified, dogfooded, at the release gate
+Topics: g5, verification, dogfood, evidence
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: specs/phases/phase-31c-shipped-runtime/evidence/verification.md
+Detail: Suite 1161/1161 (baseline 1140), swarm 236/236, OKF 326 conformant, four
+fingerprints with no drift. AC-1 is proven through the REAL CLI — `momentum lanes
+land` refuses with the ecosystem gate visible and nothing injected, which is the
+call path BUG-030 broke. AC-6 clones a committed install, touches nothing, and
+asserts every runtime module is present and loads. Solo invariance measured
+rather than assumed. The dogfood is the part worth keeping: `findRoot` from this
+repo returned `null` before this phase and now resolves the real
+`cerebrio-ecosystem`, 40 real commit fragments were captured today by the rewired
+hooks, and all 12 vendored files are byte-identical — live, not fixtures.
+Remaining: `/sync-docs` then `/complete-phase` at the operator gate.
+
+---

@@ -72,10 +72,13 @@ status: in-progress
 - [x] `momentum okf check` — 326 files conformant
 - [x] Verify `npm test` green — **1158/1158**; commit G4
 
-## Group 5 — Verification & release prep *(last)*
-- [ ] **Fresh-clone e2e** — hooks work with NO `upgrade` run (AC-6, the criterion R4 exists for)
-- [ ] **BUG-030 e2e** — `lanes land` gate applies in a real sibling layout with no injected root (AC-1)
-- [ ] Full suite green; **236 swarm tests green**; solo/no-ecosystem byte-unchanged
-- [ ] Self-repo dogfood against real activity (Phase 20 lesson — synthetic-only does not count)
-- [ ] Capture evidence under `evidence/`
-- [ ] `/sync-docs` → retrospective → `/complete-phase` at the operator gate
+## Group 5 — Verification & release prep *(last)* ✅
+- [x] **Fresh-clone e2e** — clone a committed install, touch nothing, assert every runtime module is present AND loads (AC-6)
+- [x] **BUG-030 e2e through the real CLI** — `momentum lanes land` refuses, naming backend + the api-contract edge, with no injected root (AC-1)
+- [x] `upgrade` keeps the runtime byte-identical
+- [x] Full suite **1161/1161** (baseline 1140); **swarm 236/236**; OKF 326 conformant; 4 fingerprints no drift
+- [x] **Solo invariance measured**: no-ecosystem repo → silent commit, `session-append` exit 0 no output, empty banner, `lanes board` unchanged
+- [x] **Live dogfood, not synthetic** (Phase 20 lesson): `findRoot` from this repo returned `null` pre-31c and now resolves the real `cerebrio-ecosystem`; `discover.js` → `<root>\tmomentum`; fleet orient via the vendored runtime; **40 real event fragments** captured today; all 12 vendored files byte-identical
+- [x] Evidence captured in `evidence/verification.md`
+- [x] Retrospective written
+- [ ] `/sync-docs` → `/complete-phase` at the operator gate

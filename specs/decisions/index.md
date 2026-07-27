@@ -18,4 +18,5 @@
 * [ADR-0015: Ecosystem (Multi-Repo) Team Mode](/decisions/0015-ecosystem-team-mode.md)
 * [ADR-0016: Ecosystem Lifecycle Spine](/decisions/0016-ecosystem-lifecycle-spine.md)
 * [ADR-0017: Layered Ecosystem Enforcement](/decisions/0017-layered-ecosystem-enforcement.md)
+* [ADR-0018: Shipped Runtime & Unified Discovery](/decisions/0018-shipped-runtime.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.
