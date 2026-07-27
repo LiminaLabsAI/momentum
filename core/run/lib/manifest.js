@@ -265,6 +265,33 @@ function clearStrikes(repoRoot, unit) {
   });
 }
 
+/**
+ * Record a failing→passing transition for one task (Epic 0001 D12).
+ *
+ * With the operator absent for several phases, this is the ONLY evidence of
+ * progress that is not the agent's own opinion. That is why TDD stops being a
+ * quality preference in autonomous mode and becomes the control signal: "is
+ * this done?" was previously answered by a human looking at it.
+ *
+ * Stored on the manifest rather than inferred from test output, because a run
+ * must be able to prove this after the fact, from disk, with no test runner.
+ */
+function recordRedGreen(repoRoot, unit, task, nowIso) {
+  return update(repoRoot, (m) => {
+    if (!m.red_green || typeof m.red_green !== 'object') m.red_green = {};
+    if (!Array.isArray(m.red_green[unit])) m.red_green[unit] = [];
+    if (!m.red_green[unit].includes(task)) m.red_green[unit].push(task);
+    appendAudit(m, { ts: nowIso, event: 'continue', actor: 'run', detail: `red→green ${unit}:${task}` });
+  });
+}
+
+/** PURE. Has `task` on `unit` got a recorded red→green? */
+function hasRedGreen(manifest, unit, task) {
+  if (!manifest || !manifest.red_green) return false;
+  const list = manifest.red_green[unit];
+  return Array.isArray(list) && list.includes(task);
+}
+
 function setStatus(repoRoot, status, nowIso, detail) {
   if (!STATUSES.includes(status)) throw new Error(`run/manifest: invalid status ${status}`);
   return update(repoRoot, (m) => {
@@ -294,6 +321,8 @@ module.exports = {
   recordPark,
   resolvePark,
   recordStrike,
+  recordRedGreen,
+  hasRedGreen,
   clearStrikes,
   setStatus,
 };

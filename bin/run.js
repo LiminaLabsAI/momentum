@@ -44,6 +44,10 @@ During a run — how the agent records what it did:
   momentum run strike [--unit U]       Record a failure on the current unit
   momentum run clear-strikes [--unit U]
 
+TDD strict — no task marked [x] without evidence:
+  momentum run red-green "<task>"       Record a failing→passing transition
+  momentum run check-task "<task>"      Refuses when strict and none is on record
+
 Mid-run operator changes (D11):
   momentum run amend "<change>"        --forward-only  absorbed, zero prompts
       [--invalidates u1,u2]            names completed work -> hard stop
@@ -110,11 +114,29 @@ function cmdStart(args) {
   // would halt this one on its first turn.
   manifestLib.clearKillSwitch(root);
 
+  // Epic-tier runs start at the first phase the wave plan says is ready, not
+  // at the epic slug — a cursor pointing at the epic itself names no work.
+  let firstUnit = flag(args, '--unit', null);
+  if (!firstUnit && tier === 'epic') {
+    const g = epicLib.waves(specsDir(), target);
+    const wave1 = g.waves[0];
+    if (wave1 && wave1.nodes.length) {
+      firstUnit = wave1.nodes[0];
+      if (wave1.nodes.length > 1) {
+        console.log(`  Wave 1 has ${wave1.nodes.length} ready phases: ${wave1.nodes.join(', ')}`);
+        console.log(`  Starting at ${firstUnit}; the rest are unblocked and may run in parallel lanes.`);
+      }
+    }
+    if (g.unscaffolded.length) {
+      console.log(`  ${g.unscaffolded.length} phase(s) not yet scaffolded — their specs derive when their turn comes.`);
+    }
+  }
+
   const m = manifestLib.create({
     repoRoot: root,
     tier,
     target,
-    unit: flag(args, '--unit', target),
+    unit: firstUnit || target,
     policy,
     budget: Object.keys(budget).length ? budget : undefined,
     nowIso: nowIso(),
@@ -516,6 +538,44 @@ function cmdDerive(args) {
   return 0;
 }
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// tdd: strict — the control signal that substitutes for absent human judgment
+// ─────────────────────────────────────────────────────────────────────────────
+
+function cmdRedGreen(args) {
+  const active = requireActiveRun();
+  if (!active) return 1;
+  const task = args[0];
+  if (!task) { console.error('Error: momentum run red-green "<task>" [--unit U]'); return 1; }
+
+  const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
+  manifestLib.recordRedGreen(active.root, unit, task, nowIso());
+  console.log(`▸ red→green recorded on ${unit}: ${task}`);
+  return 0;
+}
+
+function cmdCheckTask(args) {
+  const active = requireActiveRun();
+  if (!active) return 1;
+  const task = args[0];
+  if (!task) { console.error('Error: momentum run check-task "<task>" [--unit U]'); return 1; }
+
+  const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
+  const strict = (active.m.policy && active.m.policy.tdd) === 'strict';
+  const proven = manifestLib.hasRedGreen(active.m, unit, task);
+
+  if (strict && !proven) {
+    console.error(`Error: tdd: strict — "${task}" has no recorded red→green on ${unit}.`);
+    console.error('  With the operator absent, a failing-then-passing test is the only');
+    console.error('  evidence of progress that is not the agent\'s own opinion.');
+    console.error(`  Record it first:  momentum run red-green "${task}"`);
+    return 1;
+  }
+  console.log(`▸ "${task}" may be marked [x]${strict ? ' — red→green on record' : ''}`);
+  return 0;
+}
+
 function runRun(args) {
   const sub = args[0];
   const rest = args.slice(1);
@@ -534,6 +594,8 @@ function runRun(args) {
     case 'grant': return cmdGrant(rest);
     case 'amend': return cmdAmend(rest);
     case 'derive': return cmdDerive(rest);
+    case 'red-green': return cmdRedGreen(rest);
+    case 'check-task': return cmdCheckTask(rest);
     case undefined:
     case 'help':
     case '--help':

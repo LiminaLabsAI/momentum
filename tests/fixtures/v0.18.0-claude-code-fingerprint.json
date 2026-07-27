@@ -3,13 +3,14 @@
     "captured": "2026-07-27",
     "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "claude-code",
-    "note": "Phase 32b G2 — pre-push accepts a valid in-scope scope grant alongside the single-use sentinel (ADR-0020); fail-closed on every error path."
+    "note": "Phase 32b G4 — /brainstorm-epic (new shared recipe) + /brainstorm-phase --derive mode."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
+    ".claude/commands/brainstorm-epic.md": "cfa3785056106b1afb7c981d007303309ccd57d7655e8cc3514f097a824de96e",
     ".claude/commands/brainstorm-idea.md": "de33ab940d98bae76c6d30c871ed27614e51b11f1a413c71d9762c846cda050c",
     ".claude/commands/brainstorm-initiative.md": "2e2de3a58668c58ef20d8066835e4ed364741b435c77655bbcf13a37d966fdf1",
-    ".claude/commands/brainstorm-phase.md": "1f3fb30d1b71d8d7e15e81dff0726f650d599770eabd3336f9ddba436731faca",
+    ".claude/commands/brainstorm-phase.md": "cdd210d383476caab94adbadd6447247deda1cb9cbfc1577b4bdd02a094ff835",
     ".claude/commands/complete-initiative.md": "a7839c11bb9aa80e9863a22ba787039ca6cc8bf78d45a22e7c1482d96a205b47",
     ".claude/commands/complete-phase.md": "df9484cd6b6601cbd88917dc8bf12599ca62be61736a04ed944376f4224c05c2",
     ".claude/commands/continue.md": "ca2e18b81dce9c1086b14f57fa7798137a86e6956878bee08b822920869f06c2",

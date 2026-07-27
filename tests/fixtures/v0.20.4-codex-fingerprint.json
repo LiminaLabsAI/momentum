@@ -3,13 +3,14 @@
     "captured": "2026-07-27",
     "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "codex",
-    "note": "Phase 32b G2 — pre-push accepts a valid in-scope scope grant alongside the single-use sentinel (ADR-0020); fail-closed on every error path."
+    "note": "Phase 32b G4 — /brainstorm-epic (new shared recipe) + /brainstorm-phase --derive mode."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
+    ".agents/skills/brainstorm-epic/SKILL.md": "fce1ba46e6127f9e54e5d5875b7d2b99bbbc4556c0d77be4e686c7d64bc1ba53",
     ".agents/skills/brainstorm-idea/SKILL.md": "4003f2d585ba32d477255efbe65e9c53e0a6bbaeb70ee36ccfe0d6efbe576d63",
     ".agents/skills/brainstorm-initiative/SKILL.md": "1250c0bb015d639ccf8796fed35bc19d00245d5646c73bd00874fab6aa10da9b",
-    ".agents/skills/brainstorm-phase/SKILL.md": "f04e503b9ee5e0be17f124addeb22f7ae84954f85b50896ce4e223c8ab398dd7",
+    ".agents/skills/brainstorm-phase/SKILL.md": "b2be662bc8dc004228c740058679aa00ff052329d708ac8fb5a88591a6c3156b",
     ".agents/skills/complete-initiative/SKILL.md": "1b938213a567a197b80b74984ba00ef3c7d881147d026f30fd0fe5a5afcc2e8b",
     ".agents/skills/complete-phase/SKILL.md": "1003758161b7211583f09a2de2a1ddfb30c6a5b3f2a4094e3102e620cdebf966",
     ".agents/skills/continue/SKILL.md": "ca2916ecb23efcf4b874bad4ee8793f79dfd05465d8aae70d0219dbfebc9b120",
