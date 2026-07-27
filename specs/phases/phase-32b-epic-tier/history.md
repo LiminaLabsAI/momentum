@@ -21,6 +21,53 @@ available from the inputs D10 names.
 
 ---
 
+### [DISCOVERY] 2026-07-27 — The bootstrap epic record was unparseable by momentum's own reader
+Topics: okf, adr-0005, frontmatter, epic, dogfood
+Affects-phases: phase-32b-epic-tier
+Affects-specs: specs/epics/0001-autonomous-execution.md, core/run/schema/epic.schema.json
+Detail: The epic record hand-authored during the brainstorm used a nested
+`policy:` map. `core/lib/frontmatter.js` — momentum's one frontmatter reader —
+returns `data: null` for any file containing a nested map, because momentum's OKF
+v0.1 subset (ADR-0005) deliberately excludes them and the documented read rule is
+to treat such files as opaque rather than guess. So the first epic record momentum
+ever wrote could not be read by momentum.
+
+Two ways out: widen the OKF subset, or flatten the record. **Widening is an
+ADR-0005 decision** with consequences for every OKF consumer and every published
+bundle; flattening four keys is not. Record flattened to
+`policy_release`/`policy_push`/`policy_tdd`/`policy_authority`, and the epic
+schema documents *why* the keys are flat so the next person does not "fix" it
+back into a nested map.
+
+Worth noting the shape of the error: the record was written by hand, for a human
+reader, before the schema existed — and it was the *format*, not the schema, that
+it fell outside of. The plan's rule ("if the bootstrap record does not validate,
+the schema is wrong, not the record") did not cover this case, and should not
+have: a record momentum cannot parse at all is a different failure from a record
+whose fields disagree with a schema.
+
+---
+
+### [DISCOVERY] 2026-07-27 — `waves()` presented a guess as a plan
+Topics: waves, epic, adr-0003, honesty
+Affects-phases: phase-32b-epic-tier
+Affects-specs: core/run/lib/epic.js
+Detail: The first implementation fed every phase in the epic's `phases` list to
+`computeWaveLayers`. Run against the real record it returned *Wave 1: 32a, 32c,
+32d · Wave 2: 32b* — flatly contradicting the epic's own prose graph
+(`32a → 32b ∥ 32c → 32d`). Cause: 32c and 32d have no `overview.md` yet, so they
+carry no `deps:`, and a phase with no recorded dependencies is indistinguishable
+from a phase with none.
+
+That distinction is the whole point. Under D10 specs are derived just-in-time, so
+an epic in flight *legitimately* has phases not yet scaffolded — and ordering
+them is not a computation, it is a guess. `waves()` now returns
+`{waves, unscaffolded, complete}` and `momentum epic status` prints the
+unscaffolded set with the reason. The wave plan covers what is knowable; what is
+not knowable is named rather than filled in.
+
+---
+
 ### [DECISION] 2026-07-27 — The epic record is in-repo, not at the ecosystem root
 Topics: epic, tier, initiative, ecosystem
 Affects-phases: phase-32b-epic-tier

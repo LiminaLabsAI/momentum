@@ -10,17 +10,21 @@ epic: autonomous-execution
 > Built under `momentum run` — the 32a governor drives this phase (epic
 > criterion #6). Baseline **1285/1285**.
 
-## Group 0 — ADR-0020 + schemas *(blocks)*
-- [ ] **ADR-0020** — scope-grant authorization; states plainly what a mistake can now do that it could not before
-- [ ] `core/run/schema/epic.schema.json`
-- [ ] Grant shape defined into `run.schema.json`'s reserved `grant` field
-- [ ] Verify: `npm test`
+## Group 0 — ADR-0020 + schemas *(blocks)* ✅
+- [x] **ADR-0020** — scope-grant authorization; argues the counter-case rather than asserting it away (one approval now covers unread code · a single mistaken yes costs an epic not a merge · the window is time not action); mitigations described as **compensating controls, not equivalents**
+- [x] `core/run/schema/epic.schema.json` — execution order deliberately NOT encoded in `phases`
+- [x] Grant shape closed into `run.schema.json`'s reserved field; bounded on scope + time + count, all three required
+- [x] 32a's contract test updated to assert the **handoff** rather than freeze its own placeholder
+- [x] Verify: `node --test tests/epic-contracts.test.js` → **12/12**; `npm test` → **1297/1297**
 
-## Group 1 — Epic library + CLI *(∥ G2)*
-- [ ] `core/run/lib/epic.js` — read/write/validate, `nextEpicId`, phase graph **delegated to `core/waves`**
-- [ ] `momentum epic create|status|list|close`
-- [ ] Round-trips the hand-authored `0001-autonomous-execution.md` **without editing it**
-- [ ] Verify: `npm test`
+## Group 1 — Epic library + CLI *(∥ G2)* ✅
+- [x] `core/run/lib/epic.js` — read/write/validate; phase graph **delegated to `core/waves`** (no second topo-sort)
+- [x] `momentum epic create|status|list|close`
+- [x] Round-trips the hand-authored `0001-autonomous-execution.md` — **but only after flattening its nested `policy:` map**, which momentum's own OKF reader (ADR-0005) returns `data: null` for. Widening the subset is an ADR-0005 decision; flattening four keys is not
+- [x] `waves()` **reports** unscaffolded phases instead of placing them in wave 1 — a phase with no `overview.md` has no *recorded* deps, which is not the same as having none
+- [x] `validate()` permits empty `phases` while `planned` — an epic is created during the brainstorm, before its phases are decided
+- [x] Orphan guard caught 5 test-only exports; all unexported
+- [x] Verify: `node --test tests/epic-library.test.js` → **16/16**; `npm test` → **1313/1313**
 
 ## Group 2 — Scope grant *(∥ G1)*
 - [ ] `core/run/lib/grant.js` — mint / verify / consume / revoke, every consumption audited
