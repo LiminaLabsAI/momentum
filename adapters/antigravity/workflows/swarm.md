@@ -4,6 +4,17 @@ description: Sustained parallel multi-project feature delivery. Spawns one super
 
 # swarm
 
+> **⚠ DEPRECATED — the wave runner, not the whole subsystem (Phase 32a, BUG-031).**
+> `--mode autopilot`'s wave advance has **never had a production caller**:
+> `pollTurn` and `recordRepoComplete` are referenced only by tests, there is no
+> `poll` subcommand, and wave-1 spawn directives are the only ones ever built.
+> Launch a swarm today and the board freezes at wave-1-start. It is **not being
+> repaired** — even wired it drives one phase per repo, which the
+> tier-parameterized runner (`momentum run`, Epic 0001) supersedes; removal
+> lands in **Phase 32d**. The **inbox protocol** and **wave ordering** are
+> retained and already in use by the new runner. For multi-phase or multi-repo
+> autonomous work, use `momentum run`.
+
 > Phase 18 / v0.20.4 — Antigravity parity of the Phase 17 + 17.5 swarm
 > surface that originally shipped Claude Code only. All 13 subcommands
 > work through the Antigravity `adapter.spawn(directive)` dispatch

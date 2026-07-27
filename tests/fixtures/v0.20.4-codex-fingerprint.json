@@ -3,7 +3,7 @@
     "captured": "2026-07-27",
     "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "codex",
-    "note": "Phase 32a G3 — governor Stop hook: run-governor.sh installs to all adapters; Stop wiring added to Claude Code settings.json + Antigravity hooks.json (interceptor backends). Codex/opencode receive the script but no wiring — their re-invoker backend ships in 32c."
+    "note": "Phase 32a G4 — swarm wave-runner deprecation notice (BUG-031) added to all four swarm recipes; the inbox + wave-ordering are explicitly retained."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -27,7 +27,7 @@
     ".agents/skills/session/SKILL.md": "671e2fdd84eef9aa1097319274dbd25bb245c3e6d1a081fbb3e534aa507c5198",
     ".agents/skills/start-phase/SKILL.md": "cb78d1c6bb54e4fd0c3ab8e31ac9e326512cf9394735f5c416dbbf0c989e3b7b",
     ".agents/skills/start-project/SKILL.md": "59fac29efa26ab442e9d9f0ad01436279150d1506419863f455cbe527e718a39",
-    ".agents/skills/swarm/SKILL.md": "c00f6b116f14c579ec9d8eff21d02a56aba452658149035032822daafa535c5f",
+    ".agents/skills/swarm/SKILL.md": "5186f821d7f44fc54b52c1055fdc712958977522984332d111300434a664f38c",
     ".agents/skills/sync-config/SKILL.md": "f3bd9ff1f1c67865c1d4439c20f55a3a1fee685d0ff9cbb979de79bd31dfff55",
     ".agents/skills/sync-docs/SKILL.md": "229b072f394b1e40e630887d615837bf9f78ab54689056d517ed2c81de980a01",
     ".agents/skills/systematic-debug/SKILL.md": "cc8af476d545cca33a4d960c0fa64dc1d46f3cfe0223925d80f2c0078dd71954",

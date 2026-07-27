@@ -3,7 +3,7 @@
     "captured": "2026-07-27",
     "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "antigravity",
-    "note": "Phase 32a G3 — governor Stop hook: run-governor.sh installs to all adapters; Stop wiring added to Claude Code settings.json + Antigravity hooks.json (interceptor backends). Codex/opencode receive the script but no wiring — their re-invoker backend ships in 32c."
+    "note": "Phase 32a G4 — swarm wave-runner deprecation notice (BUG-031) added to all four swarm recipes; the inbox + wave-ordering are explicitly retained."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -33,7 +33,7 @@
     ".agents/workflows/session.md": "32db25ac76b92a4b1b3c48c230d0fab07167b39c6ff7c1b38df686bd366500f1",
     ".agents/workflows/start-phase.md": "29e8704621e9689796fe058dce8b51b231489b5536fa76f92918d933511382ec",
     ".agents/workflows/start-project.md": "0d2e140f2817f335a4a0e3584aabf46f460ebf8f344d123463441ba291794a7d",
-    ".agents/workflows/swarm.md": "8cb40729932ff77b6f537e11349dad4d4706b951d58881c4d57d72ec3b264fe6",
+    ".agents/workflows/swarm.md": "a74f157e0c62311b6b928c7857d81ba33d7afe8f0026007a4f4cc58d9f648a38",
     ".agents/workflows/sync-config.md": "41c320731ae77538a87a7347769d4051aedeb502e7625f7f28190dfeba51c0fa",
     ".agents/workflows/sync-docs.md": "a77f981e5b8c7db9a82d4497fc264777f633c4006973355ffc164f2e2dc8b38d",
     ".agents/workflows/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",

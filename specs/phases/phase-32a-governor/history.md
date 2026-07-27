@@ -198,6 +198,43 @@ script; full suite **1250/1250**.
 
 ---
 
+### [FEATURE] 2026-07-27 — G4: the CLI, and a config model that refuses bad combinations by name
+Topics: cli, config, free-coupled-floor, adr-0009, swarm-deprecation, bug-031
+Affects-phases: phase-32a-governor
+Affects-specs: bin/run.js, core/run/lib/config-rules.js, bin/momentum.js, core/swarm/conductor.js
+Detail: `momentum run start|status|continue|stop`. `status` is deliberately
+read-only and safe against a live run — it is the pre-mortem's mitigation for the
+silent-wrong-turn failure: an operator can read every decision the agent took
+under its own authority, and every parked question, at 3am, without interrupting
+anything. Asserted by a test that runs `status` against a live run and requires
+the status to still be `running` afterwards.
+
+The config model implements the operator's own framing — combinations ARE
+configurable, "except the ones that are bad practice or break things" — as three
+tiers extending ADR-0009's split rather than a parallel one. **FREE**: push
+cadence, merge and release granularity. **COUPLED**: release may never be
+finer-grained than merge (a tag pointing at a commit no release branch contains
+is incoherent), and `release: per-feature` requires `tdd: strict` (one approval
+covering several phases of diff is not a review anybody performs, so gate
+frequency is traded away only by buying verification rigor). **FLOOR**:
+`push: never` is *unrepresentable in the enum* rather than merely discouraged;
+evidence capture and the merge-approval boundary cannot be switched off. Every
+refusal names the rule AND explains why — a validator that only says no teaches
+nothing.
+
+One detail worth recording: `run start` clears a stale kill switch. Without it a
+new run halts on its first turn for a reason belonging to the previous run — a
+confusing failure with no visible cause.
+
+Swarm's wave runner marked deprecated in three places: `@deprecated` on
+`pollTurn` and `recordRepoComplete`, and a user-facing warning in all four swarm
+recipes. Someone launching a swarm today gets a board frozen at wave-1-start;
+they should learn that from the docs rather than from the silence.
+
+Verification: 22 tests in `run-cli.test.js`; full suite **1272/1272**.
+
+---
+
 ### [DISCOVERY] 2026-07-27 — Hook scripts install to adapters that cannot use them
 Topics: adapters, packaging, capability-gating, governor
 Affects-phases: phase-32c-adapter-parity

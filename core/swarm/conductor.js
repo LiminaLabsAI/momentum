@@ -274,6 +274,10 @@ function markWaveStatus(ecosystemRoot, swarmId, waveIndex, status, nowIso) {
   });
 }
 
+/**
+ * @deprecated Phase 32a (Epic 0001, D13) — BUG-031. No production caller; see
+ * the note on `pollTurn`. Removal lands in Phase 32d.
+ */
 function recordRepoComplete(ecosystemRoot, swarmId, repoId, opts = {}) {
   return manifestLib.updateManifest(ecosystemRoot, swarmId, (m) => {
     if (!m.repos[repoId]) return;
@@ -301,6 +305,22 @@ function recordRepoComplete(ecosystemRoot, swarmId, repoId, opts = {}) {
  *   4. Re-materialize board.json so the next read is fresh.
  *
  * Returns a summary: { changedRepos, completedWave?, advancedToWave? }.
+ */
+/**
+ * @deprecated Phase 32a (Epic 0001, D13) — BUG-031.
+ *
+ * THIS FUNCTION HAS NO PRODUCTION CALLER AND NEVER HAS. It holds the entire
+ * `--mode autopilot` wave-advance branch, but `bin/swarm.js` has no `poll`
+ * subcommand among its 20 verbs, and `buildSpawnDirectives` is invoked exactly
+ * once with a hardcoded `waveIndex: 1` — so wave 2+ is never spawned even if
+ * this were wired. Its tests pass because they call it directly; production
+ * never does. That is the BUG-028/029/030 shape.
+ *
+ * Disposition: NOT repaired. Fully wired, it still drives one phase per repo,
+ * which the tier-parameterized runner in `core/run/` supersedes. Removal lands
+ * in Phase 32d once the replacement demonstrably covers it. `core/swarm/inbox.js`
+ * (now a thin adapter over the park primitive) and `lib/wave-ordering.js` are
+ * retained.
  */
 function pollTurn(args) {
   const { ecosystemRoot, swarmId, nowIso } = args;

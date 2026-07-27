@@ -58,19 +58,21 @@ epic: autonomous-execution
 - [x] Verify: `node --test tests/run-governor.test.js` → **37/37**, incl. **4 real subprocess tests of the production call path** (no-run → 0, live → 2 + continuation, kill switch → 0 + status recorded, corrupt manifest → 0)
 - [x] Verify: `npm test` → **1250/1250** (1213 + 37 net-new)
 
-## Group 4 — Wiring
-- [ ] `bin/run.js` — `start | status | continue | stop`; dispatched from `bin/momentum.js`; in `--help`
-- [ ] `run status` renders decisions + parked questions **without interrupting a live run**
-- [ ] `momentum config validate` — free / coupled / floor
-- [ ] Coupled rule: release granularity never finer than merge granularity
-- [ ] Coupled rule: `merge: per-feature` requires `tdd: strict` + per-phase evidence
-- [ ] Floor rules: evidence always · push ≥ per-phase · suite green between landings · protected pushes human-authorized
-- [ ] Every rejection names the violated rule
-- [ ] `tdd: strict` enforcement — no `[x]` without a recorded red→green
-- [ ] `governorBackend` capability flag on all 4 adapters (2 interceptor, 2 null)
-- [ ] Mark swarm wave runner **deprecated** in `conductor.js` + `/swarm` recipe → BUG-031, 32d
-- [ ] Re-baseline 4 adapter fingerprints (prove zero drift before use)
-- [ ] Verify: `npm test`
+## Group 4 — Wiring ✅
+- [x] `bin/run.js` — `start | status | continue | stop`; dispatched from `bin/momentum.js`; in `--help`
+- [x] `run status` renders decisions + parked questions **without interrupting a live run** (asserted: status leaves `status: running` untouched)
+- [x] `run start` clears a stale kill switch from a previous run — otherwise the new run halts on turn 1 for someone else's reason
+- [x] `momentum config validate` (`core/run/lib/config-rules.js`) — free / coupled / floor, pure `validate(policy)`
+- [x] Coupled rule: release granularity never finer than merge granularity — **rejects `release: per-phase` + `merge: per-feature`** (epic criterion #4)
+- [x] Coupled rule: `release: per-feature` requires `tdd: strict`
+- [x] Floor rules: evidence always captured · `push: never` **unrepresentable** in the enum · merge-approval trust boundary not configurable away
+- [x] Every rejection names the violated rule **and explains why**
+- [x] Shape errors reported without a cascade (one typo → one error)
+- [x] `governorBackend` capability flag on all 4 adapters *(landed in G3)*
+- [x] Mark swarm wave runner **deprecated** — `@deprecated` on `pollTurn` + `recordRepoComplete` in `conductor.js`, plus a user-facing warning in all 4 swarm recipes → BUG-031, 32d
+- [x] Re-baseline 4 adapter fingerprints twice (hook wiring, then recipes); drift verified as **only** the intended files each time
+- [x] Verify: `node --test tests/run-cli.test.js` → **22/22**
+- [x] Verify: `npm test` → **1272/1272** (1250 + 22 net-new)
 
 ## Group 5 — Verification
 - [ ] Extend enumerative production-call-path guard over `core/run/`
