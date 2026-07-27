@@ -295,3 +295,35 @@ mismatch, now this). Fail-open is right for hooks — but it means correctness h
 to be asserted POSITIVELY, on content, never on absence of error.
 
 ---
+### [FEATURE] 2026-07-27 — G3 complete: seven discovery implementations are now one
+Topics: g3, r5, shell, discover, td-013
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: core/runtime/discover.js, core/ecosystem/scripts/session-append.sh, core/scripts/sessionstart-handoff.sh
+Detail: Both bash walkers now call `.momentum/runtime/discover.js`, which
+delegates to the single `findRoot`. `session-append.sh` also loses its python3
+member-resolution block. Zero discovery implementations remain in bash, closing
+TD-013 completely: the count went 7 → 1 across three languages' worth of copies.
+Cost measured rather than assumed (the 31a/31b precedent): session-append 77ms
+per call, replacing a python3 spawn that was never free; the SessionStart banner
+92ms, inside its <100ms budget. Fail-open preserved everywhere — no node, no
+runtime, or no ecosystem all degrade to silence.
+
+---
+
+### [DISCOVERY] 2026-07-27 — the delegation would have silently narrowed behaviour
+Topics: g3, regression, member-resolution, refactor-risk
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: core/runtime/discover.js
+Detail: `discover.js` first resolved the member via `events.resolveMemberRepoRoot`,
+which shells out to `git rev-parse` — correct, and necessary for lane worktrees.
+But the bash implementation it replaced resolved members by PATH alone, so it
+worked in member directories that are not git repositories. Two concurrency tests
+caught the difference immediately (their fixtures are plain directories). Left
+unnoticed this would have been a silent narrowing shipped under the label
+"refactor": every non-git member would simply stop being logged, with no error.
+Fixed by falling back to path matching when git resolution yields nothing —
+`resolveMemberId` already does exactly that, so it is a fallback, not a second
+algorithm. Worth noting the fixtures were more permissive than production, which
+is usually a smell; here it was the only reason the narrowing surfaced.
+
+---

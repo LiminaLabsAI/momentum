@@ -50,13 +50,17 @@ status: in-progress
 - [x] 4 fingerprints re-baselined (drift = exactly the 3 rewired files)
 - [x] Verify `npm test` green — **1155/1155** (net −3: fences deleted with the code they guarded); commit G2
 
-## Group 3 — Shell delegates to node *(∥ G2)*
-- [ ] Node discovery entry point in the runtime — prints resolved root (+ member id) for a start dir
-- [ ] `session-append.sh` uses it; `find_ecosystem_root()` + python3 member resolution removed
-- [ ] `sessionstart-handoff.sh` uses it; its `find_ecosystem_root()` removed
-- [ ] **Fail-open preserved and asserted** — no node / no runtime / corrupt manifest all degrade silently
-- [ ] **Cost measured, not estimated** (it replaces a python3 spawn, so the baseline is not zero)
-- [ ] Verify `npm test` green; commit G3
+## Group 3 — Shell delegates to node *(∥ G2)* ✅
+- [x] `core/runtime/discover.js` — the single shell-facing entry point; prints `<root>\t<member-id>`
+- [x] Ships with the runtime as `.momentum/runtime/discover.js` (flat, stable path for shell callers)
+- [x] `session-append.sh` delegates — **bash walker AND the python3 member resolution both removed**
+- [x] `sessionstart-handoff.sh` delegates — its bash walker removed
+- [x] **0 bash discovery implementations left** (was 2)
+- [x] Fail-open preserved: no node / no runtime / no ecosystem → caller gets nothing and carries on
+- [x] **Restored a permissiveness the delegation would have silently dropped** — the bash path resolved members by path alone, so non-git member dirs worked; `discover.js` now falls back to path matching after git resolution
+- [x] **Cost measured, not estimated**: session-append 77ms/call (replaces a python3 spawn); SessionStart banner 92ms — inside its <100ms budget
+- [x] 4 fingerprints re-baselined
+- [x] Verify `npm test` green — **1155/1155**; commit G3
 
 ## Group 4 — Guard + parity *(needs G2 + G3)*
 - [ ] **Production-call-path guard** — every exported fn with an optional root asserted to work WITHOUT one in a real sibling layout

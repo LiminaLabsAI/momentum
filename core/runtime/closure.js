@@ -9,7 +9,7 @@
  * them, which produced BUG-029 (a mirror that read the lane registry wrongly)
  * and, one tier along, BUG-030.
  *
- * The premise was never measured. The closure is ~65 kB against a 1.4 MB
+ * The premise was never measured. The closure is ~96 kB against a 1.4 MB
  * package, and every file in it is already free of external dependencies, so it
  * copies verbatim. This module computes that closure from the ENTRY POINTS'
  * actual require graph, so it cannot drift from what the hooks really need:
@@ -55,6 +55,14 @@ const ENTRY_POINTS = [
   // Durable actor identity for event attribution.
   'identity/index.js',
 ];
+
+/**
+ * Files shipped alongside the closure that are not part of it (ADR-0018 R5).
+ * `discover.js` is the shell-facing discovery entry point — `session-append.sh`
+ * and `sessionstart-handoff.sh` invoke it instead of each carrying a bash
+ * re-implementation of the walk.
+ */
+const EXTRAS = [{ src: path.join('runtime', 'discover.js'), dest: 'discover.js' }];
 
 /** Resolve a relative require from `fromFile`, or null when it isn't a local file. */
 function resolveRequire(fromFile, spec) {
@@ -113,15 +121,24 @@ function destPath(targetRoot, rel) {
 function install(targetRoot, opts) {
   opts = opts || {};
   const written = [];
-  for (const rel of computeClosure()) {
+  // The shell-facing discovery entry point ships with the runtime it reads
+  // (ADR-0018 R5) — `session-append.sh` and `sessionstart-handoff.sh` invoke it
+  // instead of each carrying a bash re-implementation of the walk.
+  const entries = [
+    ...computeClosure().map((rel) => ({ src: rel, dest: rel })),
+    // Lands FLAT at the runtime root so shell callers have a stable, obvious
+    // path: `.momentum/runtime/discover.js`.
+    ...EXTRAS,
+  ];
+  for (const { src: rel, dest: destRel } of entries) {
     const src = sourcePath(rel);
-    const dest = destPath(targetRoot, rel);
+    const dest = path.join(targetRoot, RUNTIME_DIR, destRel);
     if (!fs.existsSync(src)) continue;
     if (!opts.dryRun) {
       fs.mkdirSync(path.dirname(dest), { recursive: true });
       fs.copyFileSync(src, dest);
     }
-    written.push(rel);
+    written.push(destRel);
   }
   return written;
 }
@@ -131,6 +148,7 @@ module.exports = {
   REPO_ROOT,
   RUNTIME_DIR,
   ENTRY_POINTS,
+  EXTRAS,
   computeClosure,
   sourcePath,
   destPath,

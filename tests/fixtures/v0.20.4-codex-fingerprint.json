@@ -3,7 +3,7 @@
     "captured": "2026-07-27",
     "capturedFrom": "phase-31c-shipped-runtime",
     "adapter": "codex",
-    "note": "Phase 31c G2 / ADR-0018 R1: eco-event.js, cross-repo.js and orient.js now require REAL core modules through the vendored runtime instead of mirroring them. The mirrors are what produced BUG-029."
+    "note": "Phase 31c G3 / ADR-0018 R5: shell discovery delegates to the runtime; both bash walkers and the python3 member resolution removed."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -53,8 +53,8 @@
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/cross-repo-gate.sh": "db13168ea4659c735368d3e2f98bd6360fce338ef06d6e2eafa44ed88af41ccb",
     "scripts/orient.js": "9c684463a4f55e431e625a0ddbf66c44070f76fa431cfa53e630307f1d0f18ba",
-    "scripts/session-append.sh": "41474aa11ec45e445463d8362671cde75e36dbefa6d1c4b23d6e5fcebf0e47cc",
-    "scripts/sessionstart-handoff.sh": "6dd40e4449db9e8266bab06222b22651724dead4ce829b860dabc42f01732c4b",
+    "scripts/session-append.sh": "dbb496c0ab0ad49ce24033de7285a8cbad9d9cfaf5fb873ee97441f219e859e2",
+    "scripts/sessionstart-handoff.sh": "c1c3f90a1366e0fbc5741903b09e72b0a950e462f056c725ba8b87f90bd795ca",
     "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",
     "specs/adhoc/README.md": "d96209eb2fa482722a62b96c37d7db8b34d0932c213d9ae53c208a92b40d8460",
     "specs/adhoc/_TEMPLATE.md": "3444f1054de72aedc2d181fbaaa16c089be3bb18207d8ef788c42e294e0ef9b1",
