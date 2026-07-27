@@ -274,20 +274,6 @@ function markWaveStatus(ecosystemRoot, swarmId, waveIndex, status, nowIso) {
   });
 }
 
-/**
- * @deprecated Phase 32a (Epic 0001, D13) — BUG-031. No production caller; see
- * the note on `pollTurn`. Removal lands in Phase 32d.
- */
-function recordRepoComplete(ecosystemRoot, swarmId, repoId, opts = {}) {
-  return manifestLib.updateManifest(ecosystemRoot, swarmId, (m) => {
-    if (!m.repos[repoId]) return;
-    m.repos[repoId].status = 'complete';
-    if (opts.tasksDone != null) m.repos[repoId].tasks_done = opts.tasksDone;
-    if (opts.tasksTotal != null) m.repos[repoId].tasks_total = opts.tasksTotal;
-    if (opts.commits != null) m.repos[repoId].commits = opts.commits;
-    if (opts.lastSeenSha) m.repos[repoId].last_seen_sha = opts.lastSeenSha;
-  });
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Per-turn poll — Strategies A + B + C in one call
@@ -306,132 +292,6 @@ function recordRepoComplete(ecosystemRoot, swarmId, repoId, opts = {}) {
  *
  * Returns a summary: { changedRepos, completedWave?, advancedToWave? }.
  */
-/**
- * @deprecated Phase 32a (Epic 0001, D13) — BUG-031.
- *
- * THIS FUNCTION HAS NO PRODUCTION CALLER AND NEVER HAS. It holds the entire
- * `--mode autopilot` wave-advance branch, but `bin/swarm.js` has no `poll`
- * subcommand among its 20 verbs, and `buildSpawnDirectives` is invoked exactly
- * once with a hardcoded `waveIndex: 1` — so wave 2+ is never spawned even if
- * this were wired. Its tests pass because they call it directly; production
- * never does. That is the BUG-028/029/030 shape.
- *
- * Disposition: NOT repaired. Fully wired, it still drives one phase per repo,
- * which the tier-parameterized runner in `core/run/` supersedes. Removal lands
- * in Phase 32d once the replacement demonstrably covers it. `core/swarm/inbox.js`
- * (now a thin adapter over the park primitive) and `lib/wave-ordering.js` are
- * retained.
- */
-function pollTurn(args) {
-  const { ecosystemRoot, swarmId, nowIso } = args;
-  if (typeof ecosystemRoot !== 'string' || ecosystemRoot.length === 0) {
-    throw new TypeError('pollTurn: ecosystemRoot required');
-  }
-  if (typeof nowIso !== 'string' || nowIso.length === 0) {
-    throw new TypeError('pollTurn: nowIso required');
-  }
-  const manifest = manifestLib.loadManifest(ecosystemRoot, swarmId);
-  if (!manifest) throw new Error(`pollTurn: no manifest for ${swarmId}`);
-
-  const ecoMfst = ecosystemLib.loadManifest(ecosystemRoot);
-  const runningWave = (manifest.waves || []).find((w) => w.status === 'running');
-  const activeRepoIds = runningWave ? runningWave.repos : [];
-
-  // Build (repoId → lastSeenSha) for the active wave
-  const lastSeen = {};
-  for (const id of activeRepoIds) {
-    lastSeen[id] = (manifest.repos[id] && manifest.repos[id].last_seen_sha) || '';
-  }
-  const repoIdToPath = {};
-  for (const id of activeRepoIds) {
-    repoIdToPath[id] = resolveMemberPath(ecosystemRoot, id, ecoMfst);
-  }
-  const diff = gitSha.diffSinceLastSeen(lastSeen, (id) => repoIdToPath[id]);
-
-  // Pull updated saga records for changed repos
-  manifestLib.updateManifest(ecosystemRoot, swarmId, (m) => {
-    for (const id of diff.changed) {
-      const repoPath = repoIdToPath[id];
-      if (!repoPath) continue;
-      const saga = runningWave
-        ? sagaLib.findActiveByWave(repoPath, swarmId, runningWave.index)
-        : null;
-      if (saga) {
-        const r = m.repos[id];
-        r.tasks_done = saga.tasks_done || r.tasks_done;
-        r.tasks_total = saga.tasks_total || r.tasks_total;
-        r.tokens_used = saga.tokens_used || r.tokens_used;
-        if (saga.head_sha) r.last_seen_sha = saga.head_sha;
-        if (saga.done && r.status !== 'complete') r.status = 'complete';
-        if (saga.exit_status === 'failed') r.status = 'failed';
-      }
-      if (diff.shas[id]) m.repos[id].last_seen_sha = diff.shas[id];
-    }
-  });
-
-  // Refresh state via re-load
-  const after = manifestLib.loadManifest(ecosystemRoot, swarmId);
-
-  // Wave advancement
-  let completedWave = null;
-  let advancedToWave = null;
-  if (runningWave) {
-    const wave = (after.waves || []).find((w) => w.index === runningWave.index);
-    const allDone = wave.repos.every((id) =>
-      after.repos[id] && (after.repos[id].status === 'complete' || after.repos[id].status === 'cancelled'));
-    if (allDone) {
-      completedWave = wave.index;
-      // For autopilot mode we auto-advance; for checkpoint we mark the
-      // wave complete but the recipe is responsible for the user
-      // approval prompt before advancing.
-      manifestLib.updateManifest(ecosystemRoot, swarmId, (m) => {
-        const w = m.waves.find((x) => x.index === completedWave);
-        w.status = 'complete';
-        w.checkpoint_resolved_at = w.checkpoint_resolved_at || nowIso;
-        if (!Array.isArray(m.audit)) m.audit = [];
-        m.audit.push({
-          ts: nowIso, actor: 'conductor', event: 'wave-transition',
-          detail: `Wave ${completedWave} complete`,
-        });
-        if (m.mode === 'autopilot') {
-          const next = m.waves.find((x) => x.index === completedWave + 1);
-          if (next && next.status === 'queued') {
-            next.status = 'running';
-            for (const id of next.repos) {
-              if (m.repos[id] && m.repos[id].status === 'queued') m.repos[id].status = 'running';
-            }
-            advancedToWave = next.index;
-          } else if (!next) {
-            m.status = 'complete';
-          }
-        }
-      });
-    }
-  } else {
-    // No running wave — try to start wave 1 if everything is queued
-    const w1 = (after.waves || []).find((w) => w.index === 1);
-    if (w1 && (w1.status === 'queued' || w1.status === undefined)) {
-      manifestLib.updateManifest(ecosystemRoot, swarmId, (m) => {
-        const w = m.waves.find((x) => x.index === 1);
-        w.status = 'running';
-        for (const id of w.repos) {
-          if (m.repos[id] && m.repos[id].status === 'queued') m.repos[id].status = 'running';
-        }
-      });
-      advancedToWave = 1;
-    }
-  }
-
-  // Always refresh board after a turn
-  boardLib.refreshBoard(ecosystemRoot, swarmId, nowIso);
-
-  return {
-    changedRepos: diff.changed,
-    unchangedRepos: diff.unchanged,
-    completedWave,
-    advancedToWave,
-  };
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Cancel — graceful halt
@@ -501,6 +361,10 @@ function renewLeases(ecosystemRoot, swarmId, sessionId, nowIso) {
   });
 }
 
+// Phase 32d G1 — `pollTurn` and `recordRepoComplete` REMOVED (BUG-031). They
+// had no production caller, ever; `--mode autopilot` never advanced a wave.
+// The simulator they really were now lives in `tests/_swarm-simulator.js`.
+// Superseded by `momentum run` (Epic 0001).
 module.exports = {
   DEFAULT_TOKEN_BUDGET,
   DEFAULT_LEASE_HOURS,
@@ -511,8 +375,6 @@ module.exports = {
   injectBriefFrontmatter,
   readEnvSwarmContext,
   markWaveStatus,
-  recordRepoComplete,
-  pollTurn,
   cancelSwarm,
   resumeSwarm,
   renewLeases,

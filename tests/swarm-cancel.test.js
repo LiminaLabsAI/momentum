@@ -7,6 +7,7 @@ const path = require('node:path');
 
 const { mktmp, rmrf } = require('./_helpers');
 const conductor = require('../core/swarm/conductor');
+const simulator = require('./_swarm-simulator'); // BUG-031: moved out of production (32d)
 const manifestLib = require('../core/swarm/lib/manifest');
 const boardLib = require('../core/swarm/lib/board');
 
@@ -60,7 +61,7 @@ test('cancelSwarm — preserves completed repos', () => {
   try {
     setupSwarm(tmp);
     conductor.markWaveStatus(tmp, '0001-foo', 1, 'running');
-    conductor.recordRepoComplete(tmp, '0001-foo', 'a');
+    simulator.recordRepoComplete(tmp, '0001-foo', 'a');
     conductor.cancelSwarm(tmp, '0001-foo', 'mid-flight', '2026-06-12T17:30:00Z');
 
     const after = manifestLib.loadManifest(tmp, '0001-foo');

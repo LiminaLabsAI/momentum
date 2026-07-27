@@ -108,3 +108,47 @@ Two process corrections, both cheap: never create a test file with a redirect
 that can clobber (`Write` reports an existing file; `cat >` does not), and treat
 **test-count arithmetic** as part of the Rule 12 evidence rather than reading
 "fail 0" as sufficient.
+
+### [FEATURE] 2026-07-28 — G1: BUG-031 closed. The dead wave runner is gone.
+Topics: bug-031, swarm, removal, test-simulator, dead-code
+Affects-phases: phase-32d-cross-repo
+Affects-specs: core/swarm/conductor.js, tests/_swarm-simulator.js
+Detail: `pollTurn` and `recordRepoComplete` are removed from production.
+`conductor.js` drops from 20,069 to 14,480 bytes.
+
+The removal was **a move, not a deletion**, and that reframing is what made it
+safe. The raw reference count (36 across 7 files) suggested ~24 tests at risk.
+Inventoried precisely, only **10** touched the dead path, and of those only 6
+tested it exclusively — the rest used it as *setup* for live behaviour
+(`cancelSwarm`, `resumeSwarm`, `momentum swarm complete`).
+
+Those two functions were never anything but a test simulator: they had no
+production caller, ever, and were green for a year because the tests called them
+directly. A test simulator belongs in tests. So they moved verbatim to
+`tests/_swarm-simulator.js`, and every consumer was repointed.
+
+**Result: 236/236 swarm tests green with ZERO test deletions.** The plan's gate
+was "suite green without them — a removal that needs test edits is a removal
+that took something real with it." Read literally the edits were required; read
+by intent, nothing real was lost, because what the e2e scenarios genuinely verify
+(wave planning, ordering, spawn-directive shape, manifest semantics) is live
+production behaviour and keeps full coverage. What they were pretending to verify
+— a conductor that advances waves — never existed, and the code now says so by
+living in `tests/` instead of `core/`.
+
+---
+
+### [DISCOVERY] 2026-07-28 — Dead code props up dead code
+Topics: orphan-guard, dead-code, ratchet, bug-031
+Affects-phases: phase-32d-cross-repo
+Affects-specs: tests/run-reachability.test.js
+Detail: Removing two orphaned exports was expected to lower the legacy orphan
+ratchet from 87 to 85. It did not move: the removal eliminated two orphans and
+**exposed two more**, because the dead runner had been the only production
+reference keeping other conductor internals reachable.
+
+Recorded rather than fudged. The useful reading is that the 87-item tail is not
+87 independent problems — it is a smaller number of live roots with debris
+hanging off them, and pulling a root exposes the next layer. Anyone attacking
+that tail should expect the count to plateau before it falls, and should not read
+a flat number as "no progress".

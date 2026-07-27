@@ -188,8 +188,14 @@ function scanRunExports() {
  * new orphan to swarm or ecosystem fails here, while the existing tail is
  * recorded honestly rather than hidden behind a narrower scan. 32d's G1 removal
  * lowers it; nothing may raise it.
+ *
+ * NOTE (32d G1): removing `pollTurn` and `recordRepoComplete` did NOT lower the
+ * count. It removed two orphans and exposed two more — the dead runner had been
+ * the only production reference keeping other conductor internals reachable. Dead
+ * code props up dead code, which is worth knowing: the tail is not 87 independent
+ * problems, it is a smaller number of live roots with debris hanging off them.
  */
-const LEGACY_ORPHAN_BUDGET = 87; // measured 2026-07-27; may fall, never rise
+const LEGACY_ORPHAN_BUDGET = 87; // measured 32d G0; UNCHANGED by G1's removal — see note
 
 test('BUG-031 GUARD: core/run has ZERO orphans — this epic\'s own code', () => {
   // The debt 32c named: the guard was blind to single-line exports and green
@@ -262,12 +268,16 @@ test('BUG-031 GUARD: the shell entry point counts as production', () => {
   assert.ok(hookReach, 'hook.js exports must be seen as reachable');
 });
 
-test('the swarm functions BUG-031 named are still orphans — and still deprecated', () => {
-  // Not a failure: D13 says deprecate now, remove in 32d. This asserts the
-  // deprecation notice stays attached until the removal happens, so the
-  // known-dead code cannot quietly lose its warning label.
+test('BUG-031 IS CLOSED: the dead wave runner is gone from production', () => {
+  // 32a deprecated them; 32d removed them. This asserts the REMOVAL rather than
+  // the warning label, so the tombstone cannot rot back into live code.
   const src = fs.readFileSync(path.join(REPO_ROOT, 'core', 'swarm', 'conductor.js'), 'utf8');
-  assert.match(src, /@deprecated[\s\S]{0,400}NO PRODUCTION CALLER/,
-    'pollTurn must keep its deprecation notice until 32d removes it');
-  assert.match(src, /BUG-031/);
+  assert.ok(!/^function pollTurn\(/m.test(src), 'pollTurn must be gone from production');
+  assert.ok(!/^function recordRepoComplete\(/m.test(src), 'recordRepoComplete must be gone');
+  assert.match(src, /REMOVED \(BUG-031\)/, 'the tombstone must say where it went');
+
+  // It was only ever a test simulator, so it lives in tests now.
+  const sim = path.join(REPO_ROOT, 'tests', '_swarm-simulator.js');
+  assert.ok(fs.existsSync(sim), 'the simulator must live in tests');
+  assert.match(fs.readFileSync(sim, 'utf8'), /no production caller, ever/);
 });

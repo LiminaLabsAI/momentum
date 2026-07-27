@@ -14,10 +14,15 @@ epic: autonomous-execution
 - [x] Probe scoped so it proves the detector red without tripping on the legacy tail
 - [x] Verify: `node --test tests/run-reachability.test.js` → **5/5**; `npm test` → **1407/1407**
 
-## Group 1 — Remove the dead wave runner
-- [ ] **NOT STARTED — blast radius measured, see history.** 36 references across 7 swarm test files (~24 tests). The e2e harnesses drive completion entirely through the in-process simulator and also regenerate Phase 17/18 evidence files
-- [ ] The plan's gate ("suite green without test edits") is **not achievable** as written — recorded rather than quietly relaxed
-- [ ] 32a's deprecation notices remain, asserted by test, so the dead code keeps its warning label
+## Group 1 — Remove the dead wave runner ✅
+- [x] **BUG-031 CLOSED** — `pollTurn` + `recordRepoComplete` removed; `conductor.js` 20,069 → 14,480 bytes
+- [x] Precise inventory first: raw count suggested ~24 tests at risk; **only 10** touched the dead path, **6** exclusively
+- [x] **A move, not a deletion** — the functions were only ever a test simulator, so they moved verbatim to `tests/_swarm-simulator.js` and consumers were repointed
+- [x] **236/236 swarm tests green with ZERO deletions** — the removal took nothing real with it
+- [x] `inbox` + `wave-ordering` retained as planned
+- [x] Guard test flipped from "still deprecated" to **asserting the removal**, so the tombstone cannot rot back into live code
+- [x] Ratchet finding recorded: the count did **not** fall — removing 2 orphans exposed 2 more, because dead code props up dead code
+- [x] Verify: `node --test tests/swarm-*.test.js` → **236/236**; `npm test` → **1415/1415** (unchanged, so nothing was lost)
 
 ## Group 2 — Initiative tier + BUG-032 ✅
 - [x] **BUG-032** — nudge reworded from imperative to observation ("a note, not a gate — the current task continues"); **silent under an active run grant**; expired/revoked grants do NOT suppress

@@ -32,6 +32,7 @@ const { spawnSync } = require('node:child_process');
 
 const { mktmp, rmrf, runCli } = require('./_helpers');
 const conductor = require('../core/swarm/conductor');
+const simulator = require('./_swarm-simulator'); // BUG-031: moved out of production (32d)
 const manifestLib = require('../core/swarm/lib/manifest');
 const boardLib = require('../core/swarm/lib/board');
 const { spawnSupervisors } = require('../bin/swarm');
@@ -79,16 +80,16 @@ function setupEcosystem(tmp, scenarioName, members, deps) {
 
 function driveSwarmToCompletion(ecosystemRoot, swarmId, manifest) {
   let turnCount = 0;
-  conductor.pollTurn({
+  simulator.pollTurn({
     ecosystemRoot, swarmId, nowIso: `2026-06-15T17:0${++turnCount}:00Z`,
   });
   for (const wave of manifest.waves) {
     for (const repoId of wave.repos) {
-      conductor.recordRepoComplete(ecosystemRoot, swarmId, repoId, {
+      simulator.recordRepoComplete(ecosystemRoot, swarmId, repoId, {
         tasksDone: 5 + repoId.length, tasksTotal: 5 + repoId.length,
         commits: 2, lastSeenSha: '1234567',
       });
-      conductor.pollTurn({
+      simulator.pollTurn({
         ecosystemRoot, swarmId, nowIso: `2026-06-15T17:${String(++turnCount).padStart(2, '0')}:00Z`,
       });
     }
