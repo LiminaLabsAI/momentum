@@ -238,4 +238,4 @@ if (require.main === module) {
   process.exit(code);
 }
 
-module.exports = { supports, onTurnEnd, drive, main, continuationPrompt, HEADLESS };
+module.exports = { supports, onTurnEnd, drive, main };

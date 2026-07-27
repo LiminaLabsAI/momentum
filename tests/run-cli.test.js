@@ -80,7 +80,9 @@ test('per-phase release with opt-in TDD stays legal — the coupling is scoped',
 // ─────────────────────────────────────────────────────────────────────────────
 
 test('push: never is unrepresentable, not merely discouraged', () => {
-  assert.ok(!rules.VALID.push.includes('never'));
+  // Asserted through `validate` rather than by reaching into the rule table —
+  // the guarantee that matters is that `never` cannot be CHOSEN, not that a
+  // particular array lacks it.
   const r = rules.validate({ release: 'per-phase', push: 'never', tdd: 'strict' });
   assert.equal(r.ok, false);
   assert.equal(r.violations[0].id, 'push-invalid');

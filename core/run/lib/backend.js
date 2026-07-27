@@ -104,4 +104,8 @@ function wantsInterceptorScript(adapterName, opts = {}) {
   return resolve(adapterName, opts).kind === KIND.INTERCEPTOR;
 }
 
-module.exports = { resolve, declaredBackend, allAdapters, wantsInterceptorScript, KIND };
+// `declaredBackend` and `allAdapters` are internals of `resolve`. The
+// production surface is `resolve` (what backend does this adapter use?) and
+// `wantsInterceptorScript` (does it get the hook script?). The conformance
+// suite reaches the internals through those.
+module.exports = { resolve, wantsInterceptorScript, KIND };

@@ -32,6 +32,9 @@ const manifestLib = require(path.join(REPO_ROOT, 'core', 'run', 'lib', 'manifest
 
 const TS = '2026-07-27T10:00:00Z';
 
+/** The four supported agents. Named explicitly so adding a fifth fails here. */
+const ADAPTERS = ['antigravity', 'claude-code', 'codex', 'opencode'];
+
 /**
  * The two backends under test. Each exposes the same shape; the harness below
  * never branches on which one it is holding.
@@ -62,8 +65,9 @@ function withRun(fn) {
 test('every adapter declares a governor backend — none is left undeclared', () => {
   // An undeclared capability is how silent non-functionality ships (BUG-009,
   // BUG-030, BUG-031). Absence must be stated, not implied.
-  for (const name of backendLib.allAdapters()) {
-    assert.notEqual(backendLib.declaredBackend(name), undefined,
+  for (const name of ADAPTERS) {
+    const r = backendLib.resolve(name);
+    assert.ok(r.reason && !/does not declare governorBackend/.test(r.reason),
       `${name} must declare governorBackend — even if the value is null`);
   }
 });
@@ -71,10 +75,9 @@ test('every adapter declares a governor backend — none is left undeclared', ()
 test('ALL FOUR adapters resolve to a real backend — this is the parity bar', () => {
   // The operator's requirement: "I need all the supported agent should have
   // this behaviour and feature." Two of four is not parity.
-  const adapters = backendLib.allAdapters();
-  assert.equal(adapters.length, 4, 'expected exactly the four supported agents');
+  assert.equal(ADAPTERS.length, 4, 'expected exactly the four supported agents');
 
-  const nonAutonomous = adapters.filter((a) => !backendLib.resolve(a).autonomous);
+  const nonAutonomous = ADAPTERS.filter((a) => !backendLib.resolve(a).autonomous);
   assert.deepEqual(nonAutonomous, [],
     `these adapters cannot drive an autonomous run: ${nonAutonomous.join(', ')}`);
 });

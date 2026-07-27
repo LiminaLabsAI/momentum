@@ -57,4 +57,4 @@ function withLock(filePath, fn, opts = {}) {
   throw new Error(`${label}: could not acquire lock at ${lockDir} within budget`);
 }
 
-module.exports = { withLock, DEFAULT_BUDGET_MS };
+module.exports = { withLock };

@@ -211,4 +211,4 @@ function derive(input) {
   return { overview: overview.join('\n'), plan, tasks };
 }
 
-module.exports = { derive, DERIVED_BANNER };
+module.exports = { derive };

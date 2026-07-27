@@ -146,4 +146,6 @@ function forwardAmendments(manifest) {
   return manifest.amendments.filter((a) => a.kind === KIND.FORWARD_ONLY);
 }
 
-module.exports = { classify, apply, completedUnits, forwardAmendments, KIND };
+// `completedUnits` is internal to `apply`. Exporting it "for tests" is how
+// dead code starts — its behaviour is asserted through `apply`.
+module.exports = { classify, apply, forwardAmendments, KIND };

@@ -144,4 +144,5 @@ function format(result) {
   return lines.join('\n');
 }
 
-module.exports = { validate, format, VALID, FLOOR, COUPLED, GRANULARITY_RANK };
+// The rule tables are internal; `validate`/`format` are the surface.
+module.exports = { validate, format };

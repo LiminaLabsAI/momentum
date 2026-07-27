@@ -1218,6 +1218,19 @@ function init(targetDir, agent, opts = {}) {
       }
     }
   }
+  // Phase 32c — capability-gated script install. `run-governor.sh` is the
+  // INTERCEPTOR backend's hook; adapters that can only observe a turn ending
+  // (Codex, opencode) drive runs via the re-invoker and cannot invoke it. 32a
+  // shipped it to all four, so half the installs carried a script advertising a
+  // capability the adapter did not have. `core/run/lib/backend.js` is the one
+  // place that knows which is which.
+  if (!_dryRun) {
+    const backendLib = require('../core/run/lib/backend');
+    if (!backendLib.wantsInterceptorScript(agent)) {
+      const governorScript = path.join(target, ...dests.scripts, 'run-governor.sh');
+      try { fs.unlinkSync(governorScript); } catch (_e) { /* never installed — fine */ }
+    }
+  }
   // Phase 9 — ecosystem session-append helper, sourced by check-history-reminder.
   const sessionSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
   if (fs.existsSync(sessionSrc)) {
@@ -1367,6 +1380,16 @@ function upgrade(targetDir, agent, opts = {}) {
     path.join(target, ...dests.scripts),
     upgradeOpts
   );
+  // Phase 32c — capability-gated script install, UPGRADE path. Gating install
+  // alone is not enough: upgrade re-copies core/scripts wholesale, so the very
+  // next upgrade would silently restore a script the adapter cannot invoke —
+  // and the idempotence test caught exactly that.
+  if (!_dryRun) {
+    const backendLibUp = require('../core/run/lib/backend');
+    if (!backendLibUp.wantsInterceptorScript(agent)) {
+      try { fs.unlinkSync(path.join(target, ...dests.scripts, 'run-governor.sh')); } catch (_e) { /* absent */ }
+    }
+  }
   // Phase 9 — ecosystem session-append helper lives outside core/scripts/
   // (it belongs to the ecosystem subsystem) but ships alongside the hook.
   const sessionUpgradeSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');

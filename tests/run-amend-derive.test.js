@@ -112,13 +112,17 @@ test('an unsignalled amendment stops, and says why it stopped', () => {
 });
 
 test('completed units are read from the audit trail, not guessed', () => {
+  // Asserted through the PUBLIC surface: an unsignalled amendment reports the
+  // completed units it might invalidate, so this proves the same thing without
+  // exporting an internal helper "for tests".
   withRun((dir) => {
     manifestLib.advance(dir, 'G1', TS);
     manifestLib.advance(dir, 'G2', TS);
-    manifestLib.recordTurn(dir, TS); // must not be mistaken for a unit
+    manifestLib.recordTurn(dir, TS); // a turn counter must not be mistaken for a unit
 
-    const done = amend.completedUnits(manifestLib.load(dir));
-    assert.deepEqual(done, ['G1'], 'the CURRENT unit is not complete; turn counters are not units');
+    const r = amend.apply(dir, { text: 'switch backends' }, TS);
+    assert.deepEqual(r.invalidates, ['G1'],
+      'the CURRENT unit is not complete; turn counters are not units');
   });
 });
 

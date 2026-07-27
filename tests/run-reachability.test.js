@@ -65,10 +65,18 @@ function listJs(dir) {
  */
 function exportsOf(file) {
   const src = fs.readFileSync(file, 'utf8');
-  const m = src.match(/module\.exports\s*=\s*\{([\s\S]*?)\n\};/);
+
+  // Both shapes, and the single-line one is NOT optional. The first version of
+  // this required `\n};` — so every module ending
+  // `module.exports = { a, b };` on one line contributed ZERO exports and the
+  // guard reported green over code it could not see. `backend.js`, `lock.js`,
+  // `grant.js` and `amend.js` were all invisible to it. A guard with a silent
+  // blind spot is worse than no guard: it converts "unchecked" into "checked
+  // and fine".
+  const m = src.match(/module\.exports\s*=\s*\{([\s\S]*?)\}\s*;/);
   if (!m) return [];
   return m[1]
-    .split('\n')
+    .split(/[\n,]/)                              // single-line exports are comma-separated
     .map((l) => l.replace(/\/\/.*$/, '').trim())
     .filter(Boolean)
     .map((l) => {
