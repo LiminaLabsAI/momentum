@@ -49,6 +49,7 @@ type: Guide
 | 31a | Ecosystem Lifecycle Spine | Complete (v0.40.0) | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
 | 31b | Ecosystem Enforcement | Complete (v0.41.0) | [phase-31b-ecosystem-enforcement/](phase-31b-ecosystem-enforcement/) |
 | 31c | Shipped Runtime | Complete (v0.42.0) | [phase-31c-shipped-runtime/](phase-31c-shipped-runtime/) |
+| 32a | Governor (Epic 0001) | In Progress | [phase-32a-governor/](phase-32a-governor/) |
 
 ## Phase Structure
 
