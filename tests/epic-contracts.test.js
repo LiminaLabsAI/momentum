@@ -88,7 +88,12 @@ test('the bootstrap epic record satisfies its own schema', () => {
   assert.match(block, /^id: "0001"$/m);
   assert.match(block, /^slug: autonomous-execution$/m);
   assert.match(block, /^status: (planned|in-progress|complete|abandoned)$/m);
-  assert.match(block, /^phases:$/m);
+  // BOTH serializations. The record was hand-authored as a block list;
+  // `momentum epic close` rewrites it inline via the shared frontmatter
+  // serializer. A test that accepts only the shape a human happened to type
+  // fails the moment momentum touches its own record — which is exactly what
+  // happened when the epic was closed.
+  assert.match(block, /^phases:\s*(\[|$)/m);
   for (const p of ['phase-32a-governor', 'phase-32b-epic-tier', 'phase-32c-adapter-parity', 'phase-32d-cross-repo']) {
     assert.ok(block.includes(p), `${p} must be listed`);
   }

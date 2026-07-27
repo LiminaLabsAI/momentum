@@ -152,3 +152,25 @@ Recorded rather than fudged. The useful reading is that the 87-item tail is not
 hanging off them, and pulling a root exposes the next layer. Anyone attacking
 that tail should expect the count to plateau before it falls, and should not read
 a flat number as "no progress".
+
+### [DISCOVERY] 2026-07-28 — I pushed with a failing test
+Topics: rule-12, process, verification-integrity
+Affects-phases: phase-32d-cross-repo
+Affects-specs: tests/epic-contracts.test.js
+Detail: The G3 closing commit ran `npm test`, `git commit` and `git push` in one
+shell invocation. The suite reported **1414/1415 with one failure**, and the push
+went out anyway because the commands were chained rather than gated.
+
+The failure was real but shallow: `momentum epic close` rewrote the epic record's
+`phases` list from the block form a human had typed into the inline form the
+shared frontmatter serializer emits, and `tests/epic-contracts.test.js` asserted
+only the block shape. The test now accepts both — a test that recognises only the
+spelling a human happened to use fails the moment momentum touches its own
+record, which is precisely what closing the epic did.
+
+Fixed within minutes, suite back to **1415/1415**. Recorded because the process
+failure matters more than the assertion did: **Rule 12 says read the output, and
+chaining `npm test && git push` in one command makes it possible not to.** Third
+verification-integrity incident in this epic, after 32c's blind guard and 32d
+G2's overwritten test file — all three the same shape, which is trusting a
+procedure instead of reading a result.
