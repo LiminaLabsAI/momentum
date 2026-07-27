@@ -21,6 +21,46 @@ available from the inputs D10 names.
 
 ---
 
+### [FEATURE] 2026-07-27 — G3: the operator can change their mind mid-run
+Topics: amendments, d11, jit-derivation, d10, reproducibility
+Affects-phases: phase-32b-epic-tier
+Affects-specs: core/run/lib/amend.js, core/run/lib/derive.js
+Detail: The two halves of the operator's original objection, built together
+because they only make sense together. **amend.js** gives the operator a channel
+INTO a live run; **derive.js** is what makes using it cheap.
+
+The design question was who classifies an amendment. A library that read the
+text and guessed "does this invalidate phase 1?" would be unreproducible and
+unauditable — the same objection ADR-0019 raised against model-judged authority,
+and it applies with more force here because the consequence is stopping a run.
+So the CALLER supplies the signal (`--forward-only` / `--invalidates`), exactly
+as the authority classifier takes a caller-supplied `needs_adr` flag, and this
+module mechanically enforces the consequence. Judgment stays where judgment
+belongs; enforcement is deterministic.
+
+With no signal at all the amendment is `unclassified` and treated as
+backward-invalidating (the decision recorded earlier in this file). Worth
+restating why: silence would otherwise default to the CHEAP branch, absorbing a
+change that may invalidate completed work. An unnecessary stop is recoverable in
+seconds; three phases built on an unchecked amendment is not.
+
+**derive.js** is pure and takes its date as an argument rather than reading a
+clock. That is not fastidiousness — a derivation that varied run-to-run could
+not be reviewed, diffed, or trusted, and the whole claim of D10 is that the
+operator can rely on it without re-reading every generated file. The plan
+skeleton also states plainly what derivation cannot know: the group breakdown
+depends on code that exists now and did not when the epic was written.
+Pretending otherwise would be the upfront-specs mistake in miniature.
+
+Verified live rather than only in unit tests: a forward-only amendment was
+absorbed with the run still `running`, and then appeared in the derived spec of
+`phase-32c-adapter-parity` — a phase that does not exist yet. That round trip is
+the entire argument for D10 over upfront authoring, demonstrated end to end.
+
+Verification: 23 tests; orphan guard clean; full suite **1362/1362**.
+
+---
+
 ### [DISCOVERY] 2026-07-27 — The grant would have shipped non-functional to every installed project
 Topics: runtime-closure, adr-0018, bug-030, grant, packaging
 Affects-phases: phase-32b-epic-tier

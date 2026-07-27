@@ -40,11 +40,17 @@ epic: autonomous-execution
 - [x] `momentum run grant [mint|status|revoke]` CLI
 - [x] Verify: `node --test tests/run-grant.test.js` → **15/15**; `tests/run-grant-prepush.test.js` → **11/11**; `npm test` → **1339/1339**
 
-## Group 3 — Derivation + amendments
-- [ ] `core/run/lib/derive.js` — pure `(epic, priorHistory) → skeletons`, no model call
-- [ ] `core/run/lib/amend.js` — forward-only absorbs silently; backward-invalidating stops and names affected units; unclassified treated as backward-invalidating
-- [ ] `momentum run amend` + `momentum epic amend`
-- [ ] Verify: `npm test`
+## Group 3 — Derivation + amendments ✅
+- [x] `core/run/lib/derive.js` — pure `(epic, priorHistory) → skeletons`, no model call; **date supplied, never read from a clock**, so output is byte-reproducible
+- [x] Derived spec declares it was derived, cites its source epic, carries inherited decisions, deps and run policy
+- [x] The plan section **admits what derivation cannot know** — the group breakdown depends on code the epic predates
+- [x] `core/run/lib/amend.js` — forward-only absorbs silently; backward-invalidating stops and names affected units; **unclassified treated as backward-invalidating** (the safe direction)
+- [x] Classification is **caller-signalled, not text-guessed** — same discipline as ADR-0019's `needs_adr`; a text-reading classifier would be unreproducible and unauditable
+- [x] Completed units read from the audit trail, not inferred; turn counters not mistaken for units
+- [x] Only forward-only amendments feed later derivations — a backward one stopped the run, so what happens next is the operator's call
+- [x] `momentum run amend` + `momentum run derive`
+- [x] **Verified live:** a forward-only amendment absorbed with the run still `running`, and appearing in the derived spec of a phase that does not exist yet
+- [x] Verify: `node --test tests/run-amend-derive.test.js` → **23/23**; orphan guard clean; `npm test` → **1362/1362**
 
 ## Group 4 — Recipes + wiring
 - [ ] `/brainstorm-epic` recipe (core + 4 adapters)
