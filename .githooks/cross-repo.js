@@ -117,8 +117,14 @@ function routingMessage(ecosystemRoot, result, focus) {
     }
   }
 
-  lines.push('  → Run /brainstorm-initiative to open one before going further.');
-  lines.push('    (Cross-repo work belongs to an initiative — see ADR-0016.)');
+  // BUG-032. This hook is advisory — it always exits 0 — but the previous
+  // wording was an IMPERATIVE ("before going further"), and an agent mid-phase
+  // obeys wording, not exit codes. It fired once per member, so an N-repo
+  // feature halted N times: "in ecosystem mode it was not able to execute the
+  // whole phase in one go." State the fact; name the command; do not instruct.
+  lines.push('  Cross-repo work belongs to an initiative (ADR-0016).');
+  lines.push('  /brainstorm-initiative opens one. This is a note, not a gate —');
+  lines.push('  the current task continues.');
   return lines;
 }
 

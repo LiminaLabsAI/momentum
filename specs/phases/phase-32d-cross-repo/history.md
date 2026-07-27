@@ -59,3 +59,52 @@ from evidence rather than from the plan's optimistic estimate.
 
 The deprecation notices from 32a remain in place and are asserted by test, so the
 dead code cannot quietly lose its warning label in the meantime.
+
+### [FEATURE] 2026-07-27 — G2: BUG-032 fixed + the initiative tier
+Topics: bug-032, cross-repo, nudge, initiative-tier, adr-0003
+Affects-phases: phase-32d-cross-repo
+Affects-specs: core/ecosystem/lib/cross-repo.js, core/scripts/cross-repo-gate.sh, bin/run.js
+Detail: **BUG-032** — the defect that started this epic. The hook was always
+advisory (`exit 0`), but its message read *"→ Run /brainstorm-initiative to open
+one before going further."* An agent mid-phase obeys wording, not exit codes, and
+it fired once per member — so an N-repo feature halted N times. Two changes:
+the message now states a fact and says plainly *"a note, not a gate — the current
+task continues"*, and an **active run grant suppresses it entirely**, because the
+grant IS the coordination record the nudge asks for. An expired or revoked grant
+does not suppress. A regression test also forbids any nudge line from opening
+with an imperative verb, so the wording cannot quietly drift back.
+
+**Initiative tier** — the fourth and last scale of D1. Members are ordered by
+`ecosystem.json` dependency edges through `computeWaveLayers`, the same engine
+that orders an epic's phases by their `deps:` and a phase's groups by theirs. One
+topological sort, four scales (ADR-0003), asserted by a test that reads the
+source. Outside an ecosystem it degrades audibly rather than pointing the cursor
+at the slug in silence.
+
+---
+
+### [DISCOVERY] 2026-07-27 — I overwrote an existing test file and the suite did not notice
+Topics: process, verification-integrity, test-loss
+Affects-phases: phase-32d-cross-repo
+Affects-specs: tests/cross-repo-nudge.test.js
+Detail: Writing this group's tests, I created `tests/cross-repo-nudge.test.js`
+with a shell heredoc — **a file that already existed**, carrying 11 tests for the
+gate's throttling and advisory exit code. The write replaced it wholesale.
+
+The suite reported **1404/1404 passing, zero failures**. Nothing failed, because
+the tests were not broken — they were *gone*. A green suite is not evidence that
+nothing was lost, and this is the second time in this epic that a green result
+meant less than it appeared to (the first being 32c's orphan-guard blind spot).
+
+Caught only by noticing the arithmetic did not work: baseline 1407 + 8 new should
+be 1415, and the run said 1404. Diffing test NAMES before and after located the
+11 missing ones in seconds; without that check the loss would have been committed
+silently.
+
+Restored from HEAD and the new tests appended rather than substituted — final
+count **1415/1415**, which reconciles exactly.
+
+Two process corrections, both cheap: never create a test file with a redirect
+that can clobber (`Write` reports an existing file; `cat >` does not), and treat
+**test-count arithmetic** as part of the Rule 12 evidence rather than reading
+"fail 0" as sufficient.

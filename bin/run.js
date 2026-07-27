@@ -117,6 +117,40 @@ function cmdStart(args) {
   // Epic-tier runs start at the first phase the wave plan says is ready, not
   // at the epic slug — a cursor pointing at the epic itself names no work.
   let firstUnit = flag(args, '--unit', null);
+
+  // Phase 32d — the fourth and last tier of D1's one-runner-per-scale. An
+  // initiative's members are ordered by `ecosystem.json` dependency edges, the
+  // same engine (`core/waves`) that orders an epic's phases by their `deps:`.
+  // One topological sort, four scales (ADR-0003).
+  if (!firstUnit && tier === 'initiative') {
+    try {
+      const eco = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
+      // NOT `root` — that name already holds the repo root in this scope, and
+      // shadowing it here would be a live grenade for the next editor.
+      const ecoRoot = eco.findRoot(repoRoot());
+      const initiative = ecoRoot && eco.loadInitiative && eco.loadInitiative(ecoRoot, target);
+      const members = (initiative && initiative.frontmatter && initiative.frontmatter.repos) || [];
+      if (members.length) {
+        const { computeWaveLayers } = require(path.join(MOMENTUM_ROOT, 'core', 'waves', 'lib', 'waves'));
+        const manifest = JSON.parse(fs.readFileSync(path.join(ecoRoot, 'ecosystem.json'), 'utf8'));
+        const edges = ((manifest.config && manifest.config.edges) || manifest.edges || [])
+          .filter((e) => members.includes(e.from) && members.includes(e.to))
+          .map((e) => ({ from: e.from, to: e.to }));
+        const waves = computeWaveLayers(members, edges, { label: 'initiative' });
+        if (waves[0] && waves[0].nodes.length) {
+          firstUnit = waves[0].nodes[0];
+          if (waves[0].nodes.length > 1) {
+            console.log(`  Wave 1 has ${waves[0].nodes.length} ready members: ${waves[0].nodes.join(', ')}`);
+          }
+        }
+      }
+    } catch (err) {
+      // No ecosystem, or an unreadable one. Fall through to the target as the
+      // cursor and say so — better a named degradation than a silent guess.
+      console.log(`  (could not resolve initiative members: ${err.message})`);
+    }
+  }
+
   if (!firstUnit && tier === 'epic') {
     const g = epicLib.waves(specsDir(), target);
     const wave1 = g.waves[0];
