@@ -26,12 +26,19 @@ epic: autonomous-execution
 - [x] Orphan guard caught 5 test-only exports; all unexported
 - [x] Verify: `node --test tests/epic-library.test.js` → **16/16**; `npm test` → **1313/1313**
 
-## Group 2 — Scope grant *(∥ G1)*
-- [ ] `core/run/lib/grant.js` — mint / verify / consume / revoke, every consumption audited
-- [ ] Five distinct refusal reasons: `expired` · `branch-out-of-scope` · `revoked` · `epic-mismatch` · `exhausted`
-- [ ] `pre-push` accepts a valid in-scope grant **alongside** the sentinel; invariant floor unchanged
-- [ ] Adversarial tests written **before** the happy path
-- [ ] Verify: `npm test`
+## Group 2 — Scope grant *(∥ G1)* ✅
+- [x] `core/run/lib/grant.js` — mint / verify / consume / revoke; `verify` pure; every consumption audited **before** the push proceeds
+- [x] **Six** distinct refusal reasons: `no-grant` · `expired` · `branch-out-of-scope` · `epic-mismatch` · `revoked` · `exhausted` *(the plan said five; `no-grant` is its own case and an operator needs to tell it apart)*
+- [x] All three bounds **required at mint** — an unbounded axis is an unbounded grant
+- [x] `mint` **refuses** to write into a git-trackable path — a grant is a credential; downstream repos carry stale `.gitignore`s, so this is checked not documented
+- [x] A refused consumption never decrements the budget; expiry never slides
+- [x] `pre-push` accepts a valid in-scope grant **alongside** the sentinel (sentinel tried first); every error path in `tryScopeGrant` returns false — **fail-closed**, so a broken grant subsystem can only make the hook stricter
+- [x] Adversarial tests written **before** the implementation (confirmed red on a missing module)
+- [x] **11 integration tests drive the real `run-check.js` as a subprocess** with git's stdin format — testing `consume()` directly would prove nothing about the hook a real push fires
+- [x] `run/lib/grant.js` added explicitly to the **runtime closure** — `run-check.js` resolves it through a computed path the walker cannot follow; without it the grant works here and silently does nothing in every installed project
+- [x] `.githooks/` synced (ADR-0018 dual-maintenance fence caught the drift); 4 fingerprints re-baselined
+- [x] `momentum run grant [mint|status|revoke]` CLI
+- [x] Verify: `node --test tests/run-grant.test.js` → **15/15**; `tests/run-grant-prepush.test.js` → **11/11**; `npm test` → **1339/1339**
 
 ## Group 3 — Derivation + amendments
 - [ ] `core/run/lib/derive.js` — pure `(epic, priorHistory) → skeletons`, no model call

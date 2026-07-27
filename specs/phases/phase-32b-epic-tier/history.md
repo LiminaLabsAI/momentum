@@ -21,6 +21,45 @@ available from the inputs D10 names.
 
 ---
 
+### [DISCOVERY] 2026-07-27 — The grant would have shipped non-functional to every installed project
+Topics: runtime-closure, adr-0018, bug-030, grant, packaging
+Affects-phases: phase-32b-epic-tier
+Affects-specs: core/runtime/closure.js, core/git-hooks/run-check.js
+Detail: `run-check.js` reaches `grant.js` through a **computed** path — it tries
+`.momentum/runtime/run/lib/grant.js` first (installed projects) and falls back to
+`../run/lib/grant.js` (this checkout). The runtime-closure walker
+(`core/runtime/closure.js`) discovers vendored files by following **static**
+`require` calls from its entry points, so it could not see this one.
+
+Net effect had it shipped: the grant path would work perfectly in the momentum
+repo and silently do nothing in every installed project, because `grant.js` would
+not be in their `.momentum/runtime/`. `tryScopeGrant` fails closed, so nothing
+would break — pushes would just keep being refused with the sentinel message and
+nobody would learn why. **That is BUG-030's shape one layer down**: a production
+path that works where it is developed and not where it ships.
+
+Caught by adding the entry and checking `computeClosure()` output rather than
+assuming. `run/lib/grant.js` now vendors along with its transitive deps
+(`lock.js`, `manifest.js`) — 15 files in the closure, up from 12.
+
+Two existing guards also fired and were right to: ADR-0018's dual-maintenance
+fence (`.githooks/` must mirror `core/git-hooks/` byte-for-byte) and the four
+adapter fingerprints.
+
+---
+
+### [DECISION] 2026-07-27 — The grant has six refusal reasons, not five
+Topics: grant, adr-0020, diagnostics
+Affects-phases: phase-32b-epic-tier
+Affects-specs: core/run/lib/grant.js
+Detail: The plan enumerated five (`expired`, `branch-out-of-scope`, `revoked`,
+`epic-mismatch`, `exhausted`). Building it, `no-grant` is plainly its own case and
+must be distinguishable: "there is no grant" and "your grant does not cover this
+branch" send an operator to completely different places. A refusal an operator
+cannot diagnose is a refusal they will work around.
+
+---
+
 ### [DISCOVERY] 2026-07-27 — The bootstrap epic record was unparseable by momentum's own reader
 Topics: okf, adr-0005, frontmatter, epic, dogfood
 Affects-phases: phase-32b-epic-tier
