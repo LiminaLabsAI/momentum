@@ -12,12 +12,14 @@ epic: autonomous-execution
 > Branch `epic-0001-autonomous-execution` — commit + push per group, **no merge
 > until the epic completes**.
 
-## Group 0 — Contracts *(blocks)*
-- [ ] Author **ADR-0019** — Decision Authority Model (mechanical classification, park-on-ambiguity, pure function)
-- [ ] `core/run/schema/run.schema.json` — versioned, all fields, rejection cases
-- [ ] `core/run/CONTRACT.md` — the "next unit starts" invariant + both backends (so 32c implements against a contract, not against code)
-- [ ] Authority trigger table **as data** — one source shared by classifier and tests
-- [ ] Verify: `npm test`
+## Group 0 — Contracts *(blocks)* ✅
+- [x] Author **ADR-0019** — Decision Authority Model (mechanical classification, park-on-ambiguity, pure function)
+- [x] `core/run/schema/run.schema.json` — versioned (`schema_version` const 1), tier-agnostic, floor rules encoded as type constraints (`push: never` is unrepresentable), 32b surfaces reserved without pre-committing their shape
+- [x] `core/run/CONTRACT.md` — the "next unit starts" invariant + both backends (so 32c implements against a contract, not against code); 7-branch decision order with the kill switch ranked above everything
+- [x] Authority trigger table **as data** (`core/run/lib/authority-triggers.js`) — one frozen source shared by classifier and tests; covers all 5 Rule-14 triggers; guards itself via the `trust-layer` path
+- [x] ADR-0019 in `specs/decisions/index.md`; 14 topic rows added to `impact-map.md`
+- [x] Verify: `node --test tests/run-contracts.test.js` → **16/16 pass**
+- [x] Verify: `npm test` → **1177/1177** (baseline 1161 + 16 net-new)
 
 ## Group 1 — Authority classifier *(∥ G2)*
 - [ ] `core/run/lib/authority.js` — pure `(changeSet, config) → operator | agent | park`

@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LiminaLabsAI/momentum/schemas/run-v1.json",
+  "title": "Momentum Run Manifest",
+  "description": "Durable state for one autonomous run, at <repo>/.momentum/run.json. The resume point: agents are stateless across turns, so everything the governor needs to restart a run after compaction, session death, or a machine restart lives here. Tier-agnostic by construction (ADR-0003's one-engine principle applied to execution) — the governor advances a cursor and never interprets what a unit means. All writes go through core/run/lib/manifest.js. Versioned from the first commit because an unversioned resume format is a migration trap.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "tier", "target", "status", "policy", "cursor", "created"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Run manifest schema version. Readers MUST tolerate unknown sibling fields (forward compatibility) but MUST refuse an unknown schema_version rather than guess."
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_[a-z0-9]{4,16}$",
+      "description": "Opaque short identifier (run_<hex>). Appears in park records and audit entries so artifacts can be tied back to the run that produced them."
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["group", "phase", "epic", "initiative"],
+      "description": "Which scale this run walks. The governor treats all four identically — this field exists for the CLI's rendering and for the caller that resolves a cursor into work, never for the decision function."
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What is being run, at the granularity of `tier`: a group id, a phase directory name, an epic slug, or an initiative slug."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["running", "parked", "stopped", "complete", "failed"],
+      "description": "running = the governor may continue. parked = blocked on operator input past the threshold. stopped = halted by kill switch, budget, or strikes. complete/failed = terminal. Only `running` permits a `continue` decision (governor branch 1)."
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["release", "push", "tdd"],
+      "description": "The operator's standing choices for this run, resolved from specs/config.md at start and frozen for the run's lifetime. Frozen deliberately: a policy that shifts mid-run makes the audit trail unreadable.",
+      "properties": {
+        "release": {
+          "type": "string",
+          "enum": ["per-phase", "per-feature", "manual"],
+          "description": "When merge + tag happen. per-feature defers both to the end of the whole run — the epic's phases stack as lanes and land parent-first (Rule 6 Landing Order). Never finer-grained than the merge granularity it implies; enforced by `momentum config validate`."
+        },
+        "push": {
+          "type": "string",
+          "enum": ["per-group", "per-phase"],
+          "description": "Backup cadence. There is no `never` — an autonomous run holding multiple phases of work only in a local worktree is one crash from total loss. This is a floor rule, not a preference."
+        },
+        "tdd": {
+          "type": "string",
+          "enum": ["strict", "opt-in"],
+          "description": "strict = a task cannot be marked done without a recorded red→green transition. Required whenever release is per-feature: with the human absent across several phases, the failing-then-passing test is the only evidence of progress that is not the agent's own opinion."
+        },
+        "authority_overrides": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Project-specific additions to the Rule-14 trigger set (ADR-0019). Widen-only: overrides may claim MORE decisions for the operator, never fewer. The invariant floor (trust-layer paths, specs/architecture/, public contracts) is not reachable from here."
+        },
+        "park_threshold": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many parked decisions may accumulate before the run stops cleanly instead of limping on. Guards the pre-mortem's half-built-feature failure: returning to a 60%-complete feature across three branches is worse than returning to a clean stop."
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Bounds on an unattended run. Absent means unbounded, which is only sane for tier=group. Governor branch 3.",
+      "properties": {
+        "turns": { "type": "integer", "minimum": 1, "description": "Maximum governor continuations." },
+        "tokens": { "type": "integer", "minimum": 1, "description": "Maximum cumulative tokens, when the host reports them." },
+        "wall_clock_minutes": { "type": "integer", "minimum": 1, "description": "Maximum elapsed minutes since `created`." }
+      }
+    },
+    "spent": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Running totals compared against `budget`. Written by the manifest layer on each continuation.",
+      "properties": {
+        "turns": { "type": "integer", "minimum": 0 },
+        "tokens": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit"],
+      "description": "Where the run is. The single source of truth for what starts next, and the idempotence guard: a backend firing onTurnEnd twice for one logical turn must not advance it twice.",
+      "properties": {
+        "unit": { "type": "string", "minLength": 1, "description": "Opaque unit id, meaningful to the caller that resolves it into work — never parsed by the governor." },
+        "started": { "type": "string", "format": "date-time" },
+        "path": { "type": "array", "items": { "type": "string" }, "description": "Ancestry from the run target down to the unit, e.g. ['phase-32a-governor','G3']. Rendering and audit only." }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Decisions the agent took under its own authority (ADR-0019). Append-only. Each records the trigger evaluation that produced the classification, so 'why did it decide that alone?' stays answerable long after the run.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "unit", "summary", "authority"],
+        "properties": {
+          "ts": { "type": "string", "format": "date-time" },
+          "unit": { "type": "string" },
+          "summary": { "type": "string", "minLength": 1 },
+          "authority": { "type": "string", "enum": ["agent"], "description": "Only agent-authority decisions land here. Operator-authority ones are parked, not decided." },
+          "triggers_evaluated": { "type": "array", "items": { "type": "string" }, "description": "Which Rule-14 triggers were checked and did not fire. The negative evidence is the interesting part." },
+          "rationale": { "type": "string" }
+        }
+      }
+    },
+    "parked": {
+      "type": "array",
+      "description": "Questions awaiting the operator. Non-blocking by construction: a parked item freezes only the thread that needs it while independent work continues. Backed by core/run/lib/inbox.js.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "ts", "question", "blocked_unit"],
+        "properties": {
+          "id": { "type": "string" },
+          "ts": { "type": "string", "format": "date-time" },
+          "question": { "type": "string", "minLength": 1 },
+          "blocked_unit": { "type": "string", "description": "The unit that cannot proceed. Other units are unaffected." },
+          "context": { "type": "string" },
+          "reason": { "type": "string", "enum": ["operator-authority", "ambiguous"], "description": "operator-authority = a Rule-14 trigger fired. ambiguous = nothing matched and the default parked rather than guessing (ADR-0019 §4)." },
+          "resolved": { "type": "boolean", "default": false },
+          "answer": { "type": "string" }
+        }
+      }
+    },
+    "strikes": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 },
+      "description": "Per-unit consecutive failure counts, keyed by unit id. Reset on success. Governor branch 4 — repeated failure on one task is not progress, and retrying forever burns budget to produce noise."
+    },
+    "amendments": {
+      "type": "array",
+      "description": "Operator changes injected into a live run (Epic 0001 D11). forward-only amendments are absorbed silently and become inputs to the derivation of not-yet-started units; backward-invalidating ones set status=stopped and name the affected completed work. Reserved here in 32a; written by 32b.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "text", "kind"],
+        "properties": {
+          "ts": { "type": "string", "format": "date-time" },
+          "text": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "enum": ["forward-only", "backward-invalidating", "unclassified"], "description": "unclassified is treated as backward-invalidating — the safe direction when the agent cannot tell." },
+          "invalidates": { "type": "array", "items": { "type": "string" }, "description": "Completed units this amendment calls into question." }
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Scoped authorization replacing the single-use merge-approved sentinel for multi-landing runs. Reserved in 32a; defined by ADR-0020 and written in 32b. Shape deliberately open here so 32a does not pre-commit a one-way door it is not yet ready to decide."
+    },
+    "created": { "type": "string", "format": "date-time" },
+    "audit": {
+      "type": "array",
+      "description": "Append-only event log. Every state transition the governor causes, attributed and timestamped.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "event"],
+        "properties": {
+          "ts": { "type": "string", "format": "date-time" },
+          "event": { "type": "string", "enum": ["start", "continue", "park", "resolve", "strike", "stop", "resume", "complete", "fail", "amend"] },
+          "actor": { "type": "string" },
+          "detail": { "type": "string" }
+        }
+      }
+    }
+  }
+}

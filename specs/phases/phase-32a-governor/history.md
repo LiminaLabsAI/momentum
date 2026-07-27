@@ -111,6 +111,28 @@ record type describes work the project already does.
 
 ---
 
+### [FEATURE] 2026-07-27 — G0 contracts landed: ADR-0019, run schema, governor contract, trigger table
+Topics: decision-authority, governor, run-manifest, adr-0019, contracts
+Affects-phases: phase-32a-governor, phase-32c-adapter-parity
+Affects-specs: specs/decisions/0019-decision-authority-model.md, core/run/CONTRACT.md, core/run/schema/run.schema.json, core/run/lib/authority-triggers.js
+Detail: G0 ships shapes, not behaviour — deliberately, so G1 and G2 cannot drift
+while they proceed in parallel and so 32c implements the re-invoker against a
+written contract rather than against 32a's code. Four artifacts: **ADR-0019**
+(authority is a pure function of `(changeSet, config)`, no model judgement in the
+hot path, ambiguity parks); **`run.schema.json`** versioned `schema_version: 1`
+from the first commit, tier-agnostic by assertion (a test fails if any
+tier-specific field leaks to the top level), with the floor rules encoded as
+*type constraints* rather than prose — `push: never` is unrepresentable rather
+than merely discouraged; **`CONTRACT.md`** stating the single invariant *"the
+next unit starts"* plus the 7-branch decision order, with the kill switch ranked
+second because the agent is the thing that may be misbehaving; and the **trigger
+table as frozen data**, covering all five Rule-14 triggers and classifying edits
+to *itself* as operator-authority so a run cannot widen its own boundary and log
+it as routine. Verification: `tests/run-contracts.test.js` **16/16**; full suite
+**1177/1177** (baseline 1161 + 16 net-new), zero regressions.
+
+---
+
 ### [DECISION] 2026-07-27 — Park primitive extracted in 32a rather than stubbed
 Topics: park, inbox, swarm, scope
 Affects-phases: phase-32a-governor
