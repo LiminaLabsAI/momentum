@@ -52,14 +52,16 @@ epic: autonomous-execution
 - [x] **Verified live:** a forward-only amendment absorbed with the run still `running`, and appearing in the derived spec of a phase that does not exist yet
 - [x] Verify: `node --test tests/run-amend-derive.test.js` → **23/23**; orphan guard clean; `npm test` → **1362/1362**
 
-## Group 4 — Recipes + wiring
-- [ ] `/brainstorm-epic` recipe (core + 4 adapters)
-- [ ] `/brainstorm-phase --derive` — no-interview path; interview path untouched
-- [ ] `momentum run start epic <slug>` walks the phase graph
-- [ ] `tdd: strict` enforcement at task-marking
-- [ ] Stacked-lane landing for `release: per-feature`
-- [ ] Re-baseline 4 fingerprints; drift verified as only the intended files
-- [ ] Verify: `npm test`
+## Group 4 — Recipes + wiring ✅
+- [x] `/brainstorm-epic` — **one** shared recipe in `core/commands/` reaching all 4 adapters; same gate contract as its siblings; red-flags table names the specific mistake the tier prevents (writing later phases' plans during the epic brainstorm)
+- [x] `/brainstorm-phase --derive` — no-interview path documented; **interview path untouched** (a cold phase still needs the questions) and asserted intact by test
+- [x] `momentum run start epic <slug>` resolves the first **ready** phase from the computed wave plan — a cursor on the epic slug names no work; also reports phases it cannot yet order
+- [x] `--unit` still overrides; phase-tier starts unaffected
+- [x] `tdd: strict` enforcement at task-marking — `run red-green` records the transition, `run check-task` refuses without one; evidence is **per-unit** so proof on G1 cannot vouch for G2; stored on the manifest, not inferred from test output
+- [x] Re-baseline 4 fingerprints; drift verified as only the 2 intended files per adapter; self-install overlays synced
+- [x] **Test-quality fix:** two tests mutated strings that did not exist (the serializer emits inline lists) and asserted against unchanged input — both now assert the mutation applied first
+- [ ] ~~Stacked-lane landing for `release: per-feature`~~ → **moved to G5**, where the two-phase e2e exercises it end to end rather than in isolation
+- [x] Verify: `node --test tests/epic-wiring.test.js` → **13/13**; `npm test` → **1375/1375**
 
 ## Group 5 — Verification
 - [ ] Two-phase epic e2e on a clean clone — **one approval**
