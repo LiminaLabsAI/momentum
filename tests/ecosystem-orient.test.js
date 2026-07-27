@@ -303,7 +303,10 @@ test('BUG-029: lane state resolves through a linked worktree pointer', () => {
     write(path.join(gitdir, 'commondir'), '../..\n');
     write(path.join(wt, '.git'), `gitdir: ${gitdir}\n`);
 
-    assert.equal(orient.laneAnchor(wt), anchor,
+    // The git-free anchor resolver moved from orient.js to core/lanes/lib/state
+    // in Phase 31c G2 — same behaviour, correct owner, one implementation shared
+    // with the git-based `resolveAnchor` it parallels.
+    assert.equal(laneState.anchorFromRepoDir(wt), anchor,
       'a worktree must resolve to the SHARED lane anchor, not its own gitdir');
     assert.deepEqual(orient.openLanes(wt).map((l) => l.id), ['lane-open'],
       'Rule 15 lane work runs in worktrees — that is where this must be right');

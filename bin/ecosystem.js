@@ -1834,16 +1834,11 @@ function resolveEcosystemRoot(explicitPath, subcommand) {
     }
     return abs;
   }
-  // First try parent walk-up — succeeds when CWD is inside the ecosystem root.
+  // ONE resolver (ADR-0018 R3): findRoot does up-walk -> sibling scan ->
+  // registration fallback. The local sibling+registration fallback that used to
+  // live here is gone; it existed only because findRoot walked up only.
   const found = lib.findRoot(process.cwd());
   if (found) return found;
-  // Then try sibling walk — succeeds when CWD is inside a member repo
-  // whose ecosystem root is a sibling directory. This mirrors the
-  // session-append.sh hook's discovery pattern and is what makes
-  // ENH-021 actually feel location-agnostic from inside a member repo.
-  const stateLib = require('../core/ecosystem/lib/state');
-  const reg = stateLib.findRegistration(process.cwd());
-  if (reg) return reg.rootPath;
   throw new Error(
     `${subcommand}: no ecosystem.json found in this or any parent directory, ` +
       `nor in any reachable sibling. Pass --ecosystem <path>, or cd to an ` +
