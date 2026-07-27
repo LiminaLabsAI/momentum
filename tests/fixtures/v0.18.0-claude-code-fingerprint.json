@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-27",
-    "capturedFrom": "phase-31c-shipped-runtime",
+    "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "claude-code",
-    "note": "Phase 31c G3 / ADR-0018 R5: shell discovery delegates to the runtime; both bash walkers and the python3 member resolution removed."
+    "note": "Phase 32a G3 — governor Stop hook: run-governor.sh installs to all adapters; Stop wiring added to Claude Code settings.json + Antigravity hooks.json (interceptor backends). Codex/opencode receive the script but no wiring — their re-invoker backend ships in 32c."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -33,7 +33,7 @@
     ".claude/commands/systematic-debug.md": "e330ef1e0144b7b9bb1cfb6f02024077504c5021e16b879dca33a564aae60cc2",
     ".claude/commands/track.md": "03c6b40c67f2f513e22e6099a181fd1f932a5e34445f1746284d13079f5ae750",
     ".claude/commands/validate.md": "904c55ecc63aade8177c754eeba552a3dc5e35ee1e5d95e29f3bb9902cb5a637",
-    ".claude/settings.json": "3ffa80b3171335e98bbac0ac6d8ae46466685fc43471dbf6d14b74693ade75fd",
+    ".claude/settings.json": "ccf513fa364f610c0e392e6e4caf54e7ad32ac6d8e1b616c1a22a4c717ea06c4",
     ".githooks/commit-msg": "5cbabcfc6c27a09af500ac1e50bcd76512050d312aabc9a5d14f4d3bcf5f50c1",
     ".githooks/contract.js": "43621a06bcce8d3da6505e5c5ee841561711e074c88c96c983304c0d8bfb7105",
     ".githooks/cross-repo.js": "fa9f58e5fcc6daf04d20afc723d436a02b12ce65811e0d61e3c61efe0e37903e",
@@ -49,6 +49,7 @@
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/cross-repo-gate.sh": "db13168ea4659c735368d3e2f98bd6360fce338ef06d6e2eafa44ed88af41ccb",
     "scripts/orient.js": "9c684463a4f55e431e625a0ddbf66c44070f76fa431cfa53e630307f1d0f18ba",
+    "scripts/run-governor.sh": "8003c94e44276152b5b78570ac8d6c4b87c744e24741744df24f45eee5d2504d",
     "scripts/session-append.sh": "dbb496c0ab0ad49ce24033de7285a8cbad9d9cfaf5fb873ee97441f219e859e2",
     "scripts/sessionstart-handoff.sh": "c1c3f90a1366e0fbc5741903b09e72b0a950e462f056c725ba8b87f90bd795ca",
     "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",

@@ -164,6 +164,56 @@ Verification: full suite **1198/1198** after G1 (1177 + 21).
 
 ---
 
+### [FEATURE] 2026-07-27 — G3: the governor exists, and its production path is tested as a subprocess
+Topics: governor, interceptor, kill-switch, budget, strikes, call-path, bug-031
+Affects-phases: phase-32a-governor, phase-32c-adapter-parity
+Affects-specs: core/run/lib/governor.js, core/run/lib/manifest.js, core/run/lib/hook.js, core/scripts/run-governor.sh, adapters/claude-code/settings.json, adapters/antigravity/hooks.json
+Detail: The keystone. `decide()` is pure — no I/O, no clock — so the seven
+branches are testable without a live agent, and the branch ORDER is asserted
+rather than assumed: a test drives a run with a healthy budget, no strikes and no
+parks, engages the kill switch, and requires the kill-switch reason to win. A
+kill switch that ranks below anything else is not a kill switch.
+
+Two design corrections surfaced during implementation. **(1)** `recordTurn` had
+to be split out of `advance`. `advance` is idempotent by cursor so a doubled
+backend event cannot skip a unit — but that means a turn counter living inside it
+would no-op on repeat, and a run re-entering the same unit would loop forever
+without ever reaching its turn budget. The runaway guard would have been present
+and silently disabled. One function moves the cursor; the other counts turns.
+**(2)** The continuation message names parked units as off-limits rather than as
+a halt, which is what makes parking non-blocking in practice rather than only in
+the ADR.
+
+**The production call path is exercised for real.** Four tests spawn
+`core/scripts/run-governor.sh` as a subprocess exactly as the host fires it, and
+assert its real exit codes: no run → 0 (untouched), live run → **2** with the
+continuation on stderr and the turn counted, kill switch → 0 with `stopped`
+recorded, corrupt manifest → 0. This is the discipline BUG-031 lacked — `pollTurn`
+was green for a year because its tests called it directly and production never
+did.
+
+Verification: 37 tests in `run-governor.test.js`; 4 fingerprints re-baselined
+after confirming the drift was **only** `settings.json`, `hooks.json` and the new
+script; full suite **1250/1250**.
+
+---
+
+### [DISCOVERY] 2026-07-27 — Hook scripts install to adapters that cannot use them
+Topics: adapters, packaging, capability-gating, governor
+Affects-phases: phase-32c-adapter-parity
+Affects-specs: core/scripts/run-governor.sh, bin/momentum.js
+Detail: `core/scripts/` installs wholesale to every adapter, so Codex and
+opencode now receive `run-governor.sh` even though neither wires it — their hook
+surfaces can only observe a turn ending, so the interceptor script is inert
+there. Harmless today (an uninvoked file) and consistent with how momentum has
+always shipped scripts, but it means the installed tree advertises a capability
+the adapter does not have. 32c should decide whether script installation becomes
+capability-gated, or whether both backends' scripts simply ship everywhere and
+the capability flag remains the single source of truth. Not filed as a bug — it
+is a packaging question 32c has to answer anyway.
+
+---
+
 ### [DECISION] 2026-07-27 — Park primitive extracted in 32a rather than stubbed
 Topics: park, inbox, swarm, scope
 Affects-phases: phase-32a-governor

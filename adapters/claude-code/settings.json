@@ -40,6 +40,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/run-governor.sh"
+          }
+        ]
+      }
     ]
   }
 }

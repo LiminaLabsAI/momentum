@@ -55,6 +55,10 @@ module.exports = {
     skills: true,
     browser: true,
     computerUse: true,
+    // Phase 32a: Codex's `notify` fires on `agent-turn-complete` but is
+    // fire-and-forget — it can OBSERVE a turn ending, never block one. The
+    // governor is therefore satisfied by re-invocation, which ships in 32c.
+    governorBackend: null,
   },
 
   roadmap: {

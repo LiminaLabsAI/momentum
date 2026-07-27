@@ -41,17 +41,22 @@ epic: autonomous-execution
 - [x] Verify: `node --test tests/swarm-*.test.js` → **236/236 swarm tests green**
 - [x] Verify: `node --test tests/run-inbox.test.js` → **15/15 pass**
 
-## Group 3 — Governor + safety rails
-- [ ] `core/run/lib/manifest.js` — atomic read/write/resume, schema-validated on load, forward-field tolerant
-- [ ] `core/run/lib/governor.js` — the decision function, all six branches
-- [ ] `core/scripts/run-governor.sh` — **one** shared interceptor script for Claude Code + Antigravity
-- [ ] Wire Claude Code `Stop` hook
-- [ ] Wire Antigravity `Stop` event
-- [ ] Budget: turns / tokens / wall-clock
-- [ ] Per-task 3-strike counter
-- [ ] **External kill switch** `.momentum/run-stop`, checked FIRST (P3)
-- [ ] Contract re-injection on continue — cursor + pre-authorized action list
-- [ ] Verify: `npm test`
+## Group 3 — Governor + safety rails ✅
+- [x] `core/run/lib/manifest.js` — write-then-rename under lock, schema-validated on load, `loadSafe` for the hook path, unknown `schema_version` **refused** not guessed
+- [x] `core/run/lib/governor.js` — `decide()` pure, all 7 branches in the contract's order
+- [x] `core/scripts/run-governor.sh` — **one** shared interceptor script for Claude Code + Antigravity; no-run guard precedes any node invocation
+- [x] `core/run/lib/hook.js` — node side; **every** failure path exits 0 (fail-open)
+- [x] Wire Claude Code `Stop` hook (`adapters/claude-code/settings.json`)
+- [x] Wire Antigravity `Stop` event (`adapters/antigravity/hooks.json`)
+- [x] Budget: turns / tokens / wall-clock
+- [x] Per-unit 3-strike counter (limit configurable per run)
+- [x] **External kill switch** `.momentum/run-stop`, checked before every other branch (P3); rank asserted by test
+- [x] `recordTurn` split from `advance` — advance is idempotent by cursor, so a counter inside it would no-op on repeat and a loop would never reach its budget
+- [x] Contract re-injection on continue — cursor + pre-authorized action list + parked units named as off-limits
+- [x] `governorBackend` capability flag on all 4 adapters (2 `interceptor`, 2 `null` pending 32c) *(pulled forward from G4 — same concern as the hook wiring)*
+- [x] 4 adapter fingerprints re-baselined; drift verified as **only** the intended files before rewriting
+- [x] Verify: `node --test tests/run-governor.test.js` → **37/37**, incl. **4 real subprocess tests of the production call path** (no-run → 0, live → 2 + continuation, kill switch → 0 + status recorded, corrupt manifest → 0)
+- [x] Verify: `npm test` → **1250/1250** (1213 + 37 net-new)
 
 ## Group 4 — Wiring
 - [ ] `bin/run.js` — `start | status | continue | stop`; dispatched from `bin/momentum.js`; in `--help`
