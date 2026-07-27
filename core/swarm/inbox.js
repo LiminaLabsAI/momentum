@@ -1,209 +1,133 @@
 'use strict';
 
 /**
- * Swarm inbox protocol.
+ * Swarm inbox protocol — now a THIN ADAPTER over `core/run/lib/inbox.js`.
  *
- * Supervisors write `<eco>/swarms/<id>/inbox/NNNN-<slug>.md` when they
- * need a user decision they can't make alone. The conductor surfaces
- * these per turn and resolves them interactively. After resolution the
- * item is moved to `inbox/resolved/` (preserved for audit) and the
- * INDEX is regenerated.
+ * Phase 32a G2 moved the implementation up to `core/run/` because parking is
+ * the decision-authority classifier's default branch (ADR-0019 §4) and must be
+ * available to a run at any tier, not only to a cross-repo swarm. This file
+ * keeps swarm's public surface and on-disk format **byte-identical** — the same
+ * one-engine/thin-adapter shape ADR-0003 used for the wave engine.
  *
- * Numbering: monotonic across the swarm's lifetime, including
- * resolved. Filename: `NNNN-<slug>.md` matching the regex
- * `/^\d{4}-[a-z][a-z0-9-]*\.md$/`.
+ * What stays swarm-specific, and is therefore still here:
+ *   - the `(ecosystemRoot, swarmId)` → directory mapping
+ *   - swarm's mkdir lock (so lock files land beside the manifest as before)
+ *   - the `Repo:` field label, so existing inbox items and their tests are unchanged
+ *   - the audit-log append on resolve
  *
- * Concurrency: writes use the same mkdir-lock as manifest.js.
+ * Supervisors write `<eco>/swarms/<id>/inbox/NNNN-<slug>.md` when they need a
+ * decision they cannot make alone. The conductor surfaces these per turn and
+ * resolves them; resolved items move to `inbox/resolved/` and are preserved.
  */
 
-const fs = require('fs');
-const path = require('path');
-
+const core = require('../run/lib/inbox');
 const manifestLib = require('./lib/manifest');
 
-const INBOX_DIR = 'inbox';
-const RESOLVED_DIR = 'resolved';
-const INDEX_FILENAME = 'INDEX.md';
+/** Swarm items have always carried `- Repo:`; keep it so nothing on disk shifts. */
+const FIELD_LABEL = 'Repo';
 
-const FILENAME = /^(\d{4})-([a-z][a-z0-9-]*)\.md$/;
+const INBOX_DIR = core.INBOX_DIR;
+const RESOLVED_DIR = core.RESOLVED_DIR;
+const INDEX_FILENAME = core.INDEX_FILENAME;
+
+function baseDir(ecosystemRoot, swarmId) {
+  return manifestLib.swarmDir(ecosystemRoot, swarmId);
+}
 
 function inboxDir(ecosystemRoot, swarmId) {
-  return path.join(manifestLib.swarmDir(ecosystemRoot, swarmId), INBOX_DIR);
+  return core.inboxDir(baseDir(ecosystemRoot, swarmId));
 }
 
 function resolvedDir(ecosystemRoot, swarmId) {
-  return path.join(inboxDir(ecosystemRoot, swarmId), RESOLVED_DIR);
+  return core.resolvedDir(baseDir(ecosystemRoot, swarmId));
 }
 
 function indexPath(ecosystemRoot, swarmId) {
-  return path.join(inboxDir(ecosystemRoot, swarmId), INDEX_FILENAME);
+  return core.indexPath(baseDir(ecosystemRoot, swarmId));
 }
 
 function ensureLayout(ecosystemRoot, swarmId) {
+  // The swarm layout is a superset of the inbox layout — manifest dirs first.
   manifestLib.ensureSwarmLayout(ecosystemRoot, swarmId);
-  fs.mkdirSync(resolvedDir(ecosystemRoot, swarmId), { recursive: true });
+  core.ensureLayout(baseDir(ecosystemRoot, swarmId));
 }
 
 function nextInboxId(ecosystemRoot, swarmId) {
   ensureLayout(ecosystemRoot, swarmId);
-  let max = 0;
-  for (const name of fs.readdirSync(inboxDir(ecosystemRoot, swarmId))) {
-    const m = name.match(FILENAME);
-    if (m) {
-      const n = parseInt(m[1], 10);
-      if (n > max) max = n;
-    }
-  }
-  for (const name of fs.readdirSync(resolvedDir(ecosystemRoot, swarmId))) {
-    const m = name.match(FILENAME);
-    if (m) {
-      const n = parseInt(m[1], 10);
-      if (n > max) max = n;
-    }
-  }
-  return String(max + 1).padStart(4, '0');
+  return core.nextInboxId(baseDir(ecosystemRoot, swarmId));
 }
 
-/**
- * Supervisor-side write. Returns { id, slug, filePath }.
- *
- * @param {object} args
- * @param {string} args.ecosystemRoot
- * @param {string} args.swarmId
- * @param {string} args.repo            ecosystem member id
- * @param {string} args.slug            kebab slug summarizing the question
- * @param {string} args.question        markdown body (full question)
- * @param {string[]} [args.options]     optional structured choices (each one line)
- * @param {string} args.nowIso
- */
+/** Supervisor-side write. Returns { id, slug, filePath }. */
 function writeInboxItem(args) {
   const { ecosystemRoot, swarmId, repo, slug, question, options = [], nowIso } = args;
-  if (typeof slug !== 'string' || !/^[a-z][a-z0-9-]*$/.test(slug)) {
-    throw new TypeError(`writeInboxItem: invalid slug ${JSON.stringify(slug)}`);
-  }
-  if (typeof question !== 'string' || question.length === 0) {
-    throw new TypeError('writeInboxItem: question required');
-  }
-  if (typeof repo !== 'string' || !/^[a-z][a-z0-9-]*$/.test(repo)) {
-    throw new TypeError(`writeInboxItem: invalid repo ${JSON.stringify(repo)}`);
-  }
   ensureLayout(ecosystemRoot, swarmId);
-  const id = nextInboxId(ecosystemRoot, swarmId);
-  const filePath = path.join(inboxDir(ecosystemRoot, swarmId), `${id}-${slug}.md`);
-  const lines = [
-    `# ${id} — ${slug}`,
-    '',
-    `- Repo: \`${repo}\``,
-    `- Asked at: ${nowIso}`,
-    `- Status: pending`,
-    '',
-    '## Question',
-    '',
-    question.trim(),
-    '',
-  ];
-  if (options.length) {
-    lines.push('## Options');
-    lines.push('');
-    for (const o of options) lines.push(`- ${o}`);
-    lines.push('');
+  try {
+    return core.writeItem({
+      baseDir: baseDir(ecosystemRoot, swarmId),
+      scope: repo,
+      slug,
+      question,
+      options,
+      nowIso,
+      fieldLabel: FIELD_LABEL,
+      withLock: manifestLib.withLock,
+    });
+  } catch (err) {
+    // Preserve swarm's original error vocabulary — callers and tests match on it.
+    if (err instanceof TypeError) {
+      throw new TypeError(err.message
+        .replace(/^writeItem: invalid scope/, 'writeInboxItem: invalid repo')
+        .replace(/^writeItem:/, 'writeInboxItem:'));
+    }
+    throw err;
   }
-  manifestLib.withLock(filePath, () => {
-    fs.writeFileSync(filePath, lines.join('\n'), 'utf8');
-  });
-
-  rebuildIndex(ecosystemRoot, swarmId);
-  return { id, slug, filePath };
 }
 
-/**
- * Conductor-side: list pending items (excluding resolved/).
- */
+/** Conductor-side: list pending items (excluding resolved/). */
 function listPendingInboxItems(ecosystemRoot, swarmId) {
-  const dir = inboxDir(ecosystemRoot, swarmId);
-  if (!fs.existsSync(dir)) return [];
-  const items = [];
-  for (const name of fs.readdirSync(dir)) {
-    const m = name.match(FILENAME);
-    if (!m) continue;
-    const filePath = path.join(dir, name);
-    items.push(parseItemHeader(filePath, m[1], m[2]));
-  }
-  items.sort((a, b) => a.id.localeCompare(b.id));
-  return items;
+  return core.listPending(baseDir(ecosystemRoot, swarmId))
+    // Swarm's item shape names the scope `repo`; keep it.
+    .map(({ id, slug, scope, asked, status, filePath }) => ({
+      id, slug, repo: scope, asked, status, filePath,
+    }));
 }
 
-function parseItemHeader(filePath, id, slug) {
-  const raw = fs.readFileSync(filePath, 'utf8');
-  const lines = raw.split('\n');
-  let repo = '';
-  let asked = '';
-  let status = 'pending';
-  for (const line of lines) {
-    let m;
-    if ((m = line.match(/^- Repo:\s*`([^`]+)`/))) repo = m[1];
-    else if ((m = line.match(/^- Asked at:\s*(.+)$/))) asked = m[1].trim();
-    else if ((m = line.match(/^- Status:\s*(.+)$/))) status = m[1].trim();
-  }
-  return { id, slug, repo, asked, status, filePath };
-}
-
-/**
- * Conductor-side: resolve an item with the user's answer. Moves the
- * file into resolved/ with the answer + ts appended.
- */
+/** Conductor-side: resolve an item with the user's answer. */
 function resolveInboxItem(args) {
   const { ecosystemRoot, swarmId, id, answer, nowIso } = args;
-  if (typeof id !== 'string' || !/^\d{4}$/.test(id)) {
-    throw new TypeError(`resolveInboxItem: invalid id ${JSON.stringify(id)}`);
-  }
-  if (typeof answer !== 'string' || answer.length === 0) {
-    throw new TypeError('resolveInboxItem: answer required');
-  }
   ensureLayout(ecosystemRoot, swarmId);
-  const dir = inboxDir(ecosystemRoot, swarmId);
-  const match = fs.readdirSync(dir).find((n) => n.startsWith(`${id}-`) && n.endsWith('.md'));
-  if (!match) throw new Error(`resolveInboxItem: no pending inbox item ${id}`);
-  const fromPath = path.join(dir, match);
-  const toPath = path.join(resolvedDir(ecosystemRoot, swarmId), match);
-
-  const raw = fs.readFileSync(fromPath, 'utf8');
-  const updated =
-    raw.replace(/^- Status: pending\b/m, '- Status: resolved') +
-    `\n## Answer (resolved at ${nowIso})\n\n${answer.trim()}\n`;
-
-  manifestLib.withLock(fromPath, () => {
-    fs.writeFileSync(toPath, updated, 'utf8');
-    fs.unlinkSync(fromPath);
-  });
-  rebuildIndex(ecosystemRoot, swarmId);
-
-  manifestLib.appendAudit(ecosystemRoot, swarmId, {
-    ts: nowIso, actor: 'conductor', event: 'inbox-resolved',
-    detail: `${id} — ${answer.slice(0, 200)}`,
-  });
-  return { id, resolvedPath: toPath };
+  try {
+    return core.resolveItem({
+      baseDir: baseDir(ecosystemRoot, swarmId),
+      id,
+      answer,
+      nowIso,
+      fieldLabel: FIELD_LABEL,
+      withLock: manifestLib.withLock,
+      onResolved: () => {
+        manifestLib.appendAudit(ecosystemRoot, swarmId, {
+          ts: nowIso,
+          actor: 'conductor',
+          event: 'inbox-resolved',
+          detail: `${id} — ${answer.slice(0, 200)}`,
+        });
+      },
+    });
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new TypeError(err.message.replace(/^resolveItem:/, 'resolveInboxItem:'));
+    }
+    if (err instanceof Error && /^resolveItem: no pending inbox item/.test(err.message)) {
+      throw new Error(err.message.replace(/^resolveItem:/, 'resolveInboxItem:'));
+    }
+    throw err;
+  }
 }
 
-/**
- * Regenerate inbox/INDEX.md from pending items. Cheap — runs on every
- * write/resolve.
- */
+/** Regenerate inbox/INDEX.md from pending items. */
 function rebuildIndex(ecosystemRoot, swarmId) {
   ensureLayout(ecosystemRoot, swarmId);
-  const items = listPendingInboxItems(ecosystemRoot, swarmId);
-  const lines = ['# Inbox — pending items', ''];
-  if (items.length === 0) {
-    lines.push('_(no pending items)_');
-  } else {
-    lines.push('| ID | Repo | Slug | Asked at |');
-    lines.push('|----|------|------|----------|');
-    for (const it of items) {
-      lines.push(`| ${it.id} | ${it.repo} | ${it.slug} | ${it.asked} |`);
-    }
-  }
-  lines.push('');
-  fs.writeFileSync(indexPath(ecosystemRoot, swarmId), lines.join('\n'), 'utf8');
+  return core.rebuildIndex(baseDir(ecosystemRoot, swarmId), { fieldLabel: FIELD_LABEL });
 }
 
 module.exports = {

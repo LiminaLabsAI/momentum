@@ -21,20 +21,25 @@ epic: autonomous-execution
 - [x] Verify: `node --test tests/run-contracts.test.js` → **16/16 pass**
 - [x] Verify: `npm test` → **1177/1177** (baseline 1161 + 16 net-new)
 
-## Group 1 — Authority classifier *(∥ G2)*
-- [ ] `core/run/lib/authority.js` — pure `(changeSet, config) → operator | agent | park`
-- [ ] Rule-14 triggers as predicates: >5 production files · `specs/architecture/` · needs-ADR · public contract · config/trust paths
-- [ ] Config overrides layered above the floor, never below
-- [ ] Default `park` on no-match (D6)
-- [ ] Classification tests: each trigger isolated, in combination, and the ambiguous fall-through
-- [ ] Verify: `npm test`
+## Group 1 — Authority classifier *(∥ G2)* ✅
+- [x] `core/run/lib/authority.js` — pure `(changeSet, config) → operator | agent | park`
+- [x] Rule-14 triggers as predicates: >5 production files · `specs/architecture/` · needs-ADR · public contract · config/trust paths · dependency change · displaces planned work
+- [x] Config overrides layered above the floor, never below — a raised file threshold is **clamped**, not honoured; floor triggers have no disable path
+- [x] Default `park` on an unassessable change set (D6); an *assessable* change with no trigger firing is the agent's
+- [x] Path normalization (`./`, leading `/`, backslashes) so a floor trigger cannot be slipped past
+- [x] Audit record carries the **negative** evidence (`triggersEvaluated`) — "why did it decide that alone?"
+- [x] Classification tests: each trigger isolated, in combination, precedence, purity, malformed overrides, ambiguous fall-through, self-guarding
+- [x] Verify: `node --test tests/run-authority.test.js` → **21/21 pass**
+- [x] Verify: `npm test` → **1198/1198** (1177 + 21 net-new)
 
-## Group 2 — Park primitive *(∥ G1)*
-- [ ] Extract `core/swarm/inbox.js` → `core/run/lib/inbox.js`, semantics unchanged (mkdir lock, resolve, INDEX materializer)
-- [ ] Re-point `core/swarm/inbox.js` as a thin re-export — public surface byte-compatible
-- [ ] Generalize record shape to tier-agnostic (`scope`, `run_id`) + back-compat reader
-- [ ] Verify: **236 swarm tests green**
-- [ ] Verify: `npm test`
+## Group 2 — Park primitive *(∥ G1)* ✅
+- [x] Extract `core/swarm/inbox.js` → `core/run/lib/inbox.js`, semantics unchanged (mkdir lock, resolve, INDEX materializer)
+- [x] Extract the mkdir lock to `core/run/lib/lock.js` — **one** implementation; swarm delegates with a parametrized label so its timeout message stays byte-identical (ADR-0003's technique)
+- [x] Re-point `core/swarm/inbox.js` as a thin adapter — public surface byte-compatible, including its error vocabulary (`writeInboxItem: invalid repo`)
+- [x] Generalize record shape to tier-agnostic (`scope`) + parametrized field label so swarm keeps writing `- Repo:` + back-compat reader accepting both
+- [x] Optional `- Reason:` line carrying the ADR-0019 classification; omitted entirely when absent so swarm items are unchanged
+- [x] Verify: `node --test tests/swarm-*.test.js` → **236/236 swarm tests green**
+- [x] Verify: `node --test tests/run-inbox.test.js` → **15/15 pass**
 
 ## Group 3 — Governor + safety rails
 - [ ] `core/run/lib/manifest.js` — atomic read/write/resume, schema-validated on load, forward-field tolerant

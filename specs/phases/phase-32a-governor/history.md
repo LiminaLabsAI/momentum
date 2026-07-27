@@ -133,6 +133,37 @@ it as routine. Verification: `tests/run-contracts.test.js` **16/16**; full suite
 
 ---
 
+### [FEATURE] 2026-07-27 — G1 classifier + G2 park primitive landed
+Topics: decision-authority, park, inbox, lock, swarm, adr-0019, adr-0003
+Affects-phases: phase-32a-governor
+Affects-specs: core/run/lib/authority.js, core/run/lib/inbox.js, core/run/lib/lock.js, core/swarm/inbox.js, core/swarm/lib/manifest.js
+Detail: **G1** — `classify(changeSet, config)` is a pure function returning
+`operator | agent | park` plus the trigger evaluation that produced it. The
+widen-only rule is enforced by *clamping* rather than by documentation: a config
+asking for a file threshold of 50 gets 5, and floor triggers have no disable path
+at all (asserted by a test that passes a `disable:` key and watches it be
+ignored). Path normalization covers `./`, leading `/` and backslashes so a floor
+trigger cannot be slipped past by spelling. The ambiguous fall-through — the
+DEFAULT branch, and therefore the one most likely to ship untested — is covered
+for six malformed inputs. 21 tests.
+
+**G2** — the inbox moved to `core/run/lib/inbox.js` and swarm became a thin
+adapter. Two refinements beyond the plan. First, the mkdir lock came with it:
+leaving a second copy in `core/swarm/lib/manifest.js` would have been exactly the
+duplication ADR-0018 exists to end, and a lock is a bad place to discover drift —
+so `core/run/lib/lock.js` is now the one implementation, with a **parametrized
+error label** reproducing swarm's timeout message byte-for-byte (ADR-0003's
+technique for extracting the wave engine without touching a swarm assertion).
+Second, the field label is parametrized: swarm keeps writing `- Repo:` while runs
+write `- Scope:`, and the reader accepts both, so inbox items written before this
+phase still parse. The optional `- Reason:` line is omitted entirely when absent,
+which is what keeps swarm's on-disk format identical. **236/236 swarm tests
+green** — the gate. 15 new tests.
+
+Verification: full suite **1198/1198** after G1 (1177 + 21).
+
+---
+
 ### [DECISION] 2026-07-27 — Park primitive extracted in 32a rather than stubbed
 Topics: park, inbox, swarm, scope
 Affects-phases: phase-32a-governor
