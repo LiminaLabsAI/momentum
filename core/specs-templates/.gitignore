@@ -9,9 +9,17 @@
 .momentum/*
 !.momentum/installed.json
 # Team-mode coordination fragments are COMMITTED (ADR-0012) — cross-machine
-# coordination state; the one exception to the ignored .momentum/.
+# coordination state; an exception to the ignored .momentum/.
 !.momentum/team/
 !.momentum/team/**
+
+# Shipped runtime (Phase 31c, ADR-0018 R4) — the core modules the git hooks and
+# session scripts require. COMMITTED deliberately: a fresh clone must have
+# working hooks BEFORE anyone runs `momentum upgrade`. Gitignoring it would make
+# every hook silently no-op on clone, which is the exact failure mode BUG-028,
+# BUG-029 and BUG-030 all shared.
+!.momentum/runtime/
+!.momentum/runtime/**
 # ...but per-machine audit LOGS under team/ stay LOCAL — they are a local trace,
 # not shared coordination state (ADR-0015, deferred from 30d).
 .momentum/team/**/*.log

@@ -34,38 +34,29 @@ set -eu
 # considers "the reachable ecosystem" is what the SessionStart banner
 # announces.
 
-find_ecosystem_root() {
-  local current="$PWD"
-  local depth=0
-  local max_depth="${MOMENTUM_MAX_PARENT_WALK:-5}"
-  case "$max_depth" in
-    ''|*[!0-9]*) max_depth=5 ;;
-  esac
-  while [ $depth -le $max_depth ]; do
-    # Same-directory check (caller might already be in ecosystem root)
-    if [ -f "$current/ecosystem.json" ]; then
-      echo "$current"
-      return 0
-    fi
-    # Sibling check
-    local parent
-    parent=$(dirname "$current")
-    if [ "$parent" = "$current" ]; then return 1; fi
-    for sibling in "$parent"/*; do
-      if [ -d "$sibling" ] && [ -f "$sibling/ecosystem.json" ]; then
-        echo "$sibling"
-        return 0
-      fi
-    done
-    current="$parent"
-    depth=$((depth + 1))
+# ── Ecosystem discovery (Phase 31c G3, ADR-0018 R5) ────────────────────────
+# Delegates to the ONE implementation in core/ecosystem/lib/index.js via the
+# vendored runtime, instead of re-walking the tree in bash. Any future change to
+# discovery rules is then made once, not once per language — which is how the
+# seven-implementation split accumulated in the first place.
+#
+# Fail-open in every branch: no node, no runtime, no ecosystem → the caller
+# simply gets nothing and carries on. A hook must never break a commit or a
+# session start.
+momentum_discover() {
+  command -v node >/dev/null 2>&1 || return 1
+  _d=$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")
+  for _c in "$_d/../.momentum/runtime/discover.js" \
+            "$_d/../../.momentum/runtime/discover.js" \
+            "$_d/../../runtime/discover.js"; do
+    [ -f "$_c" ] || continue
+    node "$_c" "${1:-$PWD}" 2>/dev/null && return 0
+    return 1
   done
   return 1
 }
 
-# Best-effort: silent on any failure so a broken ecosystem.json never
-# blocks the session.
-ECO_ROOT="$(find_ecosystem_root 2>/dev/null || true)"
+ECO_ROOT="$(momentum_discover "$PWD" 2>/dev/null | cut -f1 || true)"
 
 if [ -n "${ECO_ROOT:-}" ] && [ -f "$ECO_ROOT/ecosystem.json" ]; then
   # Extract name + member count. Prefer python3 for JSON parsing; fall

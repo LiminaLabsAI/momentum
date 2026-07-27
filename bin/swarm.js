@@ -81,10 +81,9 @@ function resolveEcosystemRoot(explicit) {
   if (explicit && fs.existsSync(path.join(explicit, 'ecosystem.json'))) {
     return path.resolve(explicit);
   }
+  // ONE resolver (ADR-0018 R3) — findRoot covers sibling + registration itself.
   const fromCwd = ecosystemLib.findRoot(process.cwd());
   if (fromCwd) return fromCwd;
-  const reg = findRegistration(process.cwd());
-  if (reg && reg.rootPath) return reg.rootPath;
   throw new Error(
     'swarm: cannot locate ecosystem root. Run from inside an ecosystem ' +
     'or pass --ecosystem <path>.'

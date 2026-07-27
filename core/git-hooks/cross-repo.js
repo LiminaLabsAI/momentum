@@ -28,22 +28,36 @@ const fs = require('fs');
 const path = require('path');
 
 const EVENTS_VIEW = 'eco-events';
-const DEFAULT_WINDOW_HOURS = 24;
 
-/** Lazily locate orient.js wherever this file happens to be installed. */
-function loadOrient() {
-  const here = __dirname;
-  const candidates = [
-    path.join(here, 'orient.js'),                        // co-installed
-    path.join(here, '..', 'scripts', 'orient.js'),       // .githooks/ → scripts/
-    path.join(here, 'orient.js'),
-    path.join(here, '..', 'ecosystem', 'lib', 'orient.js'),
-    path.join(here, '..', '..', 'ecosystem', 'lib', 'orient.js'),
-  ];
-  for (const c of candidates) {
-    try {
-      if (fs.existsSync(c)) return require(c);
-    } catch (_e) { /* try next */ }
+/**
+ * Resolve a core module (ADR-0018 R2).
+ *
+ * ONE depth-independent rule rather than a per-location candidate list: walk up
+ * from this file looking for `.momentum/runtime/`, then for a `core/` that
+ * contains the module. This file executes from two different depths — as
+ * momentum's own `core/ecosystem/lib/cross-repo.js` and as the installed
+ * `.githooks/cross-repo.js` — and a fixed relative path cannot serve both.
+ *
+ * The five-entry hardcoded lookup this file used to carry (for `orient.js`) is
+ * exactly what R2 objects to: it encoded assumptions about layout per call site
+ * and broke silently when either layout moved. A bounded upward search has one
+ * rule and one failure mode.
+ */
+function resolveModule(rel) {
+  let dir = __dirname;
+  for (let i = 0; i < 8; i++) {
+    for (const base of [path.join(dir, '.momentum', 'runtime'), path.join(dir, 'core')]) {
+      const cand = path.join(base, rel);
+      try {
+        if (fs.existsSync(cand)) {
+          // eslint-disable-next-line global-require
+          return require(cand);
+        }
+      } catch (_e) { /* keep searching */ }
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
   }
   return null;
 }
@@ -56,90 +70,28 @@ function readJson(file) {
   }
 }
 
-/** Members with recorded events inside the window (mirrors detect.touchedMembers). */
-function touchedMembers(ecosystemRoot, opts) {
-  opts = opts || {};
-  const manifest = opts.manifest || readJson(path.join(ecosystemRoot, 'ecosystem.json'));
-  const cfgHours = manifest && manifest.config && manifest.config.detect_window_hours;
-  const hours = opts.hours
-    || (typeof cfgHours === 'number' && cfgHours > 0 ? cfgHours : DEFAULT_WINDOW_HOURS);
-  const now = opts.now ? new Date(opts.now).getTime() : Date.now();
-  const cutoff = now - hours * 3600 * 1000;
+/** Back-compat alias — `sibling` was the 31b-era name. */
+const sibling = resolveModule;
 
-  const seen = new Set(Array.isArray(opts.extra) ? opts.extra.filter(Boolean) : []);
-  const dir = path.join(ecosystemRoot, '.momentum', 'team', EVENTS_VIEW);
-  let names = [];
-  try { names = fs.readdirSync(dir); } catch (_e) { names = []; }
-
-  for (const n of names) {
-    if (!n.endsWith('.json')) continue;
-    const frag = readJson(path.join(dir, n));
-    if (!frag || !frag.payload || !frag.payload.member) continue;
-    if (opts.actor && frag.actor !== opts.actor) continue;
-    const ts = new Date(frag.ts).getTime();
-    if (!Number.isFinite(ts) || ts < cutoff) continue;
-    seen.add(frag.payload.member);
-  }
-  return [...seen].sort();
-}
-
-/** Member sets of every in-progress initiative (mirrors detect.openInitiatives). */
-function openInitiativeMembers(ecosystemRoot) {
-  const dir = path.join(ecosystemRoot, 'initiatives');
-  let names = [];
-  try { names = fs.readdirSync(dir); } catch (_e) { return []; }
-
-  const out = [];
-  for (const name of names.sort()) {
-    if (!/^\d{4}-.*\.md$/.test(name)) continue;
-    let body = '';
-    try { body = fs.readFileSync(path.join(dir, name), 'utf8'); } catch (_e) { continue; }
-    if (!body.startsWith('---')) continue;
-    const end = body.indexOf('\n---', 3);
-    if (end === -1) continue;
-    const fm = body.slice(3, end);
-
-    if (!/^status:\s*in-progress\s*$/m.test(fm)) continue;
-    const slug = (fm.match(/^slug:\s*"?([a-z][a-z0-9-]*)"?\s*$/m) || [])[1];
-    if (!slug) continue;
-
-    const members = new Set();
-    const repos = (fm.match(/^repos:\s*\[([^\]]*)\]/m) || [])[1];
-    if (repos) {
-      for (const r of repos.split(',')) {
-        const v = r.trim().replace(/^["']|["']$/g, '');
-        if (v) members.add(v);
-      }
-    }
-    const contrib = (fm.match(/^contributions:\s*\[([^\]]*)\]/m) || [])[1];
-    if (contrib) {
-      for (const c of contrib.split(',')) {
-        const v = c.trim().replace(/^["']|["']$/g, '');
-        const m = v.split(':')[0];
-        if (m) members.add(m);
-      }
-    }
-    out.push({ slug, members });
-  }
-  return out;
+function loadOrient() {
+  return sibling('ecosystem/lib/orient.js');
 }
 
 /**
- * The routing question. Returns
- * `{ crossRepo, covered, shouldRoute, members, initiative }`.
+ * The routing question — delegated to `core/ecosystem/lib/detect`, the authority
+ * (Phase 31c G2, ADR-0018 R1).
+ *
+ * This file used to MIRROR detect.js: its own event-stream scan, its own
+ * initiative frontmatter parser, its own coverage rule. The mirror existed only
+ * because an installed project had no `core/`; the vendored runtime removes that
+ * reason, so the mirror is gone and with it the parity fence that guarded it
+ * (R7). Returns detect's shape unchanged.
  */
 function detect(ecosystemRoot, opts) {
-  const members = touchedMembers(ecosystemRoot, opts);
-  const crossRepo = members.length >= 2;
-  if (!crossRepo) {
-    return { crossRepo: false, covered: false, shouldRoute: false, members, initiative: null };
-  }
-  for (const init of openInitiativeMembers(ecosystemRoot)) {
-    if (members.every((m) => init.members.has(m))) {
-      return { crossRepo: true, covered: true, shouldRoute: false, members, initiative: init.slug };
-    }
-  }
-  return { crossRepo: true, covered: false, shouldRoute: true, members, initiative: null };
+  const authority = sibling('ecosystem/lib/detect.js');
+  if (authority) return authority.detect(ecosystemRoot, opts);
+  // Fail-open: no runtime → nothing to route. A hook must never throw.
+  return { crossRepo: false, covered: false, shouldRoute: false, members: [], initiative: null };
 }
 
 /**
@@ -170,12 +122,15 @@ function routingMessage(ecosystemRoot, result, focus) {
   return lines;
 }
 
+// `touchedMembers` / `openInitiativeMembers` / `DEFAULT_WINDOW_HOURS` are gone:
+// they were the mirror's internals, and the mirror is deleted (ADR-0018 R1).
+// Callers wanting them should use `core/ecosystem/lib/detect` directly — there
+// is one implementation now, and this file is an ENTRY POINT over it.
 module.exports = {
   EVENTS_VIEW,
-  DEFAULT_WINDOW_HOURS,
+  resolveModule,
+  sibling,
   loadOrient,
-  touchedMembers,
-  openInitiativeMembers,
   detect,
   routingMessage,
 };

@@ -1226,14 +1226,21 @@ function init(targetDir, agent, opts = {}) {
     if (!_dryRun) fs.chmodSync(sessionDest, 0o755);
   }
 
-  // Phase 31b — fleet-orient helper, read by sessionstart-handoff.sh for its
-  // Fleet banner line. Shipped here for the same reason session-append.sh is:
-  // an installed project receives no copy of momentum's core/, so the script
-  // must travel with the hooks that use it. Dependency-free by construction.
+  // Phase 31c (ADR-0018 R1) — the shipped runtime. Hooks and scripts require
+  // REAL core modules from `.momentum/runtime/` instead of carrying hand-written
+  // mirrors of them, which is what produced BUG-029 and BUG-030. Verbatim
+  // copies, computed from the entry points' actual require graph.
+  console.log('→ Installing shipped runtime (.momentum/runtime/)...');
+  const runtimeFiles = require('../core/runtime/closure').install(target, { dryRun: _dryRun });
+  console.log(`  ${runtimeFiles.length} runtime module(s)`);
+
+  // TRANSITIONAL (31c G1→G3): `sessionstart-handoff.sh` and `cross-repo.js`
+  // still resolve `scripts/orient.js`. G1 is deliberately ADDITIVE — the runtime
+  // arrives before its consumers are rewired — so this copy stays until G2/G3
+  // point them at the runtime, then it is deleted.
   const orientSrc = path.join(src, 'core', 'ecosystem', 'lib', 'orient.js');
   if (fs.existsSync(orientSrc)) {
-    const orientDest = path.join(target, ...dests.scripts, 'orient.js');
-    copyFile(orientSrc, orientDest);
+    copyFile(orientSrc, path.join(target, ...dests.scripts, 'orient.js'));
   }
 
   // .githooks/ — git-lifecycle enforcement hooks (Phase 19)
@@ -1367,7 +1374,10 @@ function upgrade(targetDir, agent, opts = {}) {
     const sessionUpgradeDest = path.join(target, ...dests.scripts, 'session-append.sh');
     copyFile(sessionUpgradeSrc, sessionUpgradeDest);
   }
-  // Phase 31b — fleet-orient helper (see the install path for why it ships).
+  // Phase 31c (ADR-0018 R1) — refresh the shipped runtime so hooks always run
+  // the same core code as the installed momentum version.
+  require('../core/runtime/closure').install(target, { dryRun: _dryRun });
+  // TRANSITIONAL (31c G1→G3) — see the install path.
   const orientUpgradeSrc = path.join(src, 'core', 'ecosystem', 'lib', 'orient.js');
   if (fs.existsSync(orientUpgradeSrc)) {
     copyFile(orientUpgradeSrc, path.join(target, ...dests.scripts, 'orient.js'));

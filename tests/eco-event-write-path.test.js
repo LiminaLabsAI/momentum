@@ -227,54 +227,14 @@ test('parity: hook-side actor slug matches core/identity', () => {
   }
 });
 
-test('parity: hook-side fragment is byte-identical to core/team/lib/fragments', () => {
-  const tmp = mktmp();
-  try {
-    // Same actor, view, kind, payload, ts, seq → the two writers must produce
-    // the same filename AND the same bytes. If they ever diverge, the compiled
-    // session log would silently disagree with what the hooks wrote.
-    const viaCore = path.join(tmp, 'core-side');
-    const viaHook = path.join(tmp, 'hook-side');
-    fs.mkdirSync(viaCore, { recursive: true });
-    fs.mkdirSync(viaHook, { recursive: true });
-
-    const payload = { member: 'member', summary: 'feat: x', context: 'abc1234' };
-    const opts = { ts: '2026-07-27T10:00:00.000Z', seq: 7 };
-
-    const coreFrag = fragments.writeFragment(
-      viaCore, HOOK_WRITER.EVENTS_VIEW, 'alice', 'commit', payload, opts,
-    );
-
-    // Drive the hook-side writer's serialization through the same shape by
-    // pointing it at a fake ecosystem whose sole member is the repo itself.
-    // It must be a real git repo — the hook-side path resolves the repo root
-    // through git before it will record anything.
-    fs.writeFileSync(path.join(viaHook, 'ecosystem.json'), JSON.stringify({
-      name: 'eco', version: 1,
-      members: [{ id: 'member', path: '.', role: 'platform' }],
-    }));
-    git(viaHook, 'init', '-q');
-    git(viaHook, 'config', 'user.email', 'test@example.com');
-    git(viaHook, 'config', 'user.name', 'Test');
-    const hookRes = HOOK_WRITER.record({
-      cwd: viaHook, kind: 'commit', summary: 'feat: x', context: 'abc1234',
-      ts: opts.ts, seq: opts.seq, env: { ...process.env, MOMENTUM_ACTOR: 'alice' },
-    });
-    assert.equal(hookRes.recorded, true, hookRes.reason);
-
-    assert.equal(
-      path.basename(hookRes.file), path.basename(coreFrag.file),
-      'fragment filenames must match',
-    );
-    assert.equal(
-      fs.readFileSync(hookRes.file, 'utf8'),
-      fs.readFileSync(coreFrag.file, 'utf8'),
-      'fragment bytes must match — hook-side writer has drifted from core/team/lib/fragments',
-    );
-  } finally {
-    rmrf(tmp);
-  }
-});
+// REMOVED in Phase 31c G2 (ADR-0018 R7): "parity: hook-side fragment is
+// byte-identical to core/team/lib/fragments".
+//
+// That fence guarded a hand-written MIRROR of core's fragment writer. The mirror
+// is gone — eco-event.js now requires core/ecosystem/lib/events, which uses
+// core/team/lib/fragments directly — so there is nothing left for the two sides
+// to disagree about. Keeping the fence would imply a duplicate still exists.
+// Fences are removed with the code they guarded.
 
 test('parity: hook-side member resolution matches core/ecosystem/lib/events', () => {
   const { tmp, root, memberDir } = setupEcosystem();

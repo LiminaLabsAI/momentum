@@ -245,12 +245,18 @@ test('findRoot honors MOMENTUM_MAX_PARENT_WALK env override', () => {
     fs.mkdirSync(deep, { recursive: true });
     lib._clearRootCache();
 
+    // Phase 31c (ADR-0018 R3): findRoot now scans siblings at each level, so
+    // this test's expectations changed. It previously asserted that a GENEROUS
+    // bound still would not find a sibling root, with a comment explaining that
+    // "sibling-walk is [not] implemented in findRoot" — i.e. it codified
+    // BUG-030's cause as intended behaviour. A test that blesses the defect is
+    // part of why the defect survived, so the assertions now pin the real
+    // contract: the bound is honoured in BOTH directions.
     const saved = process.env.MOMENTUM_MAX_PARENT_WALK;
     delete process.env.MOMENTUM_MAX_PARENT_WALK;
     try {
-      // From deep/.., 7 steps up via the sibling walk should NOT find eco at default 5.
-      // (findRoot walks parents looking for ecosystem.json in the current dir, not siblings.)
-      assert.equal(lib.findRoot(deep), null);
+      // eco is 7 levels away; the default bound of 5 must not reach it.
+      assert.equal(lib.findRoot(deep), null, 'default bound must stop short');
     } finally {
       if (saved !== undefined) process.env.MOMENTUM_MAX_PARENT_WALK = saved;
     }
@@ -258,11 +264,10 @@ test('findRoot honors MOMENTUM_MAX_PARENT_WALK env override', () => {
     lib._clearRootCache();
     process.env.MOMENTUM_MAX_PARENT_WALK = '15';
     try {
-      // Now findRoot can walk further, but eco is a SIBLING of `tmp/a/...` — findRoot
-      // only looks at the current dir's ecosystem.json on each step up, so it still
-      // won't find it. Verify the behavior is consistent under env override (no
-      // unexpected crashes), not that sibling-walk is implemented in findRoot.
-      assert.equal(typeof lib.findRoot(deep), 'object'); // null is object too
+      // With the bound raised, the sibling scan reaches it — which is the whole
+      // point of the unification, and what BUG-030 needed.
+      assert.equal(lib.findRoot(deep), path.resolve(root),
+        'a raised bound must reach the sibling root');
     } finally {
       if (saved === undefined) delete process.env.MOMENTUM_MAX_PARENT_WALK;
       else process.env.MOMENTUM_MAX_PARENT_WALK = saved;
