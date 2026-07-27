@@ -48,7 +48,7 @@ type: Guide
 | 30e | Ecosystem (Multi-Repo) Team Mode | Complete (v0.39.0) | [phase-30e-ecosystem-team-mode/](phase-30e-ecosystem-team-mode/) |
 | 31a | Ecosystem Lifecycle Spine | Complete (v0.40.0) | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
 | 31b | Ecosystem Enforcement | Complete (v0.41.0) | [phase-31b-ecosystem-enforcement/](phase-31b-ecosystem-enforcement/) |
-| 31c | Shipped Runtime | In Progress | [phase-31c-shipped-runtime/](phase-31c-shipped-runtime/) |
+| 31c | Shipped Runtime | Complete (v0.42.0) | [phase-31c-shipped-runtime/](phase-31c-shipped-runtime/) |
 
 ## Phase Structure
 

@@ -5,8 +5,8 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-10
-> **Current Phase**: **Phase 31c — Shipped Runtime** (branch `phase-31c-shipped-runtime`, target v0.42.0) — deletes the shipped-runtime duplication, collapses 7 root-discovery implementations to 1, and repairs **BUG-030** (the v0.41.0 cross-repo landing gate never fires in a real sibling layout). Closes TD-012 + TD-013 + BUG-030.
-> **Latest Release**: v0.41.1 — **BUG-029** patch: fleet orient mis-read the lane registry (lane **id strings** treated as objects, so `undefined !== 'closed'` passed the repo's entire lane history — "30 open lanes" on a repo with 29 closed + 1 landed and **zero** open). Fixed with per-lane manifest loading, in-flight-only filtering, and **linked-worktree anchor resolution**; 5 regression tests incl. a **parity fence** against `core/lanes/lib/state`, all demonstrated failing against the v0.41.0 parser. Root cause is the shipped-runtime duplication (**TD-012**). Suite 1140/1140. _(v0.41.0 Phase 31b Ecosystem Enforcement; v0.40.0 Phase 31a; v0.39.0 Phase 30e.)_
+> **Current Phase**: _none active_ — **Phase 31c Shipped Runtime shipped v0.42.0**, completing the 31a/31b/31c ecosystem arc. Next: **Phase 32 Intelligence** or **33 Platform** (both Not Started).
+> **Latest Release**: v0.42.0 — Phase 31c Shipped Runtime (TD-012, TD-013, **BUG-030**; ADR-0018). **Repairs a headline feature that never fired outside tests**: `lanes land`'s cross-repo gate was skipped in the standard sibling layout because `findRoot` walked up only — v0.41.0 shipped ENH-068 non-functional. ONE `findRoot` (up-walk → sibling scan → registration) fixes it; discovery went **7 implementations across 3 algorithms → 1**, bash included. The duplication's premise was **measured for the first time** (96 kB of a 1.4 MB package), so the three hook-side mirrors are **deleted** rather than fenced — `eco-event.js` 277→178, `cross-repo.js` 176→136, `orient.js` with zero registry parsing. Closure vendored verbatim to `.momentum/runtime/`, **committed** so a fresh clone has working hooks; byte-identity asserted. Ships an **enumerative production-call-path guard** closing the BUG-028/029/030 class. Suite 1161/1161; swarm 236/236; OKF 326; solo byte-unchanged. _(v0.41.1 BUG-029; v0.41.0 Phase 31b; v0.40.0 Phase 31a.)_
 > **Health**: On Track
 
 ## Summary
@@ -62,6 +62,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 30e | Ecosystem (Multi-Repo) Team Mode | Complete | v0.39.0 (2026-07-10) |
 | 31a | Ecosystem Lifecycle Spine | Complete | v0.40.0 (2026-07-27) |
 | 31b | Ecosystem Enforcement | Complete | v0.41.0 (2026-07-27) |
+| 31c | Shipped Runtime | Complete | v0.42.0 (2026-07-27) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
@@ -110,7 +111,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 31c — Shipped Runtime | `phase-31c-shipped-runtime` | In Progress | **Started 2026-07-27.** Execution G0 → G1 → (G2 ∥ G3) → G4 → G5. **NEXT: G0 (ADR-0018 + unified `findRoot` + file BUG-030).** Closes TD-012 + TD-013 + **BUG-030** (ENH-068 shipped non-functional in v0.41.0). Target v0.42.0 |
+| _(none active)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
