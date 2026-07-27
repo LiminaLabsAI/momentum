@@ -62,12 +62,15 @@ status: in-progress
 - [x] 4 fingerprints re-baselined
 - [x] Verify `npm test` green — **1155/1155**; commit G3
 
-## Group 4 — Guard + parity *(needs G2 + G3)*
-- [ ] **Production-call-path guard** — every exported fn with an optional root asserted to work WITHOUT one in a real sibling layout
-- [ ] Guard is enumerative, not a fixed list, so a new entry point is covered automatically
-- [ ] 4 fingerprints re-baselined (`--check` first: drift = runtime dir + rewired hooks + shell)
-- [ ] `momentum okf check` conformant
-- [ ] Verify `npm test` green; commit G4
+## Group 4 — Guard + parity *(needs G2 + G3)* ✅
+- [x] **Production-call-path guard** — every fn using the `opts.ecosystemRoot || <discover>` fallback is exercised WITHOUT a root in a real sibling layout
+- [x] **Enumerative** — the guard scans for the idiom itself, so a new entry point fails the build until covered; nobody has to remember
+- [x] Third assertion: `COVERED` cannot rot — an entry that stops being an entry point fails
+- [x] **The guard immediately found 2 entry points I did not know about** (`core/orchestration/events.js`) — they proved to be the *opposite* contract (`!opts.ecosystemRoot ||`, a guard clause requiring injection)
+- [x] Scanner narrowed **by contract, not convenience** — negative lookbehind excludes the guard-clause form, with the distinction documented
+- [x] 4 fingerprints: **zero drift** (G2/G3 already re-baselined)
+- [x] `momentum okf check` — 326 files conformant
+- [x] Verify `npm test` green — **1158/1158**; commit G4
 
 ## Group 5 — Verification & release prep *(last)*
 - [ ] **Fresh-clone e2e** — hooks work with NO `upgrade` run (AC-6, the criterion R4 exists for)

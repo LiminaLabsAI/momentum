@@ -327,3 +327,37 @@ algorithm. Worth noting the fixtures were more permissive than production, which
 is usually a smell; here it was the only reason the narrowing surfaced.
 
 ---
+### [FEATURE] 2026-07-27 — G4 complete: the production-call-path guard
+Topics: g4, r6, testing, bug-030, enumerative-guard
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: tests/production-call-path.test.js
+Detail: The mechanism for the meta-lesson. BUG-030 shipped because every test
+injected `ecosystemRoot` while production must discover it, and Phase 31b's
+hand-written attempt to close that class was followed by two more instances
+within hours. So this guard is ENUMERATIVE: it scans core for the fallback idiom
+`opts.ecosystemRoot || <discover>`, and any function using it that lacks a
+no-injection test fails the build. Nobody has to remember to add a case. Two
+further assertions keep it honest — the covered entry points must actually work
+without injection, and `COVERED` cannot rot. Suite 1155 → 1158; zero fingerprint
+drift; OKF 326 conformant.
+
+---
+
+### [DISCOVERY] 2026-07-27 — the guard found two entry points on its first run
+Topics: g4, guard, false-positive, precision
+Affects-phases: phase-31c-shipped-runtime
+Affects-specs: tests/production-call-path.test.js
+Detail: On its first execution the guard flagged
+`core/orchestration/events.js:createPersister` and `persisterSubscriber` — two
+entry points I had no idea accepted a root. That is precisely the value of an
+enumerative guard over a hand-written list. On inspection they were the OPPOSITE
+contract: `!opts.ecosystemRoot || return` is a guard clause meaning "this
+requires injection and no-ops without it", not a discovery fallback that could be
+wrong. Narrowed the scanner with a negative lookbehind and documented why. Worth
+distinguishing from the G0 allowlist decision: there, tuning the regex would have
+hidden a real class of offender, so the honest move was an explicit allowlist;
+here the two idioms are genuinely different contracts, so narrowing BY CONTRACT
+is precision rather than convenience. The test that tells the difference is
+whether the excluded thing could ever be the bug you are hunting.
+
+---
