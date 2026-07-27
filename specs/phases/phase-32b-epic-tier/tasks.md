@@ -7,8 +7,8 @@ epic: autonomous-execution
 # Phase 32b — Epic Tier — Tasks
 
 > Mirrors `plan.md`. Execution: G0 → (G1 ∥ G2) → G3 → G4 → G5.
-> Built under `momentum run` — the 32a governor drives this phase (epic
-> criterion #6). Baseline **1285/1285**.
+> Built under `momentum run` — the 32a governor drove this phase (epic
+> criterion #6). Baseline **1285/1285** → **1383/1383**. **All groups complete.**
 
 ## Group 0 — ADR-0020 + schemas *(blocks)* ✅
 - [x] **ADR-0020** — scope-grant authorization; argues the counter-case rather than asserting it away (one approval now covers unread code · a single mistaken yes costs an epic not a merge · the window is time not action); mitigations described as **compensating controls, not equivalents**
@@ -63,12 +63,14 @@ epic: autonomous-execution
 - [ ] ~~Stacked-lane landing for `release: per-feature`~~ → **moved to G5**, where the two-phase e2e exercises it end to end rather than in isolation
 - [x] Verify: `node --test tests/epic-wiring.test.js` → **13/13**; `npm test` → **1375/1375**
 
-## Group 5 — Verification
-- [ ] Two-phase epic e2e on a clean clone — **one approval**
-- [ ] Amendment e2e — forward-only silent, backward-invalidating stops + names
-- [ ] Derivation reproducibility — byte-identical on identical inputs
-- [ ] Grant adversarial suite green, all five reasons distinct
-- [ ] **Orphan guard green** — run BEFORE the retrospective is written
-- [ ] Invariance + swarm **236/236**
-- [ ] `retrospective.md` + `## Verification Evidence` (Rule 12 Gate A)
-- [ ] Verify: full suite green, net-new ≥ 50
+## Group 5 — Verification ✅
+- [x] **Two-phase epic e2e on a clean clone — ONE approval** (epic criterion #1), driven through the real CLI and the real `pre-push` hook as a subprocess
+- [x] Control test: without a grant the same two landings need two approvals — proves the grant is doing the work, not ungated branches
+- [x] Amendment e2e — forward-only silent and reaching an unwritten phase; backward-invalidating stops + names; unsignalled stops
+- [x] Derivation reproducibility — byte-identical **across separate processes**, not just in-process
+- [x] Grant adversarial suite green; all **six** reasons distinct
+- [x] **Orphan guard green — run BEFORE the retrospective was written** (32a's lesson, applied)
+- [x] Invariance at the epic tier + swarm **236/236**
+- [x] Epic record round-trip: what `create` writes, `load` reads
+- [x] `retrospective.md` + `## Verification Evidence` (Rule 12 Gate A)
+- [x] Verify: `node --test tests/epic-e2e.test.js` → **8/8**; `npm test` → **1383/1383** (baseline 1285, **98 net-new**, target was ≥ 50)
