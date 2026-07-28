@@ -198,3 +198,56 @@ test('the gitignore template negates the runtime directory', () => {
   assert.match(tpl, /^!\.momentum\/runtime\/$/m);
   assert.match(tpl, /^!\.momentum\/runtime\/\*\*$/m);
 });
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Phase 32d — the closure's blind spot, made enumerable.
+//
+// The walker follows STATIC requires. A shell script that invokes a JS file by
+// PATH is invisible to it — and that gap shipped twice in one epic:
+// `grant.js` (caught in 32b by inspection) and `hook.js` (caught only by
+// installing the published v0.43.0 tarball and running the hook, which exited 0
+// instead of 2 — the governor, the headline feature, inert in every install).
+//
+// So: discover every `.momentum/runtime/...` path referenced from core/scripts,
+// and require each to be in the closure. Adding a script that reaches a new file
+// by path now fails HERE, in the same commit.
+// ═════════════════════════════════════════════════════════════════════════════
+
+test('every runtime file a shell script invokes by PATH is in the closure', () => {
+  const closure = require('../core/runtime/closure');
+  // BOTH shipping routes: the computed closure AND the EXTRAS list, which lands
+  // files flat at the runtime root (discover.js). A guard that knew only about
+  // the closure would flag a file that ships perfectly well — and a guard that
+  // cries wolf is one people learn to silence.
+  const vendored = new Set([
+    ...closure.computeClosure(),
+    ...closure.EXTRAS.map((e) => e.dest),
+  ]);
+  const scriptsDir = path.join(REPO_ROOT, 'core', 'scripts');
+
+  const missing = [];
+  for (const name of fs.readdirSync(scriptsDir)) {
+    if (!name.endsWith('.sh')) continue;
+    const src = fs.readFileSync(path.join(scriptsDir, name), 'utf8');
+    // `.momentum/runtime/<core-relative-path>` — the R2 literal path.
+    for (const m of src.matchAll(/\.momentum\/runtime\/([A-Za-z0-9_\-/]+\.js)/g)) {
+      if (!vendored.has(m[1])) missing.push(`${name} → ${m[1]}`);
+    }
+  }
+
+  assert.deepEqual(missing, [],
+    'These shell scripts invoke a runtime file by path that the closure does NOT\n'
+    + 'vendor. The script will ship, find nothing, and exit silently — which is\n'
+    + 'how the governor shipped inert in v0.43.0. Add each to ENTRY_POINTS:\n  '
+    + missing.join('\n  '));
+});
+
+test('the governor hook and its decision function are both vendored', () => {
+  // Named explicitly, not just covered by the scan above: these two ARE the
+  // interceptor backend. If either stops shipping, autonomous execution
+  // silently does nothing in every installed project.
+  const vendored = new Set(require('../core/runtime/closure').computeClosure());
+  assert.ok(vendored.has('run/lib/hook.js'), 'hook.js is what run-governor.sh invokes');
+  assert.ok(vendored.has('run/lib/governor.js'), 'governor.js is what decides');
+  assert.ok(vendored.has('run/lib/manifest.js'), 'manifest.js is the state it reads');
+});
