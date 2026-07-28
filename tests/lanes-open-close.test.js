@@ -187,3 +187,75 @@ test('ENH-050: a new lane branch bases on main even when another branch is check
     rmrf(container);
   }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ENH-063 — `lanes close` does FULL cleanup, and that is now FENCED.
+//
+// The original complaint: close flipped status to `closed` and, only with
+// `--rm-worktree`, removed the worktree — it never `git branch -d`'d the lane
+// branch and never cleared the lane's inbox/manifest. So the one explicit
+// cleanup path still left a dangling branch and lingering state.
+//
+// It was routed through the shared `cleanupTarget()`, which fixed it. But the
+// only assertions on close were "worktree gone" and "status === closed" — the
+// two things ENH-063 was NOT about. The fix was real and completely unguarded,
+// so a regression would silently restore the original bug with the suite green.
+//
+// This pins the parts that actually were broken.
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('ENH-063: close deletes the lane branch and clears lane state, not just the worktree', () => {
+  const { container, dir } = makeRepo();
+  try {
+    assert.equal(lanes(dir, 'open', 'feat-cleanup').status, 0);
+    const anchor = state.resolveAnchor(dir);
+    const manifest = state.readManifest(anchor, 'feat-cleanup');
+    const branch = manifest.branch;
+
+    // Preconditions — the things ENH-063 said were left behind.
+    const branches = () => git(dir, 'branch', '--list', branch);
+    assert.ok(branches().includes(branch), 'branch exists before close');
+
+    const inbox = state.inboxDir(anchor, 'feat-cleanup');
+    fs.mkdirSync(inbox, { recursive: true });
+    fs.writeFileSync(path.join(inbox, 'sig.json'), '{"type":"note"}');
+    assert.ok(fs.existsSync(path.join(inbox, 'sig.json')), 'inbox has state before close');
+
+    const c = lanes(dir, 'close', 'feat-cleanup', '--rm-worktree');
+    assert.equal(c.status, 0, c.stderr);
+
+    // The two ENH-063 assertions.
+    assert.equal(branches().trim(), '',
+      `local branch '${branch}' must be deleted by close, not left dangling`);
+    assert.ok(!fs.existsSync(path.join(inbox, 'sig.json')),
+      'lane inbox must be cleared by close, not left lingering');
+  } finally {
+    rmrf(container);
+  }
+});
+
+test('ENH-063: close refuses to force-delete an UNMERGED branch, and says so', () => {
+  // Full cleanup must not mean destructive cleanup. An unmerged lane branch is
+  // unlanded work; deleting it on `close` would discard commits. It is reported
+  // as blocked and close still succeeds — cleanup is best-effort by design.
+  const { container, dir } = makeRepo();
+  try {
+    assert.equal(lanes(dir, 'open', 'feat-unmerged').status, 0);
+    const anchor = state.resolveAnchor(dir);
+    const { branch, worktree } = state.readManifest(anchor, 'feat-unmerged');
+
+    // Real unmerged work on the lane branch.
+    write(path.join(worktree, 'work.txt'), 'unlanded\n');
+    git(worktree, 'add', '-A');
+    git(worktree, 'commit', '-q', '--no-verify', '-m', 'unlanded work');
+
+    const c = lanes(dir, 'close', 'feat-unmerged', '--rm-worktree');
+    assert.equal(c.status, 0, 'close still succeeds — cleanup is best-effort');
+    assert.match(c.stdout, /not fully merged|some cleanup refused/,
+      'an unmerged branch must be reported, not silently force-deleted');
+    assert.ok(git(dir, 'branch', '--list', branch).includes(branch),
+      'unmerged lane branch must survive close — those commits are unlanded work');
+  } finally {
+    rmrf(container);
+  }
+});
