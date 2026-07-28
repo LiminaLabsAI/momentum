@@ -56,46 +56,61 @@ else
   TARBALL="$WORK/$(ls ./*.tgz | head -1)"
 fi
 
-# ── Install it the way a user would ──────────────────────────────────────────
-mkdir -p target && cd target || exit 1
-git init -q .
-git config user.email smoke@local
-npm i --silent --no-save "$TARBALL" >/dev/null 2>&1 \
-  || { echo "  ✗ npm install failed"; exit 1; }
+MO_BIN="node_modules/$PKG_NAME/bin/momentum.js"
 
-MO="node node_modules/$PKG_NAME/bin/momentum.js"
-$MO init . --agent claude-code >/dev/null 2>&1 || { echo "  ✗ momentum init failed"; exit 1; }
+# ── Both INTERCEPTOR adapters, not just the one that happens to be convenient ──
+#
+# v0.43.1 verified claude-code only. Antigravity — the OTHER interceptor — was
+# dead: it exports no *_PROJECT_DIR and invokes hooks with cwd = `.agents/`, so
+# the script resolved the project from PWD, found no run.json, and exited 0.
+# Silently, exactly like BUG-033. A smoke that covers one adapter proves one
+# adapter.
+for AGENT in claude-code antigravity; do
+  echo
+  echo "  ── $AGENT ──"
+  rm -rf "$WORK/t-$AGENT" && mkdir -p "$WORK/t-$AGENT" && cd "$WORK/t-$AGENT" || exit 1
+  git init -q .
+  git config user.email smoke@local
+  npm i --silent --no-save "$TARBALL" >/dev/null 2>&1 || { fail "$AGENT: npm install"; continue; }
 
-# ── 1. The files a governed run needs must be present ────────────────────────
-for f in scripts/run-governor.sh \
-         .momentum/runtime/run/lib/hook.js \
-         .momentum/runtime/run/lib/governor.js \
-         .momentum/runtime/run/lib/manifest.js \
-         .momentum/runtime/run/lib/grant.js; do
-  [ -f "$f" ] && pass "$f" || fail "$f MISSING"
+  MO="node $MO_BIN"
+  $MO init . --agent "$AGENT" >/dev/null 2>&1 || { fail "$AGENT: momentum init"; continue; }
+
+  for rel in scripts/run-governor.sh \
+             .momentum/runtime/run/lib/hook.js \
+             .momentum/runtime/run/lib/governor.js \
+             .momentum/runtime/run/lib/manifest.js \
+             .momentum/runtime/run/lib/grant.js; do
+    [ -f "$rel" ] && pass "$AGENT: $rel" || fail "$AGENT: $rel MISSING"
+  done
+
+  # THE CHECK THAT MATTERS. Presence is not function — BUG-033 passed every file
+  # check and still shipped inert. And it is run the way THIS agent invokes it:
+  # from the hook's real cwd, with no env override, because that is precisely
+  # what was broken on Antigravity.
+  $MO run start phase smoke --unit G0 --turns 5 >/dev/null 2>&1
+  case "$AGENT" in
+    antigravity) HOOK_CWD=".agents" ;;
+    *)           HOOK_CWD="." ;;
+  esac
+  mkdir -p "$HOOK_CWD"
+  ( cd "$HOOK_CWD" && env -u MOMENTUM_PROJECT_DIR -u CLAUDE_PROJECT_DIR \
+      bash "$WORK/t-$AGENT/scripts/run-governor.sh" </dev/null >/dev/null 2>"$WORK/gov-$AGENT.err" )
+  if [ $? -eq 2 ] && grep -q "continue without asking" "$WORK/gov-$AGENT.err"; then
+    pass "$AGENT: governor FIRES from its real hook cwd (exit 2)"
+  else
+    fail "$AGENT: governor did NOT fire — BUG-033 shape"
+  fi
+
+  # A repo with no run must be untouched.
+  $MO run stop >/dev/null 2>&1; rm -f .momentum/run.json
+  ( cd "$HOOK_CWD" && env -u MOMENTUM_PROJECT_DIR -u CLAUDE_PROJECT_DIR \
+      bash "$WORK/t-$AGENT/scripts/run-governor.sh" </dev/null >/dev/null 2>&1 )
+  [ $? -eq 0 ] && pass "$AGENT: no run ⇒ exit 0 (invariance)" || fail "$AGENT: no-run case"
 done
-grep -q '"Stop"' .claude/settings.json 2>/dev/null \
-  && pass "Stop hook wired" || fail "Stop hook NOT wired"
-
-# ── 2. THE CHECK THAT MATTERS — does the governor actually fire? ─────────────
-# BUG-033 passed every file-presence check that existed and still shipped inert,
-# because run-governor.sh was present and hook.js was not. Presence is not
-# function: run it.
-$MO run start phase smoke --unit G0 --turns 5 >/dev/null 2>&1
-MOMENTUM_PROJECT_DIR="$PWD" bash scripts/run-governor.sh </dev/null >/dev/null 2>"$WORK/gov.err"
-if [ $? -eq 2 ] && grep -q "continue without asking" "$WORK/gov.err"; then
-  pass "governor BLOCKS the stop and injects the continuation (exit 2)"
-else
-  fail "governor did NOT fire — this is BUG-033 exactly"
-fi
-
-# ── 3. A repo with no run must be untouched ─────────────────────────────────
-$MO run stop >/dev/null 2>&1; rm -f .momentum/run.json
-MOMENTUM_PROJECT_DIR="$PWD" bash scripts/run-governor.sh </dev/null >/dev/null 2>&1
-[ $? -eq 0 ] && pass "no run ⇒ exit 0 (invariance holds)" || fail "no-run case did not exit 0"
 
 echo
 [ "$FAILED" -eq 0 ] \
-  && echo "▸ PASS — $PKG_NAME@$VERSION works as an installed project." \
+  && echo "▸ PASS — $PKG_NAME@$VERSION works as an installed project on both interceptor adapters." \
   || echo "▸ FAIL — do NOT announce this release."
 exit "$FAILED"

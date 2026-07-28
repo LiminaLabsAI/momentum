@@ -3,7 +3,7 @@
     "captured": "2026-07-28",
     "capturedFrom": "main",
     "adapter": "antigravity",
-    "note": "v0.43.1 — audible missing-runtime message in run-check.js; BUG-032 grant suppression resolved from the member rather than cwd."
+    "note": "BUG-034 — run-governor.sh resolves the project root from its own location; Antigravity hooks run with cwd .agents/ and export no *_PROJECT_DIR."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -56,7 +56,7 @@
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/cross-repo-gate.sh": "eb83d824c41261aaca48b123de7f49f7fd0509b1ef034fc774e8cba451b78099",
     "scripts/orient.js": "9c684463a4f55e431e625a0ddbf66c44070f76fa431cfa53e630307f1d0f18ba",
-    "scripts/run-governor.sh": "8003c94e44276152b5b78570ac8d6c4b87c744e24741744df24f45eee5d2504d",
+    "scripts/run-governor.sh": "447026b8866c2d5264320f754f2d2961a18b68f49a9757b8d5fc80cea4f8fe5a",
     "scripts/session-append.sh": "dbb496c0ab0ad49ce24033de7285a8cbad9d9cfaf5fb873ee97441f219e859e2",
     "scripts/sessionstart-handoff.sh": "c1c3f90a1366e0fbc5741903b09e72b0a950e462f056c725ba8b87f90bd795ca",
     "specs/README.md": "052a73d8276d65efe31fd40aa16380e9a2716f7c0848d3da2cdfcf528d86ab54",

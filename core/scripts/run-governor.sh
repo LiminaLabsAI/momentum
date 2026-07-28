@@ -34,7 +34,30 @@ set -uo pipefail
 
 # ── Project root ─────────────────────────────────────────────────────────────
 # Same resolution order as brainstorm-gate.sh.
-root="${MOMENTUM_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-$PWD}}"
+# Project root. Resolution order matters, and PWD is LAST — not first.
+#
+# The original order ended at $PWD, which works on Claude Code only because it
+# exports CLAUDE_PROJECT_DIR. Antigravity exports neither and invokes hooks
+# with cwd = `.agents/` (that is why every antigravity hook command is spelled
+# `bash ../scripts/...`). So the script looked for `.agents/.momentum/run.json`,
+# found nothing, and exited 0 — the governor was DEAD on Antigravity, silently,
+# exactly as it was dead in every install before BUG-033.
+#
+# This script always lives at <repo>/scripts/run-governor.sh, so its own
+# location IS the answer, and it needs no cooperation from the host. Same
+# literal-path discipline as ADR-0018 R2.
+if [ -n "${MOMENTUM_PROJECT_DIR:-}" ]; then
+  root="$MOMENTUM_PROJECT_DIR"
+elif [ -n "${CLAUDE_PROJECT_DIR:-}" ]; then
+  root="$CLAUDE_PROJECT_DIR"
+else
+  _self="$(cd "$(dirname "$0")" 2>/dev/null && pwd)"
+  if [ -n "$_self" ] && [ -d "$_self/../.momentum" ]; then
+    root="$(cd "$_self/.." && pwd)"
+  else
+    root="$PWD"
+  fi
+fi
 
 # Cheapest possible exit for the overwhelming majority of sessions: no run file,
 # nothing to govern. This is what makes the invariance guarantee real rather
