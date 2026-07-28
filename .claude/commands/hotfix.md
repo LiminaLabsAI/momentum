@@ -33,6 +33,9 @@ verification gate. For net-new features or cross-cutting work, use
 
 5. **Track it** (Rule 3): ensure the backlog has a row (`/track` if not). A
    pure chore with no backlog id is fine — note "Backlog: none" in the record.
+   **Team-safe (multi-session):** when assigning a NEW backlog id
+   (`BUG`/`FEAT`/`TD`/`ENH-NNN`), reserve it first with `momentum claim id <ID>`;
+   if it loses (exit 2) another session already filed that number — pick the next.
 
 6. **Do the work.** Commit with Conventional Commits (the `commit-msg` hook
    enforces this). Keep commits atomic.

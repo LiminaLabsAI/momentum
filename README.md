@@ -152,6 +152,28 @@ A momentum-managed project records its version-of-record in
 `.momentum/installed.json` (committed) — that's what powers orphan cleanup and
 the ecosystem sweep's per-repo version report.
 
+### Did the upgrade actually take? — `momentum selfcheck`
+
+An upgrade can quietly go stale: a hook that was never re-copied, a recipe from
+three versions back, a script sitting at a build whose bug you already fixed.
+Nothing about the project *looks* wrong, and your agent keeps running the old
+file.
+
+```bash
+momentum selfcheck          # report drift (default)
+momentum selfcheck --fix    # repair from source, then re-run to confirm
+```
+
+It compares every file your adapter installs against what your installed
+momentum ships, and reports three things: **missing** (shipped, absent here),
+**changed** (present but stale), and **extra** (yours — reported, never touched).
+Reporting is the default on purpose: a checker that silently repairs hides the
+drift it exists to surface, and the drift is usually the interesting part.
+
+This is not hypothetical. momentum found seven drifts in **its own** install the
+day this shipped — including a hook script running the pre-fix build of a bug
+momentum had patched and released that same morning.
+
 ## Your specs are an open knowledge bundle
 
 Every momentum project's `specs/` tree is a conformant **[Open Knowledge

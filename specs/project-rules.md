@@ -14,7 +14,7 @@ type: Project Rules
 The release **commands** are config-driven (`specs/config.md`: `release_command`,
 `publish_target`, `release_flow`) — `/complete-phase` runs them. This checklist
 is the human-facing contract for *how* momentum releases; every release MUST do
-**all three**:
+**all five**:
 
 1. **`gh release create <tag>`** — create the GitHub Release with notes drawn
    from the phase retrospective; mark the newest `--latest`. Without it, the tag
@@ -40,10 +40,27 @@ is the human-facing contract for *how* momentum releases; every release MUST do
 
    A non-zero exit means **do not announce the release**.
 
-3. **`npm publish --access public`** — momentum is an npm package. Skip it and the
+3. **`momentum selfcheck`** — the sibling check, run **before packing**. Where
+   `verify-published.sh` asks "does what users download work?", this asks "is
+   momentum's own install still what momentum ships?" — and on 2026-07-28 it was
+   not: seven files behind, including `scripts/cross-repo-gate.sh` sitting at its
+   pre-v0.43.1 build, i.e. momentum running the buggy version of a fix it had
+   shipped that same day. Drift here means you are developing and testing against
+   a surface no user has.
+
+   ```bash
+   momentum selfcheck          # report (default)
+   momentum selfcheck --fix    # repair, then re-run to confirm
+   ```
+
+   `tests/self-install-parity.test.js` fails the suite on drift, so this is
+   normally already green by the time you release — run it explicitly anyway when
+   a release touches `core/commands/`, `core/scripts/`, or the runtime closure.
+
+4. **`npm publish --access public`** — momentum is an npm package. Skip it and the
    registry stays on the previous version.
 
-3. **Verify both surfaces are live** — `gh release list --limit 3` shows the new
+5. **Verify both surfaces are live** — `gh release list --limit 3` shows the new
    release as `Latest`; `npm view @limina-labs/momentum version` returns the new version.
 
 **Approval required:** both `gh release create` and `npm publish` are "shared

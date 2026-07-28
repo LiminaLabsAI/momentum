@@ -91,6 +91,11 @@ Verify, finalize, and release a completed phase.
    release creation and registry publishes are NOT listed here — they run
    from `specs/project-rules.md` + `specs/config.md` (`release_command`,
    `publish_target`, `release_flow`) after the tag is pushed.
+
+   **Reserve the version first (team-safe — ENH-057):** before tagging, run
+   `momentum claim version vX.Y.Z`. If another session already reserved that
+   version the claim loses (exit 2) — re-read the intended version and re-pick,
+   so two concurrent releases can never burn a version number.
    ```
    Ready to release vX.Y.Z. This will:
      1. Merge phase-N-shortname → <branch_flow[0]> (e.g. staging)

@@ -39,11 +39,40 @@ Present to user:
   - [list of files]
   Proceed? (yes/no)"
 
-**If any cross-repo entries were partitioned out in Step 2:** also show them
-under a "Cross-repo impact (NOT touching — sync the other repo manually)"
-heading, listing each `Affects-specs: ../...` path. Tell the user which repo
-they need to edit and which entries pointed there. Do NOT prompt for approval
-on cross-repo paths — they're informational only.
+**If any cross-repo entries were partitioned out in Step 2:** show them under a
+"Cross-repo impact" heading, listing each `Affects-specs: ../...` path and which
+member repo owns it.
+
+**Then DELIVER them, don't just mention them (Phase 31b, ADR-0017 E6).** A chat
+message dies with the session — that is why one reviewed multi-repo session's
+glossary propagation never happened *despite this rule working exactly as
+designed*. For each target member repo, write a structured handoff into its
+inbox:
+
+```js
+const orchestration = require('<momentum-root>/core/orchestration');
+await orchestration.handoff.handoff({
+  fromRepo: '<this repo absolute path>',
+  toRepo: '<target member absolute path>',
+  summary: 'Doc sync needed: <N> entries from <this repo> phase <phase> affect your specs',
+  decisions: [/* the history entries that pointed here, verbatim */],
+  filesTouched: [/* the ../ paths, rewritten relative to the TARGET repo */],
+  verificationCommands: [],
+  openQuestions: ['Do these entries still apply after your latest changes?'],
+  ecosystem: { rootPath: '<ecosystem root>', memberId: '<this repo member id>' },
+});
+```
+
+The receiving session surfaces it at SessionStart and picks it up with
+`/continue`.
+
+**The ownership rule is unchanged and absolute:** you still NEVER edit a file in
+another repo. You are handing the target repo's own agent a note; that agent
+decides what to change. Delivery is not ownership.
+
+Do NOT prompt for approval on cross-repo paths — writing a handoff into an
+inbox is additive and reversible, and the receiving session gates the actual
+edits.
 
 If user says no → stop.
 
@@ -76,6 +105,6 @@ Ready to run /complete-phase."
 ## Safeguards
 - NEVER update files not in the targeted list
 - NEVER update `specs/architecture/` (monorepo only — constitution is read-only)
-- NEVER update files in another repo (paths starting with `../`) — you only own this repo's docs. Flag cross-repo entries to the user instead.
+- NEVER update files in another repo (paths starting with `../`) — you only own this repo's docs. **Deliver** cross-repo entries as a handoff into the target member's inbox (ADR-0017 E6); the receiving repo's own agent decides what to change. Delivery is not ownership.
 - ALWAYS show the plan (Step 3) before making any edits
 - History entries are NEVER modified — only read

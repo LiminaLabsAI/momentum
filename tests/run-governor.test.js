@@ -59,7 +59,11 @@ test('no manifest allows the stop — a repo with no run is untouched', () => {
 });
 
 test('a non-running status allows the stop', () => {
-  for (const status of ['parked', 'stopped', 'complete', 'failed']) {
+  // `complete` was in this list until BUG-036, which is the defect in miniature:
+  // a finished run and an abandoned one produced the identical answer, so the
+  // governor had no way to say "this succeeded". It now has its own branch and
+  // its own reason; the rest still share NOT_RUNNING.
+  for (const status of ['parked', 'stopped', 'failed']) {
     const d = governor.decide({ manifest: runningManifest({ status }), killSwitch: false });
     assert.equal(d.action, ACTION.ALLOW_STOP);
     assert.equal(d.reason, STOP_REASON.NOT_RUNNING);
@@ -459,4 +463,99 @@ test('the hook script is one file shared by both interceptor adapters', () => {
   // Two copies would drift, and a governor behaving differently per platform is
   // the BUG-028/029/030 shape.
   assert.match(src, /ONE script for both adapters/);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BUG-036 — how a run ENDS WELL.
+//
+// `status: complete` shipped in the 32a schema and `manifest.setStatus` always
+// accepted it, but no command could reach it: `stop` writes `stopped`, nothing
+// wrote `complete`. A declared state with no production path — BUG-031's shape,
+// third instance in this epic.
+//
+// The consequence was not cosmetic. A finished run stayed `running`, branch 7
+// answered "continue" every turn with no work left, and the run ended only by
+// exhausting its budget as `budget-turns`. The governor could not report
+// success: every completed run looked like a runaway, and the single thing an
+// operator most needs to know — did it finish, or did it give up? — was the one
+// thing it could not say.
+//
+// Found by dogfooding Phase 33: the phase finished and the governor kept
+// re-invoking the agent to do work that no longer existed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('a complete run stops as SUCCESS, not as one of the failure rails', () => {
+  const m = runningManifest({ status: 'complete' });
+  const d = governor.decide({ manifest: m, killSwitch: false, now: TS });
+
+  assert.equal(d.action, ACTION.ALLOW_STOP);
+  assert.equal(d.reason, STOP_REASON.COMPLETE,
+    'a finished plan must be distinguishable from a stopped or failed one');
+  assert.notEqual(d.reason, STOP_REASON.BUDGET_TURNS);
+  assert.notEqual(d.reason, STOP_REASON.NOT_RUNNING);
+  assert.match(governor.explain(d), /run complete/);
+});
+
+test('completion outranks the budget rail — a finished run never reports a runaway', () => {
+  // The exact pre-fix failure: work is done, but nothing marked it done, so the
+  // run idles at "continue" until the budget trips. Order matters — if the
+  // budget branch were reached first, a run that finished on its last allotted
+  // turn would still be reported as having overrun.
+  const m = runningManifest({
+    status: 'complete',
+    budget: { turns: 40 },
+    spent: { turns: 40, tokens: 0 },
+  });
+  const d = governor.decide({ manifest: m, killSwitch: false, now: TS });
+  assert.equal(d.reason, STOP_REASON.COMPLETE,
+    'finished-and-at-budget is a success, not a budget exhaustion');
+});
+
+test('the kill switch still outranks completion', () => {
+  // Branch order is a safety property. The operator halting a run must win over
+  // the run's own claim to be finished, or a runaway could mark itself complete
+  // and keep the last word.
+  const m = runningManifest({ status: 'running' });
+  const d = governor.decide({ manifest: m, killSwitch: true, now: TS });
+  assert.equal(d.reason, STOP_REASON.KILL_SWITCH);
+});
+
+test('momentum run complete reaches the state the schema always declared', () => {
+  withTmp((dir) => {
+    const cli = (...a) => spawnSync('node',
+      [path.join(REPO_ROOT, 'bin', 'momentum.js'), 'run', ...a],
+      { cwd: dir, encoding: 'utf8' });
+
+    assert.equal(cli('start', 'phase', 'p', '--unit', 'G1', '--turns', '5').status, 0);
+    const r = cli('complete', '--summary', 'all groups verified');
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stdout, /complete/);
+    assert.match(r.stdout, /all groups verified/);
+
+    const m = manifestLib.load(dir);
+    assert.equal(m.status, 'complete');
+    assert.ok(m.audit.some((e) => e.event === 'complete'),
+      'completion must be auditable, like every other status transition');
+
+    // And the governor must now let the session end.
+    const d = governor.decide({ manifest: m, killSwitch: false, now: TS });
+    assert.equal(d.action, ACTION.ALLOW_STOP);
+    assert.equal(d.reason, STOP_REASON.COMPLETE);
+  });
+});
+
+test('completing surfaces parked questions rather than burying them', () => {
+  withTmp((dir) => {
+    const cli = (...a) => spawnSync('node',
+      [path.join(REPO_ROOT, 'bin', 'momentum.js'), 'run', ...a],
+      { cwd: dir, encoding: 'utf8' });
+
+    cli('start', 'phase', 'p', '--unit', 'G1', '--turns', '5');
+    cli('park', 'S3 or GCS?', '--unit', 'G2', '--reason', 'operator-authority');
+    const r = cli('complete');
+
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stdout, /still parked/,
+      'a park that never blocked the plan is still an unanswered operator question');
+  });
 });

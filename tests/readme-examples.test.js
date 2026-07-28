@@ -50,6 +50,8 @@ test('README references only commands our CLI knows', () => {
     'continue',
     // Phase 24 OKF bundle utilities
     'okf',
+    // Phase 33 — self-install parity
+    'selfcheck',
   ]);
   const unknown = invocations.filter((c) => !known.has(c));
   assert.deepEqual(unknown, [], `README mentions unknown commands: ${JSON.stringify(unknown)}`);
