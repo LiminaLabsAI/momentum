@@ -9,6 +9,15 @@
             "command": "bash scripts/brainstorm-gate.sh"
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/cross-repo-gate.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -28,6 +37,16 @@
           {
             "type": "command",
             "command": "bash scripts/sessionstart-handoff.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/run-governor.sh"
           }
         ]
       }
