@@ -19,4 +19,5 @@
 * [ADR-0016: Ecosystem Lifecycle Spine](/decisions/0016-ecosystem-lifecycle-spine.md)
 * [ADR-0017: Layered Ecosystem Enforcement](/decisions/0017-layered-ecosystem-enforcement.md)
 * [ADR-0018: Shipped Runtime & Unified Discovery](/decisions/0018-shipped-runtime.md)
+* [ADR-0019: Decision Authority Model](/decisions/0019-decision-authority-model.md)
 * [Decision Impact Map](/decisions/impact-map.md) - Topic keywords → spec files/sections, consumed by /sync-docs.

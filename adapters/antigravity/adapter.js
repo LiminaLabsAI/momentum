@@ -59,6 +59,10 @@ module.exports = {
     computerUse: false,
     artifacts: true,
     planningMode: true,
+    // Phase 32a: Antigravity's five-event surface includes `Stop` (live-verified
+    // in Phase 22b), so it blocks + injects like Claude Code — the two share ONE
+    // hook script rather than two that could drift.
+    governorBackend: 'interceptor',
   },
 
   roadmap: {

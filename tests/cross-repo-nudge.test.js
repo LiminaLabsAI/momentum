@@ -23,6 +23,10 @@ const detect = require('../core/ecosystem/lib/detect');
 const events = require('../core/ecosystem/lib/events');
 const fragments = require('../core/team/lib/fragments');
 
+// Phase 32d G2 additions. REPO_ROOT is already declared above.
+const manifestLib = require('../core/run/lib/manifest');
+const CLI = path.join(__dirname, '..', 'bin', 'momentum.js');
+
 const REPO_ROOT = path.resolve(__dirname, '..');
 const GATE = path.join(REPO_ROOT, 'core', 'scripts', 'cross-repo-gate.sh');
 const NOW = '2026-07-27T12:00:00.000Z';
@@ -307,4 +311,104 @@ test('E6: sync-docs delivers cross-repo entries instead of only mentioning them'
   assert.match(body, /Delivery is not ownership/);
   assert.doesNotMatch(body, /they're informational only/,
     'a chat message dies with the session — that was the whole failure');
+});
+
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Phase 32d G2 — BUG-032 (the halting wording) and the initiative tier.
+//
+// Appended to the existing suite above, which already covers the gate's
+// once-per-member throttling and its advisory exit code. These add the two
+// things 32d changes: the message no longer reads as an instruction, and an
+// active run grant suppresses it entirely.
+// ═════════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────────
+// BUG-032 — the wording
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('BUG-032: the nudge states a fact and does NOT instruct the agent to stop', () => {
+  const lines = crossRepo.routingMessage('/tmp/nowhere', { members: ['a', 'b'] }, null);
+  const text = lines.join('\n');
+
+  // The exact phrase that caused the halt.
+  assert.ok(!/before going further/i.test(text),
+    'an imperative here reads as a stop instruction, whatever the exit code says');
+
+  // It must still say the useful thing.
+  assert.match(text, /Cross-repo work belongs to an initiative/);
+  assert.match(text, /brainstorm-initiative/);
+
+  // And say plainly that it is not a gate.
+  assert.match(text, /a note, not a gate/);
+  assert.match(text, /the current task continues/);
+});
+
+test('BUG-032: no imperative verb opens any nudge line', () => {
+  // A softer regression guard than matching one phrase: the whole message must
+  // stay observational, so a future edit cannot quietly reintroduce a command.
+  const lines = crossRepo.routingMessage('/tmp/nowhere', { members: ['a', 'b'] }, null);
+  for (const l of lines) {
+    assert.ok(!/^\s*(→\s*)?(Run|Stop|Open|Do not|Don't)\b/.test(l),
+      `nudge line reads as an instruction: ${JSON.stringify(l)}`);
+  }
+});
+
+test('BUG-032: the gate script is still advisory — exit 0 on every path', () => {
+  const src = fs.readFileSync(path.join(REPO_ROOT, 'core', 'scripts', 'cross-repo-gate.sh'), 'utf8');
+  assert.match(src, /Exit codes: always 0/);
+  assert.ok(!/exit 2/.test(src), 'this hook must never block a write');
+});
+
+test('BUG-032: an active run grant suppresses the nudge entirely', () => {
+  // The grant IS the coordination record the nudge asks for. Telling an
+  // operator to go open an initiative, when they have already approved a
+  // scoped authorization naming these members, is asking for what they did.
+  const src = fs.readFileSync(path.join(REPO_ROOT, 'core', 'scripts', 'cross-repo-gate.sh'), 'utf8');
+  assert.match(src, /run\.json/);
+  assert.match(src, /grant\.revoked !== true/);
+  assert.match(src, /Date\.parse\(run\.grant\.expires\) > Date\.now\(\)/,
+    'an EXPIRED grant must not suppress the nudge');
+});
+
+test('BUG-032: the installed mirror emits the same wording (ADR-0018)', () => {
+  // Asserted on EMITTED OUTPUT, not raw source — the source legitimately
+  // contains the old phrase inside the comment explaining why it was removed,
+  // and a source-level regex would flag that forever.
+  const mirror = require(path.join(REPO_ROOT, '.githooks', 'cross-repo.js'));
+  const mirrorText = mirror.routingMessage('/tmp/nowhere', { members: ['a', 'b'] }, null).join('\n');
+  const coreText = crossRepo.routingMessage('/tmp/nowhere', { members: ['a', 'b'] }, null).join('\n');
+
+  assert.ok(!/before going further/i.test(mirrorText),
+    'the shipped mirror must not emit the halting wording');
+  assert.equal(mirrorText, coreText, 'core and its shipped mirror must emit identically');
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Initiative tier — the fourth scale
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('an initiative-tier run is accepted as a tier', () => {
+  assert.ok(manifestLib.TIERS.includes('initiative'));
+});
+
+test('an initiative-tier run outside an ecosystem degrades audibly, not silently', () => {
+  // Better a named degradation than a cursor silently pointing at the slug.
+  const dir = mktmp();
+  try {
+    const r = spawnSync('node', [CLI, 'run', 'start', 'initiative', 'attachments'],
+      { cwd: dir, encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr);
+    const m = manifestLib.load(dir);
+    assert.equal(m.tier, 'initiative');
+    assert.equal(m.cursor.unit, 'attachments', 'falls back to the target');
+  } finally { rmrf(dir); }
+});
+
+test('initiative ordering uses the SAME wave engine as every other tier', () => {
+  // ADR-0003: one topological sort, four scales. If this ever imports a second
+  // orderer, that is the thing the ADR exists to prevent.
+  const src = fs.readFileSync(path.join(REPO_ROOT, 'bin', 'run.js'), 'utf8');
+  const initBlock = src.slice(src.indexOf("tier === 'initiative'"), src.indexOf("tier === 'epic'"));
+  assert.match(initBlock, /computeWaveLayers/);
+  assert.match(initBlock, /core', 'waves', 'lib', 'waves'/);
 });

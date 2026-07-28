@@ -30,6 +30,7 @@ const { spawnSync } = require('node:child_process');
 
 const { mktmp, rmrf, runCli } = require('./_helpers');
 const conductor = require('../core/swarm/conductor');
+const simulator = require('./_swarm-simulator'); // BUG-031: moved out of production (32d)
 const manifestLib = require('../core/swarm/lib/manifest');
 const boardLib = require('../core/swarm/lib/board');
 
@@ -84,7 +85,7 @@ function driveSwarmToCompletion(ecosystemRoot, swarmId, manifest) {
   let turnCount = 0;
   const turnSizes = [];
   // Initial poll — start wave 1
-  conductor.pollTurn({
+  simulator.pollTurn({
     ecosystemRoot, swarmId, nowIso: `2026-06-12T17:0${++turnCount}:00Z`,
   });
   turnSizes.push(fs.statSync(path.join(manifestLib.swarmDir(ecosystemRoot, swarmId), 'board.json')).size);
@@ -92,11 +93,11 @@ function driveSwarmToCompletion(ecosystemRoot, swarmId, manifest) {
   for (const wave of manifest.waves) {
     for (const repoId of wave.repos) {
       // Simulate the supervisor completing the phase
-      conductor.recordRepoComplete(ecosystemRoot, swarmId, repoId, {
+      simulator.recordRepoComplete(ecosystemRoot, swarmId, repoId, {
         tasksDone: 5 + repoId.length, tasksTotal: 5 + repoId.length,
         commits: 2, lastSeenSha: '1234567',
       });
-      conductor.pollTurn({
+      simulator.pollTurn({
         ecosystemRoot, swarmId, nowIso: `2026-06-12T17:${String(++turnCount).padStart(2, '0')}:00Z`,
       });
       turnSizes.push(fs.statSync(path.join(manifestLib.swarmDir(ecosystemRoot, swarmId), 'board.json')).size);

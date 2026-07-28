@@ -1,10 +1,38 @@
----
-description: "Brainstorm the next phase before creating it."
----
-
 Brainstorm the next phase before creating it.
 
 Run AFTER `/complete-phase` and BEFORE `/start-phase`.
+
+## Two modes: interview (cold) and derive (inside an epic)
+
+**Interview — the default, and everything below.** A cold phase whose decisions
+have not been made yet. Ask the questions; nothing is on record.
+
+**Derive — `/brainstorm-phase --derive --epic <slug>`.** A phase that belongs to
+an epic. Its decisions were settled once when the epic was brainstormed, so
+asking again would be re-litigating a closed conversation:
+
+```bash
+momentum run derive <phase-dir> --epic <slug> [--deps a,b] --write
+```
+
+This generates `overview.md` / `plan.md` / `tasks.md` from the epic record plus
+every forward-only amendment made since, **with no interview**. What it produces
+is a skeleton: the epic knows the objective, the inherited decisions, the deps
+and the run policy; it cannot know this phase's group breakdown, which depends
+on code that exists now and did not when the epic was written. Author the groups;
+everything above them is derived.
+
+> **Why derivation rather than writing all the specs upfront.** Specs authored
+> before their phase begins are hypotheses about a codebase earlier phases have
+> not changed yet — and worse, every operator amendment mid-epic then becomes a
+> merge conflict against a spec already written and tasks already checked `[x]`.
+> Derived just-in-time, an amendment is simply an input. **Decisions are
+> durable; plans are perishable.**
+
+Skip the rest of this file when deriving — the gate contract below still applies
+to any hand-authoring you do afterwards.
+
+---
 
 ## Important: No Separate Design Document
 
@@ -77,6 +105,11 @@ The brainstorm output IS the phase files — there is no intermediate design doc
    ```bash
    rm .momentum/brainstorm-active
    ```
+   **Reserve the phase number first (team-safe — multi-session):** run
+   `momentum claim phase <N>`. If a concurrent session already grabbed that
+   number the claim loses (exit 2) — pick the next free number before writing,
+   so two people brainstorming at once can't both create "Phase N".
+
    Then write all four files to `specs/phases/phase-N-shortname/` and commit:
    ```bash
    git add specs/phases/phase-N-shortname/

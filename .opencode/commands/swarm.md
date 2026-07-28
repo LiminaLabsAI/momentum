@@ -1,12 +1,19 @@
----
-description: "Swarm — sustained parallel multi-project feature delivery (Phase 22, opencode parity)."
----
-
 Swarm — sustained parallel multi-project feature delivery (Phase 22, opencode parity).
 
 A **swarm** is a declared cross-repo work unit driven from ONE user session. The user's session becomes the **conductor**. The conductor spawns one **supervisor** opencode session per impacted repo, each pinned to that repo's working directory natively via `opencode run --dir <repoPath>` (no MCP shim needed). Each supervisor runs momentum's normal `/start-phase` → implement → `/sync-docs` → `/complete-phase` loop INSIDE its repo. The conductor coordinates waves (computed from `ecosystem.json` dependency edges), surfaces inbox decisions, broadcasts cross-cutting concerns, and synthesizes per-repo retrospectives at fan-in.
 
 > Phase 22 / v0.28.0 — opencode parity of the Phase 17 / 17.5 swarm surface. All 13 subcommands work through the opencode `adapter.spawn(directive)` dispatch (`adapters/opencode/adapter.js`).
+
+> **⚠ DEPRECATED — the wave runner, not the whole subsystem (Phase 32a, BUG-031).**
+> `--mode autopilot`'s wave advance has **never had a production caller**:
+> `pollTurn` and `recordRepoComplete` are referenced only by tests, there is no
+> `poll` subcommand, and wave-1 spawn directives are the only ones ever built.
+> Launch a swarm today and the board freezes at wave-1-start. It is **not being
+> repaired** — even wired it drives one phase per repo, which the
+> tier-parameterized runner (`momentum run`, Epic 0001) supersedes; removal
+> lands in **Phase 32d**. The **inbox protocol** and **wave ordering** are
+> retained and already in use by the new runner. For multi-phase or multi-repo
+> autonomous work, use `momentum run`.
 
 ## Architecture
 

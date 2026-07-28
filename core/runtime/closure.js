@@ -54,6 +54,13 @@ const ENTRY_POINTS = [
   'lanes/lib/state.js',
   // Durable actor identity for event attribution.
   'identity/index.js',
+  // Phase 32b / ADR-0020 — the scope grant, read by `pre-push` (run-check.js)
+  // when no single-use sentinel is present. Listed EXPLICITLY because
+  // run-check.js resolves it through a computed path rather than a static
+  // require, so the closure walker below cannot discover it. Without this entry
+  // the grant path would work in this checkout and silently do nothing in every
+  // installed project — the BUG-030 shape, one layer down.
+  'run/lib/grant.js',
 ];
 
 /**

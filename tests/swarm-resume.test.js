@@ -7,6 +7,7 @@ const path = require('node:path');
 
 const { mktmp, rmrf, runCli } = require('./_helpers');
 const conductor = require('../core/swarm/conductor');
+const simulator = require('./_swarm-simulator'); // BUG-031: moved out of production (32d)
 const manifestLib = require('../core/swarm/lib/manifest');
 const boardLib = require('../core/swarm/lib/board');
 
@@ -45,7 +46,7 @@ test('resumeSwarm — reconstitutes purely from disk (mid-wave kill)', () => {
   try {
     setupFixture(tmp);
     // Simulate progress: tick to start wave 1, mark repo a partially done
-    conductor.pollTurn({ ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:01:00Z' });
+    simulator.pollTurn({ ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:01:00Z' });
     manifestLib.updateManifest(tmp, '0001-foo', (m) => {
       m.repos.a.tasks_done = 3;
       m.repos.a.tasks_total = 7;
