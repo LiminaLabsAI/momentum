@@ -44,6 +44,9 @@ const DEV_ONLY = Object.freeze([
   'scripts/read-team-board.js',
   'scripts/rebaseline-fingerprints.js',
   'scripts/verify-published.sh',
+  'scripts/verify-multi-adapter.sh',
+  // The agent's own local override — Claude Code writes it, momentum never does.
+  '.claude/settings.local.json',
 ]);
 
 function sha(file) {
@@ -116,6 +119,21 @@ function expectedSurface(adapterName) {
     surface.set(path.join('.momentum', 'runtime', e.dest), path.join(REPO_ROOT, 'core', e.src));
   }
 
+  // The part of the surface `destinations` cannot describe (Phase 33 G1).
+  //
+  // Deriving from `destinations` alone made this engine blind to the three files
+  // MOST likely to drift — special cases are what people forget to update. Had
+  // `scripts/session-append.sh` gone stale, selfcheck would have reported green:
+  // a parity checker with a hole exactly where parity breaks. Reading the
+  // installer's own declaration is what closes it.
+  const extras = require(path.join(REPO_ROOT, 'core', 'install', 'extras.js'));
+  for (const e of extras.extraCopiesFor(dests)) {
+    surface.set(path.join(...e.destParts), path.join(REPO_ROOT, ...e.srcRel));
+  }
+  for (const r of extras.removalsFor(dests, adapterName)) {
+    surface.delete(path.join(...r.destParts));
+  }
+
   return surface;
 }
 
@@ -167,4 +185,4 @@ function hasDrift(result) {
   return result.missing.length > 0 || result.changed.length > 0;
 }
 
-module.exports = { check, hasDrift, DEV_ONLY };
+module.exports = { check, hasDrift, expectedSurface, DEV_ONLY };

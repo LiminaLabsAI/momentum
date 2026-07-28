@@ -255,6 +255,41 @@ test('the agent can record a decision it took under its own authority', () => {
   });
 });
 
+/**
+ * BUG-035 — a flag-shaped positional is always a mistake, and used to be stored.
+ *
+ * Found by walking into it during Phase 33: `momentum run decide --what "…"
+ * --why "…"` stored the literal string `--what` as the decision summary, printed
+ * a cheerful confirmation, and exited 0. The rationale landed correctly, so the
+ * record looked half-plausible.
+ *
+ * That is silent corruption of the durable record — decisions[] is what the epic
+ * tier reads — and it is worse for `red-green`, whose task string `check-task`
+ * later matches EXACTLY. A poisoned entry makes a strict-TDD gate fail much
+ * later, for reasons that look nothing like the cause.
+ */
+test('positional payloads refuse a flag-shaped value instead of storing it', () => {
+  withTmp((dir) => {
+    run(dir, 'run', 'start', 'phase', 'p', '--unit', 'G1');
+
+    for (const argv of [
+      ['decide', '--what', 'a summary'],
+      ['red-green', '--test', 'tests/x.test.js'],
+      ['check-task', '--task', 'tests/x.test.js'],
+      ['park', '--question', 'S3 or GCS?', '--unit', 'G2'],
+      ['advance', '--unit', 'G2'],
+    ]) {
+      const r = run(dir, 'run', ...argv);
+      assert.notEqual(r.status, 0, `\`run ${argv.join(' ')}\` must fail, not silently store a flag`);
+      assert.match(r.stderr, /is a flag, not a value/,
+        `\`run ${argv[0]}\` must name the actual problem`);
+    }
+
+    assert.deepEqual(manifestLib.load(dir).decisions, [],
+      'a refused command must leave the durable record untouched');
+  });
+});
+
 test('parking says out loud that it freezes only one unit', () => {
   withTmp((dir) => {
     run(dir, 'run', 'start', 'phase', 'p', '--unit', 'G1');

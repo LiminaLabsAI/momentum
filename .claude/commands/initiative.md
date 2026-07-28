@@ -8,14 +8,70 @@ frontmatter block (id, slug, status, started, owner, repos).
 This command must be run from inside an ecosystem root or any of its
 member repos (the ecosystem root is discovered by walking up).
 
+## The lifecycle (Phase 31a, ADR-0016)
+
+An initiative runs the same shape as a phase, one tier up. Prefer the lifecycle
+commands over the raw subcommands below:
+
+```
+/brainstorm-initiative                            # objective, members, edges, criteria
+  → momentum ecosystem initiative create <slug>   # writes initiatives/NNNN-<slug>.md
+  → momentum ecosystem initiative start <slug>    # contributions + edges + active
+    → each member runs its OWN /start-phase or /hotfix
+      → /complete-initiative                      # cross-repo Rule 12 gate, then close
+```
+
 ## Subcommands
 
 ```
 /initiative create <slug>     Create a new initiative + activate it
+/initiative start <slug>      Declare per-member contributions + dependency edges
+/initiative complete <slug>   Evidence gate across members, then close
 /initiative status [<slug>]   Print the named (or active) initiative card
 /initiative close <slug>      Populate the Close section + deactivate
 /initiative list              List all initiatives in this ecosystem
 ```
+
+`create`, `start`, and `complete` are wired as real CLI subcommands
+(`momentum ecosystem initiative …`). `status` / `close` / `list` remain
+slash-only.
+
+## Steps for `start`
+
+```bash
+momentum ecosystem initiative start <slug> \
+  --contribute <member>:<kind>:<ref> \
+  --edge <from>:<to>:<kind>
+```
+
+- `kind` is a momentum work type (Rule 14): `phase` or `adhoc`.
+- `ref` is the directory name of the member's own record —
+  `phase-12-attachments`, `fix-BUG-031-upload`.
+- `--edge` kinds: `api-contract`, `library`, `deploy`, `build-time`, `other`.
+
+`start` writes the `Per-repo contributions` table, registers the edges in
+`ecosystem.json`, sets the initiative active, and prints the next command for
+each member. It **never writes inside a member repo** — each member owns its
+own `specs/`, and its own `/start-phase` or `/hotfix` scaffolds the record.
+
+Re-running is idempotent. Repointing an existing contribution is refused rather
+than silently overwritten.
+
+## Linking a decision to an initiative
+
+To have a member's ADR appear under `## Linked decisions`, add one line to that
+ADR's frontmatter in the member repo:
+
+```yaml
+---
+type: ADR
+initiative: <slug>
+---
+```
+
+`initiative complete` scans each contributing member's `specs/decisions/` for
+that stamp. It is opt-in and written in the member repo by whoever authors the
+ADR — momentum never reaches across the ownership boundary to add it.
 
 ## Steps for `create`
 

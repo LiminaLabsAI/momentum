@@ -327,9 +327,34 @@ function requireActiveRun() {
   return { root, m };
 }
 
+/**
+ * Read a required positional, REFUSING anything flag-shaped (Phase 33, BUG-035).
+ *
+ * These commands take their payload positionally (`run decide "<summary>"`), so
+ * a caller reaching for a plausible-but-wrong flag — `run decide --what "..."` —
+ * had `--what` stored verbatim as the decision summary and got a cheerful
+ * confirmation back. Silent corruption of the durable record: the decision log
+ * is what the epic tier reads, and `check-task` matches the red→green task by
+ * exact string, so a poisoned entry fails to match later for reasons that look
+ * nothing like the cause.
+ *
+ * A positional that begins with `--` is always a mistake. Refuse it and say what
+ * the shape actually is.
+ */
+function positional(args, usage) {
+  const v = args[0];
+  if (!v) { console.error(`Error: ${usage}`); return null; }
+  if (/^--/.test(v)) {
+    console.error(`Error: '${v}' is a flag, not a value — this argument is positional.`);
+    console.error(`Usage: ${usage}`);
+    return null;
+  }
+  return v;
+}
+
 function cmdAdvance(args) {
-  const unit = args[0];
-  if (!unit) { console.error('Error: momentum run advance <unit>'); return 1; }
+  const unit = positional(args, 'momentum run advance <unit>');
+  if (!unit) return 1;
   const active = requireActiveRun();
   if (!active) return 1;
 
@@ -339,8 +364,8 @@ function cmdAdvance(args) {
 }
 
 function cmdDecide(args) {
-  const summary = args[0];
-  if (!summary) { console.error('Error: momentum run decide "<summary>" [--unit U] [--why R]'); return 1; }
+  const summary = positional(args, 'momentum run decide "<summary>" [--unit U] [--why R]');
+  if (!summary) return 1;
   const active = requireActiveRun();
   if (!active) return 1;
 
@@ -357,12 +382,11 @@ function cmdDecide(args) {
 }
 
 function cmdPark(args) {
-  const question = args[0];
+  const USAGE = 'momentum run park "<question>" --unit <unit> [--reason operator-authority|ambiguous]';
+  const question = positional(args, USAGE);
+  if (!question) return 1;
   const unit = flag(args, '--unit');
-  if (!question || !unit) {
-    console.error('Error: momentum run park "<question>" --unit <unit> [--reason operator-authority|ambiguous]');
-    return 1;
-  }
+  if (!unit) { console.error(`Error: ${USAGE}`); return 1; }
   const active = requireActiveRun();
   if (!active) return 1;
 
@@ -593,8 +617,8 @@ function cmdDerive(args) {
 function cmdRedGreen(args) {
   const active = requireActiveRun();
   if (!active) return 1;
-  const task = args[0];
-  if (!task) { console.error('Error: momentum run red-green "<task>" [--unit U]'); return 1; }
+  const task = positional(args, 'momentum run red-green "<task>" [--unit U]');
+  if (!task) return 1;
 
   const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
   manifestLib.recordRedGreen(active.root, unit, task, nowIso());
@@ -605,8 +629,8 @@ function cmdRedGreen(args) {
 function cmdCheckTask(args) {
   const active = requireActiveRun();
   if (!active) return 1;
-  const task = args[0];
-  if (!task) { console.error('Error: momentum run check-task "<task>" [--unit U]'); return 1; }
+  const task = positional(args, 'momentum run check-task "<task>" [--unit U]');
+  if (!task) return 1;
 
   const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
   const strict = (active.m.policy && active.m.policy.tdd) === 'strict';
