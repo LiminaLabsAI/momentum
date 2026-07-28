@@ -33,6 +33,7 @@ Branches are evaluated **in this order**, and the order is load-bearing:
 | # | Condition | Action | Why it ranks here |
 |---|---|---|---|
 | 1 | No manifest, or `status !== 'running'` | `allow-stop` | The common case must be free. A repo with no run behaves exactly as it did before this phase existed. |
+| 1b | **`status === 'complete'`** | `allow-stop` (reason `complete`) | A finished run is a **success**, and must be distinguishable from an abandoned one. See below — this branch did not exist until BUG-036, and its absence meant the governor could not report success at all. |
 | 2 | **Kill switch present** | `allow-stop` | Checked before every other branch because the agent is the thing that may be misbehaving. A kill switch that a runaway can reason past is not a kill switch. |
 | 3 | Budget exhausted (turns / tokens / wall-clock) | `allow-stop` | Bounded blast radius on a loop nobody is watching. |
 | 4 | Strike limit hit on the current unit | `allow-stop` | Repeated failure on one task is not progress; retrying forever burns budget to produce noise. |
@@ -40,8 +41,32 @@ Branches are evaluated **in this order**, and the order is load-bearing:
 | 6 | Parked work exceeds threshold | `allow-stop` | Limping to a 60%-built feature is worse than stopping cleanly and reporting. |
 | 7 | Otherwise | **`continue`** | The whole feature. |
 
-Branches 2–6 all carry a `reason` that renders to the operator. `continue`
+Branches 1b–6 all carry a `reason` that renders to the operator. `continue`
 carries `next` — the cursor for the unit to start.
+
+### How a run ends well (BUG-036, Phase 33)
+
+`status: complete` existed in the schema from 32a, and `manifest.setStatus`
+always accepted it — but **no command could reach it**. `run stop` writes
+`stopped`; nothing wrote `complete`. A declared state with no production path.
+
+The cost was not cosmetic. A finished run stayed `running`, so branch 7 answered
+`continue` every turn with no work left, and the run terminated only by
+exhausting its budget as `budget-turns`. **Every success was indistinguishable
+from a runaway**, and the single question an operator actually has — did it
+finish, or did it give up? — was the one the governor could not answer.
+
+`momentum run complete [--summary S]` reaches the state. Two ranking decisions
+carry the design:
+
+- **`complete` outranks the budget rail.** A run that finishes on its last
+  allotted turn is a success, not an overrun.
+- **The kill switch still outranks `complete`.** A runaway must not be able to
+  mark itself finished and take the last word.
+
+The invariant is unchanged — *the next unit starts* — because when the plan is
+finished there **is** no next unit. A governor that cannot recognise that is not
+honouring the invariant; it is ignoring its terminating condition.
 
 ## Backends
 

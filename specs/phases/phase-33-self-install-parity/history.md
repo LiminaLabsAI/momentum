@@ -106,3 +106,17 @@ have kept running the previous build of the governor, which is precisely how
 `selfcheck --fix`.
 
 ---
+### [NOTE] 2026-07-28 — Doc sync at completion (Rule 9)
+Topics: self-install-parity, run-lifecycle, install-surface
+Affects-phases: phase-33-self-install-parity
+Affects-specs: core/run/CONTRACT.md, README.md, specs/decisions/impact-map.md
+Detail: `core/run/CONTRACT.md` gained branch 1b and a "How a run ends well"
+section — BUG-036 changed the governor's documented decision order, and the
+contract is the file that states it. README gained a `momentum selfcheck`
+section under "Keeping projects up to date", since it is a new user-facing
+command and an upgrade going stale is exactly the problem it solves. impact-map
+gained `run-lifecycle`, `self-install-parity`, and `install-surface` topics so
+future `/sync-docs` runs can find these files. No `Affects-specs` path pointed
+outside this repo, so there is no cross-repo doc impact to hand off.
+
+---
