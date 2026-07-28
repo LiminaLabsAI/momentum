@@ -102,6 +102,49 @@ for AGENT in claude-code antigravity; do
     fail "$AGENT: governor did NOT fire — BUG-033 shape"
   fi
 
+  # THE LIFECYCLE, on the published artifact.
+  #
+  # "The governor fires" is necessary and not sufficient. BUG-035 and BUG-036
+  # both lived in the run lifecycle, both passed every existing check, and both
+  # SHIPPED — one silently poisoning the durable decision record, the other
+  # leaving a finished run with no way to end, so it burned its whole budget and
+  # reported `budget-turns`. A release smoke that only proves the hook fires
+  # would have waved both through, because it never asked the run to do anything.
+  #
+  # So: drive a real run through decide → red-green → advance → complete against
+  # the installed package, and assert the manifest actually says what happened.
+  $MO run decide "smoke decision" --why "release verification" >/dev/null 2>&1
+  $MO run red-green "tests/smoke.test.js" >/dev/null 2>&1
+  $MO run advance G1 >/dev/null 2>&1
+
+  # BUG-035: a flag-shaped positional must be REFUSED, not stored.
+  if $MO run decide --what "poisoned" >/dev/null 2>&1; then
+    fail "$AGENT: 'run decide --what' was accepted — BUG-035 shape"
+  else
+    pass "$AGENT: flag-shaped positional refused, record intact (BUG-035)"
+  fi
+
+  if $MO run status --json 2>/dev/null | grep -q '"summary": *"smoke decision"'; then
+    pass "$AGENT: decisions persist to the manifest"
+  else
+    fail "$AGENT: decision was not durably recorded"
+  fi
+
+  # BUG-036: a finished run must be able to END, and end as a SUCCESS.
+  $MO run complete --summary "smoke" >/dev/null 2>&1
+  if $MO run status --json 2>/dev/null | grep -q '"status": *"complete"'; then
+    pass "$AGENT: run reaches 'complete' (BUG-036)"
+  else
+    fail "$AGENT: run cannot be completed — BUG-036 shape"
+  fi
+
+  # …and the governor must then RELEASE the session instead of looping it.
+  ( cd "$HOOK_CWD" && env -u MOMENTUM_PROJECT_DIR -u CLAUDE_PROJECT_DIR \
+      bash "$WORK/t-$AGENT/scripts/run-governor.sh" </dev/null >/dev/null 2>&1 )
+  [ $? -eq 0 ] \
+    && pass "$AGENT: completed run ⇒ governor allows the stop" \
+    || fail "$AGENT: governor still blocks a COMPLETED run — the BUG-036 loop"
+
   # A repo with no run must be untouched.
   $MO run stop >/dev/null 2>&1; rm -f .momentum/run.json
   ( cd "$HOOK_CWD" && env -u MOMENTUM_PROJECT_DIR -u CLAUDE_PROJECT_DIR \

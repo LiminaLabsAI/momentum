@@ -120,3 +120,18 @@ future `/sync-docs` runs can find these files. No `Affects-specs` path pointed
 outside this repo, so there is no cross-repo doc impact to hand off.
 
 ---
+### [DISCOVERY] 2026-07-28 — The release smoke never exercised the run lifecycle
+Topics: verification, release-gate, run-lifecycle
+Affects-phases: phase-33-self-install-parity
+Affects-specs: specs/project-rules.md#release-checklist
+Detail: `verify-published.sh` asserted that the governor FIRES on the published
+artifact — necessary, and not sufficient. BUG-035 and BUG-036 both lived in the
+run lifecycle, both passed every existing check, and both shipped, because the
+smoke never asked the run to actually do anything. Extended to drive
+decide → red-green → advance → complete against the installed package and assert
+the manifest agrees. Proven red the honest way: run against the published 0.43.2
+it fails exactly the three new assertions on both interceptor adapters while
+passing every pre-existing one — a guard tested against the real artifact that
+contained the bug, not a synthetic reproduction.
+
+---
