@@ -27,7 +27,20 @@ is the human-facing contract for *how* momentum releases; every release MUST do
      --latest --verify-tag
    ```
 
-2. **`npm publish --access public`** — momentum is an npm package. Skip it and the
+2. **`scripts/verify-published.sh`** — smoke the PUBLISHED artifact. Install it
+   into a fresh repo and confirm the governor actually fires. **Not optional:**
+   v0.43.0 shipped the governor inert in every install (BUG-033) with 1420 tests
+   green, because every guard runs against the working tree and none ran against
+   what users download. Run it BEFORE announcing and AFTER publishing:
+
+   ```bash
+   scripts/verify-published.sh --local   # pre-publish, against a local pack
+   scripts/verify-published.sh           # post-publish, against the registry
+   ```
+
+   A non-zero exit means **do not announce the release**.
+
+3. **`npm publish --access public`** — momentum is an npm package. Skip it and the
    registry stays on the previous version.
 
 3. **Verify both surfaces are live** — `gh release list --limit 3` shows the new

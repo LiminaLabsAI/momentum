@@ -61,6 +61,17 @@ const ENTRY_POINTS = [
   // the grant path would work in this checkout and silently do nothing in every
   // installed project — the BUG-030 shape, one layer down.
   'run/lib/grant.js',
+  // Phase 32d — the GOVERNOR itself. `core/scripts/run-governor.sh` invokes
+  // this file by PATH, so the closure walker (which follows static requires)
+  // cannot discover it — the same blind spot that nearly shipped grant.js
+  // non-functional in 32b, in this same list.
+  //
+  // Without this entry the interceptor backend is inert in every installed
+  // project: the hook script ships, finds no hook.js, and exits 0. The governor
+  // — the headline feature of the whole epic — would silently never fire
+  // anywhere but the momentum repo itself. Caught by installing the published
+  // tarball and running the hook, not by any test.
+  'run/lib/hook.js',
 ];
 
 /**

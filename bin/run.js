@@ -125,11 +125,24 @@ function cmdStart(args) {
   if (!firstUnit && tier === 'initiative') {
     try {
       const eco = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'index'));
-      // NOT `root` — that name already holds the repo root in this scope, and
-      // shadowing it here would be a live grenade for the next editor.
+      // `loadInitiative` lives in initiative.js, NOT index.js. The first version
+      // guarded with `eco.loadInitiative &&`, which made a WRONG MODULE look like
+      // a missing optional feature: the whole block no-opped, nothing printed, and
+      // the cursor silently pointed at the initiative slug instead of a member.
+      // Found by running against the real cerebrio fleet (VAL-006) — the unit test
+      // only covered degradation OUTSIDE an ecosystem, where it is loud.
+      const initiativeLib = require(path.join(MOMENTUM_ROOT, 'core', 'ecosystem', 'lib', 'initiative'));
+      // NOT `root` — that name already holds the repo root in this scope.
       const ecoRoot = eco.findRoot(repoRoot());
-      const initiative = ecoRoot && eco.loadInitiative && eco.loadInitiative(ecoRoot, target);
+      // Initiative FILES are `NNNN-<slug>.md`; the loader takes the bare slug.
+      // Passing the filename stem finds nothing and returns null.
+      const slug = String(target).replace(/^\d{4}-/, '');
+      const initiative = ecoRoot && initiativeLib.loadInitiative(ecoRoot, slug);
       const members = (initiative && initiative.frontmatter && initiative.frontmatter.repos) || [];
+      if (!members.length) {
+        // Say so. A silent fall-through here is what VAL-006 caught.
+        console.log(`  (initiative "${slug}" resolved no members — cursor falls back to the target)`);
+      }
       if (members.length) {
         const { computeWaveLayers } = require(path.join(MOMENTUM_ROOT, 'core', 'waves', 'lib', 'waves'));
         const manifest = JSON.parse(fs.readFileSync(path.join(ecoRoot, 'ecosystem.json'), 'utf8'));

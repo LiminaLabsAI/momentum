@@ -38,7 +38,18 @@ function tryScopeGrant(root, branch) {
       path.join(root, '.momentum', 'runtime', 'run', 'lib', 'grant.js'),
       path.join(__dirname, '..', 'run', 'lib', 'grant.js'),
     ].find((p) => fs.existsSync(p));
-    if (!runtime) return false;
+    if (!runtime) {
+      // AUDIBLE. A stale or missing vendored runtime made the grant path
+      // vanish with no message — indistinguishable from "no grant was
+      // minted". Found while landing v0.43.1: the grant was valid, the hook
+      // simply could not find grant.js and returned false from its catch.
+      // Silent unavailability is the same failure family as BUG-031/BUG-033.
+      process.stderr.write(
+        '  momentum: scope-grant support not found in this repo — the vendored\n'
+        + '            runtime is missing or stale. Run `momentum upgrade .` to refresh.\n'
+      );
+      return false;
+    }
 
     const grantLib = require(runtime);
     const manifestLib = require(path.join(path.dirname(runtime), 'manifest.js'));
