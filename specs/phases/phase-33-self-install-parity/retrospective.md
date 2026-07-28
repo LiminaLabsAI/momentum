@@ -155,6 +155,10 @@ and therefore the one that drifted furthest.
 | Conditional removals honoured | same | `run-governor.sh` present for claude-code, absent for opencode |
 | `--fix` is opt-in | same | default path contains no write call |
 | BUG-035 refusal | `tests/run-cli.test.js` | all 5 subcommands exit non-zero, manifest untouched |
+| Refactored installer — init | `momentum init` into fresh repos, both backends | claude-code: all 3 present; opencode: `run-governor.sh` correctly ABSENT |
+| Refactored installer — special cases byte-exact | `cmp` vs source | `session-append.sh` + `orient.js` match; executable bit set |
+| Refactored installer — upgrade | `momentum upgrade` on both | opencode still ABSENT — upgrade does not restore it (the 32c regression) |
+| Refactor is covered by an automated test, not just the manual check | `tests/adapter-opencode-fingerprint.test.js` + `tests/fixtures/v0.28.0-opencode-fingerprint.json` | fixture pins `session-append.sh` and `orient.js` PRESENT and `run-governor.sh` ABSENT, so a regression fails in all three directions (missing / drifted / unexpected-new) |
 | 7 real drifts repaired | `selfcheck --fix` then re-run | `Repaired 7 file(s)` → `no drift` |
 
 ## Acceptance

@@ -58,3 +58,19 @@ made that gate refuse later for an unrelated-looking reason. `momentum selfcheck
 added to the release checklist as item 3, beside `verify-published.sh`.
 
 ---
+### [NOTE] 2026-07-28 — The installer refactor was verified through the installer, not only the library
+Topics: self-install-parity, install-surface, verification
+Affects-phases: phase-33-self-install-parity
+Affects-specs: none
+Detail: `selfcheck` reporting green did NOT prove the refactored installer
+correct — momentum's own install had been repaired by `--fix` copying from
+source, not by running `init`/`upgrade`. Closed the gap directly: real `init`
+into fresh repos for both backend classes (claude-code keeps `run-governor.sh`,
+opencode correctly does not; special-case copies byte-exact and executable), then
+real `upgrade` on both, confirming upgrade does not restore the script it just
+removed — the exact 32c regression. Also confirmed this is covered by an existing
+automated test rather than only by that manual pass: the opencode fingerprint
+fixture pins `session-append.sh`/`orient.js` present and `run-governor.sh` absent,
+so a regression fails in all three directions.
+
+---
