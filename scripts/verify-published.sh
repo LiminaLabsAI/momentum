@@ -48,8 +48,12 @@ echo "▸ Verifying $PKG_NAME@$VERSION as an installed project"
 cd "$WORK" || exit 1
 if [ "${1:-}" = "--local" ]; then
   echo "  (packing the working tree)"
-  TARBALL="$(cd "$REPO_ROOT" && npm pack --silent 2>/dev/null | tail -1)"
-  TARBALL="$REPO_ROOT/$TARBALL"
+  # Pack into the SCRATCH dir, never the repo. The earlier form left a ~500KB
+  # tarball sitting in the working tree, where it was easy to `git add -A` into
+  # a commit — which is exactly what happened before v0.44.1. A verification
+  # script must not litter the thing it is verifying.
+  TARBALL="$(cd "$REPO_ROOT" && npm pack --silent --pack-destination "$WORK" 2>/dev/null | tail -1)"
+  TARBALL="$WORK/$(basename "$TARBALL")"
 else
   npm pack "$PKG_NAME@$VERSION" --silent >/dev/null 2>&1 \
     || { echo "  ✗ could not fetch $PKG_NAME@$VERSION from the registry"; exit 1; }
