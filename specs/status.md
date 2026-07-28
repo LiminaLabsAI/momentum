@@ -5,7 +5,7 @@ type: Status
 # Project Status
 
 > **Last Updated**: 2026-07-28
-> **Current Phase**: _none active_ — **Phase 33 Self-Install Parity shipped v0.44.0/v0.44.1.** Next: **Phase 34 Intelligence** or **35 Platform** (both Not Started).
+> **Current Phase**: _none active_ — **Phase 34 Intelligence shipped v0.45.0.** Next: **Phase 35 Platform** (Not Started).
 >
 > **Post-release obligations (VAL-001/003/005)** — the only open items in the whole backlog, and all three are **operator-blocked**, not engineering-blocked: live `codex` CLI dogfood (VAL-001) and the **re-invoker driver loop** against live `codex exec` (VAL-005) both need a `codex` runtime that is not installed on this machine; the **Antigravity IDE + Agent Manager** observation pass (VAL-003) needs the operator in the IDE. VAL-004 and VAL-006 closed. Zero open bugs, zero open tech debt as of 2026-07-28.
 > **Latest Release**: v0.44.1 — **orient fleet-view fix + pack hygiene.** `orient.js` mirrored `resolveMemberLocation` instead of calling it; the copy called `path.resolve()` on `member.path` unguarded, so a non-string path threw a TypeError and — since orient sweeps every member — **one malformed entry took down the entire fleet view** (TD-012, last of its three mirrors). BUG-037: `verify-published.sh --local` packed into the repo and left a ~500KB tarball that got committed (never reached the published package). _(v0.44.0 — **Phase 33 Self-Install Parity**: `momentum selfcheck` — momentum own installed surface must match what it ships, and drift fails a test. Found **seven** drifts in momentum own install on first run, including `cross-repo-gate.sh` at its **pre-v0.43.1 build** — momentum running the buggy version of a fix it shipped that same morning. Plus **BUG-036**, the governor **could not report success**: `status: complete` was in the schema with no command able to reach it, so a finished run answered `continue` forever and died on its turn budget — every completed run was indistinguishable from a runaway. And **BUG-035**, `run decide --what "…"` stored the literal `--what` as the decision summary and exited 0. Suite 1420 → 1436.)_ _(v0.43.2 — **BUG-034: the governor was dead on Antigravity.** `run-governor.sh` resolved the project root from `$PWD`, but Antigravity exports no `*_PROJECT_DIR` and runs hooks with cwd `.agents/` — so it looked for `.agents/.momentum/run.json`, found nothing, and exited 0 silently. Claude Code worked only because it exports `CLAUDE_PROJECT_DIR`. **Fourth instance of this class in one arc** (BUG-002, BUG-030, BUG-031, BUG-033) and the second in the governor itself. Root is now resolved from the script's **own location**, needing no cooperation from the host. `scripts/verify-published.sh` now smokes **both** interceptor adapters from each one's real hook cwd with the env unset — v0.43.1's smoke covered claude-code only, which is how a one-adapter pass read as parity. _(v0.43.1 — **Epic 0001: Autonomous Execution** (phases 32a–32d; ADR-0019, ADR-0020). Momentum planned at four tiers and executed at one, and that one was governed by prose with no enforcer. This closes the gap: the **governor** mechanizes the Autonomous Execution Contract (interceptor on Claude Code + Antigravity, **re-invoker** with an external driver loop on Codex + opencode — **all four agents autonomous**); the **epic** tier gives "one feature, several phases" a record, with specs **derived just-in-time** so the operator is never re-interviewed; the **scope grant** (ADR-0020) lets one approval fund N landings, scoped, expiring, revocable and audited. Decision authority is classified **mechanically** by reusing Rule 14's escalation triggers (ADR-0019), ambiguity parks rather than guesses, and an **amendments channel** lets the operator change their mind mid-run without stopping everything. Closes **BUG-031** (swarm's wave runner had no production caller — removed) and **BUG-032** (the cross-repo nudge said "before going further" and an agent obeyed the wording, halting ecosystem sessions). Suite **1161 → 1415**. Dogfooded: 32b/c/d were each built by the 32a runner, and 32c/32d had their specs **generated** by `momentum run derive`. **v0.43.1 patches two P0-class escapes found by dogfooding the RELEASED artifact rather than the working tree: BUG-033** — v0.43.0 shipped the governor **inert in every installed project** (`run-governor.sh` invokes `hook.js` by path; the closure walker follows only static requires, so the script shipped and the file it invokes did not — fail-open, so nothing errored and nobody would have learned why); and the **initiative tier resolved silently to the wrong cursor** against a real ecosystem (wrong module guarded with `&&`, prefixed slug, silent fall-through). Both were invisible to 1420 green tests because **every guard ran against the working tree and none against what users download**. `scripts/verify-published.sh` now closes that class and is a required release step. _(v0.42.0 Phase 31c; v0.41.0 Phase 31b.)_
@@ -70,6 +70,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 | 32c | Adapter Parity (Epic 0001) | Complete | v0.43.0 (2026-07-28) |
 | 32d | Cross-Repo (Epic 0001) | Complete | v0.43.0 (2026-07-28) |
 | 33 | Self-Install Parity | Complete | v0.44.0 / v0.44.1 (2026-07-28) |
+| 34 | Intelligence | Complete | v0.45.0 (2026-07-28) |
 
 > ¹ Team-mode family (30a/b/c) shipped its **core mechanisms + CLI + tests**
 > (suite 1002/1002, whole-plane family e2e); integration wiring — Rule 15 reword,
@@ -118,7 +119,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 34 Intelligence | `phase-34-intelligence` | Complete — awaiting merge approval | G0–G2 done; suite 1456/1456 |
+| _(none active)_ | | | |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
@@ -128,7 +129,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Name | Status | Key Deliverables |
 |-------|------|--------|-----------------|
-| 34 | Intelligence | Not Started (target post-Epic-0001) | Self-learning hooks; retrospective-driven rule evolution; self-healing; context-window-aware task sizing. _(Renumbered from 32 on 2026-07-27 — displaced by Epic 0001. Previously renumbered from 31 on 2026-07-26.)_ |
+
 | 35 | Platform | Not Started (target v1.0) | MCP server; `/specify`; `/decide` (ADR creation); skill authoring; bidirectional spec sync; ecosystem Tier 2 (dependency-aware tasks moved to Lanes arc — FEAT-028). _(Renumbered from 32 on 2026-07-26 — D9.)_ |
 
 ## Unscheduled Future Work
