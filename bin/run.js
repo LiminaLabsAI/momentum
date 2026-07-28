@@ -33,6 +33,9 @@ Usage:
   momentum run status [--json]         Read-only; safe against a live run
   momentum run continue                Clear a stop and resume from the manifest
   momentum run stop [--reason "..."]   Halt the run
+  momentum run complete [--summary S]  End a run that FINISHED. Without this a
+                                       done run keeps saying "continue" until it
+                                       burns its budget (BUG-036).
 
 During a run — how the agent records what it did:
   momentum run advance <unit>          Move the cursor to the next unit
@@ -308,6 +311,48 @@ function cmdStop(args) {
   manifestLib.setStatus(root, 'stopped', nowIso(), flag(args, '--reason', 'stopped by operator'));
   console.log(`▸ Run ${m.run_id} stopped at ${m.cursor && m.cursor.unit}.`);
   console.log('  Resume with: momentum run continue');
+  return 0;
+}
+
+/**
+ * BUG-036 — how a run ENDS WELL.
+ *
+ * `status: complete` was in the schema from 32a and `manifest.setStatus` has
+ * always accepted it, but no command could reach it: `stop` writes `stopped`,
+ * and nothing wrote `complete`. A declared state with no production path —
+ * BUG-031's shape a third time in this epic.
+ *
+ * The consequence was not cosmetic. A finished run stayed `running`, so the
+ * governor's branch 7 answered "continue" every turn with no work left, and the
+ * run terminated only by exhausting its budget as `budget-turns`. **The governor
+ * could not report success** — every completed run looked like a runaway, and
+ * the one signal an operator most needs (did it finish, or did it give up?) was
+ * the one it could not give.
+ *
+ * Found by dogfooding: Phase 33 finished, and the governor kept re-invoking the
+ * agent to do work that no longer existed.
+ */
+function cmdComplete(args) {
+  const root = repoRoot();
+  const m = manifestLib.loadSafe(root);
+  if (!m) { console.error('Error: no active run.'); return 1; }
+
+  const summary = flag(args, '--summary', '');
+  manifestLib.setStatus(root, 'complete', nowIso(), summary || 'plan finished');
+
+  console.log(`▸ Run ${m.run_id} complete — finished at ${m.cursor && m.cursor.unit}.`);
+  if (summary) console.log(`  ${summary}`);
+
+  const decisions = (m.decisions || []).length;
+  const parked = (m.parked || []).filter((p) => !p.resolved).length;
+  const turns = (m.spent && m.spent.turns) || 0;
+  const budget = (m.budget && m.budget.turns) || null;
+  console.log(`  ${turns}${budget ? `/${budget}` : ''} turns · ${decisions} decision(s) recorded`
+    + (parked ? ` · ${parked} still parked` : ''));
+  if (parked) {
+    console.log('  NOTE: parked questions remain unanswered — they did not block the plan,');
+    console.log('        but they are still yours to decide: momentum run status');
+  }
   return 0;
 }
 
@@ -656,6 +701,7 @@ function runRun(args) {
     case 'status': return cmdStatus(rest);
     case 'continue': return cmdContinue(rest);
     case 'stop': return cmdStop(rest);
+    case 'complete': return cmdComplete(rest);
     case 'advance': return cmdAdvance(rest);
     case 'decide': return cmdDecide(rest);
     case 'park': return cmdPark(rest);

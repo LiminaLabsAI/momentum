@@ -74,3 +74,35 @@ fixture pins `session-append.sh`/`orient.js` present and `run-governor.sh` absen
 so a regression fails in all three directions.
 
 ---
+### [DISCOVERY] 2026-07-28 — BUG-036: the governor could not report success
+Topics: governor, run-lifecycle, dogfooding
+Affects-phases: phase-33-self-install-parity
+Affects-specs: core/run/CONTRACT.md
+Detail: Absorbed as a forward-only amendment to this run. Phase 33 finished and
+the Stop hook kept re-invoking the agent to do work that no longer existed:
+`status: complete` shipped in the 32a schema and `setStatus` always accepted it,
+but no command could reach it. A declared state with no production path —
+BUG-031's shape a THIRD time in this epic, and one the orphan guard structurally
+cannot see, because it walks exports rather than schema enums. The consequence
+was that a finished run stayed `running`, branch 7 answered `continue` forever,
+and the run ended only by exhausting its budget as `budget-turns`: every success
+was indistinguishable from a runaway. Fixed with `momentum run complete` and a
+dedicated COMPLETE branch ranked above the budget rail but still below the kill
+switch. The re-invoker driver was blind identically — its success path asserted
+the string "run is not in a running state".
+
+---
+
+### [NOTE] 2026-07-28 — The parity guard caught its own author, same session
+Topics: self-install-parity, vendored-runtime
+Affects-phases: phase-33-self-install-parity
+Affects-specs: none
+Detail: Editing `core/run/lib/governor.js` for BUG-036 silently staled the
+vendored copy at `.momentum/runtime/run/lib/governor.js`, and the new
+`tests/self-install-parity.test.js` failed the suite on it within minutes. Before
+this phase nothing in momentum's own repo would have noticed — the hooks would
+have kept running the previous build of the governor, which is precisely how
+`cross-repo-gate.sh` came to sit at its pre-v0.43.1 version. Repaired with
+`selfcheck --fix`.
+
+---

@@ -25,6 +25,13 @@ const ACTION = Object.freeze({
 const STOP_REASON = Object.freeze({
   NO_RUN: 'no-run',
   NOT_RUNNING: 'not-running',
+  // BUG-036 — a finished run is a SUCCESS, and must not be reported as one of
+  // the failure rails. Before this existed the schema declared `status:
+  // complete` and nothing could reach it, so a finished run stayed `running`,
+  // the governor answered "continue" every turn with no work left, and the run
+  // ended by exhausting its budget as `budget-turns`. The governor could not
+  // report success: every completed run looked like a runaway.
+  COMPLETE: 'complete',
   KILL_SWITCH: 'kill-switch',
   BUDGET_TURNS: 'budget-turns',
   BUDGET_TOKENS: 'budget-tokens',
@@ -66,6 +73,9 @@ function decide(state = {}) {
   // rather than merely promised in the plan.
   if (!manifest || typeof manifest !== 'object') {
     return stop(STOP_REASON.NO_RUN);
+  }
+  if (manifest.status === 'complete') {
+    return stop(STOP_REASON.COMPLETE, 'the plan is finished');
   }
   if (manifest.status !== 'running') {
     return stop(STOP_REASON.NOT_RUNNING, `status is ${manifest.status}`);
@@ -146,6 +156,7 @@ function explain(decision) {
   const base = {
     [STOP_REASON.NO_RUN]: 'no active run',
     [STOP_REASON.NOT_RUNNING]: 'run is not in a running state',
+    [STOP_REASON.COMPLETE]: 'run complete',
     [STOP_REASON.KILL_SWITCH]: 'kill switch engaged',
     [STOP_REASON.BUDGET_TURNS]: 'turn budget exhausted',
     [STOP_REASON.BUDGET_TOKENS]: 'token budget exhausted',
