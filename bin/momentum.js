@@ -2246,6 +2246,14 @@ async function main() {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
     }
+  } else if (args[0] === 'learnings') {
+    try {
+      const { runLearnings } = require('./learnings');
+      exitCode = runLearnings(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
   } else if (args[0] === 'selfcheck') {
     try {
       const { runSelfcheck } = require('./selfcheck');

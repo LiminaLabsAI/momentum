@@ -1,0 +1,43 @@
+{
+  "version": "recurring-patterns-v1",
+  "frozen": "2026-07-28",
+  "scalar": "recall on required[], with zero hits on must_not_fire[]",
+  "tasks": {
+    "recurrence": {
+      "question": "Which backlog items belong to one recurring defect class?",
+      "method": "text: entries that self-reference a prior instance of the same shape",
+      "class": "ships-broken",
+      "required": [
+        "BUG-002",
+        "BUG-030",
+        "BUG-031",
+        "BUG-033",
+        "BUG-034",
+        "phase-33"
+      ],
+      "max_spurious_classes": 2
+    },
+    "stale-closure": {
+      "question": "Which backlog rows say 'open' while the code says the work landed?",
+      "method": "cross-artifact: row status vs. closing markers in core/ bin/ tests/ scripts/",
+      "required": [
+        "TD-009",
+        "ENH-063"
+      ],
+      "ambiguous": [
+        "TD-012",
+        "TD-013"
+      ],
+      "must_not_fire": [
+        "BUG-007",
+        "BUG-027",
+        "BUG-028"
+      ]
+    }
+  },
+  "notes": {
+    "TD-012": "Markers exist but read 'TD-012 tracks consolidating this shipped-runtime story' — i.e. they describe it as STILL OPEN. It was genuinely 2/3 done. Neither credited nor penalised.",
+    "TD-013": "Zero markers anywhere. The fix (findRoot made sibling-aware) never cited the id, so no marker-based detector can find it. Scored as ambiguous rather than pretending v1 covers it.",
+    "must_not_fire": "These three are already 'resolved'. They are in the corpus because their descriptions carry pipes — BUG-007 'apply_patch\\|shell', BUG-028 'Edit\\|Write', BUG-027 an UNESCAPED one — and a detector that splits rows on every '|' misreads their status column. That is not hypothetical: it is the exact bug that made the 2026-07-28 manual audit report seven stale entries with two P1s when the truth was four and zero."
+  }
+}

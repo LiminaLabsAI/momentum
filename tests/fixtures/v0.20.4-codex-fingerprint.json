@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-28",
-    "capturedFrom": "main",
+    "capturedFrom": "phase-34-intelligence",
     "adapter": "codex",
-    "note": "TD-012: orient.js member resolution now delegates to lib.resolveMemberLocation instead of mirroring it — the last of TD-012's three self-contained duplicates. The old inline resolver threw a TypeError on a non-string member.path, taking the whole fleet sweep down with one malformed member."
+    "note": "Phase 34 G2: Rule 4 now also runs 'momentum learnings' and reports recurring classes + stale closures, framed explicitly as advisory inferences to verify rather than act on. Instruction templates regenerated from rules-body.md; one file per adapter."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -48,7 +48,7 @@
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
     ".githooks/run-check.js": "91f079cdc8ca78b8413027c7688d55be1eacb45683a6b4a7288c88a89b56e1ec",
     ".gitignore": "0f45d028f2909d76989fd32c732cbfabe614cdb8e7951ad02e6794a22a287bf6",
-    "AGENTS.md": "7ca3824d1e25bfca000e612edc4fc70c74e0da65a2ff09ad56544c2ed364850e",
+    "AGENTS.md": "7991bcc403d77d4512f9ab8be3265f3e1442e763e26afb1b25ee767c3a793076",
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",

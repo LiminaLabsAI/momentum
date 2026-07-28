@@ -235,6 +235,18 @@ Before starting work on a new phase:
 - If any exist, recommend addressing them first
 - Present: "N open bugs (X critical), recommend fixing before proceeding"
 
+Also run `momentum learnings` and report what it finds:
+- **Recurring classes** — "class X has recurred N times". A defect class that
+  keeps returning is worth a phase, not another one-off fix.
+- **Stale closures** — rows still marked `open` whose work the code says landed.
+  This check exists because Rule 4 reads the backlog to decide what to fix
+  first, so a stale entry sends the phase chasing something already done.
+
+Both are **advisory inferences, not measurements**. Report them; never flip a
+status or accept a proposal on their say-so. Verify first — a hand audit of this
+project's own backlog once reported seven stale entries with two P0/P1s when the
+truth was four and none.
+
 Starting a phase while other lanes are active is normal (Rule 15) — the bug
 check still runs per phase start.
 
