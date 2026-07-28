@@ -1,6 +1,6 @@
 ---
 type: Tasks
-status: in-progress
+status: complete
 ---
 
 # Phase 33 — Self-Install Parity — Tasks
@@ -22,7 +22,7 @@ status: in-progress
 - [x] Verify: `npm test` — **1427/1427** (1420 baseline + 7 new)
 
 ## Group 2 — Wiring + close
-- [ ] Runs in `npm test`
-- [ ] Release checklist entry beside `verify-published.sh`
-- [ ] `retrospective.md` + `## Verification Evidence`
-- [ ] Verify: full suite green
+- [x] Runs in `npm test` — auto-discovered by the `tests/*.test.js` glob
+- [x] Release checklist entry beside `verify-published.sh` — `specs/project-rules.md` item 3 (list renumbered; it had two items numbered 3)
+- [x] `retrospective.md` + `## Verification Evidence` — 14 rows
+- [x] Verify: full suite green — **1427/1427**

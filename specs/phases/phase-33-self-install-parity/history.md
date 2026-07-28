@@ -46,3 +46,15 @@ refusal across all five payload-carrying subcommands; this run's own poisoned
 entries were repaired in place. Filed and resolved as BUG-035.
 
 ---
+### [NOTE] 2026-07-28 — Phase 33 closed under a governed run
+Topics: self-install-parity, dogfooding, governor
+Affects-phases: phase-33-self-install-parity
+Affects-specs: specs/project-rules.md#release-checklist
+Detail: G0→G2 executed end-to-end under run_0bd78b54 (budget 40 turns, used 1;
+release=per-phase, tdd=strict) — the first phase momentum has run under its own
+governor. The strict-TDD gate did its job twice: it required a recorded red→green
+before G1's tasks could be marked, and BUG-035's poisoned task string would have
+made that gate refuse later for an unrelated-looking reason. `momentum selfcheck`
+added to the release checklist as item 3, beside `verify-published.sh`.
+
+---
