@@ -170,6 +170,15 @@ entry carries matching `Topics:`.
 | governor | core/commands/start-phase.md | Autonomous Execution Contract |
 | run-manifest | core/run/schema/run.schema.json |  |
 | run-manifest | core/run/lib/manifest.js |  |
+| run-lifecycle | core/run/CONTRACT.md | How a run ends well |
+| run-lifecycle | core/run/lib/governor.js |  |
+| run-lifecycle | bin/run.js |  |
+| self-install-parity | core/selfcheck/lib/parity.js |  |
+| self-install-parity | specs/project-rules.md | Release checklist |
+| self-install-parity | README.md |  |
+| install-surface | core/install/extras.js |  |
+| install-surface | core/selfcheck/lib/parity.js |  |
+| install-surface | bin/momentum.js |  |
 | autonomy | specs/epics/0001-autonomous-execution.md | Decisions |
 | autonomy | core/run/CONTRACT.md |  |
 | park | core/run/lib/inbox.js |  |

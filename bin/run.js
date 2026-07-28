@@ -33,6 +33,9 @@ Usage:
   momentum run status [--json]         Read-only; safe against a live run
   momentum run continue                Clear a stop and resume from the manifest
   momentum run stop [--reason "..."]   Halt the run
+  momentum run complete [--summary S]  End a run that FINISHED. Without this a
+                                       done run keeps saying "continue" until it
+                                       burns its budget (BUG-036).
 
 During a run — how the agent records what it did:
   momentum run advance <unit>          Move the cursor to the next unit
@@ -311,6 +314,48 @@ function cmdStop(args) {
   return 0;
 }
 
+/**
+ * BUG-036 — how a run ENDS WELL.
+ *
+ * `status: complete` was in the schema from 32a and `manifest.setStatus` has
+ * always accepted it, but no command could reach it: `stop` writes `stopped`,
+ * and nothing wrote `complete`. A declared state with no production path —
+ * BUG-031's shape a third time in this epic.
+ *
+ * The consequence was not cosmetic. A finished run stayed `running`, so the
+ * governor's branch 7 answered "continue" every turn with no work left, and the
+ * run terminated only by exhausting its budget as `budget-turns`. **The governor
+ * could not report success** — every completed run looked like a runaway, and
+ * the one signal an operator most needs (did it finish, or did it give up?) was
+ * the one it could not give.
+ *
+ * Found by dogfooding: Phase 33 finished, and the governor kept re-invoking the
+ * agent to do work that no longer existed.
+ */
+function cmdComplete(args) {
+  const root = repoRoot();
+  const m = manifestLib.loadSafe(root);
+  if (!m) { console.error('Error: no active run.'); return 1; }
+
+  const summary = flag(args, '--summary', '');
+  manifestLib.setStatus(root, 'complete', nowIso(), summary || 'plan finished');
+
+  console.log(`▸ Run ${m.run_id} complete — finished at ${m.cursor && m.cursor.unit}.`);
+  if (summary) console.log(`  ${summary}`);
+
+  const decisions = (m.decisions || []).length;
+  const parked = (m.parked || []).filter((p) => !p.resolved).length;
+  const turns = (m.spent && m.spent.turns) || 0;
+  const budget = (m.budget && m.budget.turns) || null;
+  console.log(`  ${turns}${budget ? `/${budget}` : ''} turns · ${decisions} decision(s) recorded`
+    + (parked ? ` · ${parked} still parked` : ''));
+  if (parked) {
+    console.log('  NOTE: parked questions remain unanswered — they did not block the plan,');
+    console.log('        but they are still yours to decide: momentum run status');
+  }
+  return 0;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // During a run — how the agent records what it did.
 //
@@ -327,9 +372,34 @@ function requireActiveRun() {
   return { root, m };
 }
 
+/**
+ * Read a required positional, REFUSING anything flag-shaped (Phase 33, BUG-035).
+ *
+ * These commands take their payload positionally (`run decide "<summary>"`), so
+ * a caller reaching for a plausible-but-wrong flag — `run decide --what "..."` —
+ * had `--what` stored verbatim as the decision summary and got a cheerful
+ * confirmation back. Silent corruption of the durable record: the decision log
+ * is what the epic tier reads, and `check-task` matches the red→green task by
+ * exact string, so a poisoned entry fails to match later for reasons that look
+ * nothing like the cause.
+ *
+ * A positional that begins with `--` is always a mistake. Refuse it and say what
+ * the shape actually is.
+ */
+function positional(args, usage) {
+  const v = args[0];
+  if (!v) { console.error(`Error: ${usage}`); return null; }
+  if (/^--/.test(v)) {
+    console.error(`Error: '${v}' is a flag, not a value — this argument is positional.`);
+    console.error(`Usage: ${usage}`);
+    return null;
+  }
+  return v;
+}
+
 function cmdAdvance(args) {
-  const unit = args[0];
-  if (!unit) { console.error('Error: momentum run advance <unit>'); return 1; }
+  const unit = positional(args, 'momentum run advance <unit>');
+  if (!unit) return 1;
   const active = requireActiveRun();
   if (!active) return 1;
 
@@ -339,8 +409,8 @@ function cmdAdvance(args) {
 }
 
 function cmdDecide(args) {
-  const summary = args[0];
-  if (!summary) { console.error('Error: momentum run decide "<summary>" [--unit U] [--why R]'); return 1; }
+  const summary = positional(args, 'momentum run decide "<summary>" [--unit U] [--why R]');
+  if (!summary) return 1;
   const active = requireActiveRun();
   if (!active) return 1;
 
@@ -357,12 +427,11 @@ function cmdDecide(args) {
 }
 
 function cmdPark(args) {
-  const question = args[0];
+  const USAGE = 'momentum run park "<question>" --unit <unit> [--reason operator-authority|ambiguous]';
+  const question = positional(args, USAGE);
+  if (!question) return 1;
   const unit = flag(args, '--unit');
-  if (!question || !unit) {
-    console.error('Error: momentum run park "<question>" --unit <unit> [--reason operator-authority|ambiguous]');
-    return 1;
-  }
+  if (!unit) { console.error(`Error: ${USAGE}`); return 1; }
   const active = requireActiveRun();
   if (!active) return 1;
 
@@ -593,8 +662,8 @@ function cmdDerive(args) {
 function cmdRedGreen(args) {
   const active = requireActiveRun();
   if (!active) return 1;
-  const task = args[0];
-  if (!task) { console.error('Error: momentum run red-green "<task>" [--unit U]'); return 1; }
+  const task = positional(args, 'momentum run red-green "<task>" [--unit U]');
+  if (!task) return 1;
 
   const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
   manifestLib.recordRedGreen(active.root, unit, task, nowIso());
@@ -605,8 +674,8 @@ function cmdRedGreen(args) {
 function cmdCheckTask(args) {
   const active = requireActiveRun();
   if (!active) return 1;
-  const task = args[0];
-  if (!task) { console.error('Error: momentum run check-task "<task>" [--unit U]'); return 1; }
+  const task = positional(args, 'momentum run check-task "<task>" [--unit U]');
+  if (!task) return 1;
 
   const unit = flag(args, '--unit', active.m.cursor && active.m.cursor.unit);
   const strict = (active.m.policy && active.m.policy.tdd) === 'strict';
@@ -632,6 +701,7 @@ function runRun(args) {
     case 'status': return cmdStatus(rest);
     case 'continue': return cmdContinue(rest);
     case 'stop': return cmdStop(rest);
+    case 'complete': return cmdComplete(rest);
     case 'advance': return cmdAdvance(rest);
     case 'decide': return cmdDecide(rest);
     case 'park': return cmdPark(rest);

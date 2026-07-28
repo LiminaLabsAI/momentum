@@ -221,7 +221,11 @@ test('DRIVER: the loop runs units until the governor says stop', () => {
 
     const r = reinvoke.drive({ repoRoot: dir, adapter: 'codex', spawnSync: fakeSpawn });
     assert.equal(r.units, 3);
-    assert.match(r.stoppedBecause, /run is not in a running state/);
+    // Was /run is not in a running state/ until BUG-036 — i.e. the driver's
+    // SUCCESS path reported the same string as an abandoned run. The re-invoker
+    // was blind here exactly as the interceptor was.
+    assert.match(r.stoppedBecause, /run complete/,
+      'a loop that ran the plan to its end must say so');
   });
 });
 

@@ -1224,19 +1224,21 @@ function init(targetDir, agent, opts = {}) {
   // shipped it to all four, so half the installs carried a script advertising a
   // capability the adapter did not have. `core/run/lib/backend.js` is the one
   // place that knows which is which.
+  // Phase 33 G1 — the non-mechanical part of the surface (`core/install/extras.js`).
+  // Both this path and upgrade read that one declaration, and so does
+  // `selfcheck`'s parity engine, which had been blind to exactly these files.
+  const installExtras = require('../core/install/extras');
   if (!_dryRun) {
-    const backendLib = require('../core/run/lib/backend');
-    if (!backendLib.wantsInterceptorScript(agent)) {
-      const governorScript = path.join(target, ...dests.scripts, 'run-governor.sh');
-      try { fs.unlinkSync(governorScript); } catch (_e) { /* never installed — fine */ }
+    for (const r of installExtras.removalsFor(dests, agent)) {
+      try { fs.unlinkSync(path.join(target, ...r.destParts)); } catch (_e) { /* never installed — fine */ }
     }
   }
-  // Phase 9 — ecosystem session-append helper, sourced by check-history-reminder.
-  const sessionSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
-  if (fs.existsSync(sessionSrc)) {
-    const sessionDest = path.join(target, ...dests.scripts, 'session-append.sh');
-    copyFile(sessionSrc, sessionDest);
-    if (!_dryRun) fs.chmodSync(sessionDest, 0o755);
+  for (const e of installExtras.extraCopiesFor(dests)) {
+    const from = path.join(src, ...e.srcRel);
+    if (!fs.existsSync(from)) continue;
+    const to = path.join(target, ...e.destParts);
+    copyFile(from, to);
+    if (!_dryRun && e.executable) fs.chmodSync(to, 0o755);
   }
 
   // Phase 31c (ADR-0018 R1) — the shipped runtime. Hooks and scripts require
@@ -1384,26 +1386,19 @@ function upgrade(targetDir, agent, opts = {}) {
   // alone is not enough: upgrade re-copies core/scripts wholesale, so the very
   // next upgrade would silently restore a script the adapter cannot invoke —
   // and the idempotence test caught exactly that.
+  const installExtrasUp = require('../core/install/extras');
   if (!_dryRun) {
-    const backendLibUp = require('../core/run/lib/backend');
-    if (!backendLibUp.wantsInterceptorScript(agent)) {
-      try { fs.unlinkSync(path.join(target, ...dests.scripts, 'run-governor.sh')); } catch (_e) { /* absent */ }
+    for (const r of installExtrasUp.removalsFor(dests, agent)) {
+      try { fs.unlinkSync(path.join(target, ...r.destParts)); } catch (_e) { /* absent */ }
     }
-  }
-  // Phase 9 — ecosystem session-append helper lives outside core/scripts/
-  // (it belongs to the ecosystem subsystem) but ships alongside the hook.
-  const sessionUpgradeSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
-  if (fs.existsSync(sessionUpgradeSrc)) {
-    const sessionUpgradeDest = path.join(target, ...dests.scripts, 'session-append.sh');
-    copyFile(sessionUpgradeSrc, sessionUpgradeDest);
   }
   // Phase 31c (ADR-0018 R1) — refresh the shipped runtime so hooks always run
   // the same core code as the installed momentum version.
   require('../core/runtime/closure').install(target, { dryRun: _dryRun });
-  // TRANSITIONAL (31c G1→G3) — see the install path.
-  const orientUpgradeSrc = path.join(src, 'core', 'ecosystem', 'lib', 'orient.js');
-  if (fs.existsSync(orientUpgradeSrc)) {
-    copyFile(orientUpgradeSrc, path.join(target, ...dests.scripts, 'orient.js'));
+  for (const e of installExtrasUp.extraCopiesFor(dests)) {
+    const from = path.join(src, ...e.srcRel);
+    if (!fs.existsSync(from)) continue;
+    copyFile(from, path.join(target, ...e.destParts));
   }
   // Re-apply executable bit to all .sh scripts
   const scriptsDir = path.join(target, ...dests.scripts);
@@ -2247,6 +2242,14 @@ async function main() {
     try {
       const { runEpic } = require('./run');
       exitCode = runEpic(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'selfcheck') {
+    try {
+      const { runSelfcheck } = require('./selfcheck');
+      exitCode = runSelfcheck(args.slice(1));
     } catch (err) {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
