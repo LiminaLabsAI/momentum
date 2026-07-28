@@ -31,6 +31,24 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const GATE = path.join(REPO_ROOT, 'core', 'scripts', 'cross-repo-gate.sh');
 const NOW = '2026-07-27T12:00:00.000Z';
 
+/**
+ * A timestamp that is always INSIDE `detect()`'s lookback window (BUG-038).
+ *
+ * `NOW` is a fixed instant, which is correct for the tests that inject it via
+ * `detect(root, {now: NOW})` — a frozen clock on both sides is deterministic.
+ * But the gate tests spawn `cross-repo-gate.sh` as a real subprocess, and the
+ * gate reads the REAL clock. Pairing a frozen event with a live clock gives a
+ * test that passes until the event ages past `DEFAULT_WINDOW_HOURS` (24) and
+ * then fails forever, with no code change and nothing to bisect.
+ *
+ * It did exactly that: the window expired at 2026-07-28T12:00Z, eighteen
+ * minutes after v0.44.1 was tagged on a green suite.
+ *
+ * So: subprocess tests date their events relative to the real clock. Recent
+ * enough to be inside any sane window, not "now", so ordering stays stable.
+ */
+const recently = () => new Date(Date.now() - 60_000).toISOString();
+
 const GIT_ENV = {
   ...process.env,
   GIT_AUTHOR_NAME: 'T', GIT_AUTHOR_EMAIL: 't@x',
@@ -127,7 +145,7 @@ test('the nudge degrades to a detail-free message when orient is unavailable', (
 test('gate nudges on entering a second member, then stays quiet in that session', () => {
   const { tmp, root } = setup();
   try {
-    event(root, 'backend');
+    event(root, 'backend', recently());  // real subprocess = real clock (BUG-038)
     const payload = {
       session_id: 'sess-1',
       tool_name: 'Write',
@@ -153,7 +171,7 @@ test('gate nudges on entering a second member, then stays quiet in that session'
 test('gate is silent when an initiative covers the work', () => {
   const { tmp, root } = setup();
   try {
-    event(root, 'backend');
+    event(root, 'backend', recently());  // real subprocess = real clock (BUG-038)
     const initLib = require('../core/ecosystem/lib/initiative');
     fs.mkdirSync(path.join(root, 'initiatives'), { recursive: true });
     initLib.writeInitiative(path.join(root, 'initiatives', '0001-attachments.md'), {

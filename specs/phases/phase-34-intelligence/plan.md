@@ -1,7 +1,7 @@
 ---
 type: Plan
 phase: 34
-status: in-progress
+status: complete
 ---
 
 # Phase 34 — Intelligence — Plan
@@ -19,15 +19,15 @@ before the loop it scores.** G0 before G1 is the whole point, not a convenience.
 Ships *before* any detector exists.
 
 1. `tests/benchmarks/recurring-patterns-v1/corpus/` — a **frozen snapshot** of
-   the real evidence: the backlog rows and history entries for the thirteen
-   known instances. Snapshot, not a live read of `specs/`, because a live corpus
+   the real evidence: the backlog rows, code markers and retrospective section
+   for the known instances. Snapshot, not a live read of `specs/`, because a live corpus
    would change under the detector and silently rewrite its own score history —
    the exact failure Rule 11 exists to prevent.
 2. `tests/benchmarks/recurring-patterns-v1/expected.json` — the known-good
    answers:
    - class `ships-broken` — 6 members (BUG-002, 030, 031, 033, 034, phase-33)
-   - class `stale-closure` — 7 members (TD-009, TD-012, TD-013, ENH-063,
-     BUG-007, BUG-027, BUG-028)
+   - class `stale-closure` — 2 required (TD-009, ENH-063), 2 ambiguous
+     (TD-012, TD-013), 3 must-not-fire (BUG-007, BUG-027, BUG-028)
 3. `tests/benchmarks/recurring-patterns-v1/README.md` — states the scalar, the
    freeze date, and **what would justify a v2** (never a v1 edit).
 4. `tests/learnings-evaluator.test.js` — asserts the evaluator is *well-formed
@@ -54,8 +54,8 @@ Ships *before* any detector exists.
      backlog details.
    - **cross-reference density** — items citing the same prior IDs.
 4. `tests/learnings-detection.test.js` — scores against the frozen v1:
-   **recall ≥ 6/6** on `ships-broken`, **≥ 5/7** on `stale-closure`, and
-   **precision bounded** — no more than 2 classes that are not in `expected.json`.
+   **recall 6/6** on `ships-broken`, **2/2** on `stale-closure` required,
+   **zero hits** on must-not-fire, and no more than 2 spurious classes.
    Thresholds are committed here and are part of the locked contract.
 5. **Prove it red:** an empty corpus must score 0, and a corpus with the
    self-reference phrases stripped must lose the `ships-broken` class — proving

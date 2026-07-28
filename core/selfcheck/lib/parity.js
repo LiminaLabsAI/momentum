@@ -45,6 +45,7 @@ const DEV_ONLY = Object.freeze([
   'scripts/rebaseline-fingerprints.js',
   'scripts/verify-published.sh',
   'scripts/verify-multi-adapter.sh',
+  'scripts/timeshift.js',
   // The agent's own local override — Claude Code writes it, momentum never does.
   '.claude/settings.local.json',
 ]);
