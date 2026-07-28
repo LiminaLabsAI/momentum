@@ -126,6 +126,22 @@ try {
   const result = crossRepo.detect(root, { extra: [focus], manifest });
   if (!result.shouldRoute) process.exit(0);
 
+  // BUG-032 (Phase 32d) — an active run grant IS the coordination record this
+  // nudge exists to ask for. The operator approved a scoped, expiring
+  // authorization naming these members; telling them to go open an initiative
+  // is asking for something they already did. Silent when covered.
+  try {
+    const projectRoot = process.env.MOMENTUM_PROJECT_DIR || process.env.CLAUDE_PROJECT_DIR || process.cwd();
+    const runJson = path.join(projectRoot, ".momentum", "run.json");
+    if (fs.existsSync(runJson)) {
+      const run = JSON.parse(fs.readFileSync(runJson, "utf8"));
+      if (run && run.status === "running" && run.grant && run.grant.revoked !== true
+          && Date.parse(run.grant.expires) > Date.now()) {
+        process.exit(0);
+      }
+    }
+  } catch (_e) { /* no run, or unreadable — fall through and nudge */ }
+
   // Once per session per member. Keyed by the adapter session id when there is
   // one; otherwise throttled by time. NOT keyed by pid — every hook invocation
   // is a fresh shell, so a pid key never repeats and the nudge fires on every

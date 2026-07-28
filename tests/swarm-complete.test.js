@@ -7,6 +7,7 @@ const path = require('node:path');
 
 const { mktmp, rmrf, runCli } = require('./_helpers');
 const conductor = require('../core/swarm/conductor');
+const simulator = require('./_swarm-simulator'); // BUG-031: moved out of production (32d)
 const manifestLib = require('../core/swarm/lib/manifest');
 const boardLib = require('../core/swarm/lib/board');
 
@@ -41,8 +42,8 @@ test('CLI complete — writes <eco>/changes/<id>.md', () => {
   try {
     setupFixture(tmp);
     // Drive all repos to complete
-    conductor.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 5, tasksTotal: 5, commits: 2 });
-    conductor.recordRepoComplete(tmp, '0001-foo', 'b', { tasksDone: 8, tasksTotal: 8, commits: 3 });
+    simulator.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 5, tasksTotal: 5, commits: 2 });
+    simulator.recordRepoComplete(tmp, '0001-foo', 'b', { tasksDone: 8, tasksTotal: 8, commits: 3 });
 
     const r = runCli(['swarm', 'complete', '0001-foo', '--ecosystem', tmp], { cwd: tmp });
     assert.equal(r.status, 0, r.stderr);
@@ -70,7 +71,7 @@ test('CLI complete — partial completion stays running', () => {
   const tmp = mktmp();
   try {
     setupFixture(tmp);
-    conductor.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 5, tasksTotal: 5 });
+    simulator.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 5, tasksTotal: 5 });
     // b still queued
 
     const r = runCli(['swarm', 'complete', '0001-foo', '--ecosystem', tmp], { cwd: tmp });

@@ -64,6 +64,10 @@ module.exports = {
     skills: false,
     browser: false,
     computerUse: false,
+    // Phase 32a: a `Stop` hook can BLOCK the turn ending, so the governor's
+    // "the next unit starts" invariant is met by blocking + injecting in place
+    // (core/run/CONTRACT.md).
+    governorBackend: 'interceptor',
   },
 
   roadmap: {},

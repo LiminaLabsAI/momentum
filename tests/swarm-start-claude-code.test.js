@@ -7,6 +7,7 @@ const path = require('node:path');
 
 const { mktmp, rmrf } = require('./_helpers');
 const conductor = require('../core/swarm/conductor');
+const simulator = require('./_swarm-simulator'); // BUG-031: moved out of production (32d)
 const manifestLib = require('../core/swarm/lib/manifest');
 const boardLib = require('../core/swarm/lib/board');
 const briefLib = require('../core/swarm/lib/brief');
@@ -289,7 +290,7 @@ test('pollTurn — starts wave 1 when all queued', () => {
     manifestLib.writeManifest(tmp, '0001-foo', manifest);
     boardLib.refreshBoard(tmp, '0001-foo', '2026-06-12T17:00:00Z');
 
-    const r = conductor.pollTurn({
+    const r = simulator.pollTurn({
       ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:01:00Z',
     });
     assert.equal(r.advancedToWave, 1);
@@ -318,13 +319,13 @@ test('pollTurn — advances to next wave when current wave done (autopilot)', ()
     boardLib.refreshBoard(tmp, '0001-foo', '2026-06-12T17:00:00Z');
 
     // Tick to start wave 1
-    conductor.pollTurn({ ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:00:01Z' });
+    simulator.pollTurn({ ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:00:01Z' });
 
     // Mark repo a complete (simulate supervisor done)
-    conductor.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 7, tasksTotal: 7 });
+    simulator.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 7, tasksTotal: 7 });
 
     // Tick again — should detect wave 1 done and advance to wave 2
-    const r = conductor.pollTurn({
+    const r = simulator.pollTurn({
       ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:02:00Z',
     });
     assert.equal(r.completedWave, 1);
@@ -354,9 +355,9 @@ test('pollTurn — checkpoint mode marks wave complete but does NOT auto-advance
     manifestLib.writeManifest(tmp, '0001-foo', manifest);
     boardLib.refreshBoard(tmp, '0001-foo', '2026-06-12T17:00:00Z');
 
-    conductor.pollTurn({ ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:00:01Z' });
-    conductor.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 7, tasksTotal: 7 });
-    const r = conductor.pollTurn({
+    simulator.pollTurn({ ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:00:01Z' });
+    simulator.recordRepoComplete(tmp, '0001-foo', 'a', { tasksDone: 7, tasksTotal: 7 });
+    const r = simulator.pollTurn({
       ecosystemRoot: tmp, swarmId: '0001-foo', nowIso: '2026-06-12T17:02:00Z',
     });
     assert.equal(r.completedWave, 1);

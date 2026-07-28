@@ -28,6 +28,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const coreLock = require('../../run/lib/lock');
+
 const SWARMS_DIR = 'swarms';
 const MANIFEST_FILENAME = 'manifest.json';
 const RESERVED_DIRS = Object.freeze([
@@ -53,29 +55,11 @@ const RESERVED_DIRS = Object.freeze([
  * @returns {T}
  */
 function withLock(filePath, fn) {
-  const lockDir = `${filePath}.lock`;
-  const deadline = Date.now() + 5000; // 5s budget — same as session-append.sh
-  while (Date.now() < deadline) {
-    try {
-      fs.mkdirSync(lockDir);
-      try {
-        return fn();
-      } finally {
-        try { fs.rmdirSync(lockDir); } catch (_e) { /* best-effort */ }
-      }
-    } catch (err) {
-      if (err && err.code === 'EEXIST') {
-        // contention — short sleep
-        const wait = 50;
-        const end = Date.now() + wait;
-        // busy-wait — keep dependency-free; lock contention is rare
-        while (Date.now() < end) { /* spin */ }
-        continue;
-      }
-      throw err;
-    }
-  }
-  throw new Error(`swarm/manifest: could not acquire lock at ${lockDir} within budget`);
+  // Phase 32a G2: one lock implementation, in `core/run/lib/lock.js`. The label
+  // is parametrized so the timeout message stays byte-identical to the one
+  // swarm has always thrown — the same technique ADR-0003 used to extract the
+  // wave engine without changing a single swarm assertion.
+  return coreLock.withLock(filePath, fn, { label: 'swarm/manifest' });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

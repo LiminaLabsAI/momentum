@@ -162,3 +162,16 @@ entry carries matching `Topics:`.
 | forge-aware | core/commands/start-phase.md |  |
 | forge-aware | core/commands/complete-phase.md |  |
 | merge-gate | specs/decisions/0009-trust-layer-invariant-mechanisms-preferences.md |  |
+| decision-authority | specs/decisions/0019-decision-authority-model.md |  |
+| decision-authority | core/run/lib/authority-triggers.js |  |
+| decision-authority | core/run/lib/authority.js |  |
+| governor | core/run/CONTRACT.md | The invariant |
+| governor | core/run/lib/governor.js |  |
+| governor | core/commands/start-phase.md | Autonomous Execution Contract |
+| run-manifest | core/run/schema/run.schema.json |  |
+| run-manifest | core/run/lib/manifest.js |  |
+| autonomy | specs/epics/0001-autonomous-execution.md | Decisions |
+| autonomy | core/run/CONTRACT.md |  |
+| park | core/run/lib/inbox.js |  |
+| scope-grant | specs/epics/0001-autonomous-execution.md | The scope grant |
+| epic | specs/epics/0001-autonomous-execution.md |  |

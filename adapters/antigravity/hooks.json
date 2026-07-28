@@ -49,5 +49,18 @@
         ]
       }
     ]
+  },
+  "momentum-run-governor": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ../scripts/run-governor.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
   }
 }

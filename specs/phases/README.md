@@ -49,6 +49,10 @@ type: Guide
 | 31a | Ecosystem Lifecycle Spine | Complete (v0.40.0) | [phase-31a-ecosystem-lifecycle-spine/](phase-31a-ecosystem-lifecycle-spine/) |
 | 31b | Ecosystem Enforcement | Complete (v0.41.0) | [phase-31b-ecosystem-enforcement/](phase-31b-ecosystem-enforcement/) |
 | 31c | Shipped Runtime | Complete (v0.42.0) | [phase-31c-shipped-runtime/](phase-31c-shipped-runtime/) |
+| 32a | Governor (Epic 0001) | Complete (v0.43.0) | [phase-32a-governor/](phase-32a-governor/) |
+| 32b | Epic Tier (Epic 0001) | Complete (v0.43.0) | [phase-32b-epic-tier/](phase-32b-epic-tier/) |
+| 32c | Adapter Parity (Epic 0001) | Complete (v0.43.0) | [phase-32c-adapter-parity/](phase-32c-adapter-parity/) |
+| 32d | Cross-Repo (Epic 0001) | Complete (v0.43.0) | [phase-32d-cross-repo/](phase-32d-cross-repo/) |
 
 ## Phase Structure
 

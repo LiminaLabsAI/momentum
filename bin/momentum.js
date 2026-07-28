@@ -1218,6 +1218,19 @@ function init(targetDir, agent, opts = {}) {
       }
     }
   }
+  // Phase 32c — capability-gated script install. `run-governor.sh` is the
+  // INTERCEPTOR backend's hook; adapters that can only observe a turn ending
+  // (Codex, opencode) drive runs via the re-invoker and cannot invoke it. 32a
+  // shipped it to all four, so half the installs carried a script advertising a
+  // capability the adapter did not have. `core/run/lib/backend.js` is the one
+  // place that knows which is which.
+  if (!_dryRun) {
+    const backendLib = require('../core/run/lib/backend');
+    if (!backendLib.wantsInterceptorScript(agent)) {
+      const governorScript = path.join(target, ...dests.scripts, 'run-governor.sh');
+      try { fs.unlinkSync(governorScript); } catch (_e) { /* never installed — fine */ }
+    }
+  }
   // Phase 9 — ecosystem session-append helper, sourced by check-history-reminder.
   const sessionSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
   if (fs.existsSync(sessionSrc)) {
@@ -1367,6 +1380,16 @@ function upgrade(targetDir, agent, opts = {}) {
     path.join(target, ...dests.scripts),
     upgradeOpts
   );
+  // Phase 32c — capability-gated script install, UPGRADE path. Gating install
+  // alone is not enough: upgrade re-copies core/scripts wholesale, so the very
+  // next upgrade would silently restore a script the adapter cannot invoke —
+  // and the idempotence test caught exactly that.
+  if (!_dryRun) {
+    const backendLibUp = require('../core/run/lib/backend');
+    if (!backendLibUp.wantsInterceptorScript(agent)) {
+      try { fs.unlinkSync(path.join(target, ...dests.scripts, 'run-governor.sh')); } catch (_e) { /* absent */ }
+    }
+  }
   // Phase 9 — ecosystem session-append helper lives outside core/scripts/
   // (it belongs to the ecosystem subsystem) but ships alongside the hook.
   const sessionUpgradeSrc = path.join(src, 'core', 'ecosystem', 'scripts', 'session-append.sh');
@@ -1740,10 +1763,23 @@ Waves — wave plan from dependency annotations (Phase 21c, one engine every sca
   momentum waves --tasks [ref]        Task-group waves for a tasks.md
                                        (default: the phase bound to your branch)
 
+Epic — one repo's multi-phase unit (Phase 32b):
+  momentum epic create <slug>         Group several phases as one unit
+  momentum epic list | status <slug>  Record + computed wave plan
+  momentum epic close <slug>
+
+Run — autonomous execution (Phase 32a, Epic 0001):
+  momentum run start <tier> <target>  tier = group | phase | epic | initiative
+  momentum run status [--json]        Read-only; safe against a LIVE run
+  momentum run continue               Clear a stop and resume from the manifest
+  momentum run stop [--reason "..."]  Halt the run
+                                       (or from any shell: touch .momentum/run-stop)
+
 OKF — specs/ as an Open Knowledge Format bundle (Phase 24, ADR-0005):
   momentum okf check [dir]            OKF v0.1 conformance report for <dir>/specs
   momentum okf index [dir]            Regenerate bundle indexes (root/phases/decisions)
   momentum config sync [target-dir]   Re-infer project shape, show config drift, apply on approval
+  momentum config validate [dir]      Check the run policy: free / coupled / floor rules
 
 Options:
   --agent <name>                      Agent to install for. \`init\` asks when this
@@ -2199,6 +2235,22 @@ async function main() {
       console.error(`\nError: ${err.message}`);
       exitCode = 1;
     }
+  } else if (args[0] === 'run') {
+    try {
+      const { runRun } = require('./run');
+      exitCode = runRun(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
+  } else if (args[0] === 'epic') {
+    try {
+      const { runEpic } = require('./run');
+      exitCode = runEpic(args.slice(1));
+    } catch (err) {
+      console.error(`\nError: ${err.message}`);
+      exitCode = 1;
+    }
   } else if (args[0] === 'okf') {
     try {
       const { runOkf } = require('./okf');
@@ -2214,9 +2266,38 @@ async function main() {
       if (sub === 'sync') {
         const dryRun = args.includes('--dry-run') || _dryRun;
         await syncConfig(target, { dryRun });
+      } else if (sub === 'validate') {
+        // Phase 32a G4 — free / coupled / floor. Refuses a combination and
+        // names the rule it breaks, rather than letting a project quietly
+        // select an unsafe pairing.
+        const rules = require(path.join(__dirname, '..', 'core', 'run', 'lib', 'config-rules'));
+        const runManifest = require(path.join(__dirname, '..', 'core', 'run', 'lib', 'manifest'));
+        const cfg = require('../core/config').readConfig(path.join(target, 'specs')) || {};
+
+        const policy = {
+          release: cfg.run_release || 'per-phase',
+          push: cfg.run_push || 'per-phase',
+          tdd: cfg.run_tdd || 'strict',
+        };
+        if (cfg.run_merge) policy.merge = cfg.run_merge;
+
+        const result = rules.validate(policy);
+        console.log(`▸ Config policy (specs/config.md)\n`);
+        console.log(rules.format(result));
+        if (!result.ok) exitCode = 1;
+
+        // A live run froze its policy at start; validate that too, since the
+        // config may have been edited since.
+        const active = runManifest.loadSafe(target);
+        if (active && active.policy) {
+          const live = rules.validate(active.policy);
+          console.log(`\n▸ Active run ${active.run_id}\n`);
+          console.log(rules.format(live));
+          if (!live.ok) exitCode = 1;
+        }
       } else {
         console.error(`Unknown config subcommand: ${sub || '(none)'}`);
-        console.error('Usage: momentum config sync [target-dir] [--dry-run]');
+        console.error('Usage: momentum config sync|validate [target-dir] [--dry-run]');
         exitCode = 1;
       }
     } catch (err) {

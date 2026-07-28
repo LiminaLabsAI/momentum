@@ -21,6 +21,61 @@ function repoRoot() {
   return process.cwd();
 }
 
+/**
+ * Phase 32b / ADR-0020 — try a scope grant when no sentinel is present.
+ *
+ * ADDITIVE AND FAIL-CLOSED. Every error path returns false, which falls through
+ * to the existing refusal: a broken or absent grant subsystem can only ever make
+ * the hook stricter, never weaker. That asymmetry is what keeps the ADR-0009
+ * floor intact — the grant can authorize a push, but nothing about it can
+ * authorize one by failing.
+ *
+ * @returns {boolean} true when a valid in-scope grant funded this push.
+ */
+function tryScopeGrant(root, branch) {
+  try {
+    const runtime = [
+      path.join(root, '.momentum', 'runtime', 'run', 'lib', 'grant.js'),
+      path.join(__dirname, '..', 'run', 'lib', 'grant.js'),
+    ].find((p) => fs.existsSync(p));
+    if (!runtime) return false;
+
+    const grantLib = require(runtime);
+    const manifestLib = require(path.join(path.dirname(runtime), 'manifest.js'));
+
+    const manifest = manifestLib.loadSafe(root);
+    if (!manifest || !manifest.grant) return false;
+
+    let actor = '';
+    try {
+      actor = require('child_process')
+        .execSync('git config user.email', { cwd: root }).toString().trim();
+    } catch { actor = 'unknown'; }
+
+    const res = grantLib.consume(root, {
+      branch,
+      epic: manifest.grant.epic,
+      actor,
+      nowIso: new Date().toISOString(),
+    });
+
+    if (!res.ok) {
+      process.stderr.write(
+        `  momentum: scope grant not applied — ${grantLib.explain(res.reason)}.\n`
+      );
+      return false;
+    }
+
+    process.stderr.write(
+      `  momentum: scope grant ${manifest.grant.grant_id} consumed — push to '${branch}' `
+      + `authorized (${res.remaining} landing(s) remaining).\n`
+    );
+    return true;
+  } catch {
+    return false; // fail closed
+  }
+}
+
 function fail(msg) {
   process.stderr.write(`\n✖ momentum git hook blocked this action:\n  ${msg}\n`);
   process.stderr.write(`\n  Emergency bypass (use sparingly): ${C.CONTRACT.skipEnv}=1 <git command>\n\n`);
@@ -141,13 +196,19 @@ function prePush() {
         process.stderr.write(
           `  momentum: '${C.CONTRACT.mergeApprovedSentinel}' consumed — push to '${branch}' authorized.\n`
         );
-      } else {
+      } else if (!tryScopeGrant(root, branch)) {
+        // Phase 32b / ADR-0020: the sentinel is tried FIRST and the grant
+        // second, so this path is reached only when neither authorized the
+        // push. A repo that never mints a grant sees exactly the v0.42.0
+        // message and behaviour.
         fail(
           `direct push to protected branch '${branch}' is blocked.\n` +
           `  Merging to '${branch}' needs explicit human approval. After the user approves,\n` +
           `  authorize a single push with the single-use sentinel:\n` +
           `      touch ${C.CONTRACT.mergeApprovedSentinel}\n` +
-          `  (it is consumed on push).`
+          `  (it is consumed on push).\n` +
+          `  For a multi-phase epic, one approval can instead mint a scope grant\n` +
+          `  covering N landings: momentum run grant --branches ... (ADR-0020).`
         );
       }
     }

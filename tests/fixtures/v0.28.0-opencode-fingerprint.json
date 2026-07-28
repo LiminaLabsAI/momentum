@@ -1,9 +1,9 @@
 {
   "meta": {
     "captured": "2026-07-27",
-    "capturedFrom": "phase-31c-shipped-runtime",
+    "capturedFrom": "epic-0001-autonomous-execution",
     "adapter": "opencode",
-    "note": "Phase 31c G3 / ADR-0018 R5: shell discovery delegates to the runtime; both bash walkers and the python3 member resolution removed."
+    "note": "Phase 32d G2 — BUG-032: cross-repo nudge suppressed under an active run grant."
   },
   "files": {
     ".agent/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -14,15 +14,16 @@
     ".githooks/post-commit": "49058da1fde0ab3c8bf12c8e4228ec896123d67b10e902a4b9a7971c1a6aa4dd",
     ".githooks/post-merge": "d140ca9d27ce9f743533ee56cf7676563c64bf2c21d5989363e52ba46b93808f",
     ".githooks/pre-push": "efed536f9a16fbe4aa66f4be8e953b7e45dac32e497b3b0c7e73fd65794b8df6",
-    ".githooks/run-check.js": "63ae4b788f1e93a3baa0dfd59937822a3ec1a48415177bee6abe9d0985bc6e5d",
+    ".githooks/run-check.js": "457de52fe005e29bdc4ab083e201dd6432496aafb3aa79435272cc338c525114",
     ".gitignore": "0f45d028f2909d76989fd32c732cbfabe614cdb8e7951ad02e6794a22a287bf6",
     ".opencode/agents/momentum-reviewer-architecture.md": "3331c4f1fe6c8ba389f4d49771fee4720ad83223d4683712bb1cbf341c5ec053",
     ".opencode/agents/momentum-reviewer-qa.md": "7b074044de574e27dbfad3e64b3555dc72f81b270ae40da3a2fae5e04d70d15e",
     ".opencode/agents/momentum-reviewer-security.md": "48f4eb012373c3c77bf4dc4e37128fef59bc482b13cc9d8822863bdf96ecb90a",
     ".opencode/agents/swarm-supervisor.md": "a1431fbc6f81ba844d8f86fa92c2d5ba7f715de9712aa8b95f131e5f00203289",
+    ".opencode/commands/brainstorm-epic.md": "589acabb39528fdea49ec2d2df9c682fd4d28e8ed07a51997b2547b29e57da7c",
     ".opencode/commands/brainstorm-idea.md": "3fc56d85484b16f6642845e99068323612f52b7ffc2d71b0778b0ed57c67e5bd",
     ".opencode/commands/brainstorm-initiative.md": "8fb1c3a31ba8d67c0061941a6e7ab3158042f8b1c1e333fd04ddd7b29e1bc38c",
-    ".opencode/commands/brainstorm-phase.md": "fa1b8ed1865a1527a05c806cb1f24aa84f5d106d72da3ef6d4968d3523741f9c",
+    ".opencode/commands/brainstorm-phase.md": "f9bdc9b14047ecd13aca3c7ef7676359cb5cbc5368850e75445c689e321a732a",
     ".opencode/commands/complete-initiative.md": "d8ff5a5a617e2438c0ddfe1724c561559b58102543e01c264b68f5df75589b00",
     ".opencode/commands/complete-phase.md": "2a514692f6d04d4be5bdf4ba31b57bd38f30c5547e48f3d5f2dbef97b58f7a61",
     ".opencode/commands/continue.md": "1537cee5fefdfaf7a64924a39b9d5ab31edf73095a0a894794d26cd04a23f659",
@@ -40,7 +41,7 @@
     ".opencode/commands/session.md": "44e08f13721ac3cd2a42cf8e2e316836b9cdfe96e63ad70e3bae86f3b4b31da1",
     ".opencode/commands/start-phase.md": "20150a54aa5679eb7a15535d0775a28ac31f166deeb31b2c2e6db7e4b14b0065",
     ".opencode/commands/start-project.md": "c9e3ff232ffdd0672d91f2e76c1c6b1372eb8afe58cef201b22eed998a8d4082",
-    ".opencode/commands/swarm.md": "7b0474817b675e660163c4c34a6404c870c7c1f2fb2f19fc925b8996e822dae2",
+    ".opencode/commands/swarm.md": "c58fe19a55dc7478b045ac6a900118336e966869b4a34048fa42f2afeefbdf8b",
     ".opencode/commands/sync-config.md": "01d2c3a27d1044180c1c1324531a3fd65b5c1fc8d326c4a59665f88f1a6f2bc9",
     ".opencode/commands/sync-docs.md": "f68182e669811a546ba0fbdfc4dce04f697ab6e64a669101fabcf1b6d1856f2c",
     ".opencode/commands/systematic-debug.md": "684ac08f19c8adfa6a3dc3d3650bc409d896b4c8caac1c2306dbce3b14fe7e5d",
@@ -55,7 +56,7 @@
     "README.md": "ccd4c1e9e872f2a6fc663dcbe2d75c15edbe9e95cc7904e8738099229323438a",
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
-    "scripts/cross-repo-gate.sh": "db13168ea4659c735368d3e2f98bd6360fce338ef06d6e2eafa44ed88af41ccb",
+    "scripts/cross-repo-gate.sh": "faa32969687b2124f563112b7217d9f7292229b4ea2d8599c40b9c66c3a9cd20",
     "scripts/orient.js": "9c684463a4f55e431e625a0ddbf66c44070f76fa431cfa53e630307f1d0f18ba",
     "scripts/session-append.sh": "dbb496c0ab0ad49ce24033de7285a8cbad9d9cfaf5fb873ee97441f219e859e2",
     "scripts/sessionstart-handoff.sh": "c1c3f90a1366e0fbc5741903b09e72b0a950e462f056c725ba8b87f90bd795ca",
