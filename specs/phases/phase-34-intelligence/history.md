@@ -121,3 +121,32 @@ wired into `npm test`: a check carrying six standing false positives is one
 people learn to skip, which is the failure Phase 33 already paid for.
 
 ---
+### [DISCOVERY] 2026-07-28 — The detector found a stale entry the manual audit missed
+Topics: intelligence, dogfood, stale-closure
+Affects-phases: phase-34-intelligence
+Affects-specs: none
+Detail: Run against the live repo (149 rows, 97 documents), the G1 detector
+reported `stale-closure` on **ENH-062** — which this morning's hand
+reconciliation did not catch. Verified before believing it: `momentum config
+sync` is dispatched from the real binary, `core/config.js` carries the
+drift-detection + approval-gated apply implementation, and `tests/config-sync.test.js`
+passes 5/5. The row still says `open`. Deliberately NOT flipped here: reporting
+is the design, and flipping a status on partial evidence is the error the
+morning audit already made. ENH-054 also fired on weaker evidence (one test
+assertion plus doc prose) and is recorded as the marginal case for G2 to
+present rather than decide.
+
+---
+
+### [NOTE] 2026-07-28 — The recurrence class is larger in live data than in the frozen corpus
+Topics: intelligence, evaluator-discipline
+Affects-phases: phase-34-intelligence
+Affects-specs: none
+Detail: Against the frozen v1 the detector returns exactly the six expected
+members. Against the live repo it returns **seven** — it also picks up BUG-036,
+whose entry says "BUG-031 shape, third instance in this epic". BUG-036 is in no
+expected set and no fixture. That divergence is the clearest evidence available
+that the detector reads evidence rather than reciting an answer, and it is
+exactly why the evaluator corpus is frozen while the live corpus is not.
+
+---

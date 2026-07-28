@@ -8,13 +8,15 @@
  * because an evaluator nobody checks is an evaluator that drifts, and a drifting
  * evaluator turns every score into an unfalsifiable claim.
  *
- * There is deliberately NO detector at this point in the phase. If anything here
- * imports `core/learnings/`, the ordering this phase depends on has been broken.
+ * Nothing here imports `core/learnings/`. The evaluator must be judgeable without
+ * the detector present, or it is not independent of it — and the last test keeps
+ * that ordering checkable in git long after both exist.
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const { spawnSync } = require('node:child_process');
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
@@ -97,9 +99,31 @@ test('the evaluator is FROZEN — corpus and expected answers match their checks
   }
 });
 
-test('G0 ships no detector — the evaluator precedes the loop', () => {
-  // The ordering IS the discipline. If this file can resolve a detector, the
-  // evaluator was not written first and its independence is gone.
-  assert.equal(fs.existsSync(path.join(REPO_ROOT, 'core', 'learnings', 'lib', 'patterns.js')), false,
-    'patterns.js must not exist until G1 — Rule 11 requires the evaluator first');
+test('the evaluator was committed BEFORE the detector it scores', () => {
+  // The ordering IS the discipline, so it stays checkable after G1 lands.
+  //
+  // While G0 was the working head this asserted `!fs.existsSync(patterns.js)`,
+  // which is the strongest possible form — but it can only hold until the
+  // detector exists, and a guard that must be deleted to make progress proves
+  // nothing afterwards. The durable version asks git: was the benchmark added
+  // in an earlier commit than the thing it scores?
+  //
+  // Rule 11's failure mode is an evaluator written to flatter a detector that
+  // already exists. This is what makes that visible a year from now.
+  const addedAt = (rel) => {
+    const r = spawnSync('git', ['log', '--diff-filter=A', '--format=%ct', '--', rel],
+      { cwd: REPO_ROOT, encoding: 'utf8' });
+    if (r.status !== 0) return null;
+    const stamps = r.stdout.trim().split('\n').filter(Boolean);
+    return stamps.length ? Number(stamps[stamps.length - 1]) : null;
+  };
+
+  const benchAt = addedAt('tests/benchmarks/recurring-patterns-v1/expected.json');
+  const detectorAt = addedAt('core/learnings/lib/patterns.js');
+
+  if (benchAt === null || detectorAt === null) return; // no git history — nothing to assert
+
+  assert.ok(benchAt <= detectorAt,
+    'the frozen evaluator must be committed no later than the detector it scores — ' +
+    `benchmark added ${benchAt}, detector added ${detectorAt}`);
 });

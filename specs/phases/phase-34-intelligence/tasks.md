@@ -17,12 +17,12 @@ status: in-progress
 - [x] Verify: `npm test` — **1441/1441** (1436 baseline + 5 evaluator tests)
 
 ## Group 1 — The detector, scored against frozen v1
-- [ ] `core/learnings/lib/patterns.js` — pure `(corpus) → {classes, members, evidence}`
-- [ ] `core/learnings/lib/corpus.js` — the I/O half, separated so the analyser stays pure
-- [ ] Signals: explicit self-reference, shared vocabulary, cross-reference density
-- [ ] `tests/learnings-detection.test.js` — recall 6/6 on `ships-broken`, 2/2 on `stale-closure` required; **zero hits** on must-not-fire; ≤ 2 spurious classes
-- [ ] **Proven red**: empty corpus scores 0; corpus with self-reference phrases stripped loses `ships-broken`
-- [ ] Verify: `npm test`
+- [x] `core/learnings/lib/patterns.js` — pure `(corpus) → {classes, members, evidence}`
+- [x] `core/learnings/lib/corpus.js` — the I/O half, separated so the analyser stays pure
+- [x] Signals: explicit self-reference + co-citation (shipped); shared-vocabulary and cross-reference-density **not built** — the declaration signal alone hit 6/6, and unproven signals would only cost precision
+- [x] `tests/learnings-detection.test.js` — recall 6/6 on `ships-broken`, 2/2 on `stale-closure` required; **zero hits** on must-not-fire; ≤ 2 spurious classes
+- [x] **Proven red**: empty corpus scores 0; corpus with self-reference phrases stripped loses `ships-broken`
+- [x] Verify: `npm test` — **1450/1450** (1441 + 9 detection tests)
 
 ## Group 2 — Surface + lifecycle wiring
 - [ ] `momentum learnings [--json]` — report-only, reachable from the real binary
