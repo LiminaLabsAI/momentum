@@ -34,3 +34,6 @@ node_modules/
 # ...but per-machine audit LOGS under team/ stay LOCAL (ADR-0015, Phase 30e G4).
 .momentum/team/**/*.log
 .githooks/*.bak
+
+# npm pack output — never commit the artifact into the repo it packs
+*.tgz
