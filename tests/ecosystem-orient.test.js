@@ -347,3 +347,61 @@ test('BUG-029: a corrupt or absent registry degrades to no lanes', () => {
     assert.deepEqual(orient.openLanes(repo), []);
   } finally { rmrf(tmp); }
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TD-012 — orient's member resolution DELEGATES; it does not mirror.
+//
+// This file's last mirror-instead-of-call cost a year of silence: the copy read
+// the lane registry's shape wrong and passed the repo's whole lane history
+// through as open (BUG-029). The local-checkout resolver was the third and final
+// duplicate TD-012 named, kept alive only because nothing had broken yet.
+//
+// "Currently agrees" is not the property worth testing — "cannot drift" is.
+// resolveMemberLocation grew `kind` and remote-member semantics in Phase 30e,
+// and nothing would have reported it if this copy had needed them too. So this
+// pins agreement across every member kind the manifest can express.
+// ─────────────────────────────────────────────────────────────────────────────
+
+test('orient resolves member location through the authority, for every member kind', () => {
+  const lib = require('../core/ecosystem/lib');
+  const root = mktmp();
+  try {
+    fs.mkdirSync(path.join(root, 'here'), { recursive: true });
+
+    const members = [
+      { id: 'a', role: 'library', path: 'here' },                                  // local, present
+      { id: 'b', role: 'client', remote: 'https://x/b.git' },                      // remote only
+      { id: 'c', role: 'infra', path: 'here', remote: 'https://x/c.git' },         // both
+      { id: 'd', role: 'other', path: 'gone' },                                    // local, absent
+      { id: 'e', role: 'other' },                                                  // neither
+    ];
+
+    for (const m of members) {
+      const authority = lib.resolveMemberLocation(root, m);
+      const view = orient.orientMember(root, m);
+
+      assert.equal(view.reachable, authority.hasLocal,
+        `${m.id}: orient's reachability must be the authority's hasLocal`);
+
+      if (!authority.hasLocal) {
+        assert.equal(view.remote, authority.remote,
+          `${m.id}: a member with no local checkout must report the authority's remote`);
+      }
+    }
+  } finally { rmrf(root); }
+});
+
+test('orient survives a malformed member rather than taking the fleet down', () => {
+  // A fleet view that dies on one bad member is useless exactly when it matters,
+  // which is this file's own stated contract. The old inline resolver called
+  // path.resolve() on member.path unguarded, so a non-string path threw straight
+  // through orientMember and killed the whole sweep.
+  const root = mktmp();
+  try {
+    for (const bad of [{ id: 'x', path: 42 }, { id: 'y', path: {} }, { id: 'z', path: '' }]) {
+      const view = orient.orientMember(root, bad);
+      assert.equal(view.reachable, false, `${bad.id}: a malformed path is not reachable`);
+      assert.equal(view.id, bad.id, 'the member is still reported, not dropped');
+    }
+  } finally { rmrf(root); }
+});

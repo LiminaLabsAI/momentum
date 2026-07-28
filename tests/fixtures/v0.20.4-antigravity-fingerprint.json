@@ -3,7 +3,7 @@
     "captured": "2026-07-28",
     "capturedFrom": "main",
     "adapter": "antigravity",
-    "note": "BUG-034 — run-governor.sh resolves the project root from its own location; Antigravity hooks run with cwd .agents/ and export no *_PROJECT_DIR."
+    "note": "TD-012: orient.js member resolution now delegates to lib.resolveMemberLocation instead of mirroring it — the last of TD-012's three self-contained duplicates. The old inline resolver threw a TypeError on a non-string member.path, taking the whole fleet sweep down with one malformed member."
   },
   "files": {
     ".agents/engines/subagent-dispatch.md": "d22caec3625dbc0f4aa24a37e963d618ac2159f20bf3d75da09837e1cec326eb",
@@ -55,7 +55,7 @@
     "scripts/brainstorm-gate.sh": "4651eb89de2cd476516f898be79820964ffe76d4c2d9106c33bca1b0523d8e19",
     "scripts/check-history-reminder.sh": "e4e25ad77ffba8e5d334c2d6a08bfbc407e1f2fec4214c384e4a481585663165",
     "scripts/cross-repo-gate.sh": "eb83d824c41261aaca48b123de7f49f7fd0509b1ef034fc774e8cba451b78099",
-    "scripts/orient.js": "9c684463a4f55e431e625a0ddbf66c44070f76fa431cfa53e630307f1d0f18ba",
+    "scripts/orient.js": "283adf5ab091b23d23d05967423fa4619792577c7d7169832a13681da2346052",
     "scripts/run-governor.sh": "447026b8866c2d5264320f754f2d2961a18b68f49a9757b8d5fc80cea4f8fe5a",
     "scripts/session-append.sh": "dbb496c0ab0ad49ce24033de7285a8cbad9d9cfaf5fb873ee97441f219e859e2",
     "scripts/sessionstart-handoff.sh": "c1c3f90a1366e0fbc5741903b09e72b0a950e462f056c725ba8b87f90bd795ca",

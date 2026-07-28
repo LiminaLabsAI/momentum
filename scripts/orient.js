@@ -149,6 +149,51 @@ function laneState() {
   return null;
 }
 
+/**
+ * Member local-checkout resolution — delegated to `lib.resolveMemberLocation`,
+ * the authority (TD-012, closing the last of its three mirrors).
+ *
+ * This was the third and final self-contained duplicate TD-012 named. It existed
+ * for the same reason as the other two — an installed project had no `core/`, so
+ * anything a hook needed had to travel with it — and ADR-0018's vendored runtime
+ * removed that reason. The other two mirrors went in 31c; this one outlived them
+ * only because nothing had broken yet.
+ *
+ * Which is precisely the argument for removing it. The last time this file
+ * mirrored an authority instead of calling it, the copy read the lane registry's
+ * shape wrong and passed the repo's entire lane history through as open
+ * (BUG-029) — silently, for a year. A mirror that currently agrees is not a
+ * mirror that will keep agreeing: `resolveMemberLocation` grew `kind` and
+ * remote-member semantics in Phase 30e, and nothing would have told us if this
+ * copy had needed them too.
+ *
+ * Resolved lazily and degrading to the inline logic, for the same reason
+ * `laneState()` does: orient.js is loaded both from `core/ecosystem/lib/` and
+ * from `scripts/orient.js` in installs, and a fleet view that dies on one
+ * unreachable authority is useless exactly when it matters.
+ */
+function memberLocation(ecosystemRoot, member) {
+  const m = member || {};
+  for (const rel of ['./index', '../lib/index', './ecosystem/lib/index']) {
+    try {
+      // eslint-disable-next-line global-require
+      const lib = require(path.join(__dirname, rel));
+      if (lib && typeof lib.resolveMemberLocation === 'function') {
+        return lib.resolveMemberLocation(ecosystemRoot, m);
+      }
+    } catch (_e) { /* try next */ }
+  }
+  // Fail-soft fallback, matching the authority's semantics.
+  const relPath = typeof m.path === 'string' && m.path.length > 0 ? m.path : null;
+  const localPath = relPath ? path.resolve(ecosystemRoot, relPath) : null;
+  let hasLocal = false;
+  if (localPath) {
+    try { hasLocal = fs.existsSync(localPath); } catch (_e) { hasLocal = false; }
+  }
+  const remote = typeof m.remote === 'string' && m.remote.length > 0 ? m.remote : null;
+  return { id: m.id, role: m.role, path: relPath, remote, localPath, hasLocal };
+}
+
 function openLanes(repoDir) {
   const state = laneState();
   if (!state) return [];
@@ -172,14 +217,11 @@ function openLanes(repoDir) {
  */
 function orientMember(ecosystemRoot, member) {
   const base = { id: member.id, role: member.role, reachable: false, phases: [], blockers: [], lanes: [] };
-  // Minimal local-checkout resolution, mirroring lib.resolveMemberLocation's
-  // hasLocal/localPath semantics without importing it (see the header note).
-  const repoDir = member && member.path
-    ? path.resolve(ecosystemRoot, member.path)
-    : null;
-  if (!repoDir || !fs.existsSync(repoDir)) {
-    return { ...base, remote: (member && member.remote) || null };
+  const loc = memberLocation(ecosystemRoot, member);
+  if (!loc.hasLocal) {
+    return { ...base, remote: loc.remote };
   }
+  const repoDir = loc.localPath;
   const specs = path.join(repoDir, 'specs');
   if (!fs.existsSync(specs)) {
     // A member that isn't momentum-managed is reachable but has nothing to say.
