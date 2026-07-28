@@ -412,3 +412,48 @@ test('initiative ordering uses the SAME wave engine as every other tier', () => 
   assert.match(initBlock, /computeWaveLayers/);
   assert.match(initBlock, /core', 'waves', 'lib', 'waves'/);
 });
+
+// ═════════════════════════════════════════════════════════════════════════════
+// VAL-006 regression — initiative-tier resolution INSIDE a real ecosystem.
+//
+// The original 32d G2 test only covered degradation OUTSIDE an ecosystem, where
+// it is loud. Run against the live cerebrio fleet the code failed three ways at
+// once — wrong module (`loadInitiative` is in initiative.js, not index.js),
+// wrong slug (files are `NNNN-<slug>`, the loader takes the bare slug), and it
+// fell through SILENTLY because the wrong module was guarded with `&&` as
+// though it were an optional feature. The cursor pointed at the initiative slug
+// instead of a member, and nothing said so.
+// ═════════════════════════════════════════════════════════════════════════════
+
+test('VAL-006: initiative resolution uses the module that actually has loadInitiative', () => {
+  const initiativeLib = require('../core/ecosystem/lib/initiative');
+  const indexLib = require('../core/ecosystem/lib/index');
+  assert.equal(typeof initiativeLib.loadInitiative, 'function');
+  assert.equal(indexLib.loadInitiative, undefined,
+    'if this ever moves to index.js, bin/run.js must move with it');
+
+  const src = fs.readFileSync(path.join(__dirname, '..', 'bin', 'run.js'), 'utf8');
+  const raw = src.slice(src.indexOf("tier === 'initiative'"), src.indexOf("tier === 'epic'"));
+  // Strip // comments before asserting. The fix's own comment QUOTES the old
+  // broken code to explain it, and a source-level regex would match the
+  // explanation forever — the same trap the BUG-032 wording test hit.
+  const block = raw.split('\n').filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n');
+
+  assert.match(block, /lib', 'initiative'/, 'must require initiative.js');
+  assert.ok(!/eco\.loadInitiative\s*&&/.test(block),
+    'guarding a WRONG module with && turns a bug into a silent no-op');
+});
+
+test('VAL-006: an NNNN- prefixed target is normalised to the bare slug', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'bin', 'run.js'), 'utf8');
+  const block = src.slice(src.indexOf("tier === 'initiative'"), src.indexOf("tier === 'epic'"));
+  assert.match(block, /replace\(\/\^\\d\{4\}-\//,
+    'initiative files are NNNN-<slug>.md; the loader takes the bare slug');
+});
+
+test('VAL-006: resolving no members is REPORTED, never a silent fall-through', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'bin', 'run.js'), 'utf8');
+  const block = src.slice(src.indexOf("tier === 'initiative'"), src.indexOf("tier === 'epic'"));
+  assert.match(block, /resolved no members/,
+    'the silent fall-through is exactly what VAL-006 caught');
+});
