@@ -117,7 +117,7 @@ Momentum is a spec-driven development toolkit for AI coding agents. It provides 
 
 | Phase | Branch | Status | Progress |
 |-------|--------|--------|----------|
-| 33 Self-Install Parity | `phase-33-self-install-parity` | In Progress | G0–G2 planned |
+| 33 Self-Install Parity | `phase-33-self-install-parity` | Complete — awaiting merge approval | G0–G2 done; suite 1427/1427; 7 real drifts repaired |
 
 > Phase 8 (Parallel Worktree Orchestration) was closed won't-do in Phase 19
 > (2026-06-19, TD-008) and its branch deleted — see
