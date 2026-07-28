@@ -63,3 +63,61 @@ instance before being named, despite individual entries saying "Nth instance of
 this shape" in prose.
 
 ---
+### [DISCOVERY] 2026-07-28 — The manual backlog audit was wrong, and the reason is this phase's thesis
+Topics: intelligence, backlog-integrity, parsing, self-correction
+Affects-phases: phase-34-intelligence
+Affects-specs: specs/changelog/2026-07.md, specs/backlog/backlog.md
+Detail: While snapshotting the frozen corpus for G0, the "seven stale backlog
+entries, two of them P1" claim from the post-v0.44.0 reconciliation turned out to
+be **wrong**. The truth is four (TD-009 P3, TD-012 P2, TD-013 P2, ENH-063 P2) and
+**zero P1s**. BUG-007, BUG-027 and BUG-028 were already `resolved`.
+
+The cause is exactly what this phase exists to fix. That audit was a throwaway
+`awk -F'|'` over `backlog.md`, and backlog descriptions contain pipes — BUG-007
+(`apply_patch\|shell`) and BUG-028 (`Edit\|Write`) carry escaped ones, and
+BUG-027 carried an **unescaped** one. Splitting on every `|` shifted their
+columns, so the priority cell was read out of the description and the status cell
+out of the priority. The two "stale P1s" were precisely those misparsed rows.
+
+Two things follow. First, the record is corrected in the changelog rather than
+quietly amended. Second, this is the strongest available argument for the phase:
+a hand-rolled reader of the corpus produced a confidently-wrong answer about the
+project's own state, and nothing would have caught it — the same failure mode as
+a stale entry, one level up. `core/learnings/lib/corpus.js` must therefore be a
+real parser with its own tests, not a regex, and the v1 evaluator must include a
+pipe-bearing row as a fixture.
+
+Also fixed in passing: BUG-027's row contained a literal unescaped `|` in the
+phrase "missing its trailing `|`" — an entry **about** a malformed markdown row
+that was itself malformed, breaking every parser that read it.
+
+---
+### [DISCOVERY] 2026-07-28 — BUG-038: a test that expired 18 minutes after the release
+Topics: intelligence, time-bombs, verification-integrity
+Affects-phases: phase-34-intelligence
+Affects-specs: none
+Detail: G0's suite run went red with no code change. `cross-repo-nudge.test.js`
+pinned its event to a frozen `NOW` and spawned `cross-repo-gate.sh` as a real
+subprocess, which reads the wall clock against a 24h window. The event aged out
+at 2026-07-28T12:00:00Z; v0.44.1 was tagged at 11:42Z on a genuinely green
+suite. A clean worktree at the released tag reproduces the failure — nothing to
+bisect, because nothing changed but the date. Fixed by dating subprocess-backed
+events relative to the real clock while the injected-clock tests keep the frozen
+NOW.
+
+---
+
+### [NOTE] 2026-07-28 — The time-bomb sweep found nothing further, and says so
+Topics: intelligence, time-bombs, false-positives
+Affects-phases: phase-34-intelligence
+Affects-specs: none
+Detail: Built `scripts/timeshift.js` to check whether BUG-038 was one instance
+or a class, and ran the suite 30 days ahead. Six failures — and all six are
+artifacts of the tool, which patches `Date` in-process but cannot shift
+subprocess clocks or filesystem mtimes. Five failed at a process boundary, one
+against a stamp-file mtime. **Zero further real bombs.** Recorded as a null
+result rather than dressed up as findings, and the tool is deliberately NOT
+wired into `npm test`: a check carrying six standing false positives is one
+people learn to skip, which is the failure Phase 33 already paid for.
+
+---
