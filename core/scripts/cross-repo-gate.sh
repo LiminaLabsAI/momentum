@@ -127,17 +127,25 @@ try {
   if (!result.shouldRoute) process.exit(0);
 
   // BUG-032 (Phase 32d) — an active run grant IS the coordination record this
-  // nudge exists to ask for. The operator approved a scoped, expiring
-  // authorization naming these members; telling them to go open an initiative
-  // is asking for something they already did. Silent when covered.
+  // nudge asks for, so a covered run is not nudged.
+  //
+  // Resolved from the MEMBER BEING ENTERED, not the hook process cwd. The first
+  // version read the invoking directory, so an unrelated run in whatever repo
+  // happened to be cwd silenced the nudge for a completely different project.
+  // Caught by the gate test, which spawns from the momentum repo while editing
+  // a temp ecosystem.
   try {
-    const projectRoot = process.env.MOMENTUM_PROJECT_DIR || process.env.CLAUDE_PROJECT_DIR || process.cwd();
-    const runJson = path.join(projectRoot, ".momentum", "run.json");
-    if (fs.existsSync(runJson)) {
-      const run = JSON.parse(fs.readFileSync(runJson, "utf8"));
-      if (run && run.status === "running" && run.grant && run.grant.revoked !== true
-          && Date.parse(run.grant.expires) > Date.now()) {
-        process.exit(0);
+    const memberDir = (manifest.members || [])
+      .map((mm) => mm && mm.path && path.resolve(root, mm.path))
+      .find((p) => p && path.basename(p) === focus);
+    if (memberDir) {
+      const runJson = path.join(memberDir, ".momentum", "run.json");
+      if (fs.existsSync(runJson)) {
+        const run = JSON.parse(fs.readFileSync(runJson, "utf8"));
+        if (run && run.status === "running" && run.grant && run.grant.revoked !== true
+            && Date.parse(run.grant.expires) > Date.now()) {
+          process.exit(0);
+        }
       }
     }
   } catch (_e) { /* no run, or unreadable — fall through and nudge */ }
