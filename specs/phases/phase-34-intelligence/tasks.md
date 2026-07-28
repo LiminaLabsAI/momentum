@@ -1,6 +1,6 @@
 ---
 type: Tasks
-status: in-progress
+status: complete
 ---
 
 # Phase 34 — Intelligence — Tasks
@@ -25,9 +25,9 @@ status: in-progress
 - [x] Verify: `npm test` — **1450/1450** (1441 + 9 detection tests)
 
 ## Group 2 — Surface + lifecycle wiring
-- [ ] `momentum learnings [--json]` — report-only, reachable from the real binary
-- [ ] Rule 4 pre-phase check reports recurrence counts
-- [ ] ADR **proposal** at threshold → `specs/decisions/proposed/`, never auto-accepted
-- [ ] `tests/learnings-cli.test.js` — CLI reachable; proposals land in `proposed/` only
-- [ ] `retrospective.md` + `## Verification Evidence`
-- [ ] Verify: full suite green
+- [x] `momentum learnings [--json]` — report-only, reachable from the real binary
+- [x] Rule 4 pre-phase check reports recurrence counts
+- [x] ADR **proposal** at threshold → `specs/decisions/proposed/`, never auto-accepted
+- [x] `tests/learnings-cli.test.js` — CLI reachable; proposals land in `proposed/` only
+- [x] `retrospective.md` + `## Verification Evidence`
+- [x] Verify: full suite green — **1456/1456** (1436 baseline + 20 new)
